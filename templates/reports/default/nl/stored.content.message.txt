@@ -1,0 +1,14 @@
+Dit is een bericht van MailCleaner
+----------------------------------
+Het originele e-mail bericht bevatte mogelijk schadelijke inhoud.
+Deze werd verwijderd voor jouw veiligheid.
+
+De inhoud is gevaarlijk omdat het dikwijls gebruikt wordt voor het verspreiden van
+virussen of om toegang te krijgen tot persoonlijke of confidentiële informatie van jou,
+zoals paswoorden of kredietkaart nummers.
+
+Op $date zeiden de inhoud filters:
+$report
+Nota aan de beheerder: $hostname in $datenumber/$id
+-- 
+Mailcleaner

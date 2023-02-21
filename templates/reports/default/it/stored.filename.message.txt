@@ -1,0 +1,12 @@
+This is a message from Mailcleaner
+----------------------------------
+The original e-mail attachment "$filename"
+is on the list of unacceptable attachments for this site and has been
+replaced by this warning message.
+
+At $date the virus scanner said:
+$report
+Note to Administrator: $hostname in $datenumber/$id
+
+----------- 
+Mailcleaner
