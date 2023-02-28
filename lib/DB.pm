@@ -78,7 +78,7 @@ sub connect {
       $dbase = $db->{'database'};
     }
     if (! ( $host eq "" || $port eq "" || $password eq "") ) {
-      $dbh = DBI->connect("DBI:mysql:database=$dbase;host=$host:$port;",
+      $dbh = DBI->connect("DBI:mariadb:database=$dbase;host=$host:$port;",
 			"mailcleaner", $password, {RaiseError => 0, PrintError => 0, AutoCommit => 1})
 		or fatal_error("CANNOTCONNECTDB", $critical);
 	  
@@ -86,7 +86,7 @@ sub connect {
     }
   } 
   if ($realmaster < 1) {
-    $dbh = DBI->connect("DBI:mysql:database=$db;host=localhost;mysql_socket=$socket",
+    $dbh = DBI->connect("DBI:mariadb:database=$db;host=localhost;mysql_socket=$socket",
 			"mailcleaner", $conf->getOption('MYMAILCLEANERPWD'), {RaiseError => 0, PrintError => 0})
 		or fatal_error("CANNOTCONNECTDB", $critical);
   }
