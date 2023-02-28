@@ -1,0 +1,70 @@
+# Get all services running
+
+This first step of the migration begins by just getting all services up and running and able to communicate with each other where necessary. We will actually configure each service to match current MailCleaner behaviours in the next step.
+
+## Objectives
+
+* Get all core services running on top of the latest Debian release.
+* Where possible, install them as OSI containers so they can easily be plugged and unplugged.
+* Otherwise, install everything with distribution packages, NOT custom compilations. 
+* Handle customizations via configuration by symlinking all configuration directories to the repo.
+* Prefer finished VM images sooner over complete containerization. We can convert more services to containers as time goes on.
+* Once all services are manually ironed out, create an Ansible playbook to allow for repeated builds.
+
+## TODO
+
+* Exim Stage 1
+* Exim Stage 2
+* Exim Stage 4
+* MailScanner (already done by Vincent for Docker, just need to integrate)
+* SNMP
+* Greylistd
+* Preftdaemon
+* Spamd
+* Clamd
+* Clamspamd
+* SpamHandler
+* Newsld
+* Fail2ban
+* Firewall (now NFTables)
+* ESET EFS
+* Messagesniffer
+
+## Working
+
+* Apache2
+* MariaDB (MySQL)
+
+## Loose Ends
+
+* MariaDB works, but I need to test importing our database. It is probably also one of the easiest and most important items to containerize, so some effort should be made to do that after importing succeeds.
+* Document and script all necessary package installations.
+* Script for creating all symlinks.
+* Modify init scripts to perform necessary dump tasks, then leverage SystemD for actual management.
+* Many scripts expect `mysql` or `mc_mysql`. The later needs to be renamed and update to point to `mariadb` with the correct setup steps.
+* Components which integrate directly with MailScanner (eg. SpamC) may need to share a container, though we should be able to work around this with proper signalling given that the actual message will still be stored on a shared volume on disk.
+* MailCleaner integrates with several other system-level components (eg. NTPD), so those services will need to be configured during the implementation step.
+
+## Apt Dependencies
+
+I'm working with the minimal installation provided by the Debian 12 template for lxc.
+On top of that, I have installed:
+
+* keychain, gnupg-agent, vim, man (Git commit signing only; not required)
+* git
+* apache2
+* libphp-embed
+* libapache2-mpm-itk
+* libapache2-mod-php
+* exim4
+* mariadb-client
+* mariadb-server
+* libdbd-mariadb-perl
+
+## Symlinks
+
+* /usr/mailcleaner/etc/apache/apache2.conf /etc/apache/httpd.conf
+* /usr/mailcleaner/etc/apache/sites /etc/apache/sites-enabled
+* /usr/mailcleaner/etc/apache/conf.d /etc/apache/conf.d
+* /etc/php/8.2 /etc/php/current
+* /usr/mailcleaner/etc/apache/php.ini /etc/php/current/apache2.ini
