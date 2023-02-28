@@ -53,7 +53,7 @@ On top of that, I have installed:
 * keychain, gnupg-agent, vim, man (Git commit signing only; not required)
 * git
 * apache2
-* libphp-embed
+* php8.2
 * libapache2-mpm-itk
 * libapache2-mod-php
 * exim4
@@ -65,6 +65,6 @@ On top of that, I have installed:
 
 * /usr/mailcleaner/etc/apache/apache2.conf /etc/apache/httpd.conf
 * /usr/mailcleaner/etc/apache/sites /etc/apache/sites-enabled
-* /usr/mailcleaner/etc/apache/conf.d /etc/apache/conf.d
+* /usr/mailcleaner/etc/apache/conf-enabled /etc/apache/conf.d
 * /etc/php/8.2 /etc/php/current
 * /usr/mailcleaner/etc/apache/php.ini /etc/php/current/apache2.ini
