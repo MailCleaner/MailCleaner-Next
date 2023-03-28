@@ -48,12 +48,12 @@ esac
 
 MYMAILCLEANERPWD=`grep '^MYMAILCLEANERPWD' /etc/mailcleaner.conf | cut -d ' ' -f3`
 
-COMMAND=/opt/mysql5/bin/mysql
+COMMAND=/usr/bin/mariadb
 
 case $2 in
 
 "upgrade")
-   COMMAND=/opt/mysql5/bin/mysql_upgrade
+   COMMAND=/usr/bin/mariadb_upgrade
    ;;
 *)
    ;;

@@ -122,9 +122,9 @@ else
   export MPASS=`cat /var/tmp/master.conf | cut -d':' -f2`
 fi
 
-/opt/mysql5/bin/mysqldump -S$VARDIR/run/mysql_slave/mysqld.sock -umailcleaner -p$MYMAILCLEANERPWD mc_config update_patch > /var/tmp/updates.sql
+/usr/bin/mariadb-dump -S$VARDIR/run/mysql_slave/mysqld.sock -umailcleaner -p$MYMAILCLEANERPWD mc_config update_patch > /var/tmp/updates.sql
 
-/opt/mysql5/bin/mysqldump -h $MHOST -umailcleaner -p$MPASS --master-data mc_config > /var/tmp/master.sql
+/usr/bin/mariadb-dump -h $MHOST -umailcleaner -p$MPASS --master-data mc_config > /var/tmp/master.sql
 $SRCDIR/etc/init.d/mysql_slave stop 
 sleep 2
 rm $VARDIR/spool/mysql_slave/master.info  >/dev/null 2>&1
