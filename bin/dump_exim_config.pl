@@ -77,6 +77,7 @@ my $dbh;
 my $tmpdir = $conf->getOption('VARDIR')."/spool/tmp/exim";
 if ( ! -d $tmpdir) {
   mkdir($tmpdir) or fatal_error("COULDNOTCREATETMPDIR", "could not create temporary directory");
+  mkdir($tmpdir.'/blacklists') or fatal_error("COULDNOTCREATEBLDIR", "could not create blacklists directory");
 }
 if ( ! -d $conf->getOption('VARDIR')."/spool/tmp/exim_stage1" ) {
   mkdir($conf->getOption('VARDIR')."/spool/tmp/exim_stage1") or fatal_error("COULDNOTCREATETMPDIR", "could not create directory");
@@ -177,7 +178,8 @@ dump_syslog_config();
 if ( -f "/etc/init.d/rsyslog" ) {
   `/etc/init.d/rsyslog restart`;
 } else {
-  `/etc/init.d/sysklogd restart`;
+  # TODO: sysklogd is deprecated
+  #`/etc/init.d/sysklogd restart`;
 }
 
 chown $uid, $gid, $proxyfile;
