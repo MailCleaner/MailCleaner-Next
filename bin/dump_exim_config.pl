@@ -77,7 +77,6 @@ my $dbh;
 my $tmpdir = $conf->getOption('VARDIR')."/spool/tmp/exim";
 if ( ! -d $tmpdir) {
   mkdir($tmpdir) or fatal_error("COULDNOTCREATETMPDIR", "could not create temporary directory");
-  mkdir($tmpdir.'/blacklists') or fatal_error("COULDNOTCREATEBLDIR", "could not create blacklists directory");
 }
 if ( ! -d $conf->getOption('VARDIR')."/spool/tmp/exim_stage1" ) {
   mkdir($conf->getOption('VARDIR')."/spool/tmp/exim_stage1") or fatal_error("COULDNOTCREATETMPDIR", "could not create directory");
@@ -178,8 +177,7 @@ dump_syslog_config();
 if ( -f "/etc/init.d/rsyslog" ) {
   `/etc/init.d/rsyslog restart`;
 } else {
-  # TODO: sysklogd is deprecated
-  #`/etc/init.d/sysklogd restart`;
+  `/etc/init.d/sysklogd restart`;
 }
 
 chown $uid, $gid, $proxyfile;
@@ -190,18 +188,6 @@ sub dump_exim_file
 {
   my ($stage, $include_file) = @_;
 
-  # 4.94 configuration changes
-  my $version = `/opt/exim4/bin/exim --version 2> /dev/null`;
-  foreach (split("\n", $version)) {
-    if ($_ =~ m/.*Exim version (4\.\d\d).*/) {
-      $version = $1;
-      last;
-    }
-  }
-  unless ($version =~ m/^4\.\d\d$/ && $version ge 4.94) {
-    $version = '';
-  }
-
   # If include =1 we are generating the files included in the exim configuration
   my $include = 0;
   if ( defined($include_file) ) {
@@ -211,9 +197,9 @@ sub dump_exim_file
   my $srcdir = $conf->getOption('SRCDIR');
   my $template;
   if ( ! $include ) {
-    if (-e "$srcdir/etc/exim/exim_stage$stage.conf_template_$version") {
+    if (-e "$srcdir/etc/exim/exim_stage$stage.conf_template") {
       $template = ConfigTemplate::create(
-                          "$srcdir/etc/exim/exim_stage$stage.conf_template_$version",
+                          "$srcdir/etc/exim/exim_stage$stage.conf_template",
                           "$srcdir/etc/exim/exim_stage$stage.conf");
     } else {
       $template = ConfigTemplate::create(
@@ -223,9 +209,9 @@ sub dump_exim_file
   } else {
     my $dest_file = $include_file;
     $dest_file =~ s/_template$//;
-    if (-e "$srcdir/etc/exim/${include_file}_$version") {
+    if (-e "$srcdir/etc/exim/${include_file}") {
       $template = ConfigTemplate::create(
-                          "$srcdir/etc/exim/${include_file}_$version",
+                          "$srcdir/etc/exim/${include_file}",
                           "$srcdir/etc/exim/$dest_file");
     } else {
       $template = ConfigTemplate::create(
