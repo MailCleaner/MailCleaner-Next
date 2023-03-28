@@ -57,7 +57,7 @@ public function load($spool) {
  * @return  numeric number of mails in queue
  */
 public function getCount() {
-  $cmd = "/opt/exim4/bin/exim -C ".$this->conf_file_." -bpc";
+  $cmd = "/usr/sbin/exim -C ".$this->conf_file_." -bpc";
   $ret = `$cmd`;
   if (preg_match('/^\d+\s*$/', $ret)) {
     return $ret;
@@ -76,7 +76,7 @@ public function draw($template, $images, $sid) {
   // fields to search and display
   $fields = array('to' => array(), 'time' => '', 'size' => '', 'id' => '', 'from' => '', 'status' => '');
   // exim command to list queue
-  $cmd = "/opt/exim4/bin/exim -C ".$this->conf_file_." -bp";
+  $cmd = "/usr/sbin/exim -C ".$this->conf_file_." -bp";
   $list  = popen($cmd, "r");
 
   $ret = "";
@@ -166,7 +166,7 @@ private function dumpMessage($t, $images, $sid, $f, $i) {
  * @return   boolean  true on success, false on failure
  */
 public function runQueue() {
-  $cmd = "/opt/exim4/bin/exim -C ".$this->conf_file_." -qff > /dev/null & echo \$!";  
+  $cmd = "/usr/sbin/exim -C ".$this->conf_file_." -qff > /dev/null & echo \$!";  
   $ret = `$cmd`;
   $matches = array();
   if (preg_match('/^\s*(\d+)\s*$/', $ret, $matches)) {
@@ -180,7 +180,7 @@ public function runQueue() {
  * @return  boolean  true on success, false on failure
  */
 public function forceOne($id) {
-  $cmd = "/opt/exim4/bin/exim -C ".$this->conf_file_." -M $id > /dev/null & echo \$!";
+  $cmd = "/usr/sbin/exim -C ".$this->conf_file_." -M $id > /dev/null & echo \$!";
   $ret = `$cmd`;
   $matches = array();
   if (preg_match('/^\s*(\d+)\s*$/', $ret, $matches)) {
