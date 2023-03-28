@@ -72,6 +72,11 @@ etc/watchdog/EE_mod*
 etc/watchdog/CUSTOM_mod*
 etc/watchdog/*.disable
 etc/watchdog/files.filter
+www-old
+www/framework/Zend-2011/
+www/framework/Zend-2015/
+www/framework/ZendX-2011/
+www/framework/ZendX-2015/
 www/guis/admin/public/downloads/watchdogs.html
 etc/rbls/
 share/newsld/siteconfig/
