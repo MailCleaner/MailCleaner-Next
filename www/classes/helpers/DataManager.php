@@ -149,19 +149,19 @@ class DataManager {
   private function connect() {
     if (! isset($this->db_handle) or DB::isError($this->db_handle)) {
         if ($this->getOption('SOCKET') != "") {
-          $dsn = "mysql://".$this->getOption('USER').":".$this->getOption('MYMAILCLEANERPWD').
+          $dsn = "mysqli://".$this->getOption('USER').":".$this->getOption('MYMAILCLEANERPWD').
                 "@unix(".$this->getOption('SOCKET').")/".$this->getOption('DATABASE');
         } else {
-          $dsn = "mysql://".$this->getOption('USER').":".$this->getOption('PASSWORD').
+          $dsn = "mysqli://".$this->getOption('USER').":".$this->getOption('PASSWORD').
                 "@".$this->getOption('HOST').":".$this->getOption('PORT')."/".$this->getOption('DATABASE');
         }        
         $options = array(
                     'persistent' => true,
-                    'debug' => 0
+                    'debug' => 1
                 );
 
 
-        $this->db_handle =& DB::connect($dsn, $options);
+        $this->db_handle = DB::connect($dsn, $options);
         if (DB::isError($this->db_handle)) {
             // ERROR MSG
             $this->last_error_ = "error connecting to db, $dsn";
@@ -188,8 +188,7 @@ class DataManager {
     }
     if (!$this->connect()) { 
         // ERROR MSG
-	//echo "lost connection...";
-	$this->last_error_ = "lost connection...";
+        echo "lost connection...";
         return null; 
     }
     $res =& $this->db_handle->query($query);
@@ -199,9 +198,9 @@ class DataManager {
          return "RECORDALREADYEXISTS";
         }
         // ERROR MSG
-        // echo "missed query ($query)<br/>";
+        echo "missed query ($query)<br/>";
         echo $res->getMessage()." (".$res->getCode().")";
-	return null; 
+        return null; 
     }
       
     return $res;
@@ -284,7 +283,13 @@ class DataManager {
   */
  public function sanitize($value) {
     if (!$this->connect()) { return false; }
-    return $this->db_handle->escapeSimple($value);	
+    if (is_string($value)) {
+    	return $this->db_handle->escapeSimple($value);
+    }
+    if (is_array($value)) {
+	$value[0] = $this->db_handle->escapeSimple($value[0]);
+    }
+    return $value;
  }
 /*
    public function getSimpleValue($query) {
