@@ -177,7 +177,8 @@ dump_syslog_config();
 if ( -f "/etc/init.d/rsyslog" ) {
   `/etc/init.d/rsyslog restart`;
 } else {
-  `/etc/init.d/sysklogd restart`;
+  # TODO: deprecated. Migrate to syslog-ng
+  #`/etc/init.d/sysklogd restart`;
 }
 
 chown $uid, $gid, $proxyfile;
