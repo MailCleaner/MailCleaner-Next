@@ -59,7 +59,7 @@ class Statistics {
    private $date_type_ = 'date';
   
 /**
- * constructor
+ * constuctor
  */
 public function __construct() {
   // set start and stop dates
@@ -88,12 +88,28 @@ public function load($object, $startdate, $stopdate) {
    // gather stats
    foreach ($sysconf->getSlaves() as $slave) {
      $stats = $slave->getStats($this->object_, $this->startdate_, $this->stopdate_);
-     $this->stats_['msgs'] += $stats->msg;
-     $this->stats_['spams'] += $stats->spam;
-     $this->stats_['bytes'] += $stats->bytes;
-     $this->stats_['virus'] += $stats->virus;
-     $this->stats_['content'] += $stats->content;
-     $this->stats_['clean'] += $stats->clean;
+     if (!is_null($stats)) {
+       if (!isset($this->stats_['msgs'])) {
+         $this->stats_ = array(
+		'msgs' => 0,
+		'spams' => 0,
+		'bytes' => 0,
+		'virus' => 0,
+		'content' => 0,
+		'clean' => 0,
+		'pspamms' => 0.0,
+		'pvirus' => 0.0,
+		'pclean' => 0.0,
+		'pcontent' => 0.0
+         );
+       }
+       $this->stats_['msgs'] += $stats->msg;
+       $this->stats_['spams'] += $stats->spam;
+       $this->stats_['bytes'] += $stats->bytes;
+       $this->stats_['virus'] += $stats->virus;
+       $this->stats_['content'] += $stats->content;
+       $this->stats_['clean'] += $stats->clean;
+     }
    }
    // compute stats
    if ($this->stats_['msgs'] != 0) {
