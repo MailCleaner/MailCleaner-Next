@@ -342,6 +342,9 @@ function sendToAnalyse($id, $dest) {
 function extractParts($structure, $part) {
   $types = "";
 
+  if (!isset($structure->parts)) {
+    return $types;
+  }
   foreach ($structure->parts as $lpart) {
     if ($lpart->ctype_primary == "multipart") {
       if ($part == '0') {

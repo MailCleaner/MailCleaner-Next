@@ -632,10 +632,9 @@ class MCSoap_Logs
                            }
                        }
                    }
-                   if (!feof($handle)) {
-                       break;
+                   if (feof($handle)) {
+                       fclose($handle);
                    }
-                   fclose($handle);
                }
            }
            if (is_array($levels[0])) { $res['log_stage1'] = $levels[0]; }
