@@ -1,4 +1,5 @@
 <?php
+global $data_colors;
 $data_colors[''] = array("R"=>0,"G"=>0,"B"=>0);
 
 // global

@@ -215,7 +215,7 @@
       <td class="graprowresc">
          <p class="graprowrescp"><?php echo $this->t->_($type)?> : </p>
         <?php ## graph type 
-         if (count($this->more_content[$type]['type']) > 1) { ?>
+         if (isset($this->more_content[$type]['type']) && count($this->more_content[$type]['type']) > 1) { ?>
          <p>
            <?php $i=1; foreach ($this->more_content[$type]['type'] as $t) {?>
              <?php if ($t != $this->more_content[$type]['selected_type']) {?>
@@ -229,7 +229,7 @@
         <?php }?>
          
         <?php ## graph mode
-         if (count($this->more_content[$type]['mode']) > 1) { ?>
+         if (isset($this->more_content[$type]['mode']) && count($this->more_content[$type]['mode']) > 1) { ?>
          <p>
            <?php $i=1; foreach ($this->more_content[$type]['mode'] as $m) {?>
              <?php if ($m != $this->more_content[$type]['selected_mode']) {?>

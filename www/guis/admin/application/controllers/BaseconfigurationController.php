@@ -102,7 +102,7 @@ class BaseconfigurationController extends Zend_Controller_Action
             		$message = 'NOK error saving data ('.$e->getMessage().')';
             	}
             } else {
-               if (count($form->getMessages() > 0)) {
+               if (count($form->getMessages()) > 0) {
         	     $this->view->errors = $form->getMessages();
          	     $this->view->error = array_pop($form->getMessages());
          	     $message = 'NOK datanotvalid';
@@ -226,8 +226,8 @@ class BaseconfigurationController extends Zend_Controller_Action
     	$view->form = $localeform;
     	
     	$this->_helper->getHelper('FlashMessenger')->addMessage($message);
-    	if ($message == ''	) {
-    		$message = array_pop($flashmessages = $this->_helper->getHelper('FlashMessenger')->getMessages());
+    	if ($message == '') {
+    		$message = array_pop($this->_helper->getHelper('FlashMessenger')->getMessages());
     		$message = preg_replace('/\n/', '', $message);
     	}
     

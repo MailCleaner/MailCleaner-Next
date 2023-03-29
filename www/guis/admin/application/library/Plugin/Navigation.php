@@ -35,7 +35,7 @@ class Plugin_Navigation extends Zend_Controller_Plugin_Abstract
     		if (!$this->_acl->isAllowed($this->_role, 'Menu_'.$mk)) {
     			continue;
     		}
-    		$page = new Zend_Navigation_Page_Mvc(array('label' => $t->_($mk), 'id' => "$mk", 'action' => '', 'controller' => $m{'controller'}, 'class' => 'menubutton'));
+    		$page = new Zend_Navigation_Page_Mvc(array('label' => $t->_($mk), 'id' => "$mk", 'action' => '', 'controller' => $m['controller'], 'class' => 'menubutton'));
             $main_menu->addPage($page);
     	}
     	
@@ -76,10 +76,10 @@ class Plugin_Navigation extends Zend_Controller_Plugin_Abstract
     	);
 
         foreach ($config_menus_defs as $mk => $m) {
-            if (!$this->_acl->isAllowed($this->_role, $m{'controller'})) {
+            if (!$this->_acl->isAllowed($this->_role, $m['controller'])) {
     			continue;
     		}
-    		$page = new Zend_Navigation_Page_Mvc(array('label' => $t->_($mk), 'id' => "subconfig_$mk", 'action' => $m{'action'}, 'controller' => $m{'controller'}, 'class' => 'submenubutton'));
+    		$page = new Zend_Navigation_Page_Mvc(array('label' => $t->_($mk), 'id' => "subconfig_$mk", 'action' => $m['action'], 'controller' => $m['controller'], 'class' => 'submenubutton'));
             $nav->addPage($page);
     	}
     }
@@ -93,7 +93,7 @@ class Plugin_Navigation extends Zend_Controller_Plugin_Abstract
     	                    'Tracing' => array('controller' => 'managetracing', 'action' => '')
     	);
         foreach ($manage_menus_defs as $mk => $m) {
-    		$page = new Zend_Navigation_Page_Mvc(array('label' => $t->_($mk), 'id' => "submanage_$mk", 'action' => '', 'controller' => $m{'controller'}, 'class' => 'submenubutton'));
+    		$page = new Zend_Navigation_Page_Mvc(array('label' => $t->_($mk), 'id' => "submanage_$mk", 'action' => '', 'controller' => $m['controller'], 'class' => 'submenubutton'));
             $nav->addPage($page);
     	}    	
     }
@@ -107,10 +107,10 @@ class Plugin_Navigation extends Zend_Controller_Plugin_Abstract
     	                    'Status' => array('controller' => 'monitorstatus', 'action' => '')
     	);
         foreach ($monitor_menus_defs as $mk => $m) {
-            if (!$this->_acl->isAllowed($this->_role, $m{'controller'})) {
+            if (!$this->_acl->isAllowed($this->_role, $m['controller'])) {
                 continue;
             }
-    		$page = new Zend_Navigation_Page_Mvc(array('label' => $t->_($mk), 'id' => "submonitor_$mk", 'action' => '', 'controller' => $m{'controller'}, 'class' => 'submenubutton'));
+    		$page = new Zend_Navigation_Page_Mvc(array('label' => $t->_($mk), 'id' => "submonitor_$mk", 'action' => '', 'controller' => $m['controller'], 'class' => 'submenubutton'));
             $nav->addPage($page);
     	}
     }

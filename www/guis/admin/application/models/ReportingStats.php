@@ -480,6 +480,9 @@ class Default_Model_ReportingStats
 	
 	private function cumulStats($total, $stats) {
 		foreach ($stats as $key => $value) {
+			if (!isset($total[$key])) {
+				$total[$key] = 0;
+			}
 			$total[$key] += $value;
 		}
 		return $total;

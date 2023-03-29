@@ -127,7 +127,7 @@ class Default_Model_RRDGraphicElement
         
         ## get text with alignment (padding)
         $padding = 20;
-        if ($this->_graphic->getType == 'count') {
+        if ($this->_graphic->getType() == 'count') {
         	$padding += 5;
         }
         $text = str_pad(ucfirst($this->getLegend()),max($padding,$this->_graphic->getMaxLegendLenght()));
@@ -147,13 +147,13 @@ class Default_Model_RRDGraphicElement
 		$name = $this->getParam('name');
 		
 		if ($this->_graphic->getType() == 'frequency') {
-			$current = "GPRINT:".$name.":LAST:\"".$t->_(last)."\:%".$this->getParam('draw_format')." ".$this->getDrawUnit()."\"";
-			$average = "GPRINT:".$name.":AVERAGE:\"".$t->_(average)."\:%".$this->getParam('draw_format')." ".$this->getDrawUnit()."\"";
-			$maximum = "GPRINT:".$name.":MAX:\"".$t->_(maximum)."\:%".$this->getParam('draw_format')." ".$this->getDrawUnit()."\"";
+			$current = "GPRINT:".$name.":LAST:\"".$t->_('last')."\:%".$this->getParam('draw_format')." ".$this->getDrawUnit()."\"";
+			$average = "GPRINT:".$name.":AVERAGE:\"".$t->_('average')."\:%".$this->getParam('draw_format')." ".$this->getDrawUnit()."\"";
+			$maximum = "GPRINT:".$name.":MAX:\"".$t->_('maximum')."\:%".$this->getParam('draw_format')." ".$this->getDrawUnit()."\"";
 			$fullstr = $current." ".$average." ".$maximum;
 		} else {
-			$current = "GPRINT:".$name.":LAST:\"".$t->_(last)."\:%".$this->getParam('draw_format')." ".$this->getDrawUnit()."\"";
-			$maximum = "GPRINT:".$name.":MAX:\"".$t->_(maximum)."\:%".$this->getParam('draw_format')." ".$this->getDrawUnit()."\"";
+			$current = "GPRINT:".$name.":LAST:\"".$t->_('last')."\:%".$this->getParam('draw_format')." ".$this->getDrawUnit()."\"";
+			$maximum = "GPRINT:".$name.":MAX:\"".$t->_('maximum')."\:%".$this->getParam('draw_format')." ".$this->getDrawUnit()."\"";
 			$fullstr = $current." ".$maximum;
 		}
 		

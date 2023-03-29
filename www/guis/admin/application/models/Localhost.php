@@ -25,7 +25,7 @@ class Default_Model_Localhost
             if (preg_match('/^Services_(restart|stop)/', $service)) {
             	ini_set('default_socket_timeout', 30);
             }
-            if ($params && count($params)) {
+            if ($params) {
               $result = $client->$service($params);
             } else {
               $result = $client->$service();

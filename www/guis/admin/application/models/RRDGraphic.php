@@ -12,6 +12,8 @@ class Default_Model_RRDGraphic
 {
 	private $RRD_command = '/usr/bin/rrdtool';
 	private $_elements = array();
+
+	private $_mapper = null;
 	
 	private $_name = '';
 	private $_type = 'count';
@@ -40,6 +42,7 @@ class Default_Model_RRDGraphic
 
 	    ## load colors
 	    $template = Zend_Registry::get('default_template');
+	global $data_colors;
         include_once(APPLICATION_PATH . '/../public/templates/'.$template.'/css/pieColors.php');
         $this->_colors = $data_colors;
 	}
@@ -144,7 +147,7 @@ class Default_Model_RRDGraphic
 
     public function getMapper()
     {
-        if (null === $this->_mapper) {
+        if (is_null($this->_mapper)) {
             $this->setMapper(new Default_Model_RRDGraphicMapper());
         }
         return $this->_mapper;

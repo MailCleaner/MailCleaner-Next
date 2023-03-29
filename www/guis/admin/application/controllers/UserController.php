@@ -113,7 +113,7 @@ class UserController extends Zend_Controller_Action
          	}
          }
          $this->view->error = '';
-         if (count($form->getErrorMessages() > 0)) {
+         if (count($form->getErrorMessages()) > 0) {
          	$this->view->error = $t->_(array_pop($form->getErrorMessages()));
          }
          $this->view->form = $form;
