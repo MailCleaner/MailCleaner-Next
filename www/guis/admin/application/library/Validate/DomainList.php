@@ -39,6 +39,7 @@ class Validate_DomainList extends Zend_Validate_Abstract
           if (preg_match('/^\^/', $address)) {
           	continue;
           }
+          $address = preg_replace('/\.?\*/', '', $address); 
           if (! $validator->isValid($address)) {
           	  $this->domain = $address;
           	  $this->_error(self::MSG_BADDOMAIN);

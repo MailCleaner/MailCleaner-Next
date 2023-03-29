@@ -13,9 +13,8 @@ class Default_Form_AntispamGlobalSettings extends ZendX_JQuery_Form
 	protected $_antispam;
 	public $_whitelist;
 	public $_warnlist;
-	//blacklistmr
 	public $_blacklist;
-    public $_newslist;
+        public $_newslist;
 	
 	public $_whitelistenabled = 0;
 	public $_warnlistenabled = 0;
@@ -24,7 +23,7 @@ class Default_Form_AntispamGlobalSettings extends ZendX_JQuery_Form
 	protected $_whitelistform;
 	protected $_warnlistfrom;
 	protected $_blacklistrom;
-    protected $_newslistform;
+        protected $_newslistform;
 	
 	public function __construct($as, $whitelist, $warnlist, $blacklist, $newslist) {
 		$this->_antispam = $as;
@@ -54,7 +53,7 @@ class Default_Form_AntispamGlobalSettings extends ZendX_JQuery_Form
 	    	$maxsize->setValue($this->_antispam->getParam('global_max_size'));
 		$this->addElement($maxsize);
 		
-		require_once('Validate/IpList.php');
+		require_once('Validate/HostList.php');
 		$trustednet = new Zend_Form_Element_Textarea('trusted_ips', array(
 		      'label'    =>  $t->_('Trusted IPs/Networks')." :",
                       'title' => $t->_("These IP/ranges are whitelist for the antispam part"),
@@ -62,7 +61,7 @@ class Default_Form_AntispamGlobalSettings extends ZendX_JQuery_Form
 		      'rows' => 5,
 		      'cols' => 30,
 		      'filters'    => array('StringToLower', 'StringTrim')));
-	    $trustednet->addValidator(new Validate_IpList());
+	        $trustednet->addValidator(new Validate_HostList());
 		$trustednet->setValue($this->_antispam->getParam('trusted_ips'));
 		$this->addElement($trustednet);
 		

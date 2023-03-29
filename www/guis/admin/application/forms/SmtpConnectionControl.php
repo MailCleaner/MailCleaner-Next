@@ -29,8 +29,6 @@ class Default_Form_SmtpConnectionControl extends ZendX_JQuery_Form
         $this->setAttrib('id', 'connectioncontrol_form');
 
         require_once 'Validate/HostList.php';
-
-        require_once 'Validate/IpList.php';
         $allowconnect = new Zend_Form_Element_Textarea('smtp_conn_access', array(
             'label' => $t->_('Allow connection from hosts') . " :",
             'title' => $t->_("List of servers/IP/ranges which are allowed to send emails to this MailCleaner server"),
@@ -38,7 +36,7 @@ class Default_Form_SmtpConnectionControl extends ZendX_JQuery_Form
             'rows' => 5,
             'cols' => 30,
             'filters' => array('StringToLower', 'StringTrim')));
-        $allowconnect->addValidator(new Validate_IpList());
+        $allowconnect->addValidator(new Validate_HostList());
         $allowconnect->setValue($this->_mta->getParam('smtp_conn_access'));
         $this->addElement($allowconnect);
 
@@ -50,7 +48,7 @@ class Default_Form_SmtpConnectionControl extends ZendX_JQuery_Form
             'rows' => 5,
             'cols' => 30,
             'filters' => array('StringToLower', 'StringTrim')));
-        $allowrelay->addValidator(new Validate_IpList());
+        $allowrelay->addValidator(new Validate_HostList());
         $allowrelay->setValue($this->_mta->getParam('relay_from_hosts'));
 
         // Only admin can enable outgoing relay
@@ -91,7 +89,7 @@ class Default_Form_SmtpConnectionControl extends ZendX_JQuery_Form
             'rows' => 5,
             'cols' => 30,
             'filters' => array('StringToLower', 'StringTrim')));
-        $rejecthosts->addValidator(new Validate_IpList());
+        $rejecthosts->addValidator(new Validate_HostList());
         $rejecthosts->setValue($this->_mta->getParam('host_reject'));
         $this->addElement($rejecthosts);
 
