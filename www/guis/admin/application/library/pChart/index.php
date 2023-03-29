@@ -1,5 +1,5 @@
 <?php
- /* If you navigate here, then you should see the examples */
+ /* If you crawl here, you may want to see the examples */
 
  header('Location: examples/');
  exit();
