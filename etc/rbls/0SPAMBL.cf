@@ -1,0 +1,4 @@
+name=0SPAMBL
+type=IPRBL
+dnsname=bl.0spam.org
+sublist=127.0.0.\d+,0spam,0spam.org list
