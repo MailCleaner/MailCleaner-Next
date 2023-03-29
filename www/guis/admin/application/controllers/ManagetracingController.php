@@ -282,7 +282,6 @@ class ManagetracingController extends Zend_Controller_Action
                
                 foreach ($messages as $msg_lid) {
                   if (preg_match('/^(\d+)_([-a-zA-Z0-9]+)$/', $msg_lid, $matches)) {
-                    array_push($slaves_dest[$matches[1]], $matches[2]);
                     $slave = new Default_Model_Slave();
                     $slave->find($matches[1]);
                     $params = array('msgid' => $matches[2], 'traceid' => $traceid);
