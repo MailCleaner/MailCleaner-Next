@@ -11,6 +11,7 @@ CREATE TABLE dnslist (
 );
 
 -- blacklists
+INSERT INTO dnslist SET name='0SPAMBL', url='bl.0spam.org.', active=1, comment='<a target="_blank" href="http://0spam.org/">http://0spam.org/</a>';
 INSERT INTO dnslist SET name='SPAMHAUS-ZEN', url='zen.spamhaus.org.', active=1, comment='<a target="_blank" href="http://www.spamhaus.org/zen/">http://www.spamhaus.org/zen/</a>';
 INSERT INTO dnslist SET name='spamcop.net', url='bl.spamcop.net.', active=1, comment='<a target="_blank" href="http://www.spamcop.net">http://www.spamcop.net</a>';
 INSERT INTO dnslist SET name='SORBS-DNSBL', url='dnsbl.sorbs.net.', active=1, comment='<a target="_blank" href="http://www.sorbs.net">http://www.sorbs.net</a>';
@@ -21,6 +22,7 @@ INSERT INTO dnslist SET name='AHBL', url='rhsbl.ahbl.org.', active=1, comment='<
 INSERT INTO dnslist SET name='SECURITYUSAGE', url='blackhole.securitysage.com.', active=1, comment='<a target="_blank" href="http://www.securitysage.com">http://www.securitysage.com</a>';
 
 -- whitelists
+INSERT INTO dnslist SET name='0SPAMWL', url='wl.0spam.org.', type='whitelist', active=1;
 INSERT INTO dnslist SET name='BSP', url='sa-trusted.bondedsender.org.', type='whitelist', active=1;
 INSERT INTO dnslist SET name='IADB', url='iadb.isipp.com.', type='whitelist', active=1;
 INSERT INTO dnslist SET name='HABEAS', url='sa-accredit.habeas.com.', type='whitelist', active=1;
