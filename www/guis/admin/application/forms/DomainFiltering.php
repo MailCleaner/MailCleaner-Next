@@ -226,7 +226,11 @@ class Default_Form_DomainFiltering extends Zend_Form
         $this->_newslistform->addFields($this);
 
     	$domain->setPref('viruswall', $domain->getPref('contentwall'));
-    	$domain->setParam('greylist', $request->getParam('greylist'));
+	if ($request->getParam('greylist') > 0 || $request->getParam('greylist') == "1") {
+		$domain->setParam('greylist', true);
+	} else {
+		$domain->setParam('greylist', false);
+	}
 	$domain->setPref('prevent_spoof', $request->getParam('prevent_spoof'));
 	$domain->setPref('reject_capital_domain', $request->getParam('reject_capital_domain'));
         $domain->setPref('require_incoming_tls', $request->getParam('require_incoming_tls'));

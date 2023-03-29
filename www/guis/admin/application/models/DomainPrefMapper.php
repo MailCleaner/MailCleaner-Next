@@ -53,6 +53,12 @@ class Default_Model_DomainPrefMapper
     public function save(Default_Model_DomainPref $conf, $global = false) {
        $data = $conf->getParamArray();
        $res = '';
+       foreach (array('enable_whitelists', 'enable_warnlists', 'notice_wwlists_hit') as $key) {
+           if (is_null($data[$key])) {
+               unset($data[$key]);
+           }
+       }
+
        if (null === ($id = $conf->getId())) {
             unset($data['id']);
             if ($global) {
