@@ -13,7 +13,7 @@ class Default_Form_ContentMessageFormat extends ZendX_JQuery_Form
 	protected $_dangerouscontent;
 	
 	protected $_allowoptions = array('yes' => 'allow', 'no' => 'block');
-    protected $_blockoptions = array('no' => 'allow', 'yes' => 'block');
+        protected $_blockoptions = array('no' => 'allow', 'yes' => 'block');
 		
 	protected $_fields = array(
 		   'block_encrypt' => array('text' => 'Encrypted messages', 'options' => '_blockoptions'),
@@ -33,7 +33,7 @@ class Default_Form_ContentMessageFormat extends ZendX_JQuery_Form
 	{
 		$t = Zend_Registry::get('translate');
 		$layout = Zend_Layout::getMvcInstance();
-    	$view=$layout->getView();
+    		$view=$layout->getView();
     	
 		$this->setMethod('post');
 		
@@ -46,16 +46,16 @@ class Default_Form_ContentMessageFormat extends ZendX_JQuery_Form
 		
 		foreach ($this->_fields as $mf => $f) {
 			
-		  $ff = new Zend_Form_Element_Select($mf, array(
-               'label'      => $t->_($f['text'])." :",
-               'required'   => true,
-               'filters'    => array('StringTrim')));
+			$ff = new Zend_Form_Element_Select($mf, array(
+               			'label'      => $t->_($f['text'])." :",
+               			'required'   => true,
+               			'filters'    => array('StringTrim')));
         
-          foreach ($this->$f['options'] as $lk => $lv) {
-             $ff->addMultiOption($lk, $t->_($lv));
-          }
-          $ff->setValue($this->_dangerouscontent->getParam($mf));
-          $this->addElement($ff);
+          		foreach ($this->{$f['options']} as $lk => $lv) {
+             			$ff->addMultiOption($lk, $t->_($lv));
+          		}
+          		$ff->setValue($this->_dangerouscontent->getParam($mf));
+          		$this->addElement($ff);
 		}
         
 	    
