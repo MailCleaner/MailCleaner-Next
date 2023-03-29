@@ -53,13 +53,13 @@
                 <table>
                         <tr>
                                 <td><?php echo $this->t->_('Address')?> :</td>
-                                <td class="fieldpanel"><?php echo $this->InputRow($this->form->getElement($f._addelement),array('field_only'=>true,'nobox'=>true));?></td>
+                                <td class="fieldpanel"><?php echo $this->InputRow($this->form->getElement($f.'_addelement'),array('field_only'=>true,'nobox'=>true));?></td>
                         </tr>
                         <tr>
                                 <td><?php echo $this->t->_('Comment')?> :</td>
                                 <td class="fieldpanel"><img
                                         src="<?php echo $this->images_path?>/attention.png" class="vertimg"
-                                        alt="" /><?php echo $this->InputRow($this->form->getElement($f._addcomment),array('field_only'=>true,'nobox'=>true));?></td>
+                                        alt="" /><?php echo $this->InputRow($this->form->getElement($f.'_addcomment'),array('field_only'=>true,'nobox'=>true));?></td>
                         </tr>
                 </table>
                 <p><?php echo $this->SubmitRow($this->form->getElement($f.'_add'),array('field_only'=>true,'nobox'=>true));?></p>
