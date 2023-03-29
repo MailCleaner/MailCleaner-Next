@@ -34,7 +34,7 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
 		    'required' => false,
 	        'size' => 5,
 	        'class' => 'fieldrighted',
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $maxattach->setValue($this->_antivirus->getParam('max_attachments_per_message'));
         $maxattach->addValidator(new Zend_Validate_Int());
 	    $this->addElement($maxattach);	
@@ -45,7 +45,7 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
 		    'required' => false,
 	        'size' => 10,
 	        'class' => 'fieldrighted',
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $maxattachsize->setValue($this->_antivirus->getParam('max_attach_size'));
         $maxattachsize->addValidator(new Zend_Validate_Int());
 	    $this->addElement($maxattachsize);	
@@ -69,7 +69,7 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
 		    'required' => false,
 	        'size' => 10,
 	        'class' => 'fieldrighted',
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $max_archive_depth->setValue($this->_antivirus->getParam('max_archive_depth'));
         $max_archive_depth->addValidator(new Zend_Validate_Int());
 	    $this->addElement($max_archive_depth);	
@@ -114,7 +114,7 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
             'label'      => $t->_('Use decoded TNEF attachments')." :",
             'title' => $t->_("Choose action to perform with the TNEF attachment s scontent"),
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
 	    $tnefactions = array(
 	      'no' => 'do nothing but checking content',
@@ -146,7 +146,7 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
 	    $notices_to = new  Zend_Form_Element_Text('notices_to', array(
             'label'   => $t->_('Administrator address')." :",
 		    'required' => false,
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $notices_to->setValue($this->_antivirus->getParam('notices_to'));
         $notices_to->addValidator(new Zend_Validate_EmailAddress(Zend_Validate_Hostname::ALLOW_DNS | Zend_Validate_Hostname::ALLOW_LOCAL));
 	    $this->addElement($notices_to);	

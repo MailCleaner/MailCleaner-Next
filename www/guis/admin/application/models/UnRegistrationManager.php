@@ -10,8 +10,8 @@
 
 class Default_Model_UnRegistrationManager
 {	
-	private $_serial = array('abc1', 'def2', 'ghi3');
-        private $_data = array('rsp' => '');
+	private $_serial = ['abc1', 'def2', 'ghi3'];
+        private $_data = ['rsp' => ''];
     
 	public function load() {
 		//TODO: implement

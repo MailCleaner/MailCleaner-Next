@@ -6,10 +6,10 @@
  * @copyright 2009, Olivier Diserens
  */
 ?>&nbsp;
-<?php echo $this->partial('layouts/message.phtml', array('message' => $this->message, 't' => $this->t)); ?>
+<?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t)]; ?>
 <fieldset>
-       <?php echo $this->InputRow($this->form->getElement('panel'),array('field_only'=>true,'nobox'=>true));?>
-       <?php echo $this->InputRow($this->form->getElement('name'),array('field_only'=>true,'nobox'=>true));?>
+       <?php echo $this->InputRow($this->form->getElement('panel'),['field_only'=>true,'nobox'=>true)];?>
+       <?php echo $this->InputRow($this->form->getElement('name'),['field_only'=>true,'nobox'=>true)];?>
        <table class="ftable">
        
          <?php if ($this->form->canArchive()) {

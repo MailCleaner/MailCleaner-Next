@@ -31,7 +31,7 @@ class Default_Form_DomainAdd extends Zend_Form
 	    $defaultvalues = new Zend_Form_Element_Select('defaultvalues', array(
             'required'   => false,
 		    'label'   =>  $t->_('Use default values from'). ": ",
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
 	    $defaultvalues->addMultiOption('__global__', $t->_('Global domains settings'));
         foreach ($this->_domain->fetchAllName() as $domain) {
@@ -43,7 +43,7 @@ class Default_Form_DomainAdd extends Zend_Form
 		$domainname = new  Zend_Form_Element_Text('domainname', array(
             'label'   => $t->_('Domain name')." :",
 		    'required' => false,
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $domainname->setValue($this->_domain->getParam('name'));
 	    require_once('Validate/DomainName.php');
         $domainname->addValidator(new Validate_DomainName());
@@ -54,7 +54,7 @@ class Default_Form_DomainAdd extends Zend_Form
 		    'required' => false,
 		    'rows' => 5,
 		    'cols' => 30,
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $this->addElement($mdomainname);	
 		
 	    $topdomains = new Zend_Form_Element_Select('topdomains', array(

@@ -20,7 +20,7 @@ class Documentor {
    * documentor subjects
    * @var array
    */
-  private $help_ = array();
+  private $help_ = [];
 
   /**
    * constructor
@@ -29,7 +29,7 @@ class Documentor {
     // include help texts
     $sysconf_ = SystemConfig::getInstance();
     $lang_ = Language::getInstance('admin');
-    $help = array();
+    $help = [];
     require($sysconf_->SRCDIR_."/www/admin/htdocs/lang/".$lang_->getLanguage()."/help.php");
     $this->help_ = $help;
   }

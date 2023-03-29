@@ -30,7 +30,7 @@ class Form  {
    * array of checkboxes
    * @var array
    */
-  private $checkboxes_ = array();
+  private $checkboxes_ = [];
 
 /**
  * constructor
@@ -380,7 +380,7 @@ public function submitJS() {
  * @return  array  list of form values
  */
 public function getResult() {
-  $res = array();
+  $res = [];
   foreach ($_REQUEST as $opt => $val) {
     $shortopt = str_replace($this->name_."_", '', $opt);
     $val = preg_replace('/\\\\(.)/', '$1', $val); # remove escaped input

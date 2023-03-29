@@ -12,7 +12,7 @@ class Default_Model_InformationalMessage_Unresponsive extends Default_Model_Info
 {
 	protected $_title = 'Host is unresponsive or in error';
 	protected $_description = "Host %s does not respond or provided an unexpected response.";
-        protected $_link = array();
+        protected $_link = [];
 
         protected $_hostname = '';
 

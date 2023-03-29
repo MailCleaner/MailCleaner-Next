@@ -32,7 +32,7 @@ class Default_Form_SmtpGreylisting extends ZendX_JQuery_Form
 		    'required' => false,
 		    'size' => 6,
 	        'class' => 'fieldrighted',
-		    'filters'    => array('Alnum', 'StringTrim')));
+		    'filters'    => ['Alnum', 'StringTrim'))];
 	    $retrymin->setValue($this->_greylist->getParam('retry_min'));
         $retrymin->addValidator(new Zend_Validate_Int());
 	    $this->addElement($retrymin);
@@ -41,7 +41,7 @@ class Default_Form_SmtpGreylisting extends ZendX_JQuery_Form
 		    'required' => false,
 		    'size' => 6,
 	        'class' => 'fieldrighted',
-		    'filters'    => array('Alnum', 'StringTrim')));
+		    'filters'    => ['Alnum', 'StringTrim'))];
 	    $retrymax->setValue($this->_greylist->getParam('retry_max'));
         $retrymax->addValidator(new Zend_Validate_Int());
 	    $this->addElement($retrymax);
@@ -52,7 +52,7 @@ class Default_Form_SmtpGreylisting extends ZendX_JQuery_Form
                 'title' => $t->_("Cached item timelife"),
 		    'size' => 6,
 	        'class' => 'fieldrighted',
-		    'filters'    => array('Alnum', 'StringTrim')));
+		    'filters'    => ['Alnum', 'StringTrim'))];
 	    $expiretime->setValue($this->_greylist->getParam('expire'));
         $expiretime->addValidator(new Zend_Validate_Int());
 	    $this->addElement($expiretime);
@@ -64,7 +64,7 @@ class Default_Form_SmtpGreylisting extends ZendX_JQuery_Form
 		      'required'   => false,
 		      'rows' => 5,
 		      'cols' => 30,
-		      'filters'    => array('StringToLower', 'StringTrim')));
+		      'filters'    => ['StringToLower', 'StringTrim'))];
 	    $avoiddomains->addValidator(new Validate_DomainList());
 		$avoiddomains->setValue(preg_replace('/\s+/', "\n", $this->_greylist->getParam('avoid_domains')));
 		$this->addElement($avoiddomains);

@@ -23,8 +23,8 @@ class ConnectorSettings {
                              );
                              
    private $settings_type_ = array(
-                               'server' => array('text', 20),
-                               'port' => array('text', 5)
+                               'server' => ['text', 20],
+                               'port' => ['text', 5]
                                );                          
     
    /**
@@ -129,7 +129,7 @@ class ConnectorSettings {
      * @return   array  available setting list
      */
      public function getSettingsList() {
-        $ret = array();
+        $ret = [];
         foreach ($this->settings_ as $key => $value) {
             $ret[$key] = $key;
         }

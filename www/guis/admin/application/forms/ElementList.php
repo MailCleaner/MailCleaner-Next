@@ -13,7 +13,7 @@ class Default_Form_ElementList extends ZendX_JQuery_Form
 	protected $_list;
 	protected $_elementClass;
 	protected $_prefix = '';
-	protected $_added_values = array();
+	protected $_added_values = [];
 	
 	public function __construct($list, $class, $prefix = '') {
 		$this->_list = $list;
@@ -49,13 +49,13 @@ class Default_Form_ElementList extends ZendX_JQuery_Form
 		$addelement = new  Zend_Form_Element_Text($this->_prefix.'addelement', array(
 		    'required' => false,
 		    'class' => 'addelementfield',
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 	    $this->addElement($addelement);
 	    
 	    $addcomment = new  Zend_Form_Element_Text($this->_prefix.'addcomment', array(
 		    'required' => false,
 	        'class' => 'addcommentfield',
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 	    $this->addElement($addcomment);
 	    	    
 		$add = new Zend_Form_Element_Submit($this->_prefix.'add', array(

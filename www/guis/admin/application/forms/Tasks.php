@@ -31,7 +31,7 @@ class Default_Form_Tasks extends ZendX_JQuery_Form
 		$daily = new Zend_Form_Element_Select('cron_time', array(
             'label'      => $t->_('Daily tasks run at')." :",
             'required'   => true,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
         for ($i = 0; $i < 24; $i++) {
         	$str = sprintf('%02d:00:00', $i);
@@ -43,9 +43,9 @@ class Default_Form_Tasks extends ZendX_JQuery_Form
         $weekly = new Zend_Form_Element_Select('cron_weekday', array(
             'label'      => $t->_('Weekly tasks run on')." :",
             'required'   => true,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
-        foreach (array('1' => 'Sunday', '2' => 'Monday', '3' => 'Tuesday', '4' => 'Wednesday', '5' => 'Thursday', '6' => 'Friday', '7' => 'Saturday') as $k => $v) {
+        foreach (['1' => 'Sunday', '2' => 'Monday', '3' => 'Tuesday', '4' => 'Wednesday', '5' => 'Thursday', '6' => 'Friday', '7' => 'Saturday') as $k => $v] {
         	$weekly->addMultiOption($k, $t->_($v));
         }
         $weekly->setValue($this->_systemconf->getParam('cron_weekday'));
@@ -54,7 +54,7 @@ class Default_Form_Tasks extends ZendX_JQuery_Form
         $monthly = new Zend_Form_Element_Select('cron_monthday', array(
             'label'      => $t->_('Monthly tasks run at day')." :",
             'required'   => true,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
 	    for ($i = 1; $i < 32; $i++) {
         	$monthly->addMultiOption($i, $i);

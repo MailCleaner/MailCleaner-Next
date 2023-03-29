@@ -25,7 +25,7 @@ global $lang_;
 global $admin_;
 
 // check authorizations
-$admin_->checkPermissions(array('can_configure'));
+$admin_->checkPermissions(['can_configure')];
 
 // load network interfaces settings
 $netconf = new NetworkConfig();

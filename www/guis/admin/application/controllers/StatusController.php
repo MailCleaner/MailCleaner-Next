@@ -28,9 +28,9 @@ class StatusController extends Zend_Controller_Action
         
         $users = 0;
         foreach ($slaves as $s) {
-           foreach (array('hardware', 'spools', 'load') as $what) {
+           foreach (['hardware', 'spools', 'load') as $what] {
            	  $status = $s->getStatus($what);
-           	  if (is_array($status)) {
+           	  if (is_[$status)] {
            	  	$var = $what."_status";
            	  	$view->$var = $status['message'];
            	  }
@@ -44,7 +44,7 @@ class StatusController extends Zend_Controller_Action
     	$layout = Zend_Layout::getMvcInstance();
     	$view=$layout->getView();
     	
-    	$informationals = array();
+    	$informationals = [];
     	
     	$m = new Default_Model_InformationalMessage();
     	

@@ -39,8 +39,8 @@ class ManageuserController extends Zend_Controller_Action
 	}
 
 	static protected function getSearchParams($request, $view) {
-		$params = array();
-		foreach (array('domain' => '', 'search' => '', 'page' => 1, 'type' => 'user') as $p => $v) {
+		$params = [];
+		foreach (['domain' => '', 'search' => '', 'page' => 1, 'type' => 'user') as $p => $v] {
 			if ($request->getParam($p)) {
 				$params[$p] = $request->getParam($p);
 				$view->$p = $request->getParam($p);
@@ -68,7 +68,7 @@ class ManageuserController extends Zend_Controller_Action
 		if ($view->search == '') {
 			$view->search = $request->getParam('search');
 		}
-		$elements = array();
+		$elements = [];
 		$view->elementdatafield = 'username';
 		$add = $view->email;
 		if ($view->type == 'email') {
@@ -153,8 +153,8 @@ class ManageuserController extends Zend_Controller_Action
 		$panelform = new $panelformclass($user, $request->getParam('domain'));
 		$params = $this->getRequest()->getParams();
 			
-		$params = array();
-		foreach (array('page', 'search', 'type') as $p) {
+		$params = [];
+		foreach (['page', 'search', 'type') as $p] {
 			$params[$p] = $this->getRequest()->getParam($p);
 		}
 		$params['username'] = $username;
@@ -276,8 +276,8 @@ class ManageuserController extends Zend_Controller_Action
 		$panelform = new $panelformclass($email);
 		$params = $this->getRequest()->getParams();
 			
-		$params = array();
-		foreach (array('page', 'search', 'type') as $p) {
+		$params = [];
+		foreach (['page', 'search', 'type') as $p] {
 			$params[$p] = $this->getRequest()->getParam($p);
 		}
 		$params['email'] = $address;
@@ -343,7 +343,7 @@ class ManageuserController extends Zend_Controller_Action
 				
 					if ($panel == 'archiving' || $panel == 'addresssettings') {
 						$slave = new Default_Model_Slave();
-						$soapparams = array('what' => 'archiving');
+						$soapparams = ['what' => 'archiving'];
 						$res = $slave->sendSoapToAll('Service_silentDump', $soapparams);
 					}
 

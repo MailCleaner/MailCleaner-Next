@@ -7,9 +7,9 @@
  *		  2015-2017 Mentor Reka <reka.mentor@gmail.com>
  */
 ?>
-<?php echo $this->partial('layouts/message.phtml', array('message' => $this->message, 't' => $this->t)); ?>
-       <?php echo $this->InputRow($this->form->getElement('panel'),array('field_only'=>true,'nobox'=>true));?>
-       <?php echo $this->InputRow($this->form->getElement('name'),array('field_only'=>true,'nobox'=>true));?>
+<?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t)]; ?>
+       <?php echo $this->InputRow($this->form->getElement('panel'),['field_only'=>true,'nobox'=>true)];?>
+       <?php echo $this->InputRow($this->form->getElement('name'),['field_only'=>true,'nobox'=>true)];?>
 <table class="ftable">
         <?php $user = Zend_Registry::get('user'); ?>
         <tr>
@@ -47,18 +47,18 @@
          } ?>
 	
         <?php if ($this->domain->getParam('name') != '__global__') {?>
-          <?php foreach (array('aliases') as $f) {?>
-           <?php echo $this->InputRow($this->form->getElement($f),array('label_addclass'=>'flabeltextarea'));?>
+          <?php foreach (['aliases') as $f] {?>
+           <?php echo $this->InputRow($this->form->getElement($f),['label_addclass'=>'flabeltextarea')];?>
           <?php }?>
           <tr><td colspan="2"><hr /></td></tr>
         <?php }?>      
-          <?php foreach (array('systemsender', 'falseneg_to', 'falsepos_to') as $f) {?>
+          <?php foreach (['systemsender', 'falseneg_to', 'falsepos_to') as $f] {?>
            <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           
            <tr><td colspan="2"><hr /></td></tr>
           
-          <?php foreach (array('supportname', 'supportemail') as $f) {?>
+          <?php foreach (['supportname', 'supportemail') as $f] {?>
            <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           <?php echo $this->SubmitRow($this->form->getElement('submit'));?>

@@ -10,7 +10,7 @@
 
 class Default_Model_RegistrationManager
 {	
-	private $_serial = array('abc1', 'def2', 'ghi3');
+	private $_serial = ['abc1', 'def2', 'ghi3'];
         private $_data = array(
                               'clientid' => 0,
                               'resellerid' => 0,

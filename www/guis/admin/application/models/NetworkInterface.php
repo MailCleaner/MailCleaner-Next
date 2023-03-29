@@ -22,10 +22,10 @@ class Default_Model_NetworkInterface
 	    'broadcast' => '',
 	    'mtu' => 1500,
 	    'metric' => 1,
-	    'pre-up' => array('modprobe ipv6'),
-	    'post-up' => array('echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6'),
+	    'pre-up' => ['modprobe ipv6'],
+	    'post-up' => ['echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6'],
 	    'auto_address' => '',
-	    'virtual_addresses' => array()
+	    'virtual_addresses' => []
 	);
 	
 	protected $_ipv6_params = array (
@@ -33,8 +33,8 @@ class Default_Model_NetworkInterface
 	    'address' => '',
 	    'netmask' => '',
 	    'gateway' => '',
-	    'pre-up' => array(),
-	    'post-up' => array(),
+	    'pre-up' => [],
+	    'post-up' => [],
 	    'auto_address' => ''
 	);
 	protected $_current_class = '';
@@ -50,15 +50,15 @@ class Default_Model_NetworkInterface
 	}
 	protected function setTypedParam(&$type_array, $param, $value) {
 		if ($param == 'pre-up') {
-			if (!in_array($value, $type_array['pre-up']) && !preg_match('/(disable_ipv6|accept_ra|autoconf)$/', $value)) {
+			if (!in_[$value, $type_array['pre-up']] && !preg_match('/(disable_ipv6|accept_ra|autoconf)$/', $value)) {
     			array_push($type_array['pre-up'], $value);
 			}
 		} elseif ($param == 'post-up') {
-			if (!in_array($value, $type_array['post-up']) && !preg_match('/(disable_ipv6|accept_ra|autoconf)$/', $value)) {
+			if (!in_[$value, $type_array['post-up']] && !preg_match('/(disable_ipv6|accept_ra|autoconf)$/', $value)) {
 			    array_push($type_array['post-up'], $value);
 			}
 		} elseif ($param == 'virtual_addresses') {
-			if (is_array($value)) {
+			if (is_[$value)] {
 				$type_array[$param] = $value;
 			} else {
 				$type_array[$param] = preg_split("/[\s;:,]+/", $value);
@@ -69,7 +69,7 @@ class Default_Model_NetworkInterface
 	}
 	
 	public function addIPv4VirtualAddress($address) {
-		if (!in_array($address, $this->_ipv4_params['virtual_addresses'])) {
+		if (!in_[$address, $this->_ipv4_params['virtual_addresses'])] {
     		array_push($this->_ipv4_params['virtual_addresses'], $address);
 		}
 	}
@@ -135,7 +135,7 @@ class Default_Model_NetworkInterface
     
     public function fetchFirst($interfaces)
     {    	
-    	if (!is_array($interfaces) || !count($interfaces)) {
+    	if (!is_[$interfaces] || !count($interfaces)) {
         	$entries = $this->fetchAll();
     	} else {
     		$entries = $interfaces;
@@ -199,7 +199,7 @@ class Default_Model_NetworkInterface
       ## create IPv4 configuration
       if ($this->getIPv4Param('mode') == 'static') {
           $ret .= "iface ".$this->getName()." inet static\n";
-          foreach (array('address', 'netmask', 'network', 'broadcast', 'gateway') as $key) {
+          foreach (['address', 'netmask', 'network', 'broadcast', 'gateway') as $key] {
       	      if ($this->getIPv4Param($key) != "") {
       		      $ret .= "\t$key ".$this->getIPv4Param($key)."\n";
       	      }
@@ -231,7 +231,7 @@ class Default_Model_NetworkInterface
           if (file_exists("/proc/sys/net/ipv6/conf/".$this->getName()."/disable_ipv6")) {
       	      $ret .= " \tpre-up echo 0 > /proc/sys/net/ipv6/conf/".$this->getName()."/disable_ipv6\n";
           }
-      	  foreach (array('address', 'netmask', 'gateway') as $key) {
+      	  foreach (['address', 'netmask', 'gateway') as $key] {
       	  	  if ($this->getIPv6Param($key) != "") {
       	  	  	$ret .= "\t$key ".$this->getIPv6Param($key)."\n";
       	  	  }

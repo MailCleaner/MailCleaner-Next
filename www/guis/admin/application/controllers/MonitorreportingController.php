@@ -12,8 +12,8 @@ class MonitorreportingController extends Zend_Controller_Action
 {
     protected function getSearchParams() {
 		$request = $this->getRequest();
-		$params = array();
-		foreach (array('search', 'domain', 'fd', 'fm', 'td', 'tm', 'submit', 'sort', 'top') as $param) {
+		$params = [];
+		foreach (['search', 'domain', 'fd', 'fm', 'td', 'tm', 'submit', 'sort', 'top') as $param] {
 			$params[$param] = '';
 			if ($request->getParam($param)) {
 				$params[$param] = $request->getParam($param);
@@ -43,13 +43,13 @@ class MonitorreportingController extends Zend_Controller_Action
         $todate = Zend_Locale_Format::getDate($todateO, array('date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()));      
         $fromdate = Zend_Locale_Format::getDate($fromdateO, array('date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()));
        
-        foreach ( array('fd' => 'day', 'fm' => 'month', 'fy' => 'year') as $tk => $tv) {
+        foreach ( ['fd' => 'day', 'fm' => 'month', 'fy' => 'year') as $tk => $tv] {
         	if  (!isset($params[$tk]) || !$params[$tk]) {
         	    $params[$tk] = $fromdate[$tv];
             }
         }
         $params['ty'] = $todate['year'];
-	    foreach ( array('td' => 'day', 'tm' => 'month', 'ty' => 'year') as $tk => $tv) {
+	    foreach ( ['td' => 'day', 'tm' => 'month', 'ty' => 'year') as $tk => $tv] {
 	    	if  (!isset($params[$tk]) || !$params[$tk]) {
         	    $params[$tk] = $todate[$tv];
             }
@@ -72,10 +72,10 @@ class MonitorreportingController extends Zend_Controller_Action
         if ( intval($params['fy']) > intval($params['ty']) ||
              (intval($params['fy']) == intval($params['ty']) && intval($params['fm']) > intval($params['tm'])) ||
              (intval($params['fy']) == intval($params['ty']) && intval($params['fm']) == intval($params['tm']) && intval($params['fd']) > intval($params['td']))) {
-               foreach (array('fy', 'fm', 'fd') as $key) {
+               foreach (['fy', 'fm', 'fd') as $key] {
                   $tmp[$key] = $params[$key];
                }
-               foreach (array('y', 'm', 'd') as $key) {
+               foreach (['y', 'm', 'd') as $key] {
                   $params['f'.$key] = $params['t'.$key];
                   $params['t'.$key] = $tmp['f'.$key];
                }
@@ -116,7 +116,7 @@ class MonitorreportingController extends Zend_Controller_Action
 		$request = $this->getRequest();
 		$form    = new Default_Form_Reporting($this->getSearchParams());
 		$form->setAction(Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'monitorreporting'));
-		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'monitorreporting', NULL, array());
+		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'monitorreporting', NULL, [)];
 
 		$view->form = $form;
     }
@@ -126,7 +126,7 @@ class MonitorreportingController extends Zend_Controller_Action
 		$view=$layout->getView();
 		$layout->disableLayout();
 		$view->addScriptPath(Zend_Registry::get('ajax_script_path'));
-		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'monitorreporting', NULL, array());
+		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'monitorreporting', NULL, [)];
 		 
 		$request = $this->getRequest();
 		 
@@ -142,7 +142,7 @@ class MonitorreportingController extends Zend_Controller_Action
         $session = new Zend_Session_Namespace('MailCleaner');
         
         $element = new Default_Model_ReportingStats();
-        $elements = array();
+        $elements = [];
 
 		if (isset($params['submit']) && $params['submit'] && isset($session->search_id) && $session->search_id) {
 			$params['search_id'] = $session->search_id;
@@ -171,7 +171,7 @@ class MonitorreportingController extends Zend_Controller_Action
 		} else {
 			## no search running, launch search
 	    	$search_id = $element->startFetchAll($params);
-	    	if (! (is_array($search_id) && isset($search_id['error'])) ) {
+	    	if (! (is_[$search_id] && isset($search_id['error'])) ) {
      	    	$session->search_id = $search_id ;
 	     	    $view->loading = 1;
 	    	}

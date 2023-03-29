@@ -7,15 +7,15 @@
  */
 ?>
 <form method="<?php echo $this->form->getMethod() ?>" action="<?php echo $this->form->getAction()?>" id="<?php echo $this->form->getId()?>">
-<?php echo $this->partial('layouts/message.phtml', array('message' => $this->message, 't' => $this->t)); ?>
+<?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t)]; ?>
  <fieldset id="dkimsettings">
        <table class="ftable">
        
-          <?php foreach (array('dkim_default_domain', 'dkim_default_selector') as $f) {?>
-             <?php echo $this->InputRow($this->form->getElement($f),array('label_addclass'=>'flabelstrict'));?>
+          <?php foreach (['dkim_default_domain', 'dkim_default_selector') as $f] {?>
+             <?php echo $this->InputRow($this->form->getElement($f),['label_addclass'=>'flabelstrict')];?>
           <?php }?>
           
-          <?php echo $this->InputRow($this->form->getElement('dkim_default_pkey'),array('label_addclass'=>'flabeltextarea flabelstrict'));?>
+          <?php echo $this->InputRow($this->form->getElement('dkim_default_pkey'),['label_addclass'=>'flabeltextarea flabelstrict')];?>
 
           <tr>
             <td class="flabel flabelstrict"></td>

@@ -35,7 +35,7 @@ class Default_Model_FeatureRestrictionMapper
         
     public function fetchAll($params)
     {
-    	$restrictions = array();
+    	$restrictions = [];
     	$query = $this->getDbTable()->select();
     	    	
     	if (isset($params['target']) && preg_match('/^(administrator|manager|hotline|user)$/', $params['target'])) {
@@ -43,7 +43,7 @@ class Default_Model_FeatureRestrictionMapper
     	}
         $resultSet = $this->getDbTable()->fetchAll($query);
         foreach ($resultSet as $row) {
-        	$restrictions[$row['section']][$row['feature']] = array('target' => $row['target_level'], 'restricted' => $row['restricted']);
+        	$restrictions[$row['section']][$row['feature']] = ['target' => $row['target_level'], 'restricted' => $row['restricted']];
         }
         return $restrictions;
     }

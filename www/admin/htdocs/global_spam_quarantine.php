@@ -24,7 +24,7 @@ global $sysconf_;
 global $admin_;
 
 // check authorizations
-$admin_->checkPermissions(array('can_manage_users'));
+$admin_->checkPermissions(['can_manage_users')];
 
 // set defaults
 $nb_messages = 20;
@@ -36,7 +36,7 @@ $posted = $form->getResult();
 // create and load quarantine
 $quarantine = new SpamQuarantine();
 $quarantine->setSettings($posted);
-$matches = array();
+$matches = [];
 if (isset($_GET['a'])) {
   $quarantine->setSearchAddress($_GET['a']);
 }
@@ -52,7 +52,7 @@ $asc_img = $template_->getDefaultValue('ASC_IMG');
 $desc_img = $template_->getDefaultValue('DESC_IMG');
 
 // prepare options
-$nb_msgs_choice = array('2' => 2, '5' => 5, '10' => 10, '20' => 20, '50' => 50, '100' => 100);
+$nb_msgs_choice = ['2' => 2, '5' => 5, '10' => 10, '20' => 20, '50' => 50, '100' => 100];
 // prepare replacements
 $replace = array(
         '__DOC_SPAMFILTERTITLE__' => $documentor->help_button('SPAMFILTERTITLE'),

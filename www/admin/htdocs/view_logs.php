@@ -25,7 +25,7 @@ $template_ = new Template('view_logs.tmpl');
 $documentor = new Documentor();
 
 // prepare select fields
-$hosts = array();
+$hosts = [];
 $slaves = $sysconf_->getSlaves();
 foreach ($slaves as $slave) {
     $hosts[$slave->getPref('hostname')." (".$slave->getPref('id').")"] = $slave->getPref('hostname');
@@ -82,7 +82,7 @@ function getLogPage($posted) {
         return "";
     }
     
-    $query = http_build_query(array('sid' => $sid, 'l' => $log, 'd' => $date));
+    $query = http_build_query(['sid' => $sid, 'l' => $log, 'd' => $date)];
      if ($host == '127.0.0.1' || $host == 'localhost') {
         return "logs.php?".$query;
     } else {

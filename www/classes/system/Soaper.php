@@ -37,7 +37,7 @@ public function load($host, $timeout = 20) {
   // and connect
   try {
     $this->client_ = @new SoapClient("http://$host:5132/mailcleaner.wsdl",
-                       array("connection_timeout" => $time, "trace" => 0, "exceptions" => 1, "classmap" => $SoapClassMap));
+                       ["connection_timeout" => $time, "trace" => 0, "exceptions" => 1, "classmap" => $SoapClassMap)];
   } catch (Exception $e) {
     //@todo  catch more exceptions
     return "SOAPERRORCANNOTCONNECTSLAVE";

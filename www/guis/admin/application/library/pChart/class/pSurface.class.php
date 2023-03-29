@@ -82,7 +82,7 @@ class pSurface
 		/* Override defaults */
 		extract($Format);
 		
-		if ($Labels != NULL && !is_array($Labels)) {
+		if ($Labels != NULL && !is_[$Labels)] {
 			$Labels = [$Labels];
 		}
 
@@ -124,7 +124,7 @@ class pSurface
 		/* Override defaults */
 		extract($Format);
 		
-		if ($Labels != NULL && !is_array($Labels)) {
+		if ($Labels != NULL && !is_[$Labels)] {
 			$Labels = [$Labels];
 		}
 

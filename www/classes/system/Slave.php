@@ -149,7 +149,7 @@ public function getProcessesStatus() {
   if (!$this->connect()) {
     return null;
   }
-  $values = $this->soaper_->query('getProcessesStatus', array());
+  $values = $this->soaper_->query('getProcessesStatus', [)];
   if (isset($values->enc_value)) {
     return $values->enc_value;
   }
@@ -167,7 +167,7 @@ public function dumpConfiguration($config, $params) {
     return false;
   }
 
-  $value = $this->soaper_->queryParam('dumpConfiguration', array($config, $params));
+  $value = $this->soaper_->queryParam('dumpConfiguration', [$config, $params)];
   $return = $value;
   if (isset($value->enc_value)) {
     $return = $value->enc_value;
@@ -188,7 +188,7 @@ public function setProcessToBeRestarted($process) {
     return false;
   }
   
-  $value = $this->soaper_->queryParam('setRestartStatus', array($process, 1));
+  $value = $this->soaper_->queryParam('setRestartStatus', [$process, 1)];
   $status = $value;
   if (isset($value->enc_value)) {
     $status = $value->enc_value;
@@ -262,7 +262,7 @@ private function needRestart($nr, $p) {
     return false;
   }
   
-  $params = array($p);
+  $params = [$p];
   $value = $this->soaper_->queryParam('processNeedsRestart', $params);
   $status = $value;
   if (isset($value->enc_value)) {
@@ -312,7 +312,7 @@ public function getSpoolsCount() {
   if (!$this->connect()) {
     return null;
   }
-  $values = $this->soaper_->query('getSpools', array());
+  $values = $this->soaper_->query('getSpools', [)];
   if (isset($values->enc_value)) {
     return $values->enc_value;
   }
@@ -356,7 +356,7 @@ public function getLoads() {
   if (!$this->connect()) {
     return null;
   }
-  $values = $this->soaper_->query('getLoad', array());
+  $values = $this->soaper_->query('getLoad', [)];
   if (isset($values->enc_value)) {
     return $values->enc_value;
   }
@@ -394,7 +394,7 @@ private function getDiskUsage() {
   if (!$this->connect()) {
     return null;
   }
-  $values = $this->soaper_->query('getDiskUsage', array());
+  $values = $this->soaper_->query('getDiskUsage', [)];
   if (isset($values->enc_value)) {
     return $values->enc_value;
   }
@@ -432,7 +432,7 @@ private function getMemoryUsage() {
   if (!$this->connect()) {
     return null;
   }
-  $values = $this->soaper_->query('getMemUsage', array());
+  $values = $this->soaper_->query('getMemUsage', [)];
   if (isset($values->enc_value)) {
     return $values->enc_value;
   }
@@ -474,7 +474,7 @@ public function getLastPatch() {
   if (!$this->connect()) {
     return null;
   }
-  return $this->soaper_->query('getLastPatch', array());
+  return $this->soaper_->query('getLastPatch', [)];
 }
 
 /**
@@ -485,7 +485,7 @@ public function getTodaysCounts() {
   if (!$this->connect()) {
     return null;
   }
-  $values = $this->soaper_->query('getTodaysCounts', array());
+  $values = $this->soaper_->query('getTodaysCounts', [)];
   if (isset($values->enc_value)) {
   	return $values->enc_value;
   }
@@ -504,7 +504,7 @@ public function getStats($what, $start, $stop) {
     return null;
   }
   
-  $values = $this->soaper_->queryParam('getStats', array($what, $start, $stop));
+  $values = $this->soaper_->queryParam('getStats', [$what, $start, $stop)];
   if (isset($values->enc_value)) {
     return $values->enc_value;
   }

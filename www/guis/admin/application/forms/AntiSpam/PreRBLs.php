@@ -11,7 +11,7 @@
 class Default_Form_AntiSpam_PreRBLs extends Default_Form_AntiSpam_Default
 {
 	protected $_viewscript = 'forms/antispam/PreRBLsForm.phtml';
-	public $_rbl_checks = array();
+	public $_rbl_checks = [];
 	
 	public function getViewScriptFile() {
 		return $this->_viewscript;
@@ -38,7 +38,7 @@ class Default_Form_AntiSpam_PreRBLs extends Default_Form_AntiSpam_Default
             'label'      => $t->_('List hits to be spam')." :",
             'title'    => $t->_("Number of RBLs (below) to meet to be considered as spam by this module"),
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
         for ($i = 1; $i <= count($rbllist->getRBLs('IPRBL BSRBL DNSRBL')); $i++) {
         	$spam_list_to_be_spam->addMultiOption($i, $i);
@@ -75,7 +75,7 @@ class Default_Form_AntiSpam_PreRBLs extends Default_Form_AntiSpam_Default
                       'required'   => false,
                       'rows' => 5,
                       'cols' => 30,
-                      'filters'    => array('StringToLower', 'StringTrim')));
+                      'filters'    => ['StringToLower', 'StringTrim'))];
                 $avoidhosts->addValidator(new Validate_SMTPHostList());
                 $hoststoavoid = preg_replace('/,\s\;/', "\n", $as->getParam('avoidhosts'));
 		$hoststoavoid = preg_replace('/,/', "\n", $hoststoavoid);

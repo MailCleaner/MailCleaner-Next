@@ -43,7 +43,7 @@ class SpamQuarantine extends Quarantine {
                       'newsl_only'    => 0,
                       'group_quarantines' => 0,
                       'msg_per_page'  => DEFAULT_MSGS,
-                      'order'         => array('date', 'desc'),
+                      'order'         => ['date', 'desc'],
                       'page'          => 1
                     );
                   
@@ -105,7 +105,7 @@ private function isAllowed() {
      }
    // if admin, then admin must have right to manage users and to manage this domain
    } else {
-     if ( (! $admin_->checkPermissions(array('can_manage_users'))) || (! $admin_->canManageDomain($this->getFilter('to_domain')))) {
+     if ( (! $admin_->checkPermissions(['can_manage_users'))] || (! $admin_->canManageDomain($this->getFilter('to_domain')))) {
         $log_->log('-- admin not allowed to access quarantine', PEAR_LOG_WARNING); 
         return false;
      }
@@ -163,7 +163,7 @@ public function load() {
    // now prepare the where statement
    // domain and user filters
    if ( (! $admin_ instanceof Administrator) ) {
-     $addresses = array($clean_filters['to_local'].'@'.$clean_filters['to_domain']);
+     $addresses = [$clean_filters['to_local'].'@'.$clean_filters['to_domain']];
      if ($this->getFilter('group_quarantines')) {
          $addresses = $user_->getAddresses();
      }
@@ -424,7 +424,7 @@ public function doSendSummary() {
    $result = trim($result);
 
    $lang = Language::getInstance('user');
-   $tmp = array();
+   $tmp = [];
    
    if (preg_match('/SUMSENT (?:to\s*)?(\S+\@\S+)/', $result, $tmp)) {
      return $lang->print_txt_param('SUMSENTTO', $tmp[1]);

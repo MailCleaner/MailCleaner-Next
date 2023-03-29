@@ -35,7 +35,7 @@ class Default_Form_SmtpDkim extends ZendX_JQuery_Form
 	        'label' => 'Default DKIM domain'." :",
             'required' => false,
             'size' => 30,
-            'filters'    => array('StringToLower','StringTrim')));
+            'filters'    => ['StringToLower','StringTrim'))];
         $domain->setValue($this->_mta->getParam('dkim_default_domain'));
         require_once('Validate/DomainName.php');
         $domain->addValidator(new Validate_DomainName());
@@ -45,7 +45,7 @@ class Default_Form_SmtpDkim extends ZendX_JQuery_Form
             'label' => 'Default DKIM selector'." :",
             'required' => false,
             'size' => 30,
-            'filters'    => array('StringToLower','StringTrim')));
+            'filters'    => ['StringToLower','StringTrim'))];
         $selector->setValue($this->_mta->getParam('dkim_default_selector'));
         $this->addElement($selector);
         

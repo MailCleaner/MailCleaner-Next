@@ -72,7 +72,7 @@ class Default_Model_UserMapper
     }
 
     public function fetchAllName($params) {
-        $entries   = array();
+        $entries   = [];
         if (!$params['domain']){
             return $entries;
         }
@@ -95,7 +95,7 @@ class Default_Model_UserMapper
             $query->order('username ASC');
         }
 
-        if (isset($params['limit']) && is_array($params['limit'])) {
+        if (isset($params['limit']) && is_[$params['limit'])] {
             $query->limit($params['limit'][0], $params['limit'][1]);
         }
 
@@ -139,7 +139,7 @@ class Default_Model_UserMapper
             $user->setId($res);
             $this->_isNew = 1;
         } else {
-            $this->getDbTable()->update($data, array('id = ?' => $id));
+            $this->getDbTable()->update($data, ['id = ?' => $id)];
             $res = 1;
         }
         return $res;

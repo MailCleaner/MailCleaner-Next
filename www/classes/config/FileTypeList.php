@@ -20,7 +20,7 @@ class FileTypeList {
    * file type rules list
    * @var array
    */
-  private $filetypes_ = array();
+  private $filetypes_ = [];
   
   /**
    * keep which rule is selected
@@ -39,7 +39,7 @@ public function load() {
   $db_slaveconf = DM_SlaveConfig :: getInstance();
   
   unset($this->filetypes_);
-  $this->filetypes_ = array();
+  $this->filetypes_ = [];
   $list = $db_slaveconf->getList($query);
   foreach ($list as $id) {
     if ($id != 0) {

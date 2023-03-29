@@ -15,7 +15,7 @@ global $SoapClassMap;
  */
 
 ini_set("soap.wsdl_cache_enabled", "0"); // disabling WSDL cache
-$server = new SoapServer("mailcleaner.wsdl", array('trace' => 1, 'exceptions' => 1, 'classmap' => $SoapClassMap));
+$server = new SoapServer("mailcleaner.wsdl", ['trace' => 1, 'exceptions' => 1, 'classmap' => $SoapClassMap)];
 
 require_once('parts/authorization.php');
 require_once('parts/status.php');

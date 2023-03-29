@@ -32,7 +32,7 @@ class Default_Form_Domain_UserAuthentication_Radius
 		$server = new  Zend_Form_Element_Text('authserver', array(
 	        'label'    => $t->_('Authentication server')." :",
 		    'required' => false,
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $server->setValue($this->_domain->getPref('auth_server'));
         $server->addValidator(new Validate_SMTPHostList());
 	    $form->addElement($server);
@@ -43,16 +43,16 @@ class Default_Form_Domain_UserAuthentication_Radius
 	        'label'    => $t->_('Secret')." :",
 		    'required' => false,
 	        'renderPassword' => true,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 	    $secret->setValue($this->_settings['radiussecret']);
 	    $form->addElement($secret);
 	    
 	    $auth_type = new Zend_Form_Element_Select('radiusauthtype', array(
             'label'      => $t->_('Authentication type')." :",
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
-        foreach (array('PAP', 'CHAP_MD5', 'MSCHAPv1', 'MSCHAPv2') as $value) {
+        foreach (['PAP', 'CHAP_MD5', 'MSCHAPv1', 'MSCHAPv2') as $value] {
         	$auth_type->addMultiOption($value, $value);
         }
         $auth_type->setValue($this->_settings['radiusauthtype']);
@@ -91,7 +91,7 @@ class Default_Form_Domain_UserAuthentication_Radius
     }
     
     public function getParamsString($params) {
-       $fields = array('radiussecret', 'radiusauthtype');
+       $fields = ['radiussecret', 'radiusauthtype'];
        $str = '';
         foreach ($fields as $key) {
             if (isset($params[$key])) {

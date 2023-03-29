@@ -49,7 +49,7 @@ class Default_Model_FileTypeMapper
     public function fetchAll()
     {
         $resultSet = $this->getDbTable()->fetchAll($this->getDbTable()->select()->order('type ASC'));
-        $entries   = array();
+        $entries   = [];
         foreach ($resultSet as $row) {
             $entry = new Default_Model_FileType();
             $entry->find($row->id);
@@ -66,7 +66,7 @@ class Default_Model_FileTypeMapper
             unset($data['id']);
             $res = $this->getDbTable()->insert($data);
         } else {
-            $res = $this->getDbTable()->update($data, array('id = ?' => $id));
+            $res = $this->getDbTable()->update($data, ['id = ?' => $id)];
         }
         return $res;
     }

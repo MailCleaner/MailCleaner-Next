@@ -65,7 +65,7 @@ public function __construct() {
     $this->addPrefSet('email', 'e', $this->infos_);
     $this->addPrefSet('user_pref', 'p', $this->pref_);
     $this->setPrefSetRelation('p', 'e.pref');
-    $this->setIDField(array('email' => 'address'));
+    $this->setIDField(['email' => 'address')];
 }
 
 /**
@@ -88,7 +88,7 @@ public function setUser($uid) {
  * @return  string  domain name
  */
 public function getDomain() {
-  $tmp = array();
+  $tmp = [];
   if (! preg_match('/(\S+)@(\S+)/', $this->getPref('address'), $tmp)) {
     return "";
   }
@@ -107,7 +107,7 @@ public function load($ad) {
   
   // check address format and find domain of address
   $a = strtolower($ad);
-  $tmp = array();
+  $tmp = [];
   if (! preg_match('/(\S+)@(\S+)/', $a, $tmp)) {
     return false;
   }

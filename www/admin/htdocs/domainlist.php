@@ -28,7 +28,7 @@ global $sysconf_;
 global $lang_;
 
 // check authorizations
-$admin_->checkPermissions(array('can_manage_domains'));
+$admin_->checkPermissions(['can_manage_domains')];
 
 $saved_msg = "";
 $added_msg = "";
@@ -292,7 +292,7 @@ function doConnectorField($d, $f, $t)
   $settings = $d->getConnectorSettings();
   if (!isset($settings)) { return; }
   
-  $matches = array();
+  $matches = [];
   if (!preg_match('/^conn_(\S+)/', $t, $matches)) { return; }
   $type = $settings->getFieldType($matches[1]);
   switch ($type[0]) {

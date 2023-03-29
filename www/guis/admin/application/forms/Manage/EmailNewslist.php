@@ -12,7 +12,7 @@ class Default_Form_Manage_EmailNewslist extends Default_Form_ElementList
 {
 	protected $_email;
 	protected $_panelname = 'newslist';
-	public $_wwlist = array();
+	public $_wwlist = [];
 
 	public function __construct($email)
 	{
@@ -34,7 +34,7 @@ class Default_Form_Manage_EmailNewslist extends Default_Form_ElementList
 		$this->setAttrib('id', 'email_form');
 	    $panellist = new Zend_Form_Element_Select('emailpanel', array(
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
 

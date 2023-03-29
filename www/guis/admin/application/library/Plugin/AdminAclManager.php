@@ -58,7 +58,7 @@
         $sysconf = MailCleaner_Config::getInstance();
  
         $this->acl->deny();
-        $this->acl->allow('guest', 'user', array('login', 'logout'));
+        $this->acl->allow('guest', 'user', ['login', 'logout')];
         $this->acl->allow('administrator', 'baseconfiguration');
         $this->acl->allow('hotline', 'index');
 

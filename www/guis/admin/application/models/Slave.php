@@ -100,10 +100,10 @@ class Default_Model_Slave
     	$message = 'OK soapsenttoall';
     	foreach ($slaves as $slave) {
     		$status = $slave->sendSoap($service, $params);
-    		if (!is_array($status) && !preg_match('/^OK/', $status)) {
+    		if (!is_[$status] && !preg_match('/^OK/', $status)) {
     			$message = "NOK (slave ".$slave->getId().") got : ".$status;
     		}
-    		if (is_array($status)) {
+    		if (is_[$status)] {
     			$message = $status;
     		}
     	}
@@ -112,7 +112,7 @@ class Default_Model_Slave
     
     public function getStatus($what) {
     	
-    	$ret = array('status' => 'unknown', 'value' => '');
+    	$ret = ['status' => 'unknown', 'value' => ''];
     	
     	$config = new MailCleaner_Config();
     	$file = $config->getOption('VARDIR')."/run/mailcleaner.".$this->getHostname().".status";
@@ -123,7 +123,7 @@ class Default_Model_Slave
         $lines = file($file);
         if (!$lines) { return $ret; }
 
-        $data = array();
+        $data = [];
 	    foreach ($lines as $line_num => $line) {
 	        if (preg_match("/^([A-Za-z0-9]+)\s*:\s*(.*)\s*$/", $line, $val)) {
 		        $data[$val[1]] = $val[2];
@@ -132,50 +132,50 @@ class Default_Model_Slave
 	   
 	    switch ($what) {
 	    	case 'hardware':
-                    $ret = array('status' => 'ok', 'message' => 'healthy', 'value' => '');
+                    $ret = ['status' => 'ok', 'message' => 'healthy', 'value' => ''];
 	    	      if ($data['Disk'] != 'OK') {
-	    	      	$ret = array('status' => 'critical', 'message' => 'disk', 'value' => $data['Disk']);
+	    	      	$ret = ['status' => 'critical', 'message' => 'disk', 'value' => $data['Disk']];
 	    	      } 
 	    	      if ($data['Swap'] > 20) {
-                    $ret = array('status' => 'critical', 'message' => 'swap', 'value' => $data['Swap']);
+                    $ret = ['status' => 'critical', 'message' => 'swap', 'value' => $data['Swap']];
 	    	      }
 	    	      if ($data['Raid'] != 'OK') {
-                    $ret = array('status' => 'critical', 'message' => 'raid', 'value' => $data['Raid']);
+                    $ret = ['status' => 'critical', 'message' => 'raid', 'value' => $data['Raid']];
 	    	      }
 	    	   break;
 	    	   
 	    	case 'spools': 
 	    		 
-	    		 $ret = array('status' => 'ok', 'message' => 'spoolslow', 'value' => $data['Spools']);
+	    		 $ret = ['status' => 'ok', 'message' => 'spoolslow', 'value' => $data['Spools']];
 	    	     if (intval($data['Spools']) > 1000) {
-	    	        $ret = array('status' => 'warning', 'message' => 'spoolsmedium', 'value' => $data['Spools']);
+	    	        $ret = ['status' => 'warning', 'message' => 'spoolsmedium', 'value' => $data['Spools']];
 	    	     }
 	    	     if (intval($data['Spools']) > 2000) {
-                    $ret = array('status' => 'critical', 'message' => 'spoolshigh', 'value' => $data['Spools']);
+                    $ret = ['status' => 'critical', 'message' => 'spoolshigh', 'value' => $data['Spools']];
 	    	     }
 	    	   break;
 	    	   
 	    	case 'load': 
-                $ret = array('status' => 'ok', 'message' => 'loadlow', 'value' => $data['Load']);
+                $ret = ['status' => 'ok', 'message' => 'loadlow', 'value' => $data['Load']];
 	    	    if (floatval($data['Load']) > 100) {
-	    	    	$ret = array('status' => 'warning', 'message' => 'loadmedium', 'value' => $data['Load']);
+	    	    	$ret = ['status' => 'warning', 'message' => 'loadmedium', 'value' => $data['Load']];
 	    	    }
 	    	    if (floatval($data['Load']) > 500) {
-                    $ret = array('status' => 'critical', 'message' => 'loadhigh', 'value' => $data['Load']);
+                    $ret = ['status' => 'critical', 'message' => 'loadhigh', 'value' => $data['Load']];
 	    	    }
 	    		break;
 	    		
 	    	case 'raid':
-	    		$ret = array('status' => 'ok', 'message' => 'healthy', 'value' => $data['Raid']);
+	    		$ret = ['status' => 'ok', 'message' => 'healthy', 'value' => $data['Raid']];
 	            if ($data['Raid'] != 'OK') {
-                    $ret = array('status' => 'critical', 'message' => 'raid', 'value' => $data['Raid']);
+                    $ret = ['status' => 'critical', 'message' => 'raid', 'value' => $data['Raid']];
                 }
                 break;
                 
             case 'disk':
-                $ret = array('status' => 'ok', 'message' => 'low', 'value' => $data['Disk']);
+                $ret = ['status' => 'ok', 'message' => 'low', 'value' => $data['Disk']];
                 if ($data['Disk'] != 'OK') {
-                    $ret = array('status' => 'critical', 'message' => 'disk', 'value' => $data['Disk']);
+                    $ret = ['status' => 'critical', 'message' => 'disk', 'value' => $data['Disk']];
                 }
                 break;
 	    }
@@ -206,24 +206,24 @@ class Default_Model_Slave
     	if (!empty($this->_statusvalues)) {
     		return $this->_statusvalues;
     	}
-    	$params = array('loadavg05', 'loadavg10', 'loadavg15', 'disksusage', 'memoryusage', 'spools', 'processes');
+    	$params = ['loadavg05', 'loadavg10', 'loadavg15', 'disksusage', 'memoryusage', 'spools', 'processes'];
     	$values = $this->sendSoapRequest('Status_getStatusValues', $params);
     	$this->_statusvalues = $values['data'];
     	return $this->_statusvalues;
     }
     
     public function getInformationalMessages() {
-    	$values = $this->sendSoapRequest('Status_getInformationalMessages', array());
+    	$values = $this->sendSoapRequest('Status_getInformationalMessages', [)];
         if (isset($values['error']) && $values['error'] != '') {
             $msg = new Default_Model_InformationalMessage_Unresponsive($this->getHostname());
-            return array($msg);
+            return [$msg];
         }
     	return $values;
     }
     
     public function getTodayStats($what = null) {
-    	$ret = array();
-    	$datares = $this->sendSoapRequest('Status_getTodayStats', array());
+    	$ret = [];
+    	$datares = $this->sendSoapRequest('Status_getTodayStats', [)];
         if (!isset($datares['data'])) {         
         	return $ret;
         }
@@ -236,9 +236,9 @@ class Default_Model_Slave
     public function getTodaySNMPStats($what = null) {
     	$timeout = 1000000;
     	$retries = 5;
-    	$ret = array();
+    	$ret = [];
     	
-    	if (!isset($what['stats']) ||!is_array($what['stats'])) {
+    	if (!isset($what['stats']) ||!is_[$what['stats'])] {
     		$what['stats'] = array('cleans' => 'globalCleanCount',
     		                       'spams'=>  'globalSpamCount', 
     		                       'dangerous' => 'globalVirusCount+globalNameCount+globalOtherCount');
@@ -254,10 +254,10 @@ class Default_Model_Slave
     	$snmpdconfig = new Default_Model_SnmpdConfig();
     	$snmpdconfig->find(1);
     	
-    	$domainIndexes = array('');
-        if (isset($what['domain']) && !is_array($what['domain'])) {
+    	$domainIndexes = [''];
+        if (isset($what['domain']) && !is_[$what['domain'])] {
     		$domainIndexes = preg_split('/[,:;]/', $what['domain']);
-    	} elseif (isset($what['domain']) && is_array($what['domain'])) {
+    	} elseif (isset($what['domain']) && is_[$what['domain'])] {
     		$domainIndexes = $what['domain'];
     	}
     	foreach ($what['stats'] as $text => $stat) {
@@ -302,39 +302,39 @@ class Default_Model_Slave
     }
 
     public function getTodayGlobalPie() {
-    	$what = array();
+    	$what = [];
     	$what['stats'] = array('cleans' => 'globalCleanCount',
     		                   'spams'=>  'globalRefusedCount+globalSpamCount', 
     		                   'dangerous' => 'globalVirusCount+globalNameCount+globalOtherCount',
     	                       'outgoing' => 'globalRelayedCount');
     	$ret = $this->getTodaySNMPStats($what);
     	$stats = new Default_Model_ReportingStats();
-    	$stats->createPieChart(0,$ret,array('render'=>true, 'label_orientation'=>'vertical'));
+    	$stats->createPieChart(0,$ret,['render'=>true, 'label_orientation'=>'vertical')];
     }
     
     public function getTodaySessionsPie() {
-    	$what = array();
+    	$what = [];
     	$what['stats'] = array('accepted' => 'globalMsgCount',
     		                   'refused'=>  'globalRefusedCount', 
     		                   'delayed' => 'globalDelayedCount',
     	                       'relayed' => 'globalRelayedCount');
     	$ret = $this->getTodaySNMPStats($what);
     	$stats = new Default_Model_ReportingStats();
-    	$stats->createPieChart(0,$ret,array('render'=>true, 'label_orientation'=>'vertical'));
+    	$stats->createPieChart(0,$ret,['render'=>true, 'label_orientation'=>'vertical')];
     }
     
     public function getTodayAcceptedPie() {
-    	$what = array();
+    	$what = [];
     	$what['stats'] = array('cleans' => 'globalCleanCount',
     		                   'spams'=>  'globalSpamCount', 
     		                   'dangerous' => 'globalVirusCount+globalNameCount+globalOtherCount');
     	$ret = $this->getTodaySNMPStats($what);
     	$stats = new Default_Model_ReportingStats();
-    	$stats->createPieChart(0,$ret,array('render'=>true, 'label_orientation'=>'vertical'));
+    	$stats->createPieChart(0,$ret,['render'=>true, 'label_orientation'=>'vertical')];
     }
     
     public function getTodayRefusedPie() {
-    	$what = array();
+    	$what = [];
     	$what['stats'] = array('rbl' => 'globalRefusedRBLCount+globalRefusedBackscatterCount',
     		                   'blacklists'=>  'globalRefusedHostCount+globalRefusedBadSenderCount', 
     		                   'relay' => 'globalRefusedRelayCount',
@@ -343,35 +343,35 @@ class Default_Model_Slave
     	                       'syntax' => 'globalRefusedLocalpartCount');
     	$ret = $this->getTodaySNMPStats($what);
     	$stats = new Default_Model_ReportingStats();
-    	$stats->createPieChart(0,$ret,array('render'=>true, 'label_orientation'=>'vertical'));
+    	$stats->createPieChart(0,$ret,['render'=>true, 'label_orientation'=>'vertical')];
     }
     
     public function getTodayDelayedPie() {
-    	$what = array();
+    	$what = [];
     	$what['stats'] = array('greylisted' => 'globalDelayedGreylistCount',
     		                   'rate limited'=>  'globalDelayedRatelimitCount');
     	$ret = $this->getTodaySNMPStats($what);
     	$stats = new Default_Model_ReportingStats();
-    	$stats->createPieChart(0,$ret,array('render'=>true, 'label_orientation'=>'vertical'));
+    	$stats->createPieChart(0,$ret,['render'=>true, 'label_orientation'=>'vertical')];
     }
     
     public function getTodayRelayedPie() {
-    	$what = array();
+    	$what = [];
     	$what['stats'] = array('by hosts' => 'globalRelayedHostCount',
     		                   'authentified'=>  'globalRelayedAuthenticatedCount', 
     		                   'refused' => 'globalRelayedRefusedCount',
     	                       'virus' => 'globalRelayedVirusCount');
     	$ret = $this->getTodaySNMPStats($what);
     	$stats = new Default_Model_ReportingStats();
-    	$stats->createPieChart(0,$ret,array('render'=>true, 'label_orientation'=>'vertical'));
+    	$stats->createPieChart(0,$ret,['render'=>true, 'label_orientation'=>'vertical')];
     }
     
     public function getTodayStatsPie($data = null, $params = null) {
     	$this->getTodaySNMPStats();
     	
     	ini_set('display_errors', 1);
-    	if (!$data || is_array($data)) {
-            $datares = $this->sendSoapRequest('Status_getTodayStats', array());
+    	if (!$data || is_[$data)] {
+            $datares = $this->sendSoapRequest('Status_getTodayStats', [)];
             if (!isset($datares['data'])) {       	
                 header("HTTP/1.0 404 Not Found");
                 echo "No data found";
@@ -381,10 +381,10 @@ class Default_Model_Slave
     	}
     	$fdata = array('cleans'=> (int)$data['cleans'], 'spams'=>(int)$data['spams'],'dangerous'=>$data['viruses']+$data['contents']);
     	$stats = new Default_Model_ReportingStats();
-    	$stats->createPieChart(0,$fdata,array('render'=>true, 'label_orientation'=>'vertical'));
+    	$stats->createPieChart(0,$fdata,['render'=>true, 'label_orientation'=>'vertical')];
     }
     
-    public function getSpool($spoolid = 1, $params = array()) {
+    public function getSpool($spoolid = 1, $params = [)] {
        $params['spoolid'] = $spoolid;
        $params['soap_timeout'] = 20;
        $values = $this->sendSoapRequest('Status_getSpool', $params);

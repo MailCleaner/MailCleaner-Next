@@ -103,7 +103,7 @@ function drawHosts($template, $posted) {
   }
  
   $ret = "";
-  $matches = array();
+  $matches = [];
   foreach ($hosts as $key => $val) { 
     $t = $template->getTemplate('HOST');
     if (preg_match('/\_\_LANG\_([A-Z0-9]+)\_\_/', $t, $matches)) {
@@ -136,7 +136,7 @@ function drawStat($template, $posted, $host) {
   }
   $ret = "";
 
-  $matches = array();
+  $matches = [];
   foreach ($stats as $key => $val) {
     if ($val == 'all') { continue; }
     $t = $template->getTemplate('STAT');
@@ -170,7 +170,7 @@ function drawPeriod($template, $posted, $host, $stat) {
     $times[$posted['times']] = $posted['times'];
   }
   $ret = "";
-  $matches = array();
+  $matches = [];
   foreach ($times as $key => $val) {
     if ($val == 'all') { continue; }
     $t = $template->getTemplate('PERIODS');

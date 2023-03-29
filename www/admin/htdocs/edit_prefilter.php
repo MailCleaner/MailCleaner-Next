@@ -28,7 +28,7 @@ global $admin_;
 $message = "";
 
 // check authorizations
-$admin_->checkPermissions(array('can_configure'));
+$admin_->checkPermissions(['can_configure')];
 
 $pfid = 0;
 if (isset($_GET['pf']) && $_GET['pf'] != "" && is_numeric($_GET['pf'])) {

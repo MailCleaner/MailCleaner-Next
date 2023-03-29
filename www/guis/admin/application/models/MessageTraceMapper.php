@@ -43,7 +43,7 @@ class Default_Model_MessageTraceMapper
 	}
 	
 	public function getStatusFetchAll($params) {
-		$res = array('finished' => 0, 'count' => 0, 'data' => array());
+		$res = array('finished' => 0, 'count' => 0, 'data' => [)];
 	    $slave = new Default_Model_Slave();
         $slaves = $slave->fetchAll();
         
@@ -86,9 +86,9 @@ class Default_Model_MessageTraceMapper
 		$slave = new Default_Model_Slave();
         $slaves = $slave->fetchAll();
 		
-        $entriesflat = array();
-        $sortarray = array();
-        $slaveentries = array();
+        $entriesflat = [];
+        $sortarray = [];
+        $slaveentries = [];
         
         $params['noresults'] = 0;
         $params['soap_timeout'] = 20;
@@ -129,7 +129,7 @@ class Default_Model_MessageTraceMapper
         } else {
            arsort($sortarray);
         }
-        $entries = array();
+        $entries = [];
         foreach ($sortarray as $se => $sa) {
         	$e = $entriesflat[$se];
         	$entry = new Default_Model_MessageTrace();

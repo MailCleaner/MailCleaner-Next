@@ -24,7 +24,7 @@ class Default_Form_DomainSpamcovercharge extends Zend_Form {
 		$this->setAttrib('id', 'domain_form');
 		$panellist = new Zend_Form_Element_Select('domainpanel', array(
 			'required'   => false,
-			'filters'    => array('StringTrim'))
+			'filters'    => ['StringTrim')]
 		);
 		## TODO: add specific validator
 		$panellist->addValidator(new Zend_Validate_Alnum());
@@ -45,7 +45,7 @@ class Default_Form_DomainSpamcovercharge extends Zend_Form {
 		$domainname = new  Zend_Form_Element_Text('domainname', array(
 			'label'   => $t->_('Domain name')." :",
 			'required' => false,
-			'filters'    => array('StringToLower', 'StringTrim'))
+			'filters'    => ['StringToLower', 'StringTrim')]
 		);
 		$domainname->setValue($this->_domain->getParam('name'));
 		require_once('Validate/DomainName.php');
@@ -60,7 +60,7 @@ class Default_Form_DomainSpamcovercharge extends Zend_Form {
 			'required'	=> false,
 			'rows'		=> 10,
 			'cols'		=> 30,
-			'filters'	=> array('StringTrim'))
+			'filters'	=> ['StringTrim')]
 		);
 		$spamcovercharge->setValue($wwelement->fetchAllField('@'.$this->_domain->getParam('name'), 'SpamC', 'comments'));
 /*	        if ($user_role != 'administrator') {

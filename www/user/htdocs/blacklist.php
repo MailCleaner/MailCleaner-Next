@@ -90,7 +90,7 @@ if (isset($_GET['l'])) {
 
 
 // Cheking if the necessary arguments are here
-$in_args = array('id', 'a');
+$in_args = ['id', 'a'];
 foreach ($in_args as $arg) {
     if (!isset($_GET[$arg])){
         $bad_arg = $arg;
@@ -121,7 +121,7 @@ if (!isset($bad_arg)) {
         $is_sender_added_to_bl = send_SOAP_request(
             $master,
             "addToBlacklist",
-            array($dest, $sender)
+            [$dest, $sender]
         );
         if ($is_sender_added_to_bl != 'OK') {
             $is_sender_added_to_bl = $lang_->print_txt($is_sender_added_to_bl);
@@ -134,7 +134,7 @@ if (!isset($bad_arg)) {
 
 // Parse the template
 $template_ = new Template('add_rule.tmpl');
-$replace = array();
+$replace = [];
 
 // Setting the page text
 if ($is_sender_added_to_bl == 'OK') {

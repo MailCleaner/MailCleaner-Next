@@ -74,14 +74,14 @@ $pie_stats = new Pie();
 $pie_stats->setFilename('/stats/'.$pie_id.".png");
 $pie_stats->setSize(100, 50);
 
-$pie_stats->addValue($quarantine->getStat('spams'), 'spams', array(0x66, 0x33, 0xFF));
-$pie_stats->addValue($quarantine->getStat('virus')+$quarantine->getStat('content'), 'dangerous', array(0xEB, 0x97, 0x48));
-$pie_stats->addValue($quarantine->getStat('clean'), 'clean', array(0x54, 0xEB, 0x48));
+$pie_stats->addValue($quarantine->getStat('spams'), 'spams', [0x66, 0x33, 0xFF)];
+$pie_stats->addValue($quarantine->getStat('virus')+$quarantine->getStat('content'), 'dangerous', [0xEB, 0x97, 0x48)];
+$pie_stats->addValue($quarantine->getStat('clean'), 'clean', [0x54, 0xEB, 0x48)];
 
 $pie_stats->generate();
 
 // prepare replacements   
-$nb_msgs_choice = array('2' => 2, '5' => 5, '10' => 10, '20' => 20, '50' => 50, '100' => 100);
+$nb_msgs_choice = ['2' => 2, '5' => 5, '10' => 10, '20' => 20, '50' => 50, '100' => 100];
 $user_addresses_ = $user_->getAddressesForSelect();
 $get_query = http_build_query(array('a' => $quarantine->getSearchAddress(), 'days' => $quarantine->getFilter('days'), 'mask_forced' => $quarantine->getFilter('mask_forced'), 'is_newsletter' => 1 ));
 

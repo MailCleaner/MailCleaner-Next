@@ -19,12 +19,12 @@ abstract class AddressFetcher {
   * @var array
   */
   static private $fetchers_ = array (
-                                     'at_login' => array('add domain', 'AddParam'),
-                                     'ldap' => array('ldap lookup', 'LDAPLookup'),
-                                     'text_file'  => array('text file lookup', 'FileLookup'),
-                                     'param_add' => array('add a parameter', 'AddParam'),
-                                     'mysql' => array('sql lookup', 'SQLLookup'),
-                                     'local' => array('local', 'SQLLookup')
+                                     'at_login' => ['add domain', 'AddParam'],
+                                     'ldap' => ['ldap lookup', 'LDAPLookup'],
+                                     'text_file'  => ['text file lookup', 'FileLookup'],
+                                     'param_add' => ['add a parameter', 'AddParam'],
+                                     'mysql' => ['sql lookup', 'SQLLookup'],
+                                     'local' => ['local', 'SQLLookup']
                                      );
                                      
   /**
@@ -37,7 +37,7 @@ abstract class AddressFetcher {
     * list of addresses
     * @var array
     */
-   private $addresses_ = array();
+   private $addresses_ = [];
    
    /**
     * constructor
@@ -106,7 +106,7 @@ abstract class AddressFetcher {
      * return  array  list of available fetchers
      */
      static public function getAvailableFetchers() {
-        $ret = array();
+        $ret = [];
         foreach(self::$fetchers_ as $key => $val) {
             $ret[$val[0]] = $key;
         }

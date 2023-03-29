@@ -50,7 +50,7 @@ class Default_Form_Snmpd extends ZendX_JQuery_Form
 		      'required'   => false,
 		      'rows' => 5,
 		      'cols' => 30,
-		      'filters'    => array('StringToLower', 'StringTrim')));
+		      'filters'    => ['StringToLower', 'StringTrim'))];
 	    $allowed_ip->addValidator(new Validate_HostList());
 		$allowed_ip->setValue($this->_snmpd->getParam('allowed_ip'));
 		$this->addElement($allowed_ip);

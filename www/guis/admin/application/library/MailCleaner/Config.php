@@ -13,7 +13,7 @@ class MailCleaner_Config
 	private static $instance;
 	private $_configFile = '/etc/mailcleaner.conf';
 	
-	private $_options = array();
+	private $_options = [];
 
 	public static function getInstance() {
 		if (empty (self :: $instance)) {

@@ -33,7 +33,7 @@ class Default_Model_ReportingStatsMapper
 	}
 	
 	public function getStatusFetchAll($params) {
-		$res = array('finished' => 0, 'count' => 0, 'data' => array());
+		$res = array('finished' => 0, 'count' => 0, 'data' => [)];
 	    $slave = new Default_Model_Slave();
         $slaves = $slave->fetchAll();
         
@@ -74,13 +74,13 @@ class Default_Model_ReportingStatsMapper
 		$slave = new Default_Model_Slave();
         $slaves = $slave->fetchAll();
 		
-        $entriesflat = array();
-        $sortarray = array();
+        $entriesflat = [];
+        $sortarray = [];
         
         $params['noresults'] = 0;
         $stillrunning = count($slaves);
         $globalrows = 0;
-        $whats = array();
+        $whats = [];
         foreach ($slaves as $s) {
             $sres = $s->sendSoapRequest('Logs_GetStatsResult', $params);
         	if (isset($sres['error']) && $sres['error'] != "") {
@@ -110,7 +110,7 @@ class Default_Model_ReportingStatsMapper
         		}
         	}
         }
-        $entries= array();
+        $entries= [];
         $global;
         foreach ($whats as $w) {
         	if ($w->getValue('msgs') > 0 && !preg_match('/^_global/', $w->getWhat())) {
@@ -137,25 +137,25 @@ class Default_Model_ReportingStatsMapper
         if (isset($params['sort'])) {
            switch ($params['sort']) {
            	case 'msgs':  
-           	    usort($entries, array('Default_Model_ReportingStats', 'compareMsgs'));
+           	    usort($entries, ['Default_Model_ReportingStats', 'compareMsgs')];
            	    break;
            	case 'spams':
-           		usort($entries, array('Default_Model_ReportingStats', 'compareSpams'));
+           		usort($entries, ['Default_Model_ReportingStats', 'compareSpams')];
            		break;
            	case 'viruses':
-           		usort($entries, array('Default_Model_ReportingStats', 'compareViruses'));
+           		usort($entries, ['Default_Model_ReportingStats', 'compareViruses')];
            		break;
            	case 'spamspercent':
-           		usort($entries, array('Default_Model_ReportingStats', 'compareSpamsPercent'));
+           		usort($entries, ['Default_Model_ReportingStats', 'compareSpamsPercent')];
            		break;
            	case 'users':
-           		usort($entries, array('Default_Model_ReportingStats', 'compareUsers'));
+           		usort($entries, ['Default_Model_ReportingStats', 'compareUsers')];
            		break;
            	default:
-           		usort($entries, array('Default_Model_ReportingStats', 'compareWhat'));
+           		usort($entries, ['Default_Model_ReportingStats', 'compareWhat')];
            }
         } else {
-        	usort($entries, array('Default_Model_ReportingStats', 'compareWhat'));
+        	usort($entries, ['Default_Model_ReportingStats', 'compareWhat')];
         }
         if (isset($params['top']) && $params['top']) {
         	$entries = array_slice($entries, 0, $params['top']);

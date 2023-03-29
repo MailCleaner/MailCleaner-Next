@@ -33,7 +33,7 @@ class Default_Form_Quarantines extends ZendX_JQuery_Form
 	        'label'    => $t->_('Spam retention time')." :",
 		    'required' => false,
             'class'    => 'retentionfield',
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         $spamret->addValidator(new Zend_Validate_Digits());
 	    $spamret->setValue($this->_systemconf->getParam('days_to_keep_spams'));
 	    $this->addElement($spamret);
@@ -43,7 +43,7 @@ class Default_Form_Quarantines extends ZendX_JQuery_Form
                 'title'    => $t->_("The longer the quarantine is, the more space you'll require to stock it (in /var)"),
 		    'required' => false,
             'class'    => 'retentionfield',
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         $contentret->addValidator(new Zend_Validate_Digits());
 	    $contentret->setValue($this->_systemconf->getParam('days_to_keep_virus'));
 	    $this->addElement($contentret);

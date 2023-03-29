@@ -53,7 +53,7 @@
        </div>
       </td>
      </tr>
- <?php foreach (array('Sender' => 'from_address', 'Destination' => 'to_address', 'Date' => 'date time','Subject' => 'subject', 'Size' => 'size', 'Storage' => 'store_id', 'Report' => 'report') as $key => $value) {?>
+ <?php foreach (['Sender' => 'from_address', 'Destination' => 'to_address', 'Date' => 'date time','Subject' => 'subject', 'Size' => 'size', 'Storage' => 'store_id', 'Report' => 'report') as $key => $value] {?>
      <tr>
        <td class="fieldname"><?php echo $this->t->_($key)?>:</td>
        <td class="fieldvalue"><?php foreach (preg_split('/ /',$value) as $e) { echo $this->msg->getCleanParam($e)." "; }?></td>

@@ -25,11 +25,11 @@ global $sysconf_;
 global $admin_;
 
 /// list of services to be managed
-$services_name = array('web', 'mysql', 'snmp', 'ssh', 'mail', 'soap');
-$services = array();
+$services_name = ['web', 'mysql', 'snmp', 'ssh', 'mail', 'soap'];
+$services = [];
 
 // check authorizations
-$admin_->checkPermissions(array('can_configure'));
+$admin_->checkPermissions(['can_configure')];
 $save_msg = "";
 
 // load services accesses
@@ -45,7 +45,7 @@ $aposted = $aform->getResult();
 if ($aform->shouldSave()) {
   // get ip settings
   foreach($aposted as $k => $v) {
-    if (preg_match('/(\S+)\_(\S+)/', $k, $tmp) && in_array($tmp[1], $services_name)) {
+    if (preg_match('/(\S+)\_(\S+)/', $k, $tmp) && in_[$tmp[1], $services_name)] {
       if ($tmp[2] == "ips") {
 	    $services[$tmp[1]]->setIPS($v);
         $services[$tmp[1]]->save();

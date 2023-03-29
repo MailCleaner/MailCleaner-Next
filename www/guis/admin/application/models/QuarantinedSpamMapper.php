@@ -114,23 +114,23 @@ class Default_Model_QuarantinedSpamMapper
 		if (isset($params['td']) && isset($params['td']) && isset($params['tm']) && isset($params['tm']) 
 		  && isset($params['fd']) && isset($params['fd']) && isset($params['fm']) && isset($params['fm'])
 		   ) {
-                        $fromdate = new Zend_Date(array('year' => $params['fy'], 'month' => $params['fm'], 'day' => $params['fd']));
-                        $todate = new Zend_Date(array('year' => $params['ty'], 'month' => $params['tm'], 'day' => $params['td']));
+                        $fromdate = new Zend_Date(['year' => $params['fy'], 'month' => $params['fm'], 'day' => $params['fd'])];
+                        $todate = new Zend_Date(['year' => $params['ty'], 'month' => $params['tm'], 'day' => $params['td'])];
                         $today = new Zend_Date();
                         if ($todate < $fromdate) {
-                        	$fromdate = new Zend_Date(array('year' => $params['fy']-1, 'month' => $params['fm'], 'day' => $params['fd']));
+                        	$fromdate = new Zend_Date(['year' => $params['fy']-1, 'month' => $params['fm'], 'day' => $params['fd'])];
                         }
                         if ($todate > $today) {
                         	    $todate = $today;
-                                // bug: $todate = new Zend_Date(array('year' => $params['ty']-1, 'month' => $params['tm'], 'day' => $params['td']));
+                                // bug: $todate = new Zend_Date(['year' => $params['ty']-1, 'month' => $params['tm'], 'day' => $params['td'])];
                         }
                         if ($fromdate > $today) {
-                                $fromdate = new Zend_Date(array('year' => $params['fy']-1, 'month' => $params['fm'], 'day' => $params['fd']));
+                                $fromdate = new Zend_Date(['year' => $params['fy']-1, 'month' => $params['fm'], 'day' => $params['fd'])];
                         } 
                         $sysconf = new Default_Model_SystemConf;
                         $sysconf->load();
                         $maxdays = $sysconf->getParam('days_to_keep_spams');
-                        $conds = array();
+                        $conds = [];
                         $currentday = 0;
                         while ( $fromdate <= $todate ) {
                           if ($currentday++ > $maxdays) {
@@ -218,7 +218,7 @@ class Default_Model_QuarantinedSpamMapper
             ## set order
             if (isset($params['orderfield']) && array_key_exists($params['orderfield'], $orders) && $params['orderorder']) {
             	$sorders = preg_split('/,/', $orders[$params['orderfield']]);
-            	$sorders2 = array();
+            	$sorders2 = [];
             	foreach ($sorders as $o) {
             		$sorders2[] = $o." ".$params['orderorder'];
             	}
@@ -231,7 +231,7 @@ class Default_Model_QuarantinedSpamMapper
                $query->group('exim_id');
             }
 
-            $entries = array();
+            $entries = [];
             #echo $query."<br />";
             $resultSet = $this->getDbTable()->fetchAll($query);
             foreach ($resultSet as $row) {

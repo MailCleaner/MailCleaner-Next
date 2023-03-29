@@ -17,13 +17,13 @@ class PreFilterList {
  * list of prefilters
  * @var array
  */
- private $prefilters_ = array();
+ private $prefilters_ = [];
  
 /**
  * flat positions list
  * @var array
  */
- private $positions_ = array();
+ private $positions_ = [];
  
 /**
  * constructor

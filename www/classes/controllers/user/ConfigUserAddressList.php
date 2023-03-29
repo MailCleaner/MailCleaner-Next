@@ -43,7 +43,7 @@ class ConfigUserAddressList {
     $remposted = $this->remform_->getResult();
     if ($this->remform_->shouldSave()) {
       foreach ($remposted as $key => $val) {
-        $matches = array();
+        $matches = [];
         if ($val == 1 && preg_match("/^add_(\S+)/", $key, $matches)) {
          if (preg_match('/_cb$/', $key)) { continue; }
          $add = str_replace('_AAA_', '@', $matches[1]);

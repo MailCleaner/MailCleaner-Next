@@ -26,7 +26,7 @@ $baseconf = DataManager::getFileConfig(SystemConfig::$CONFIGFILE_); ?>
         }
     } ?>
     </td>
-    <?php echo $this->InputRow($this->form->getElement('avoidhosts'),array('label_addclass'=>'flabeltextarea'));?>
+    <?php echo $this->InputRow($this->form->getElement('avoidhosts'),['label_addclass'=>'flabeltextarea')];?>
 </tr>
 
 <?php echo $this->InputRow($this->form->getElement('resolve_shorteners'));?>

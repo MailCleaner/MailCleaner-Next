@@ -38,7 +38,7 @@ class Api_Model_QuarantineAPI
     $spam->loadDatas($params['id'], $params['recipient']);
     $spam->loadHeadersAndBody();
 
-    $data = array();
+    $data = [];
     $spamdata = $spam->getAllData();
     foreach ($spamdata as $key => $value) {
       $data[$key] = $value;

@@ -29,7 +29,7 @@ class ConfigUserQuarantine {
     $posted = $this->form_->getResult();
     if ($this->form_->shouldSave()) {
       $this->message_ = 'NOTSAVED';
-      foreach (array('gui_displayed_spams', 'gui_displayed_days', 'gui_mask_forced', 'gui_graph_type', 'gui_group_quarantines') as $po) {
+      foreach (['gui_displayed_spams', 'gui_displayed_days', 'gui_mask_forced', 'gui_graph_type', 'gui_group_quarantines') as $po] {
           if (isset($posted[$po])) {
               $user_->setPref($po, $posted[$po]);
           }
@@ -46,7 +46,7 @@ class ConfigUserQuarantine {
       	$_SESSION['user'] = serialize($user_);
       	$email = new Email();
       	$email->load($user_->getMainAddress());
-      	foreach (array('gui_displayed_spams', 'gui_displayed_days', 'gui_mask_forced', 'gui_graph_type', 'gui_group_quarantines') as $p) {
+      	foreach (['gui_displayed_spams', 'gui_displayed_days', 'gui_mask_forced', 'gui_graph_type', 'gui_group_quarantines') as $p] {
       		$email->setPref($p, $user_->getPref($p));
       	}
       	if ($email->save()) {
@@ -63,7 +63,7 @@ class ConfigUserQuarantine {
    if (!$this->form_) {
      return '';
    }
-   $nbspams_select = array('5' => '5', '10' => '10', '20' => '20', '50' => '50', '100' => '100'); 
+   $nbspams_select = ['5' => '5', '10' => '10', '20' => '20', '50' => '50', '100' => '100']; 
    $replace['__BEGIN_QUAR_FORM__'] = $this->form_->open();
    $replace['__END_QUAR_FORM__'] = $this->form_->close();
    //$user_ = new User();

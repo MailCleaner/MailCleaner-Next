@@ -23,7 +23,7 @@ class Pie {
    * chart width and height
    * @var  array
    */
-   private $size_ = array("width" => 0, "height" => 0);
+   private $size_ = ["width" => 0, "height" => 0];
      
   /**
    * chart 3d effect width
@@ -34,7 +34,7 @@ class Pie {
    * datas
    * @var array
    */
-   private $datas_ = array();
+   private $datas_ = [];
    
   /**
    * sum of all the values
@@ -82,13 +82,13 @@ public function setSize($width, $height) {
  * @return         boolean    true on success, false on failure
  */
 public function addValue($value, $name, $color) {
-  if (!is_numeric($value) || !is_array($color)) {
+  if (!is_numeric($value) || !is_[$color)] {
   	return false;
   }
   if ($value == 0) {
   	return true;
   }
-  array_push($this->datas_, array('v' => $value, 'n' => $name, 'c' => $color));
+  array_push($this->datas_, ['v' => $value, 'n' => $name, 'c' => $color)];
   $this->sum_values_ += $value;
   return true;
 }
@@ -117,7 +117,7 @@ public function generate() {
   $gray    = imagecolorallocate($image, 0xC0, 0xC0, 0xC0);
   $darkgray = imagecolorallocate($image, 0x90, 0x90, 0x90);
   
-  $colors = array();
+  $colors = [];
   ## create 3d effect
   for ($i = $ycenter+$this->width3d_; $i > $ycenter; $i--) {
    $last_angle = 0;

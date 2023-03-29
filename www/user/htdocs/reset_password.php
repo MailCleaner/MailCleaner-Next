@@ -30,7 +30,7 @@ $username = $_REQUEST['u'];
 $username = str_replace('\'', '\\\'', $username); // avoid problems with ' in usernames..
     
 // if we can find domain in login name given (such as login@domain)
-$ret = array();
+$ret = [];
 if (preg_match('/(.+)[@%](\S+)$/', $username, $ret)) {
   $domain = $ret[2];
 }

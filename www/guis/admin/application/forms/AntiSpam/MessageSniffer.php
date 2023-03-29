@@ -11,7 +11,7 @@
 class Default_Form_AntiSpam_MessageSniffer extends Default_Form_AntiSpam_Default
 {
 	protected $_viewscript = 'forms/antispam/MessageSnifferForm.phtml';
-	public $_rbl_checks = array();
+	public $_rbl_checks = [];
 	
 	public function getViewScriptFile() {
 		return $this->_viewscript;
@@ -33,7 +33,7 @@ class Default_Form_AntiSpam_MessageSniffer extends Default_Form_AntiSpam_Default
                             'label'   => $t->_('Licence ID')." :",
                             'required' => false,
                             'size' => 10,
-                            'filters'    => array('StringTrim')));
+                            'filters'    => ['StringTrim'))];
                 $licenseid->setValue($as->getParam('licenseid'));
                 $this->addElement($licenseid);     
 
@@ -41,7 +41,7 @@ class Default_Form_AntiSpam_MessageSniffer extends Default_Form_AntiSpam_Default
                             'label'   => $t->_('Authentication')." :",
                             'required' => false,
                             'size' => 20,
-                            'filters'    => array('StringTrim')));
+                            'filters'    => ['StringTrim'))];
                 $authentication->setValue($as->getParam('authentication'));
                 $this->addElement($authentication);
 		

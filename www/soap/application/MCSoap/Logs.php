@@ -30,7 +30,7 @@ class MCSoap_Logs
 		if (!isset($params['regexp'])
 		|| !$params['datefrom'] || !preg_match('/^\d{8}$/', $params['datefrom'])
 		|| !$params['dateto'] || !preg_match('/^\d{8}$/', $params['dateto']) ) {
-			return array('trace_id' => $trace_id);
+			return ['trace_id' => $trace_id];
 		}
 		$cmd = $mcconfig->getOption('SRCDIR')."/bin/search_log.pl ".$params['datefrom']." ".$params['dateto']." ".$params['regexp'];
         if (isset($params['filter']) && $params['filter'] != '' && $params['filter'] != "''") {
@@ -45,7 +45,7 @@ class MCSoap_Logs
                 }
 
 		if (isset($params['trace_id']) && $params['trace_id']) {
-			$trace_id_matches = array();
+			$trace_id_matches = [];
 			preg_match('/[a-f0-9]{32}/i', $params['trace_id'], $trace_id_matches);
 			$trace_id = $trace_id_matches[0];
 		} else {
@@ -55,7 +55,7 @@ class MCSoap_Logs
 
 		$cmd .= "> ".$mcconfig->getOption('VARDIR')."/run/mailcleaner/log_search/".$trace_id." &";
 		$res = `$cmd`;
-		return array('trace_id' => $trace_id, 'cmd' => $cmd) ;
+		return ['trace_id' => $trace_id, 'cmd' => $cmd] ;
 	}
 
 	/**
@@ -65,9 +65,9 @@ class MCSoap_Logs
 	 * @return array
 	 */
 	static public function Logs_GetTraceResult($params, $limit = 0) {
-		$res = array();
+		$res = [];
 		if (!$params['trace_id']) {
-			return array('error' => 'no such results');
+			return ['error' => 'no such results'];
 		}
 		$trace_id = $params['trace_id'];
 
@@ -76,14 +76,14 @@ class MCSoap_Logs
 
 		$file = $mcconfig->getOption('VARDIR')."/run/mailcleaner/log_search/".$trace_id;
 		if (!file_exists($file)) {
-			return array('error' => 'no such results');
+			return ['error' => 'no such results'];
 		}
 
 		$lines = file($file);
                 #foreach ($lines_tmp as $line) {
                 #  array_push($lines, utf8_encode($line));
                 #}
-		$res = array('message' => 'search running');
+		$res = ['message' => 'search running'];
 		$pid = 0;
 		$done = 0;
 		$res['trace_id'] = $trace_id;
@@ -121,8 +121,8 @@ class MCSoap_Logs
 				}
 			}
 		}
-                $res['data'] = array();
-                $tmpdata = array();
+                $res['data'] = [];
+                $tmpdata = [];
 		if ($limit && count($lines) >= $limit) {
 			$res['error'] = 'too many results';
 			if (!isset($params['noresults']) || !$params['noresults']) {
@@ -145,9 +145,9 @@ class MCSoap_Logs
 	 * @return array
 	 */
 	static public function Logs_AbortTrace($params) {
-		$res = array();
+		$res = [];
 		if (!$params['trace_id']) {
-			return array('message' => 'nothing to abort');
+			return ['message' => 'nothing to abort'];
 		}
 		$trace_id = $params['trace_id'];
 		require_once('MailCleaner/Config.php');
@@ -155,7 +155,7 @@ class MCSoap_Logs
 
 		$file = $mcconfig->getOption('VARDIR')."/run/mailcleaner/log_search/".$trace_id;
 		if (!file_exists($file)) {
-			return array('error' => 'no such results');
+			return ['error' => 'no such results'];
 		}
 
 		$lines = file($file);
@@ -174,9 +174,9 @@ class MCSoap_Logs
 			if (file_exists($file)) {
 				@unlink($file);
 			}
-			return array('message' => 'killed');
+			return ['message' => 'killed'];
 		}
-		return array('error' => 'no such process');
+		return ['error' => 'no such process'];
 	}
 
 	static public function extFromId($id) {
@@ -340,14 +340,14 @@ class MCSoap_Logs
 	 * @return array
 	 */
 	static public function Logs_FindLogFiles($params) {
-		$res = array('files' => array());
+		$res = array('files' => [)];
 		if (!isset($params['files']) || !isset($params['date'])) {
 			$res['error'] = 'Missing parameters';
 			return $res;
 		}
 		foreach ($params['files'] as $f) {
-			$filename = MCSoap_Logs::Logs_FindLogFile(array('basefile' => $f, 'date' => $params['date']));
-			$file = array('file' => '', 'size' => 0);
+			$filename = MCSoap_Logs::Logs_FindLogFile(['basefile' => $f, 'date' => $params['date'])];
+			$file = ['file' => '', 'size' => 0];
 			if ($filename) {
 				$file['file'] = $filename;
 				$file['size'] = filesize($filename);
@@ -366,14 +366,14 @@ class MCSoap_Logs
 	 */
 	static public function Logs_GetLogLines($params) {
 
-		$res['cmds'] = array();
+		$res['cmds'] = [];
 		if (!isset($params['file'])) {
 			$res['error'] = 'Missing parameters';
 			return $res;
 		}
 		$pos = 0;
 		$posline = 0;
-		$res['sres'] = array();
+		$res['sres'] = [];
 
 		// Define path to application directory
 		defined('APPLICATION_PATH')
@@ -587,7 +587,7 @@ class MCSoap_Logs
          * @return array
          */
         static public function Logs_ExtractLog($params) {
-           $res = array('full_log' => '');
+           $res = ['full_log' => ''];
            require_once('MailCleaner/Config.php');
            $mcconfig = MailCleaner_Config::getInstance();
            $logfile = $mcconfig->getOption('VARDIR').'/run/mailcleaner/log_search/';
@@ -604,7 +604,7 @@ class MCSoap_Logs
            $res['datetime'] = '';
            $inmsg = 0;
            $level = 0;
-           $levels = array();
+           $levels = [];
            $exit = 0;
 
            if (file_exists($logfile)) {
@@ -622,8 +622,8 @@ class MCSoap_Logs
                        if (preg_match('/^'.$params['msgid'].'\|(.*)/', $buffer, $matches)) {
                            $inmsg = 1;
                            $res['full_log'] .= $matches[1]."\n";
-                           if (!is_array($levels[$level])) {
-                               $levels[$level] = array();
+                           if (!is_[$levels[$level])] {
+                               $levels[$level] = [];
                            }
                            array_push($levels[$level], $matches[1]);
                            if ($res['datetime'] == '' && preg_match('/^(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)/', $matches[1], $smatches)) {
@@ -637,12 +637,12 @@ class MCSoap_Logs
                    }
                }
            }
-           if (is_array($levels[0])) { $res['log_stage1'] = $levels[0]; }
-           if (is_array($levels[1])) { $res['log_stage2'] = $levels[1]; }
-           if (is_array($levels[2])) { $res['log_engine'] = $levels[2]; }
-           if (is_array($levels[3])) { $res['log_stage4'] = $levels[3]; }
-           if (is_array($levels[4])) { $res['log_spamhandler'] = $levels[4]; }
-           if (is_array($levels[5])) { $res['log_finalstage4'] = $levels[5]; }
+           if (is_[$levels[0])] { $res['log_stage1'] = $levels[0]; }
+           if (is_[$levels[1])] { $res['log_stage2'] = $levels[1]; }
+           if (is_[$levels[2])] { $res['log_engine'] = $levels[2]; }
+           if (is_[$levels[3])] { $res['log_stage4'] = $levels[3]; }
+           if (is_[$levels[4])] { $res['log_spamhandler'] = $levels[4]; }
+           if (is_[$levels[5])] { $res['log_finalstage4'] = $levels[5]; }
 
            return $res;
         }

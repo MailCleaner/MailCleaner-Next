@@ -48,7 +48,7 @@ class Default_Form_AntispamGlobalSettings extends ZendX_JQuery_Form
          	$maxsize = new Zend_Form_Element_Text('global_max_size', array(
 		    'label'    => $t->_('Global max scan size (KB)'). " :",
 		    'required' => false,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
         	$maxsize->addValidator(new Zend_Validate_Int());
 	    	$maxsize->setValue($this->_antispam->getParam('global_max_size'));
 		$this->addElement($maxsize);
@@ -60,7 +60,7 @@ class Default_Form_AntispamGlobalSettings extends ZendX_JQuery_Form
 		      'required'   => false,
 		      'rows' => 5,
 		      'cols' => 30,
-		      'filters'    => array('StringToLower', 'StringTrim')));
+		      'filters'    => ['StringToLower', 'StringTrim'))];
 	        $trustednet->addValidator(new Validate_HostList());
 		$trustednet->setValue($this->_antispam->getParam('trusted_ips'));
 		$this->addElement($trustednet);
@@ -138,22 +138,22 @@ class Default_Form_AntispamGlobalSettings extends ZendX_JQuery_Form
 		
 		$this->_whitelistform = new Default_Form_ElementList($this->_whitelist, 'Default_Model_WWElement', 'whitelist_');
 		$this->_whitelistform->init();
-		$this->_whitelistform->setAddedValues(array('recipient' => '', 'type' => 'white'));
+		$this->_whitelistform->setAddedValues(['recipient' => '', 'type' => 'white')];
 		$this->_whitelistform->addFields($this);
 	
     		$this->_warnlistform = new Default_Form_ElementList($this->_warnlist, 'Default_Model_WWElement', 'warnlist_');
 		$this->_warnlistform->init();
-		$this->_warnlistform->setAddedValues(array('recipient' => '', 'type' => 'warn'));
+		$this->_warnlistform->setAddedValues(['recipient' => '', 'type' => 'warn')];
 		$this->_warnlistform->addFields($this);
 
 		$this->_blacklistform = new Default_Form_ElementList($this->_blacklist, 'Default_Model_WWElement', 'blacklist_');
                 $this->_blacklistform->init();
-                $this->_blacklistform->setAddedValues(array('recipient' => '', 'type' => 'black'));
+                $this->_blacklistform->setAddedValues(['recipient' => '', 'type' => 'black')];
                 $this->_blacklistform->addFields($this);
 		
 		$this->_newslistform = new Default_Form_ElementList($this->_newslist, 'Default_Model_WWElement', 'newslist_');
 		$this->_newslistform->init();
-		$this->_newslistform->setAddedValues(array('recipient' => '', 'type' => 'wnews'));
+		$this->_newslistform->setAddedValues(['recipient' => '', 'type' => 'wnews')];
 		$this->_newslistform->addFields($this);
 	}
 	

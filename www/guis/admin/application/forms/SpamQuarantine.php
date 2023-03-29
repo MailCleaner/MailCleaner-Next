@@ -10,7 +10,7 @@
 
 class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
 {	
-	protected $_params = array();
+	protected $_params = [];
 	
 	public function __construct($params) {
 		
@@ -59,7 +59,7 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
 	    $subject->setValue($this->_params['subject']);
 	    $this->addElement($subject);
 	    
-	    $months = array('Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.');
+	    $months = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
 	    $fd = new Zend_Form_Element_Select('fd', array(
 		    'required' => true));
 	    for ($d = 1; $d <= 31; $d++) {
@@ -123,7 +123,7 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
             $this->addElement($hidedup);
 	    
 	    
-	    $mpps = array(5, 10, 20, 50, 100);
+	    $mpps = [5, 10, 20, 50, 100];
 	    $mpp = new Zend_Form_Element_Select('mpp', array(
 	        'label' => $t->_('Number of lines displayed').' : ',
 		    'required' => true));

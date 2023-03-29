@@ -12,8 +12,8 @@ class MonitorlogsController extends Zend_Controller_Action
 {
 	protected function getSearchParams() {
 		$request = $this->getRequest();
-		$params = array();
-		foreach (array('fd', 'fm') as $param) {
+		$params = [];
+		foreach (['fd', 'fm') as $param] {
 			$params[$param] = '';
 			if ($request->getParam($param)) {
 				$params[$param] = $request->getParam($param);
@@ -23,14 +23,14 @@ class MonitorlogsController extends Zend_Controller_Action
 		$todateO = Zend_Date::now();
 		$todate = Zend_Locale_Format::getDate($todateO, array('date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()));
 
-		foreach ( array('fd' => 'day', 'fm' => 'month') as $tk => $tv) {
+		foreach ( ['fd' => 'day', 'fm' => 'month') as $tk => $tv] {
 			if  (!isset($params[$tk]) || !$params[$tk]) {
 				$params[$tk] = $todate[$tv];
 			}
 		}
 		$params['fy'] = $todate['year'];
 		
-		$givendate = new Zend_Date(array('year' => $params['fy'], 'month' =>$params['fm'], 'day' => $params['fd']));
+		$givendate = new Zend_Date(['year' => $params['fy'], 'month' =>$params['fm'], 'day' => $params['fd'])];
 		if ($givendate->compare(Zend_Date::now()) > 0) {
 			$params['fy'] = $todate['year'] - 1;
 		}
@@ -63,7 +63,7 @@ class MonitorlogsController extends Zend_Controller_Action
 			
 		$form    = new Default_Form_Logs($this->getSearchParams());
 		$form->setAction(Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'monitorlogs'));
-		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'monitorlogs', NULL, array());
+		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'monitorlogs', NULL, [)];
 
 		$view->form = $form;
 
@@ -74,7 +74,7 @@ class MonitorlogsController extends Zend_Controller_Action
 		$view=$layout->getView();
 		$layout->disableLayout();
 		$view->addScriptPath(Zend_Registry::get('ajax_script_path'));
-		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'monitorlogs', NULL, array());
+		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'monitorlogs', NULL, [)];
 			      
 		$request = $this->getRequest();
 
@@ -90,8 +90,8 @@ class MonitorlogsController extends Zend_Controller_Action
 		$slave = new Default_Model_Slave();
 		$view->slaves = $slave->fetchAll();
 
-		$view->downloadLink = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('download', 'monitorlogs', NULL, array());
-		$view->viewLink = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('view', 'monitorlogs', NULL, array());
+		$view->downloadLink = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('download', 'monitorlogs', NULL, [)];
+		$view->viewLink = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('view', 'monitorlogs', NULL, [)];
 		$view->log = $log;
 		$view->logs = $logs;
 	}
@@ -158,7 +158,7 @@ class MonitorlogsController extends Zend_Controller_Action
 		$layout = Zend_Layout::getMvcInstance();
 		$view=$layout->getView();
 		$layout->disableLayout();
-		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('view', 'monitorlogs', NULL, array());
+		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('view', 'monitorlogs', NULL, [)];
 		$view->headLink()->appendStylesheet($view->css_path.'/viewlog.css');
         $view->headScript()->appendFile($view->scripts_path.'/logview.js', 'text/javascript');
 		$view->headLink()->appendStylesheet($view->css_path.'/ie7.css', 'screen', 'lt IE 8');
@@ -199,7 +199,7 @@ class MonitorlogsController extends Zend_Controller_Action
 
 			$slave = new Default_Model_Slave();
                         $hosts = $slave->fetchAll();
-                        $view->otherHosts = array();
+                        $view->otherHosts = [];
                         foreach ($hosts as $h) {
                             if ($h->getID() != $slave_id) {
                                $view->otherHosts[] = $h;
@@ -227,7 +227,7 @@ class MonitorlogsController extends Zend_Controller_Action
 			if (isset($res['error'])) {
 				$view->logtext = $res['error'];
 			}
-			$lines = array();
+			$lines = [];
 			if (isset($res['lines'])) {
 				foreach ($res['lines'] as $line) {
 					$html_line = htmlentities($line);
@@ -249,7 +249,7 @@ class MonitorlogsController extends Zend_Controller_Action
 				}
 			}
 		    $nextlog_link = '';
-		    $view->viewLink = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('view', 'monitorlogs', NULL, array());
+		    $view->viewLink = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('view', 'monitorlogs', NULL, [)];
             if ($res['msgid']) {
             	$nextlog = $log->getNextLog();
             	if ($nextlog) {

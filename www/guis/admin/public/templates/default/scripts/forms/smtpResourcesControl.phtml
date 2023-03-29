@@ -8,12 +8,12 @@
 $this->form->setTranslator($this->t);
 ?>
 <form method="<?php echo $this->form->getMethod() ?>" action="<?php echo $this->form->getAction()?>" id="<?php echo $this->form->getId()?>">
-<?php echo $this->partial('layouts/message.phtml', array('message' => $this->message, 't' => $this->t)); ?>
+<?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t)]; ?>
  <fieldset id="companysettings">
        <table class="ftable numberfieldtable">
          
 	 <?php echo $this->InputRow($this->form->getElement('smtp_receive_timeout'),array('post_field_text'=>$this->t->_('seconds')));?>
-	 <?php echo $this->InputRow($this->form->getElement('max_rcpt'),array());?>
+	 <?php echo $this->InputRow($this->form->getElement('max_rcpt'),[)];?>
 	 
           
          <tr>
@@ -21,17 +21,17 @@ $this->form->setTranslator($this->t);
            <td class="fvalue"></td>
           </tr>
           
-          <?php foreach (array('smtp_accept_max', 'smtp_accept_max_per_host', 'smtp_accept_max_per_trusted_host') as $f) {?>
+          <?php foreach (['smtp_accept_max', 'smtp_accept_max_per_host', 'smtp_accept_max_per_trusted_host') as $f] {?>
             <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
-          <?php foreach (array('smtp_accept_max_per_connection') as $f) {?>
+          <?php foreach (['smtp_accept_max_per_connection') as $f] {?>
            <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           <tr>
             <td colspan="2"><hr class="sectionsplit" /></td>
           </tr>
           
-          <?php foreach (array('smtp_reserve', 'smtp_load_reserve') as $f) {?>
+          <?php foreach (['smtp_reserve', 'smtp_load_reserve') as $f] {?>
            <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           
@@ -45,15 +45,15 @@ $this->form->setTranslator($this->t);
             <td colspan="2" class="fsingle">
                <?php echo $this->t->_('Sending retries')?> : 
                <?php echo $this->t->_('every')?> 
-                  <?php echo $this->InputRow($this->form->getElement('retry_delay_value'),array('field_only'=>true,'nobox'=>true));?>
-                  <?php echo $this->InputRow($this->form->getElement('retry_delay_unit'),array('field_only'=>true,'nobox'=>true));?>
+                  <?php echo $this->InputRow($this->form->getElement('retry_delay_value'),['field_only'=>true,'nobox'=>true)];?>
+                  <?php echo $this->InputRow($this->form->getElement('retry_delay_unit'),['field_only'=>true,'nobox'=>true)];?>
                <?php echo $this->t->_('up to')?> 
-                  <?php echo $this->InputRow($this->form->getElement('retry_cutoff_value'),array('field_only'=>true,'nobox'=>true));?>
-                  <?php echo $this->InputRow($this->form->getElement('retry_cutoff_unit'),array('field_only'=>true,'nobox'=>true));?>
+                  <?php echo $this->InputRow($this->form->getElement('retry_cutoff_value'),['field_only'=>true,'nobox'=>true)];?>
+                  <?php echo $this->InputRow($this->form->getElement('retry_cutoff_unit'),['field_only'=>true,'nobox'=>true)];?>
             </td>
           </tr>
           
-          <?php foreach (array('rate', 'trusted_rate') as $rtype ) {?>
+          <?php foreach (['rate', 'trusted_rate') as $rtype ] {?>
           <tr>
             <td colspan="2"><hr /></td>
           </tr>
@@ -62,10 +62,10 @@ $this->form->setTranslator($this->t);
            <tr id="<?php echo $rtype?>_rule_row" class="<?php echo $this->rate_display_class[$rtype]?>">
             <td colspan="2" class="fsingle">
                <?php echo $this->t->_('Incoming per host connection rate limit')?> : 
-               <?php echo $this->InputRow($this->form->getElement($rtype.'_count'),array('field_only'=>true,'nobox'=>true));?>
+               <?php echo $this->InputRow($this->form->getElement($rtype.'_count'),['field_only'=>true,'nobox'=>true)];?>
                <?php echo $this->t->_('connections per ')?> 
-               <?php echo $this->InputRow($this->form->getElement($rtype.'_interval_value'),array('field_only'=>true,'nobox'=>true));?>
-               <?php echo $this->InputRow($this->form->getElement($rtype.'_interval_unit'),array('field_only'=>true,'nobox'=>true));?>
+               <?php echo $this->InputRow($this->form->getElement($rtype.'_interval_value'),['field_only'=>true,'nobox'=>true)];?>
+               <?php echo $this->InputRow($this->form->getElement($rtype.'_interval_unit'),['field_only'=>true,'nobox'=>true)];?>
              </td>
           </tr>
           <?php echo $this->InputRow($this->form->getElement($rtype.'limit_delay'),
@@ -73,7 +73,7 @@ $this->form->setTranslator($this->t);
                               'post_field_text'=>$this->t->_('seconds')));?>
            
           <?php }?>
-          <?php echo $this->InputRow($this->form->getElement('no_ratelimit_hosts'),array('row_id'=>'no_ratelimit','label_addclass'=>'flabeltextarea'));?>
+          <?php echo $this->InputRow($this->form->getElement('no_ratelimit_hosts'),['row_id'=>'no_ratelimit','label_addclass'=>'flabeltextarea')];?>
           <?php echo $this->SubmitRow($this->form->getElement('submit'));?>
           
        </table>

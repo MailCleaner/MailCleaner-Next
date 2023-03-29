@@ -48,7 +48,7 @@ class Default_Model_WWElement
 	}
 	
 	public function getAvailableParams() {
-		$ret = array();
+		$ret = [];
 		foreach ($this->_values as $key => $value) {
 			$ret[]=$key;
 		}

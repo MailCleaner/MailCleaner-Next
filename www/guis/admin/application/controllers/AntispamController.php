@@ -24,7 +24,7 @@ class AntispamController extends Zend_Controller_Action
     	
     	$this->config_menu = new Zend_Navigation();
     	
-    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(array('label' => 'Global settings', 'id' => 'globalsettings', 'action' => 'globalsettings', 'controller' => 'antispam')));
+    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Global settings', 'id' => 'globalsettings', 'action' => 'globalsettings', 'controller' => 'antispam'))];
         $view->config_menu = $this->config_menu;
         
         $view->headScript()->appendFile($view->scripts_path.'/baseconfig.js', 'text/javascript');
@@ -81,7 +81,7 @@ class AntispamController extends Zend_Controller_Action
             	  
             	  $message = 'OK data saved';
             	  $slaves = new Default_Model_Slave();
-            	  $slaves->sendSoapToAll('Service_setServiceToRestart', array('exim_stage1','mailscanner'));
+            	  $slaves->sendSoapToAll('Service_setServiceToRestart', ['exim_stage1','mailscanner')];
             	} catch (Exception $e) {
             	  $message = 'NOK error saving data ('.$e->getMessage().')';
             	  if (preg_match('/Duplicate entry/', $message )) {
@@ -127,7 +127,7 @@ class AntispamController extends Zend_Controller_Action
             	  $view->modules = $modules;
             	  $message = 'OK data saved';
             	  $slaves = new Default_Model_Slave();
-            	  $slaves->sendSoapToAll('Service_setServiceToRestart', array('mailscanner'));
+            	  $slaves->sendSoapToAll('Service_setServiceToRestart', ['mailscanner')];
             	} catch (Exception $e) {
             	  $message = 'NOK error saving data ('.$e->getMessage().')';
             	}

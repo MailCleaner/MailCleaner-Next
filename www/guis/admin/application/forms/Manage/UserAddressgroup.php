@@ -13,7 +13,7 @@ class Default_Form_Manage_UserAddressgroup extends Default_Form_ElementList
 	protected $_user;
 	protected $_domain;
 	protected $_panelname = 'addressgroup';
-	public $_addresses = array();
+	public $_addresses = [];
 	
 	public function __construct($user, $domain)
 	{
@@ -39,7 +39,7 @@ class Default_Form_Manage_UserAddressgroup extends Default_Form_ElementList
 		$this->setAttrib('id', 'user_form');
 	    $panellist = new Zend_Form_Element_Select('userpanel', array(
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         

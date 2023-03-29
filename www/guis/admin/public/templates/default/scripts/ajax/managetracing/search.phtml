@@ -120,11 +120,11 @@
        <span class="m_accepted"><?php echo $this->t->_($element->getParam('outreport'))?></span>
      <?php } elseif ($element->getParam('outreport') == 'Pending') {?>
        <span class="m_pending"><?php echo $this->t->_($element->getParam('outreport'))?>...</span>
-     <?php } elseif (in_array($element->getParam('outreport'), array('Quarantined', 'Tagged', 'Dropped', 'Warnlisted', 'Whitelisted', 'Blacklisted'))) { ?>
+     <?php } elseif (in_array($element->getParam('outreport'), ['Quarantined', 'Tagged', 'Dropped', 'Warnlisted', 'Whitelisted', 'Blacklisted'))] { ?>
        <span class="m_accepted"><?php echo $this->t->_($element->getParam('outreport'))?></span>
-     <?php } elseif (in_array($element->getParam('outreport'), array('Failed'))) { ?>
+     <?php } elseif (in_array($element->getParam('outreport'), ['Failed'))] { ?>
        <span class="m_failed"><?php echo $this->t->_($element->getParam('outreport'))?></span>
-     <?php } elseif (in_array($element->getParam('outreport'), array('Rejected'))) { ?>
+     <?php } elseif (in_array($element->getParam('outreport'), ['Rejected'))] { ?>
        <span class="m_warning"><?php echo $this->t->_($element->getParam('outreport'))?></span>
      <?php } elseif ($element->getParam('outreport') != '') { ?>
        <span><?php echo $this->t->_($element->getParam('outreport'))?></span> 

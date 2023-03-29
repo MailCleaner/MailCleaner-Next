@@ -26,7 +26,7 @@ global $user_;
 // some defaults
 $select_wanted = 'ALL';
 $wanted_addresses_ = $user_->getAddresses();
-$wanted_stats_ = array();
+$wanted_stats_ = [];
 $startdate = 'today';
 $stopdate = 'today';
 $period = $user_->getPref('gui_displayed_days');
@@ -44,7 +44,7 @@ $posted = $form->getResult();
 if (isset($posted['a']) && $posted['a']) {
   $select_wanted = $posted['a'];
   if ($select_wanted != 'ALL') {
-  	$wanted_addresses_ = array($select_wanted);
+  	$wanted_addresses_ = [$select_wanted];
   }
 }
 if (isset($posted['datetype']) && $posted['datetype'] == 'date') {
@@ -91,15 +91,15 @@ $periods = array(
   '180' => 180,
   '365' => 365
 );
-$days = array();
+$days = [];
 for ($i=1; $i < 32; $i++ ) {
   $days[$i] = $i;
 }
-$months = array();
+$months = [];
 for ($i=1; $i < 13; $i++ ) {
   $months[$lang_->print_txt('MONTHAB'.$i)] = $i;
 }
-$years = array();
+$years = [];
 for ($i=2006; $i <= $today['year']; $i++ ) {
   $years[$i] = $i;
 }

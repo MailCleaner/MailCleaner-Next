@@ -83,7 +83,7 @@ $replace = array(
     '__BEGIN_VIEW_FORM__' => $pform->open(),
     '__CLOSE_VIEW_FORM__' => $pform->close(),
     '__VIEW_PATCHES_LOG__' => viewPatchLog($nblines),
-    '__LASTPATCH__' => $soaper->query('getLastPatch', array())
+    '__LASTPATCH__' => $soaper->query('getLastPatch', [)]
 );
 
 // output page

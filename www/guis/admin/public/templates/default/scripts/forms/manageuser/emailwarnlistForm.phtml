@@ -11,7 +11,7 @@
        	<ul class="configlist shortconfiglist">
 		<?php foreach ($this->form->_wwlist as $element) {?>
 			<li
-				class="listelement<?php if ($element->getStatus() < 1) {?> listelementdisabled<?php }?>"><?php echo $this->InputRow($this->form->getElement('list_select_'.$element->getId()),array('nobox'=>true,'field_only'=>true));?>
+				class="listelement<?php if ($element->getStatus() < 1) {?> listelementdisabled<?php }?>"><?php echo $this->InputRow($this->form->getElement('list_select_'.$element->getId()),['nobox'=>true,'field_only'=>true)];?>
 				<?php echo $element->getParam('sender')?> <?php if ($element->getStatus() < 1) { echo "(".$this->t->_('disabled').")"; } ?>
 				<?php if ($element->getComment()) {?>
 			<p class="entrycomment"><?php if ($element->getStatus() <  1) {?><img
@@ -29,21 +29,21 @@
 		<table>
 			<tr>
 				<td><?php echo $this->t->_('Address')?> :</td>
-				<?php echo $this->InputRow($this->form->getElement('addelement'),array('field_only'=>true,'field_addclass'=>'fieldpanel'));?>
+				<?php echo $this->InputRow($this->form->getElement('addelement'),['field_only'=>true,'field_addclass'=>'fieldpanel')];?>
 			</tr>
 			<tr>
 				<td><?php echo $this->t->_('Comment')?> :</td>
 				<td class="fieldpanel"><img
 					src="<?php echo $this->images_path?>/attention.png" class="vertimg"
-					alt="" /><?php echo $this->InputRow($this->form->getElement('addcomment'),array('field_only'=>true,'nobox'=>true));?></td>
+					alt="" /><?php echo $this->InputRow($this->form->getElement('addcomment'),['field_only'=>true,'nobox'=>true)];?></td>
 			</tr>
 		</table>
-		<p><?php echo $this->SubmitRow($this->form->getElement('add'),array('field_only'=>true,'nobox'=>true));?></p>
+		<p><?php echo $this->SubmitRow($this->form->getElement('add'),['field_only'=>true,'nobox'=>true)];?></p>
 		</div>
 		<div class="sublistelement editremelement">
 		<h1><?php echo $this->t->_('Disable, enable or removed address from the list')?></h1>
-		<p class="submitlist"><?php echo $this->SubmitRow($this->form->getElement('disable'),array('field_only'=>true,'nobox'=>true));?></p>
-        <p class="submitlist"><?php echo $this->SubmitRow($this->form->getElement('remove'),array('field_only'=>true,'nobox'=>true));?></p>
+		<p class="submitlist"><?php echo $this->SubmitRow($this->form->getElement('disable'),['field_only'=>true,'nobox'=>true)];?></p>
+        <p class="submitlist"><?php echo $this->SubmitRow($this->form->getElement('remove'),['field_only'=>true,'nobox'=>true)];?></p>
 		</div>
 		
 </fieldset>

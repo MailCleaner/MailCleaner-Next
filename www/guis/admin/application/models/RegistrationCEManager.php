@@ -9,7 +9,7 @@
 
 class Default_Model_RegistrationCEManager
 {	
-	private $_serial = array('abc1', 'def2', 'ghi3');
+	private $_serial = ['abc1', 'def2', 'ghi3'];
         private $_data = array('first_name'  => '', 
 	'last_name' => '', 
 	'email' => '' , 

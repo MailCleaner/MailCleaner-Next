@@ -13,7 +13,7 @@ class Default_Model_RetryRule
    protected $_retry_cutoff = '0s';
    protected $_retry_delay = '0s';
    
-   protected $_time_units = array('s' => 'seconds', 'm' => 'minutes', 'h' => 'hours', 'd' => 'days');
+   protected $_time_units = ['s' => 'seconds', 'm' => 'minutes', 'h' => 'hours', 'd' => 'days'];
    
    public function __construct($str) {
    	  if (preg_match('/F,(\d+[smhd]),(\d+[smhd])/', $str, $matches)) {

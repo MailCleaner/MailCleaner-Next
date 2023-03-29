@@ -229,7 +229,7 @@ class Api_Model_DomainAPI
             return false;
         }
         
-        $data = array();
+        $data = [];
         $domain = new Default_Model_Domain();
         try {
             require_once('Validate/DomainName.php');
@@ -255,7 +255,7 @@ class Api_Model_DomainAPI
             Zend_Registry::get('response')->setResponse(401, 'authentication required');
             return false;
         }
-        $list = array();
+        $list = [];
         $domain = new Default_Model_Domain();
         try {
             foreach ($domain->fetchAllName() as $d) {
@@ -275,7 +275,7 @@ class Api_Model_DomainAPI
 			$domain->setAliases(preg_split('/[^a-zA-Z0-9\.\-_]/', $params['aliases']));
 		}
 		## general options
-		foreach (array('systemsender', 'falseneg_to', 'falsepos_to', 'supportname', 'supportemail') as $pref) {
+		foreach (['systemsender', 'falseneg_to', 'falsepos_to', 'supportname', 'supportemail') as $pref] {
 			if (isset($params[$pref])) {
                 $domain->setPref($pref, $params[$pref]);
 			}
@@ -296,7 +296,7 @@ class Api_Model_DomainAPI
 		    $connectorformclass = 'Default_Form_Domain_AddressVerification_'.ucfirst($params['callout_connector']);
             if (class_exists($connectorformclass)) {
     		    $connectorform  = new $connectorformclass($domain);
-    		    $data = array();
+    		    $data = [];
     		    foreach (array(
     		            'callout_server' => 'callout_server', 
     		            'c_base_dn' => 'basedn', 
@@ -342,7 +342,7 @@ class Api_Model_DomainAPI
              $connectorformclass = 'Default_Form_Domain_UserAuthentication_'.ucfirst($params['auth_connector']);
              if (class_exists($connectorformclass)) {
                  $connectorform  = new $connectorformclass($domain);
-                 $data = array();
+                 $data = [];
                  foreach (array(
                         'auth_server' => 'auth_server',
                         'auth_use_ssl' => 'use_ssl', 
@@ -387,7 +387,7 @@ class Api_Model_DomainAPI
             }
         }   
         ## Filtering
-        foreach (array('spamwall', 'contentwall', 'viruswall') as $key) {
+        foreach (['spamwall', 'contentwall', 'viruswall') as $key] {
         	if (isset($params[$key]) && preg_match('/^[01]$/', $params[$key])) {
         		$domain->setPref($key, $params[$key]);
         	}
@@ -395,23 +395,23 @@ class Api_Model_DomainAPI
         if (isset($params['greylist']) && preg_match('/^[01]$/', $params['greylist'])) {
             $domain->setParam('greylist', $params['greylist']);
         }
-        foreach (array('whitelists' => 'enable_whitelists', 'warnlists' => 'enable_warnlists', 'notice_wwlists' => 'notice_wwlists_hit') as $key => $storekey) {
+        foreach (['whitelists' => 'enable_whitelists', 'warnlists' => 'enable_warnlists', 'notice_wwlists' => 'notice_wwlists_hit') as $key => $storekey] {
         	if (isset($params[$key]) && preg_match('/^[01]$/', $params[$key])) {
         		$domain->setPref($storekey, $params[$key]);
         	}
 	}
-        foreach (array('prevent_spoof', 'require_incoming_tls', 'reject_capital_domain') as $key) {
+        foreach (['prevent_spoof', 'require_incoming_tls', 'reject_capital_domain') as $key] {
         	if ( isset($params[$key]) && preg_match('/^[01]$/', $params[$key])) {
         		$domain->setPref($key, $params[$key]);
         	}
         }
         ## Outgoing
-        foreach (array('allow_smtp_auth' => 'allow_smtp_auth', 'require_outgoing_tls' => 'require_outgoing_tls', 'batv_enable' => 'batv_check') as $key => $storekey) {
+        foreach (['allow_smtp_auth' => 'allow_smtp_auth', 'require_outgoing_tls' => 'require_outgoing_tls', 'batv_enable' => 'batv_check') as $key => $storekey] {
             if ( isset($params[$key]) && preg_match('/^[01]$/', $params[$key])) {
                 $domain->setPref($storekey, $params[$key]);
             }
         }   
-        foreach (array('batv_secret' => 'batv_secret','dkim_domain' => 'dkim_domain', 'dkim_selector' => 'dkim_selector', 'dkim_private_key' => 'dkim_pkey') as $key => $storekey) {
+        foreach (['batv_secret' => 'batv_secret','dkim_domain' => 'dkim_domain', 'dkim_selector' => 'dkim_selector', 'dkim_private_key' => 'dkim_pkey') as $key => $storekey] {
             if (isset($params[$key])) {
              	$domain->setPref($storekey, $params[$key]);
             }
@@ -424,43 +424,43 @@ class Api_Model_DomainAPI
         	$domain->setPref('copyto_mail', $params['send_copy_to']);
         }
         ## Templates
-        foreach (array('web_template', 'summary_template') as $key) {
+        foreach (['web_template', 'summary_template') as $key] {
         	if (isset($params[$key]) && preg_match('/^[a-zA-Z-_]+$/', $params[$key])) {
         		$domain->setPref($key, $params[$key]);
         	}
         }
 	}
 	
-	private function getDomainParams($domain, $params = array()) {
-		$data = array();
+	private function getDomainParams($domain, $params = [)] {
+		$data = [];
 		$data['name'] = $domain->getParam('name');
 	    ## aliases
-        if (empty($params) || in_array('aliases', $params)) {
+        if (empty($params) || in_['aliases', $params)] {
             $data['aliases'] = implode(',', $domain->getAliases());
         }
 	    ## general options
-        foreach (array('systemsender', 'falseneg_to', 'falsepos_to', 'supportname', 'supportemail') as $pref) {
-            if (empty($params) || in_array($pref, $params)) {
+        foreach (['systemsender', 'falseneg_to', 'falsepos_to', 'supportname', 'supportemail') as $pref] {
+            if (empty($params) || in_[$pref, $params)] {
                 $data[$pref] = $domain->getPref($pref);
             }
         }
 	    ## delivery
         $options = $domain->getDestinationActionOptions();
-        if (empty($params) || in_array('destination_mode', $params)) {
+        if (empty($params) || in_['destination_mode', $params)] {
             $data['destination_mode'] = $domain->getDestinationMultiMode();
         }
-        if (empty($params) || in_array('destination_usemx', $params)) {
+        if (empty($params) || in_['destination_usemx', $params)] {
             $data['destination_usemx'] = "0";
             if ($domain->getDestinationUseMX() == 'true') {
                 $data['destination_usemx'] = "1";
             }
         }
-        if (empty($params) || in_array('destination', $params)) {
+        if (empty($params) || in_['destination', $params)] {
             $data['destination'] = preg_replace('/\n/', ',', $domain->getDestinationFieldStringForAPI());
         }
         
         ## Address verification
-        if (empty($params) || in_array('callout_connector', $params)) {
+        if (empty($params) || in_['callout_connector', $params)] {
             $data['callout_connector'] = $domain->getCalloutConnector();
         }
         $connectorformclass = 'Default_Form_Domain_AddressVerification_'.ucfirst($domain->getCalloutConnector());
@@ -475,22 +475,22 @@ class Api_Model_DomainAPI
                 'c_group' => 'group',
                 'c_use_ssl' => 'usessl'
             ) as $key => $value) {
-            	if (isset($calloutparams[$value]) && (empty($params) || in_array($key, $params))) {
+            	if (isset($calloutparams[$value]) && (empty($params) || in_[$key, $params))] {
             		$data[$key] = $calloutparams[$value];
             	}
             }
         }
 	    ## Preferences
-        if (empty($params) || in_array('language', $params)) {
+        if (empty($params) || in_['language', $params)] {
             $data['language'] = $domain->getPref('language');
         }
-        if (empty($params) || in_array('summary_frequency', $params)) {
+        if (empty($params) || in_['summary_frequency', $params)] {
         	$data['summary_frequency'] = $domain->getSummaryFrequencyName();
         }
-        if (empty($params) || in_array('summary_type', $params)) {
+        if (empty($params) || in_['summary_type', $params)] {
         	$data['summary_type'] = $domain->getPref('summary_type');
         }
-        if (empty($params) || in_array('delivery_type', $params)) {
+        if (empty($params) || in_['delivery_type', $params)] {
             $data['delivery_type'] = $domain->getSpamActionName();
         }
         foreach (array(
@@ -498,12 +498,12 @@ class Api_Model_DomainAPI
               'content_tag' => 'content_subject',
               'file_tag' => 'file_subject', 
               'virus_tag' => 'virus_subject') as $keytag => $desttag) {
-            if (empty($params) || in_array($keytag, $params)) {
+            if (empty($params) || in_[$keytag, $params)] {
                 $data[$keytag] = $domain->getPref($desttag);
             }
         }
         ## Authentication
-	    if (empty($params) || in_array('auth_connector', $params)) {
+	    if (empty($params) || in_['auth_connector', $params)] {
             $data['auth_connector'] = $domain->getAuthConnector();
         }
         $connectorformclass = 'Default_Form_Domain_UserAuthentication_'.ucfirst($domain->getAuthConnector());
@@ -519,15 +519,15 @@ class Api_Model_DomainAPI
                 'auth_use_ssl' => 'use_ssl',
                 'auth_server' => 'auth_server'
             ) as $key => $value) {
-                if (isset($authparams[$value]) && (empty($params) || in_array($key, $params))) {
+                if (isset($authparams[$value]) && (empty($params) || in_[$key, $params))] {
                     $data[$key] = $authparams[$value];
                 }
             }
         }
         
 	## Filtering, Templates
-        foreach (array('prevent_spoof', 'require_incoming_tls', 'spamwall', 'contentwall', 'viruswall', 'greylist', 'web_template', 'summary_template', 'reject_capital_domain') as $key) {
-            if (empty($params) || in_array($key, $params)) {
+        foreach (['prevent_spoof', 'require_incoming_tls', 'spamwall', 'contentwall', 'viruswall', 'greylist', 'web_template', 'summary_template', 'reject_capital_domain') as $key] {
+            if (empty($params) || in_[$key, $params)] {
             	if (!$domain->getPref($key)) {
             		$data[$key] = "0";
             	} else {
@@ -535,8 +535,8 @@ class Api_Model_DomainAPI
             	}
             }
         }
-        foreach (array('whitelists' => 'enable_whitelists', 'warnlists' => 'enable_warnlists', 'notice_wwlists' => 'notice_wwlists_hit') as $key => $storekey) {
-        	if (empty($params) || in_array($key, $params)) {
+        foreach (['whitelists' => 'enable_whitelists', 'warnlists' => 'enable_warnlists', 'notice_wwlists' => 'notice_wwlists_hit') as $key => $storekey] {
+        	if (empty($params) || in_[$key, $params)] {
         		if (!$domain->getPref($storekey)) {
         		    $data[$key] = "0";
                 } else {
@@ -546,10 +546,10 @@ class Api_Model_DomainAPI
         }
         
         ## Outgoing
-        foreach (array('allow_smtp_auth' => 'allow_smtp_auth', 'require_outgoing_tls' => 'require_outgoing_tls', 'batv_enable' => 'batv_check') as $key => $storekey) {
+        foreach (['allow_smtp_auth' => 'allow_smtp_auth', 'require_outgoing_tls' => 'require_outgoing_tls', 'batv_enable' => 'batv_check') as $key => $storekey] {
         	$data[$key] = $domain->getPref($storekey);
         }
-        foreach (array('batv_secret' => 'batv_secret','dkim_domain' => 'dkim_domain', 'dkim_selector' => 'dkim_selector', 'dkim_private_key' => 'dkim_pkey') as $key => $storekey) {
+        foreach (['batv_secret' => 'batv_secret','dkim_domain' => 'dkim_domain', 'dkim_selector' => 'dkim_selector', 'dkim_private_key' => 'dkim_pkey') as $key => $storekey] {
         	$data[$key] = $domain->getPref($storekey);
         }
         

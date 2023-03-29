@@ -34,7 +34,7 @@ class Default_Model_AutoconfigurationManager
 
 	public function download()
 	{
-		return Default_Model_Localhost::sendSoapRequest('Config_autoconfigurationDownload', array('download' => true));
+		return Default_Model_Localhost::sendSoapRequest('Config_autoconfigurationDownload', ['download' => true)];
 	}
 
 }

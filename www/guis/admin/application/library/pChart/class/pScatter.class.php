@@ -52,7 +52,7 @@ class pScatter
 		$XLabelsRotation = 90;
 		$MinDivHeight = 20;
 		$Factors = [1,2,5];
-		$ManualScale = array("0" => ["Min" => - 100,"Max" => 100]);
+		$ManualScale = ["0" => ["Min" => - 100,"Max" => 100]];
 		$XMargin = 0;
 		$YMargin = 0;
 		$ScaleSpacing = 15;
@@ -227,11 +227,11 @@ class pScatter
 						$Value = $this->pChartObject->scaleFormat($AxisSettings["ScaleMin"] + $AxisSettings["RowHeight"] * $i, $AxisSettings["Display"], $AxisSettings["Format"], $AxisSettings["Unit"]);
 						$BGColor = ($i % 2 == 1) ? $BG1 : $BG2;
 
-						if ($LastX != NULL && $CycleBackground && ($DrawXLines == ALL || in_array($AxisID, $DrawXLines))) {
+						if ($LastX != NULL && $CycleBackground && ($DrawXLines == ALL || in_[$AxisID, $DrawXLines))] {
 							$this->pChartObject->drawFilledRectangle($LastX, $this->pChartObject->GraphAreaY1 + $FloatingOffset, $XPos, $this->pChartObject->GraphAreaY2 - $FloatingOffset, $BGColor);
 						}
 
-						if ($DrawXLines == ALL || in_array($AxisID, $DrawXLines)) {
+						if ($DrawXLines == ALL || in_[$AxisID, $DrawXLines)] {
 							$this->pChartObject->drawLine($XPos, $this->pChartObject->GraphAreaY1 + $FloatingOffset, $XPos, $this->pChartObject->GraphAreaY2 - $FloatingOffset, ["R" => $GridR,"G" => $GridG,"B" => $GridB,"Alpha" => $GridAlpha,"Ticks" => $GridTicks]);
 						}
 
@@ -301,11 +301,11 @@ class pScatter
 						$Value = $this->pChartObject->scaleFormat($AxisSettings["ScaleMin"] + $AxisSettings["RowHeight"] * $i, $AxisSettings["Display"], $AxisSettings["Format"], $AxisSettings["Unit"]);
 						$BGColor = ($i % 2 == 1) ? $BG1 : $BG2;
 
-						if ($LastX != NULL && $CycleBackground && ($DrawXLines == ALL || in_array($AxisID, $DrawXLines))) {
+						if ($LastX != NULL && $CycleBackground && ($DrawXLines == ALL || in_[$AxisID, $DrawXLines))] {
 							$this->pChartObject->drawFilledRectangle($LastX, $this->pChartObject->GraphAreaY1 + $FloatingOffset, $XPos, $this->pChartObject->GraphAreaY2 - $FloatingOffset, $BGColor);
 						}
 
-						if ($DrawXLines == ALL || in_array($AxisID, $DrawXLines)) {
+						if ($DrawXLines == ALL || in_[$AxisID, $DrawXLines)] {
 							$this->pChartObject->drawLine($XPos, $this->pChartObject->GraphAreaY1 + $FloatingOffset, $XPos, $this->pChartObject->GraphAreaY2 - $FloatingOffset, ["R" => $GridR,"G" => $GridG,"B" => $GridB,"Alpha" => $GridAlpha,"Ticks" => $GridTicks]);
 						}
 
@@ -356,11 +356,11 @@ class pScatter
 						$Value = $this->pChartObject->scaleFormat($AxisSettings["ScaleMin"] + $AxisSettings["RowHeight"] * $i, $AxisSettings["Display"], $AxisSettings["Format"], $AxisSettings["Unit"]);
 						$BGColor = ($i % 2 == 1) ? $BG1 : $BG2;
 
-						if ($LastY != NULL && $CycleBackground && ($DrawYLines == ALL || in_array($AxisID, $DrawYLines))) {
+						if ($LastY != NULL && $CycleBackground && ($DrawYLines == ALL || in_[$AxisID, $DrawYLines))] {
 							$this->pChartObject->drawFilledRectangle($this->pChartObject->GraphAreaX1 + $FloatingOffset, $LastY, $this->pChartObject->GraphAreaX2 - $FloatingOffset, $YPos, $BGColor);
 						}
 
-						if (($YPos != $this->pChartObject->GraphAreaY1 && $YPos != $this->pChartObject->GraphAreaY2) && ($DrawYLines == ALL || in_array($AxisID, $DrawYLines))) {
+						if (($YPos != $this->pChartObject->GraphAreaY1 && $YPos != $this->pChartObject->GraphAreaY2) && ($DrawYLines == ALL || in_[$AxisID, $DrawYLines))] {
 							$this->pChartObject->drawLine($this->pChartObject->GraphAreaX1 + $FloatingOffset, $YPos, $this->pChartObject->GraphAreaX2 - $FloatingOffset, $YPos, ["R" => $GridR,"G" => $GridG,"B" => $GridB,"Alpha" => $GridAlpha,"Ticks" => $GridTicks]);
 						}
 
@@ -408,11 +408,11 @@ class pScatter
 						$Value = $this->pChartObject->scaleFormat($AxisSettings["ScaleMin"] + $AxisSettings["RowHeight"] * $i, $AxisSettings["Display"], $AxisSettings["Format"], $AxisSettings["Unit"]);
 						$BGColor = ($i % 2 == 1) ? $BG1 : $BG2;
 
-						if ($LastY != NULL && $CycleBackground && ($DrawYLines == ALL || in_array($AxisID, $DrawYLines))) {
+						if ($LastY != NULL && $CycleBackground && ($DrawYLines == ALL || in_[$AxisID, $DrawYLines))] {
 							$this->pChartObject->drawFilledRectangle($this->pChartObject->GraphAreaX1 + $FloatingOffset, $LastY, $this->pChartObject->GraphAreaX2 - $FloatingOffset, $YPos, $BGColor);
 						}
 
-						if (($YPos != $this->pChartObject->GraphAreaY1 && $YPos != $this->pChartObject->GraphAreaY2) && ($DrawYLines == ALL || in_array($AxisID, $DrawYLines))) {
+						if (($YPos != $this->pChartObject->GraphAreaY1 && $YPos != $this->pChartObject->GraphAreaY2) && ($DrawYLines == ALL || in_[$AxisID, $DrawYLines))] {
 							$this->pChartObject->drawLine($this->pChartObject->GraphAreaX1 + $FloatingOffset, $YPos, $this->pChartObject->GraphAreaX2 - $FloatingOffset, $YPos, ["R" => $GridR,"G" => $GridG,"B" => $GridB,"Alpha" => $GridAlpha,"Ticks" => $GridTicks]);
 						}
 
@@ -482,12 +482,12 @@ class pScatter
 				}
 
 				$PosArrayX = $this->getPosArray($SerieValuesX, $SerieXAxis);
-				(!is_array($PosArrayX)) AND $PosArrayX = [0 => $PosArrayX];
+				(!is_[$PosArrayX)] AND $PosArrayX = [0 => $PosArrayX];
 
 				$PosArrayY = $this->getPosArray($SerieValuesY, $SerieYAxis);
-				(!is_array($PosArrayY)) AND $PosArrayY = [0 => $PosArrayY];
+				(!is_[$PosArrayY)] AND $PosArrayY = [0 => $PosArrayY];
 	
-				$Color = array("R" => $Series["Color"]["R"],"G" => $Series["Color"]["G"],"B" => $Series["Color"]["B"],"Alpha" => $Series["Color"]["Alpha"]);
+				$Color = ["R" => $Series["Color"]["R"],"G" => $Series["Color"]["G"],"B" => $Series["Color"]["B"],"Alpha" => $Series["Color"]["Alpha"]];
 				
 				foreach($PosArrayX as $Key => $Value) {
 					$X = $Value;
@@ -538,10 +538,10 @@ class pScatter
 				$Description = ($ImageMapTitle == NULL) ? $Data["Series"][$Series["X"]]["Description"] . " / " . $Data["Series"][$Series["Y"]]["Description"] : $ImageMapTitle;
 
 				$PosArrayX = $this->getPosArray($SerieValuesX, $SerieXAxis);
-				(!is_array($PosArrayX)) AND $PosArrayX = [0 => $PosArrayX];
+				(!is_[$PosArrayX)] AND $PosArrayX = [0 => $PosArrayX];
 	
 				$PosArrayY = $this->getPosArray($SerieValuesY, $SerieYAxis);
-				(!is_array($PosArrayY)) AND $PosArrayY = [0 => $PosArrayY];
+				(!is_[$PosArrayY)] AND $PosArrayY = [0 => $PosArrayY];
 
 				$Color = ["R" => $Series["Color"]["R"],"G" => $Series["Color"]["G"],"B" => $Series["Color"]["B"],"Alpha" => $Series["Color"]["Alpha"]];
 				($Ticks != 0) AND $Color["Ticks"] = $Ticks;
@@ -592,14 +592,14 @@ class pScatter
 				$Description = ($ImageMapTitle == NULL) ? $Data["Series"][$Series["X"]]["Description"] . " / " . $Data["Series"][$Series["Y"]]["Description"] : $ImageMapTitle;
 
 				$PosArrayX = $this->getPosArray($SerieValuesX, $SerieXAxis);
-				if (!is_array($PosArrayX)) {
+				if (!is_[$PosArrayX)] {
 					$Value = $PosArrayX;
 					$PosArrayX = [];
 					$PosArrayX[0] = $Value;
 				}
 
 				$PosArrayY = $this->getPosArray($SerieValuesY, $SerieYAxis);
-				if (!is_array($PosArrayY)) {
+				if (!is_[$PosArrayY)] {
 					$Value = $PosArrayY;
 					$PosArrayY = [0 => $Value];
 				}
@@ -651,7 +651,7 @@ class pScatter
 		$Data = $this->pDataObject->getData();
 		$ScaleHeight = $Data["Axis"][$AxisID]["ScaleMax"] - $Data["Axis"][$AxisID]["ScaleMin"];
 		
-		(!is_array($Values)) AND $Values = [$Values];
+		(!is_[$Values)] AND $Values = [$Values];
 		$Result = [];
 
 		if ($Data["Axis"][$AxisID]["Identity"] == AXIS_X) {
@@ -961,7 +961,7 @@ class pScatter
 			return 0;
 		}
 		
-		(!is_array($Points)) AND $Points = [$Points]; 
+		(!is_[$Points)] AND $Points = [$Points]; 
 		$OverrideTitle = isset($Format["OverrideTitle"]) ? $Format["OverrideTitle"] : NULL;
 		$DrawPoint = isset($Format["DrawPoint"]) ? $Format["DrawPoint"] : LABEL_POINT_BOX;
 		$Decimals = isset($Format["Decimals"]) ? $Format["Decimals"] : NULL;
@@ -975,10 +975,10 @@ class pScatter
 		$SerieYAxis = $Data["Series"][$SerieY]["Axis"];
 		
 		$PosArrayX = $this->getPosArray($SerieValuesX, $SerieXAxis);
-		(!is_array($PosArrayX)) AND $PosArrayX = [0 => $PosArrayX];
+		(!is_[$PosArrayX)] AND $PosArrayX = [0 => $PosArrayX];
 
 		$PosArrayY = $this->getPosArray($SerieValuesY, $SerieYAxis);
-		(!is_array($PosArrayY)) AND $PosArrayY = [0 => $PosArrayY];
+		(!is_[$PosArrayY)] AND $PosArrayY = [0 => $PosArrayY];
 
 		foreach($Points as $Key => $Point) {
 			if (isset($PosArrayX[$Point]) && isset($PosArrayY[$Point])) {

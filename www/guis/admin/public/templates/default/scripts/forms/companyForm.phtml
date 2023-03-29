@@ -7,10 +7,10 @@
  */
 ?>
 <form method="<?php echo $this->form->getMethod() ?>" action="<?php echo $this->form->getAction()?>" id="<?php echo $this->form->getId()?>">
-<?php echo $this->partial('layouts/message.phtml', array('message' => $this->message, 't' => $this->t)); ?>
+<?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t)]; ?>
  <fieldset id="companysettings">
        <table class="ftable">
-          <?php foreach (array('companyname', 'contactname', 'contactemail') as $f) {?>
+          <?php foreach (['companyname', 'contactname', 'contactemail') as $f] {?>
            <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           

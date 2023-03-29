@@ -36,12 +36,12 @@ class BaseconfigurationController extends Zend_Controller_Action
 	));
 
     	$this->config_menu->addPage($wizard);
-    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(array('label' => 'Network settings', 'id' => 'networksettings', 'action' => 'networksettings', 'controller' => 'baseconfiguration')));
-    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(array('label' => 'DNS settings', 'id' => 'dnssettings', 'action' => 'dnssettings', 'controller' => 'baseconfiguration')));
-    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(array('label' => 'Localization', 'id' => 'localization', 'action' => 'localization', 'controller' => 'baseconfiguration')));
-    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(array('label' => 'Date and time', 'id' => 'dateandtime', 'action' => 'dateandtime', 'controller' => 'baseconfiguration')));
-    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(array('label' => 'Proxies', 'id' => 'proxies', 'action' => 'proxies', 'controller' => 'baseconfiguration')));
-    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(array('label' => 'Registration', 'id' => 'registration', 'action' => 'registration', 'controller' => 'baseconfiguration')));
+    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Network settings', 'id' => 'networksettings', 'action' => 'networksettings', 'controller' => 'baseconfiguration'))];
+    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'DNS settings', 'id' => 'dnssettings', 'action' => 'dnssettings', 'controller' => 'baseconfiguration'))];
+    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Localization', 'id' => 'localization', 'action' => 'localization', 'controller' => 'baseconfiguration'))];
+    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Date and time', 'id' => 'dateandtime', 'action' => 'dateandtime', 'controller' => 'baseconfiguration'))];
+    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Proxies', 'id' => 'proxies', 'action' => 'proxies', 'controller' => 'baseconfiguration'))];
+    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Registration', 'id' => 'registration', 'action' => 'registration', 'controller' => 'baseconfiguration'))];
         $view->config_menu = $this->config_menu;
         
         $view->headScript()->appendFile($view->scripts_path.'/baseconfig.js', 'text/javascript');
@@ -121,7 +121,7 @@ class BaseconfigurationController extends Zend_Controller_Action
         $view->interfaces = $interfaces;
         $view->interface = $interface;
     	$this->view->error = '';
-        $this->view->errors = array();
+        $this->view->errors = [];
         
     }
     
@@ -141,7 +141,7 @@ class BaseconfigurationController extends Zend_Controller_Action
     			$this->_helper->getHelper('FlashMessenger')->addMessage('NOK could not save due to restricted feature');
     		} else {
                 if ($form->isValid($request->getPost())) {
-                  $soapres = Default_Model_Localhost::sendSoapRequest('Config_applyNetworkSettings', array('timeout' => 20));
+                  $soapres = Default_Model_Localhost::sendSoapRequest('Config_applyNetworkSettings', ['timeout' => 20)];
                   $this->_helper->getHelper('FlashMessenger')->addMessage($soapres);
                   $this->_redirect('/baseconfiguration/networksettings');
                 }
@@ -177,7 +177,7 @@ class BaseconfigurationController extends Zend_Controller_Action
          	    $oldhelo = $dnsconfig->getHeloName();
          	    $dnsconfig->setHeloName($this->getRequest()->getParam('heloname'));
          	    if ($dnsconfig->getHeloName() != $oldhelo) {
-         	    	Default_Model_Localhost::sendSoapRequest('Service_setServiceToRestart', array('exim_stage1', 'exim_stage4'));
+         	    	Default_Model_Localhost::sendSoapRequest('Service_setServiceToRestart', ['exim_stage1', 'exim_stage4')];
          	    }
          	    $message = $dnsconfig->save();
          	    } else {
@@ -356,7 +356,7 @@ class BaseconfigurationController extends Zend_Controller_Action
 	if ($this->getRequest()->isPost()) {
     		if ($this->getRequest()->getParam('changehostid') ||  $this->getRequest()->getParam('register_ce') || $this->getRequest()->getParam('register') || $this->getRequest()->getParam('unregister')) {
 			if ($this->getRequest()->getParam('register_ce') && $formce->isValid($this->getRequest()->getPost())) { // We use the CE form
-				$keys = array('first_name', 'last_name', 'email', 'company_name', 'address', 'postal_code', 'city', 'country', 'accept_newsletters', 'accept_releases', 'accept_send_statistics');
+				$keys = ['first_name', 'last_name', 'email', 'company_name', 'address', 'postal_code', 'city', 'country', 'accept_newsletters', 'accept_releases', 'accept_send_statistics'];
 				foreach ($keys as $d) {
                                         $mgrce->setData($d, $this->getRequest()->getParam($d));
                                 }
@@ -371,7 +371,7 @@ class BaseconfigurationController extends Zend_Controller_Action
 						$message = 'NOK System could not be registered, please check parameters and connectivity';
                                 }
 			} else if ($this->getRequest()->getParam('register') && $form->isValid($this->getRequest()->getPost())) {
-				foreach (array('clientid', 'resellerid', 'resellerpwd') as $d) {
+				foreach (['clientid', 'resellerid', 'resellerpwd') as $d] {
                            		$mgr->setData($d, $this->getRequest()->getParam($d));
                         	}
                         	$message = $mgr->save();

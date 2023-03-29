@@ -40,7 +40,7 @@ class PreferencesController extends Zend_Controller_Action
             if (!empty($userId)) {
                 if ('PATCH' == $this->getRequest()->getMethod()) {
                 
-                    $data = array();
+                    $data = [];
                 
                     parse_str($this->getRequest()->getRawBody(), $data);
                 

@@ -39,7 +39,7 @@ class Default_Form_Manage_EmailArchiving extends Zend_Form
 		$this->setAttrib('id', 'email_form');
 	    $panellist = new Zend_Form_Element_Select('emailpanel', array(
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         
@@ -71,7 +71,7 @@ class Default_Form_Manage_EmailArchiving extends Zend_Form
 				            'label'    => $t->_('Send a copy of all messages to')." :",
 				            'required' => false,
 				            'size' => 40,
-				            'filters'    => array('StringTrim')));
+				            'filters'    => ['StringTrim'))];
 		$copyto_mail->setValue($this->_email->getPref('copyto_mail'));
 		$copyto_mail->addValidator(new Zend_Validate_EmailAddress(Zend_Validate_Hostname::ALLOW_LOCAL));
 		$this->addElement($copyto_mail);		

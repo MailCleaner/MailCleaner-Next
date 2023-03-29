@@ -42,17 +42,17 @@
     * @var array
     */
    protected $spec_settings_type_ = array(
-                              'usessl' => array('checkbox', 'true'),
-                              'database_type' => array('select', array('mysql' => 'mysql')),
-                              'database' => array('text', 20),
-                              'table' => array('text', 20),
-                              'user' => array('text', 20),
-                              'pass' => array('password', 20),
-                              'login_field' => array('text', 20),
-                              'password_field' => array('text', 20),
-                              'domain_field' => array('text', 20),
-                              'email_field' => array('text', 20),
-                              'crypt_type' => array('select', array('crypt' => 'crypt'))
+                              'usessl' => ['checkbox', 'true'],
+                              'database_type' => array('select', ['mysql' => 'mysql')],
+                              'database' => ['text', 20],
+                              'table' => ['text', 20],
+                              'user' => ['text', 20],
+                              'pass' => ['password', 20],
+                              'login_field' => ['text', 20],
+                              'password_field' => ['text', 20],
+                              'domain_field' => ['text', 20],
+                              'email_field' => ['text', 20],
+                              'crypt_type' => array('select', ['crypt' => 'crypt')]
                                );                          
                              
    public function __construct($type) {

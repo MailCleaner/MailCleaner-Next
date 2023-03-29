@@ -124,7 +124,7 @@ class Api_Model_AddressAPI
 			Zend_Registry::get('response')->setResponse(401, 'authentication required');
 			return false;
 		}
-		$list = array();
+		$list = [];
 		try {
 			if (!isset($params['domain'])) {
 				throw new Exception('Domain not provided');
@@ -134,7 +134,7 @@ class Api_Model_AddressAPI
 			if (isset($params['search'])) {
 				$search = $params['search'];
 			}
-			$emails = $email->fetchAllName(array('domain' => $params['domain'], 'address' => $search));
+			$emails = $email->fetchAllName(['domain' => $params['domain'], 'address' => $search)];
 			foreach ($emails as $em) {
 				$list[] = $em->getParam('address');
 			}
@@ -152,7 +152,7 @@ class Api_Model_AddressAPI
 			return false;
 		}
 		$email = null;
-		$settings = array();
+		$settings = [];
 		try {
 			$email = $this->findEmail($params);
 			if (!$email->getId()) {
@@ -258,8 +258,8 @@ class Api_Model_AddressAPI
         }
 	}
 	
-	private function getParams($email, $params = array()) {
-		$data = array();
+	private function getParams($email, $params = [)] {
+		$data = [];
 		$data['address'] = $email->getParam('address');
 		$data['domain'] = $email->getDomain();
 		switch ($email->getPref('delivery_type')) {
@@ -275,7 +275,7 @@ class Api_Model_AddressAPI
 			default:
 				$data['action_on_spam'] = 'unavailable';
 		}
-		foreach (array('spam_tag', 'summary_type') as $pref) {
+		foreach (['spam_tag', 'summary_type') as $pref] {
 		   $data[$pref] = $email->getPref($pref);
 		}
 		$data['summary_frequency'] = $email->getSummaryFrequency();

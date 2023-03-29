@@ -94,7 +94,7 @@ class Default_Model_DomainPref
 	}
 	
 	public function getAvailableParams() {
-		$ret = array();
+		$ret = [];
 		foreach ($this->_values as $key => $value) {
 			$ret[]=$key;
 		}

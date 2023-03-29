@@ -10,14 +10,14 @@
  * message reasons
  */
 class SoapReasons {
-  public $reasons = array();    
+  public $reasons = [];    
 }
 
 /**
  * message text
  */
 class SoapText {
-  public $text = array();
+  public $text = [];
 }
 
 /**

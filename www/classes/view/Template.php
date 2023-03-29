@@ -26,7 +26,7 @@ class Template {
    * content of the template
    * @var array
    */
-  private $content_ = array();
+  private $content_ = [];
   
   /**
    * template model to be used
@@ -45,18 +45,18 @@ class Template {
    * conditions
    * @var array
    */
-  private $conditions_ = array();
+  private $conditions_ = [];
   /**
    * defaults value set in template
    * @var array
    */  
-  private $defaults_ = array();
+  private $defaults_ = [];
 
   /**
    * sub-templates list
    * @var array
    */
-  private $templates_ = array();
+  private $templates_ = [];
   
 /**
  * constructor
@@ -89,7 +89,7 @@ public function __construct($tmpl) {
   }
 
   // if an address as been passed through url
-  $matches = array();
+  $matches = [];
   if (isset($_GET['a']) && preg_match('/^(\S+)\@(\S+)$/', $_GET['a'], $matches)) {
     $dom = $matches[2];
     if (in_array($dom, $sysconf_->getFilteredDomains())) {
@@ -193,7 +193,7 @@ public function addTMPLFile($name, $file) {
   }
   $this->added_tmpl_[$name] = $file;
   // RE-pre-process template
-  $this->content_ = array();
+  $this->content_ = [];
   $lines = file($this->file_);
   $this->parseLines($lines);
 }
@@ -366,7 +366,7 @@ private function getCondition($tag) {
  * @return         boolean true on success, false on failure
  */
 private function parseLines($lines) {
-  $matches = array();
+  $matches = [];
   $hidden = false;
   
   foreach ($lines as $line) {

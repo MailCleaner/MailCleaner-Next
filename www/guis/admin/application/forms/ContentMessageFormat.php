@@ -12,15 +12,15 @@ class Default_Form_ContentMessageFormat extends ZendX_JQuery_Form
 {
 	protected $_dangerouscontent;
 	
-	protected $_allowoptions = array('yes' => 'allow', 'no' => 'block');
-        protected $_blockoptions = array('no' => 'allow', 'yes' => 'block');
+	protected $_allowoptions = ['yes' => 'allow', 'no' => 'block'];
+        protected $_blockoptions = ['no' => 'allow', 'yes' => 'block'];
 		
 	protected $_fields = array(
-		   'block_encrypt' => array('text' => 'Encrypted messages', 'options' => '_blockoptions'),
-		   'block_unencrypt' => array('text' => 'Unencrypted messages', 'options' => '_blockoptions'),
-		   'allow_passwd_archives' => array('text' => 'Password protected archives', 'options' => '_allowoptions'),
-		   'allow_partial' => array('text' => 'Partial contents', 'options' => '_allowoptions'),
-		   'allow_external_bodies' => array('text' => 'External bodies', 'options' => '_allowoptions'),
+		   'block_encrypt' => ['text' => 'Encrypted messages', 'options' => '_blockoptions'],
+		   'block_unencrypt' => ['text' => 'Unencrypted messages', 'options' => '_blockoptions'],
+		   'allow_passwd_archives' => ['text' => 'Password protected archives', 'options' => '_allowoptions'],
+		   'allow_partial' => ['text' => 'Partial contents', 'options' => '_allowoptions'],
+		   'allow_external_bodies' => ['text' => 'External bodies', 'options' => '_allowoptions'],
 		);
 	
 	public function __construct($dc) {
@@ -49,7 +49,7 @@ class Default_Form_ContentMessageFormat extends ZendX_JQuery_Form
 			$ff = new Zend_Form_Element_Select($mf, array(
                			'label'      => $t->_($f['text'])." :",
                			'required'   => true,
-               			'filters'    => array('StringTrim')));
+               			'filters'    => ['StringTrim'))];
         
           		foreach ($this->{$f['options']} as $lk => $lv) {
              			$ff->addMultiOption($lk, $t->_($lv));

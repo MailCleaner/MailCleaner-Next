@@ -170,7 +170,7 @@ class MCSoap_Config
 		$starter = '/etc/init.d/ntp';
         $full = '';
 
-	        if (is_array($sync) && defined($sync['sync'])) {
+	        if (is_[$sync] && defined($sync['sync'])) {
                   $sync = $sync['sync'];
                 }
 	    if (! file_exists($tmpconfigfile)) {
@@ -199,7 +199,7 @@ class MCSoap_Config
 		    if ($sync) {
 		    	# fetch server to sync
 		    	$content = file($configfile);
-		    	$servers = array();
+		    	$servers = [];
 		    	foreach ($content as $line) {
 		    		if (preg_match('/^\s*server\s+(\S+)/', $line, $matches)) {
 		    			$servers[] = $matches[1];
@@ -259,7 +259,7 @@ class MCSoap_Config
 		$configfile = '/etc/mailcleaner.conf';
 		
 		$txt = '';
-		$found = array();
+		$found = [];
 		if (file_exists($configfile)) {
 			$content = file($configfile);
 			foreach ($content as $line) {

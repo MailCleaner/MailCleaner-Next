@@ -34,7 +34,7 @@ class Default_Form_Manage_UserAuthentification extends Zend_Form
 		$this->setAttrib('id', 'user_form');
 		$panellist = new Zend_Form_Element_Select('userpanel', array(
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 		## TODO: add specific validator
 		$panellist->addValidator(new Zend_Validate_Alnum());
 
@@ -61,7 +61,7 @@ class Default_Form_Manage_UserAuthentification extends Zend_Form
 		$realname = new  Zend_Form_Element_Text('realname', array(
             'label'   => $t->_('Real name')." :",
 		    'required' => false,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 		$realname->setValue($this->_local->getParam('realname'));
 		$this->addElement($realname);
 	  
@@ -69,7 +69,7 @@ class Default_Form_Manage_UserAuthentification extends Zend_Form
 			$address = new  Zend_Form_Element_Text('email', array(
             'label'   => $t->_('Email address')." :",
 		    'required' => true,
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 			$address->setValue($this->_local->getParam('email'));
 			$this->addElement($address);
 		}
@@ -99,7 +99,7 @@ class Default_Form_Manage_UserAuthentification extends Zend_Form
 
 	public function setParams($request, $user) {
 		$local = $user->getLocalUserObject();
-		foreach (array('realname', 'email') as $pref) {
+		foreach (['realname', 'email') as $pref] {
 			if ($request->getParam($pref)) {
 				$local->setParam($pref, $request->getParam($pref));
 			}

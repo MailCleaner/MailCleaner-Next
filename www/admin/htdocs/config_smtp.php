@@ -26,7 +26,7 @@ global $sysconf_;
 global $admin_;
 
 // check authorizations
-$admin_->checkPermissions(array('can_configure'));
+$admin_->checkPermissions(['can_configure')];
 
 // get ldap settings
 //@todo clean up this ! maybe use a LDAPSettings object

@@ -59,7 +59,7 @@ $message = preg_replace('/__gt__/', '>', $message);
 
 $lines = preg_split('/\n/', $message);
 $inreceived = 0;
-$matches = array();
+$matches = [];
 $sender = "";
 $sender_local = "";
 $sender_domain = "";

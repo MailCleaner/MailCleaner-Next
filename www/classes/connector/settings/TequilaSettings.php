@@ -37,12 +37,12 @@
     * @var array
     */
    protected $spec_settings_type_ = array(
-                              'usessl' => array('checkbox', 'true'),
-                              'url' => array('text', 20),
-                              'fields' => array('text', 30),
-                              'loginfield' => array('text', 20),
-                              'realnameformat' => array('text', 30),
-                              'allowsfilter' => array('text', 30)
+                              'usessl' => ['checkbox', 'true'],
+                              'url' => ['text', 20],
+                              'fields' => ['text', 30],
+                              'loginfield' => ['text', 20],
+                              'realnameformat' => ['text', 30],
+                              'allowsfilter' => ['text', 30]
                              );                          
 
    public function __construct($type) {

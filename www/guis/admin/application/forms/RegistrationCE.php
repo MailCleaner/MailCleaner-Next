@@ -60,7 +60,7 @@ class Default_Form_RegistrationCE extends ZendX_JQuery_Form
 	    $email = new  Zend_Form_Element_Text('email', array(
                 'label'    => $t->_('Email address')." :",
                 'required' => false,
-                'filters'    => array('StringToLower', 'StringTrim')));
+                'filters'    => ['StringToLower', 'StringTrim'))];
             $email->setValue($res['email']);
             $email->addValidator(new Zend_Validate_EmailAddress(Zend_Validate_Hostname::ALLOW_LOCAL));
             $this->addElement($email);
@@ -94,7 +94,7 @@ class Default_Form_RegistrationCE extends ZendX_JQuery_Form
                     'label' => $t->_('Country'). " :",
 		    'empty_option' => 'Please choose your country',
                     'required' => false,
-		    'filters'    => array('StringTrim'),
+		    'filters'    => ['StringTrim'],
 	    ));
 
 	   $countries = array( 

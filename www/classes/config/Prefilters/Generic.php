@@ -25,7 +25,7 @@ public function getSpecificTMPL() {
 }
 
 public function getSpeciticReplace($template, $form) {  
-  return array();
+  return [];
 }
 
 public function subsave($posted) {}

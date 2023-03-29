@@ -100,7 +100,7 @@ class Default_Model_MessageTrace
 	}
 
 	public function getAvailableParams() {
-		$ret = array();
+		$ret = [];
 		foreach ($this->_values as $key => $value) {
 			$ret[]=$key;
 		}
@@ -132,7 +132,7 @@ class Default_Model_MessageTrace
 		$locallen = 25;
 		$domainlen = 25;
 		$res = $address;
-		$ca = array();
+		$ca = [];
 		foreach (preg_split('/,/', $address) as $a) {
 		if (preg_match('/(\S+)\@(\S+)/', $a, $matches)) {
 			$str = "";

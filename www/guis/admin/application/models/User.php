@@ -20,8 +20,8 @@ class Default_Model_User
 	protected $_mapper;
 	protected $_domain;
 	protected $_prefs;
-	protected $_addresses = array();
-	protected $_addressesObjects = array();
+	protected $_addresses = [];
+	protected $_addressesObjects = [];
 	protected $_localuser;
 	
 	protected $_configpanels = array(0 => 'interfacesettings', 1 => 'quarantinedisplay', 
@@ -46,7 +46,7 @@ class Default_Model_User
 	}
 	
 	public function getAvailableParams() {
-		$ret = array();
+		$ret = [];
 		foreach ($this->_values as $key => $value) {
 			$ret[]=$key;
 		}
@@ -209,7 +209,7 @@ class Default_Model_User
     }
     
     public function getConfigPanels() {
-    	$panels = array();
+    	$panels = [];
     	$t = Zend_Registry::get('translate');
     	if (! $this->getDomainObject()->isAuthLocal()) {
     	    unset($this->_configpanels[4]);
@@ -254,7 +254,7 @@ class Default_Model_User
             $emails = $email->fetchAllRegistered(array('domain' => $this->getDomainObject()->getParam('name'), 'user' => $this->getId()));
 
             foreach ($emails as $e) {
-                if (!in_array($e, $this->_addresses)) {
+                if (!in_[$e, $this->_addresses)] {
                     $this->_addresses[$e] = $e;
                 }
             }
@@ -281,7 +281,7 @@ class Default_Model_User
             return $this->_addressesObjects;
         }
         
-        $ret = array();
+        $ret = [];
         foreach ($this->getAddresses($addpending) as $add => $ismain) {
             $a = new Default_Model_Email();
             $a->find($add);
@@ -352,8 +352,8 @@ class Default_Model_User
     }
     
     public function reloadAddressesList() {
-        $this->_addresses=array();
-        $this->_addressesObjects=array();
+        $this->_addresses=[];
+        $this->_addressesObjects=[];
        
     }
     

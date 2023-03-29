@@ -49,7 +49,7 @@ class Default_Model_SnmpdConfigMapper
     public function fetchAll()
     {
         $resultSet = $this->getDbTable()->fetchAll();
-        $entries   = array();
+        $entries   = [];
         foreach ($resultSet as $row) {
             $entry = new Default_Model_SnmpdConfig();
             $entry->setId($row->id);
@@ -65,7 +65,7 @@ class Default_Model_SnmpdConfigMapper
             unset($data['id']);
             $res = $this->getDbTable()->insert($data);
         } else {
-            $res = $this->getDbTable()->update($data, array('set_id = ?' => $id));
+            $res = $this->getDbTable()->update($data, ['set_id = ?' => $id)];
         }
         return $res;
     }

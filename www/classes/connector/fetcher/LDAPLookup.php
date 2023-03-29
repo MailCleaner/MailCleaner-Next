@@ -23,7 +23,7 @@
      * Definition of possible mail attributes
      * @var array
      */
-     protected $mail_attributes_ = array('mail', 'maildrop', 'mailAlternateAddress', 'mailalternateaddress', 'proxyaddresses', 'proxyAddresses', 'oldinternetaddress', 'oldInternetAddress', 'cn', 'userPrincipalName', 'mailPrimaryAddress', 'mailAlternativeAddress');
+     protected $mail_attributes_ = ['mail', 'maildrop', 'mailAlternateAddress', 'mailalternateaddress', 'proxyaddresses', 'proxyAddresses', 'oldinternetaddress', 'oldInternetAddress', 'cn', 'userPrincipalName', 'mailPrimaryAddress', 'mailAlternativeAddress'];
     
     public function fetch($username, $domain) {
         $settings = $domain->getConnectorSettings();
@@ -38,7 +38,7 @@
                     $userfilter);
 
         $r = ldap_search($this->connection_, $settings->getSetting('basedn'), $filter);
-        $ret = array(); 
+        $ret = []; 
         if ($r) {
           $result = ldap_first_entry($this->connection_, $r);
           while ($result) {
@@ -95,7 +95,7 @@
     }
     
     public function searchUsers($u, $d) {
-    	$ignore_username = array('/SM_[a-z0-9]{17}/');
+    	$ignore_username = ['/SM_[a-z0-9]{17}/'];
         $settings = $d->getConnectorSettings();
         if (! $this->connect($settings)) {
             return $this->getAddresses();
@@ -108,7 +108,7 @@
             $filter .= "($att=*)";
         }
         $filter .= "))";
-        $ret = array();
+        $ret = [];
         $r = @ldap_search($this->connection_, $settings->getSetting('basedn'), $filter, array($settings->getSetting('useratt')), 0, 1000);
         if ($r) {
           $entry = ldap_first_entry($this->connection_, $r);
@@ -157,8 +157,8 @@
       }
       #$filter .= "))";
       $filter .= ")";
-      $ret = array();
-      $matches = array();
+      $ret = [];
+      $matches = [];
       $r = @ldap_search($this->connection_, $settings->getSetting('basedn'), $filter, $this->mail_attributes_, 0, 1000);
       $add_expr = preg_replace('/\*/', '.*', $add_expr);
       if ($r) {

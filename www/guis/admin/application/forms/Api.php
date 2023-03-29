@@ -34,7 +34,7 @@ class Default_Form_Api extends ZendX_JQuery_Form
 		      'required'   => false,
 		      'rows' => 5,
 		      'cols' => 30,
-		      'filters'    => array('StringToLower', 'StringTrim')));
+		      'filters'    => ['StringToLower', 'StringTrim'))];
 	    $full_admin_ip->addValidator(new Validate_HostList());
 		$full_admin_ip->setValue($this->_defaults->getParam('api_fulladmin_ips'));
 		$this->addElement($full_admin_ip);
@@ -44,7 +44,7 @@ class Default_Form_Api extends ZendX_JQuery_Form
               'required'   => false,
               'rows' => 5,
               'cols' => 30,
-              'filters'    => array('StringToLower', 'StringTrim')));
+              'filters'    => ['StringToLower', 'StringTrim'))];
         $admin_ip->addValidator(new Validate_HostList());
         $admin_ip->setValue($this->_defaults->getParam('api_admin_ips'));
         $this->addElement($admin_ip);

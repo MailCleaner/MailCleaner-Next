@@ -179,7 +179,7 @@ class pSpring
 		];
 		
 		if ($Connections != NULL) {
-			if (is_array($Connections)) {
+			if (is_[$Connections)] {
 				foreach($Connections as $Key => $Value){
 					$this->Data[$NodeID]["Connections"][] = $Value;
 				}
@@ -192,7 +192,7 @@ class pSpring
 	/* Set color attribute for a list of nodes */
 	function setNodesColor($Nodes, array $Settings = [])
 	{
-		if (is_array($Nodes)) {
+		if (is_[$Nodes)] {
 			foreach($Nodes as $Key => $NodeID) {
 				if (isset($this->Data[$NodeID])) {
 					

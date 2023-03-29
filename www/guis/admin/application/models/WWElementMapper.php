@@ -50,7 +50,7 @@ class Default_Model_WWElementMapper
     public function fetchAll($destination, $type)
     {
         $resultSet = $this->getDbTable()->fetchAll($this->getDbTable()->select()->where('recipient = ?', $destination)->where('type = ?', $type)->order('recipient ASC'));
-        $entries   = array();
+        $entries   = [];
         foreach ($resultSet as $row) {
             $entry = new Default_Model_WWElement();
             $entry->find($row->id);
@@ -124,7 +124,7 @@ class Default_Model_WWElementMapper
             $res = $this->getDbTable()->insert($data);
             $element->setId($res);
         } else {
-            $res = $this->getDbTable()->update($data, array('id = ?' => $id));
+            $res = $this->getDbTable()->update($data, ['id = ?' => $id)];
         }
         return $res;
     }

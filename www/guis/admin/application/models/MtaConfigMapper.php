@@ -49,7 +49,7 @@ class Default_Model_MtaConfigMapper
     public function fetchAll()
     {
         $resultSet = $this->getDbTable()->fetchAll();
-        $entries   = array();
+        $entries   = [];
         foreach ($resultSet as $row) {
             $entry = new Default_Model_MtaConfig();
             $entry->setId($row->id);
@@ -65,7 +65,7 @@ class Default_Model_MtaConfigMapper
             unset($data['id']);
             $res = $this->getDbTable()->insert($data);
         } else {
-            $res = $this->getDbTable()->update($data, array('stage = ?' => $id));
+            $res = $this->getDbTable()->update($data, ['stage = ?' => $id)];
         }
         return $res;
     }

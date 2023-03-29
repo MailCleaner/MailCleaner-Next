@@ -210,7 +210,7 @@ class SystemConfig extends PrefHandler {
     /**
      * get the name of the domains actually filtered by the system
      * return the domain names filtered by the system, accordingly to the administrator rights
-     * @return    array()  array of domain names
+     * @return    []  array of domain names
      * @todo cleanup $dom variable for sql injection
      */
     public function getFilteredDomains() {

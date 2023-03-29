@@ -11,7 +11,7 @@
 class Default_Model_NTPSettings
 {	
 	protected $_configfile = '/etc/ntp.conf';
-	protected $_servers = array();
+	protected $_servers = [];
 	
 	public function __construct() {
 	}
@@ -36,7 +36,7 @@ class Default_Model_NTPSettings
 	}
 	
 	public function setServers($string) {
-		$this->_servers = array();
+		$this->_servers = [];
 		if ($string == "") {
 			return;
 		}
@@ -77,7 +77,7 @@ class Default_Model_NTPSettings
     		}
     	    $written = file_put_contents($tmpfile, $txt);
     	    if ($written) {
-    	       $soapres = Default_Model_Localhost::sendSoapRequest('Config_saveNTPConfig', array('sync' => $sync, 'timeout' => 20));
+    	       $soapres = Default_Model_Localhost::sendSoapRequest('Config_saveNTPConfig', ['sync' => $sync, 'timeout' => 20)];
     	       return $soapres;
     	    } else {
     	    	'NOK could not write to temporary file';

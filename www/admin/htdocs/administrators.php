@@ -26,7 +26,7 @@ global $sysconf_;
 global $admin_;
 
 // first check authorization
-$admin_->checkPermissions(array('can_configure'));
+$admin_->checkPermissions(['can_configure')];
 
 // get the request parameters
 $selected_admin = "";

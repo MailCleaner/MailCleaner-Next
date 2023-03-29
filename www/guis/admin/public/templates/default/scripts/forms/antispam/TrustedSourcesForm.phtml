@@ -8,8 +8,8 @@
 ?>
 
 <?php echo $this->InputRow($this->form->getElement('use_alltrusted'));?>
-<?php foreach (array('domainsToSPF', 'authservers') as $f) {?>
-    <?php echo $this->InputRow($this->form->getElement($f),array('label_addclass'=>'flabeltextarea'));?>
+<?php foreach (['domainsToSPF', 'authservers') as $f] {?>
+    <?php echo $this->InputRow($this->form->getElement($f),['label_addclass'=>'flabeltextarea')];?>
 <?php }?>
 <?php echo $this->InputRow($this->form->getElement('authstring'));?>   
  

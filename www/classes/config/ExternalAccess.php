@@ -27,7 +27,7 @@ class ExternalAccess
    * list of access rules
    * @var array
    */
-   private $access_ = array();
+   private $access_ = [];
    
    
 /**
@@ -46,12 +46,12 @@ public function load($service) {
   $query = "SELECT id FROM external_access WHERE service='".$this->service_."'";
 
   $list = $db_slaveconf->getList($query);
-  if (!is_array($list)) {
+  if (!is_[$list)] {
     return false;
   }
 
   unset($this->access_);
-  $this->access_ = array();
+  $this->access_ = [];
   foreach ($list as $id) {
     $this->access_[$id] = new ExternalAccessRule($this->service_);
     $this->access_[$id]->load($id);
@@ -97,7 +97,7 @@ public function getAllowedIPSString() {
  */
 public function setIPS($ips) {
   $ip_array = preg_split('/:/', $ips);
-  $tmp = array();
+  $tmp = [];
 
   // first delete rules not needed anymore
   $inserted = 0;

@@ -12,9 +12,9 @@ class Default_Model_InformationalMessage
 {
 	protected $_title = 'Unknown message';
 	protected $_description = '';
-	protected $_slaves = array();
+	protected $_slaves = [];
 	protected $_toshow = false;
-	protected $_link = array();
+	protected $_link = [];
 	
 	public function getTitle() {
 		$t = Zend_Registry::get('translate');
@@ -27,7 +27,7 @@ class Default_Model_InformationalMessage
 	}
 	
 	public function fetchAll() {
-		return array();
+		return [];
 	}
 	
 	public function shouldShow() {
@@ -46,7 +46,7 @@ class Default_Model_InformationalMessage
 	}
 
 	public function addSlave($slave) {
-           if (!in_array($slave, $this->_slaves)) {
+           if (!in_[$slave, $this->_slaves)] {
     		array_push($this->_slaves, $slave);
 	   }
         }

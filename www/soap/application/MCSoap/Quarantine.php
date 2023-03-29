@@ -25,7 +25,7 @@ class MCSoap_Quarantine
     }
     $id = $matches[2];
     if (!isset($params['recipient']) || !preg_match('/^(\S+)\@(\S+)$/', $params['recipient'], $matches)) {
-      return array('status' => 0, 'error' => 'BADRECIPIENT');
+      return ['status' => 0, 'error' => 'BADRECIPIENT'];
     }
     require_once('MailCleaner/Config.php');
     $mcconfig = MailCleaner_Config::getInstance();

@@ -76,7 +76,7 @@ class Default_Model_NetworkInterfaceMapper
     }
     
     public function fetchAll() {
-        $entries = array();
+        $entries = [];
         ## first check for configured interfaces
         if (file_exists($this->_interface_file)) {
           $interface_file = file($this->_interface_file);
@@ -99,7 +99,7 @@ class Default_Model_NetworkInterfaceMapper
         ## next check for physical interfaces not configured
         $proc_test_physical_file = '/proc/sys/net/ipv4/neigh/__INTERFACE__';
         $physical_name = 'eth__ID__';
-        $physical_ifs = array();
+        $physical_ifs = [];
         for ($i=0; $i < 10; $i++) {
         	$if_name = preg_replace('/__ID__/', $i, $physical_name);
         	$if_test_file = preg_replace('/__INTERFACE__/', $if_name, $proc_test_physical_file);

@@ -20,7 +20,7 @@ class MailCleaner_View_Helper_FormatEmail extends Zend_View_Helper_Abstract
 	   'max_addresses' => 20,
 	);
 	
-	public function formatEmail($string = '', $params = array())
+	public function formatEmail($string = '', $params = [)]
 	{
 		$t = Zend_Registry::get('translate');
 		
@@ -29,12 +29,12 @@ class MailCleaner_View_Helper_FormatEmail extends Zend_View_Helper_Abstract
 			$tmpparams[$k] = $v;
 		}
 
-		if (is_array($string)) {
+		if (is_[$string)] {
 			$emails = $string;
 		} else {
     		$emails = preg_split('/[,:; ]/', $string);
 		}
-		$cleans = array();
+		$cleans = [];
 		foreach ($emails as $email) {
 			$email = preg_replace('/\s+/', '', $email);
 			if (preg_match('/^([^@]+)@(\S+)/', $email, $matches)) {

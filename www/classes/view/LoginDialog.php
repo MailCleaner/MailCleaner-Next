@@ -77,7 +77,7 @@ public function __construct() {
 	$this->username_ = str_replace('\'', '\\\'', $this->username_); // avoid problems with ' in usernames..
     
     // if we can find domain in login name given (such as login@domain)
-    $ret = array();
+    $ret = [];
     if (preg_match('/(.+)[@%](\S+)$/', $this->username_, $ret)) {
        $domain = $ret[2];
     }
@@ -168,7 +168,7 @@ public function start()
     }
     $user->setDomain($this->domain_->getPref('name'));
     // setup some default values
-    foreach (array('gui_displayed_days') as $p) {
+    foreach (['gui_displayed_days') as $p] {
       if ($this->auth_->getValue($p) != "") {
         $user->setTmpPref($p, $this->auth_->getValue($p));
       }
@@ -181,7 +181,7 @@ public function start()
         $user->setName($user->getMainAddress());
         $email = new Email();
         $email->load($user->getMainAddress());
-        foreach (array('gui_displayed_spams', 'gui_displayed_days', 'gui_mask_forced', 'gui_graph_type', 'gui_group_quarantines') as $p) {
+        foreach (['gui_displayed_spams', 'gui_displayed_days', 'gui_mask_forced', 'gui_graph_type', 'gui_group_quarantines') as $p] {
           $user->setPref($p, $email->getPref($p));
         }
     // otherwise load user

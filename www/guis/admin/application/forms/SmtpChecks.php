@@ -12,7 +12,7 @@ class Default_Form_SmtpChecks extends ZendX_JQuery_Form
 {
 	protected $_mta;
 	
-	public $_rbl_checks = array();
+	public $_rbl_checks = [];
 	
 	public function __construct($mta) {
 		$this->_mta = $mta;
@@ -108,7 +108,7 @@ class Default_Form_SmtpChecks extends ZendX_JQuery_Form
 		    'required' => false,
 		    'size' => 2,
 	        'class' => 'fieldrighted',
-		    'filters'    => array('Alnum', 'StringTrim')));
+		    'filters'    => ['Alnum', 'StringTrim'))];
 	    $callouttimeout->setValue($this->_mta->getParam('callout_timeout'));
         $callouttimeout->addValidator(new Zend_Validate_Int());
 	    $this->addElement($callouttimeout);
@@ -119,7 +119,7 @@ class Default_Form_SmtpChecks extends ZendX_JQuery_Form
 		    'required' => true,
 		    'size' => 2,
 	        'class' => 'fieldrighted',
-		    'filters'    => array('Alnum', 'StringTrim')));
+		    'filters'    => ['Alnum', 'StringTrim'))];
 	    $rbltimeout->setValue($this->_mta->getParam('rbls_timeout'));
         $rbltimeout->addValidator(new Zend_Validate_Int());
 	    $this->addElement($rbltimeout);
@@ -131,7 +131,7 @@ class Default_Form_SmtpChecks extends ZendX_JQuery_Form
 		      'required'   => false,
 		      'rows' => 5,
 		      'cols' => 30,
-		      'filters'    => array('StringToLower', 'StringTrim')));
+		      'filters'    => ['StringToLower', 'StringTrim'))];
 	    $rblignore->addValidator(new Validate_SMTPHostList());
 		$rblignore->setValue($this->_mta->getParam('rbls_ignore_hosts'));
 		$this->addElement($rblignore);
@@ -145,7 +145,7 @@ class Default_Form_SmtpChecks extends ZendX_JQuery_Form
 		      'required'   => false,
 		      'rows' => 5,
 		      'cols' => 30,
-		      'filters'    => array('StringToLower', 'StringTrim')));
+		      'filters'    => ['StringToLower', 'StringTrim'))];
 	    $spf_dmarc_ignore->addValidator(new Validate_SMTPHostList());
 		$spf_dmarc_ignore->setValue($this->_mta->getParam('spf_dmarc_ignore_hosts'));
 		$this->addElement($spf_dmarc_ignore);
@@ -232,7 +232,7 @@ class Default_Form_SmtpChecks extends ZendX_JQuery_Form
 	$long_lines = new Zend_Form_Element_Select('long_lines', array(
                     'label'      => $t->_('What to do with invalid long lines')." :",
                     'required'   => true,
-                    'filters'    => array('StringTrim')));
+                    'filters'    => ['StringTrim'))];
         $long_lines->addMultiOption('ignore', $t->_("Ignore errors; relay invalid SMTP"));
         $long_lines->addMultiOption('fix', $t->_("Fold long lines; makes SMTP valid, but could break DKIM signing"));
         $long_lines->addMultiOption('reject', $t->_("Reject invalid long lines"));

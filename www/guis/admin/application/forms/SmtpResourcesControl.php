@@ -34,7 +34,7 @@ class Default_Form_SmtpResourcesControl extends ZendX_JQuery_Form
 		    'required' => false,
 		    'size' => 3,
 	        'class' => 'fieldrighted',
-		    'filters'    => array('Alnum', 'StringTrim')));
+		    'filters'    => ['Alnum', 'StringTrim'))];
 		
 		$value = $this->_mta->getParam('smtp_receive_timeout');
 		$value = preg_replace('/[^0-9]/', '', $value);
@@ -49,7 +49,7 @@ class Default_Form_SmtpResourcesControl extends ZendX_JQuery_Form
                         'required' => false,
                         'size' => 3,
                         'class' => 'fieldrighted',
-                        'filters'    => array('Alnum', 'StringTrim')));
+                        'filters'    => ['Alnum', 'StringTrim'))];
 
                 $value = $this->_mta->getParam('max_rcpt');
                 $value = preg_replace('/[^0-9]/', '', $value);
@@ -64,7 +64,7 @@ class Default_Form_SmtpResourcesControl extends ZendX_JQuery_Form
 		    'required' => false,
 		    'size' => 6,
             'class' => 'max_conn_field',
-		    'filters'    => array('Alnum', 'StringTrim')));
+		    'filters'    => ['Alnum', 'StringTrim'))];
 	    $maxsimconn->setValue($this->_mta->getParam('smtp_accept_max'));
         $maxsimconn->addValidator(new Zend_Validate_Int());
 	    $this->addElement($maxsimconn);
@@ -75,7 +75,7 @@ class Default_Form_SmtpResourcesControl extends ZendX_JQuery_Form
 		    'required' => false,
 		    'size' => 6,
             'class' => 'max_conn_field',
-		    'filters'    => array('Alnum', 'StringTrim')));
+		    'filters'    => ['Alnum', 'StringTrim'))];
 	    $maxhostconn->setValue($this->_mta->getParam('smtp_accept_max_per_host'));
         $maxhostconn->addValidator(new Zend_Validate_Int());
 	    $this->addElement($maxhostconn);
@@ -86,7 +86,7 @@ class Default_Form_SmtpResourcesControl extends ZendX_JQuery_Form
             'required' => false,
             'size' => 6,
 	        'class' => 'max_conn_field',
-            'filters'    => array('Alnum', 'StringTrim')));
+            'filters'    => ['Alnum', 'StringTrim'))];
         $maxhosttrustconn->setValue($this->_mta->getParam('smtp_accept_max_per_trusted_host'));
         $maxhosttrustconn->addValidator(new Zend_Validate_Int());
         $this->addElement($maxhosttrustconn);
@@ -96,7 +96,7 @@ class Default_Form_SmtpResourcesControl extends ZendX_JQuery_Form
             'required' => false,
             'size' => 6,
 	        'class' => 'max_conn_field',
-            'filters'    => array('Alnum', 'StringTrim')));
+            'filters'    => ['Alnum', 'StringTrim'))];
         $reserveconn->setValue($this->_mta->getParam('smtp_reserve'));
         $reserveconn->addValidator(new Zend_Validate_Int());
         $this->addElement($reserveconn);
@@ -106,7 +106,7 @@ class Default_Form_SmtpResourcesControl extends ZendX_JQuery_Form
                 'required' => false,
                 'size' => 6,
                 'class' => 'max_conn_field',
-                'filters'    => array('Alnum', 'StringTrim')));
+                'filters'    => ['Alnum', 'StringTrim'))];
         $rcptmaxpercon->setValue($this->_mta->getParam('smtp_accept_max_per_connection'));
         $rcptmaxpercon->addValidator(new Zend_Validate_Int());
         $this->addElement($rcptmaxpercon);
@@ -115,7 +115,7 @@ class Default_Form_SmtpResourcesControl extends ZendX_JQuery_Form
             'label'    => $t->_('Refuse untrusted connections if load is higher than')." :",
             'required' => false,
             'size' => 6,
-            'filters'    => array('Alnum', 'StringTrim')));
+            'filters'    => ['Alnum', 'StringTrim'))];
         $loadreserveconn->setValue($this->_mta->getParam('smtp_load_reserve'));
         $loadreserveconn->addValidator(new Zend_Validate_Int());
         $this->addElement($loadreserveconn);
@@ -126,7 +126,7 @@ class Default_Form_SmtpResourcesControl extends ZendX_JQuery_Form
 		    'required' => false,
 		    'size' => 10,
 	        'class' => 'fieldrighted',
-		    'filters'    => array('Alnum', 'StringTrim')));
+		    'filters'    => ['Alnum', 'StringTrim'))];
 	    $value = $this->_mta->getParam('global_msg_max_size');
 	    if (preg_match('/^(\d+)([MK])/', $value, $matches)) {
 	    	$value = $matches[1];
@@ -142,7 +142,7 @@ class Default_Form_SmtpResourcesControl extends ZendX_JQuery_Form
 	                'label'    => $t->_('Add Reply-To address to error messages')." :",
 	                'required' => false,
 	                'size' => 40,
-	                'filters'    => array()));
+	                'filters'    => [))];
 	    $adderrorsreplyto->setValue($this->_mta->getParam('errors_reply_to'));
 	    require_once('Validate/EmailHeader.php');
         $adderrorsreplyto->addValidator(new Validate_EmailHeader(Zend_Validate_Hostname::ALLOW_LOCAL));
@@ -154,14 +154,14 @@ class Default_Form_SmtpResourcesControl extends ZendX_JQuery_Form
 		    'required' => false,
 		    'size' => 3,
 	        'class' => 'fieldrighted',
-		    'filters'    => array('Alnum', 'StringTrim')));
+		    'filters'    => ['Alnum', 'StringTrim'))];
 	    $retrydelayvalue->setValue($retryrule->getDelayValue());
         $retrydelayvalue->addValidator(new Zend_Validate_Int());
 	    $this->addElement($retrydelayvalue);
 	    
 	    $retrydelayunit = new Zend_Form_Element_Select('retry_delay_unit', array(
             'required'   => true,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
         foreach ($retryrule->getUnits() as $unit => $unitname) {
         	$retrydelayunit->addMultiOption($unit, $t->_($unitname));
@@ -174,14 +174,14 @@ class Default_Form_SmtpResourcesControl extends ZendX_JQuery_Form
 		    'required' => false,
 		    'size' => 3,
 	        'class' => 'fieldrighted',
-		    'filters'    => array('Alnum', 'StringTrim')));
+		    'filters'    => ['Alnum', 'StringTrim'))];
 	    $retrycutoffvalue->setValue($retryrule->getCutoffValue());
         $retrycutoffvalue->addValidator(new Zend_Validate_Int());
 	    $this->addElement($retrycutoffvalue);
 	    
 	    $retrycutoffunit = new Zend_Form_Element_Select('retry_cutoff_unit', array(
             'required'   => true,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
         foreach ($retryrule->getUnits() as $unit => $unitname) {
         	$retrycutoffunit->addMultiOption($unit, $t->_($unitname));
@@ -189,13 +189,13 @@ class Default_Form_SmtpResourcesControl extends ZendX_JQuery_Form
         $retrycutoffunit->setValue($retryrule->getCutoffUnit());
         $this->addElement($retrycutoffunit);
 	    
-        foreach (array('rate', 'trusted_rate') as $rtype ) {
+        foreach (['rate', 'trusted_rate') as $rtype ] {
           $ratelimit = new Default_Model_RatelimitRule($this->_mta->getParam($rtype.'limit_rule'));
           $ratecount =  new  Zend_Form_Element_Text($rtype.'_count', array(
 		    'required' => false,
 		    'size' => 3,
 	        'class' => 'fieldrighted',
-		    'filters'    => array('Alnum', 'StringTrim')));
+		    'filters'    => ['Alnum', 'StringTrim'))];
           $ratecount->setValue($ratelimit->getCountValue());
           $ratecount->addValidator(new Zend_Validate_Int());
 	      $this->addElement($ratecount);
@@ -204,14 +204,14 @@ class Default_Form_SmtpResourcesControl extends ZendX_JQuery_Form
 		    'required' => false,
 		    'size' => 3,
 	        'class' => 'fieldrighted',
-		    'filters'    => array('Alnum', 'StringTrim')));
+		    'filters'    => ['Alnum', 'StringTrim'))];
 	      $rateintervalvalue->setValue($ratelimit->getIntervalValue());
           $rateintervalvalue->addValidator(new Zend_Validate_Int());
 	      $this->addElement($rateintervalvalue);
 	    
 	      $rateintervalunit = new Zend_Form_Element_Select($rtype.'_interval_unit', array(
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
           foreach ($ratelimit->getUnits() as $unit => $unitname) {
         	$rateintervalunit->addMultiOption($unit, $t->_($unitname));
@@ -225,7 +225,7 @@ class Default_Form_SmtpResourcesControl extends ZendX_JQuery_Form
 		    'required' => false,
 		    'size' => 3,
 	        'class' => 'fieldrighted',
-		    'filters'    => array('Alnum', 'StringTrim')));
+		    'filters'    => ['Alnum', 'StringTrim'))];
 	      $ratedelay->setValue($this->_mta->getParam($rtype.'limit_delay'));
           $ratedelay->addValidator(new Zend_Validate_Int());
 	      $this->addElement($ratedelay);
@@ -249,7 +249,7 @@ class Default_Form_SmtpResourcesControl extends ZendX_JQuery_Form
               'required'   => false,
               'rows' => 5,
               'cols' => 30,
-              'filters'    => array('StringToLower', 'StringTrim')));
+              'filters'    => ['StringToLower', 'StringTrim'))];
         $no_ratelimit_hosts->addValidator(new Validate_IpList());
         $no_ratelimit_hosts->setValue($this->_mta->getParam('no_ratelimit_hosts'));
         $this->addElement($no_ratelimit_hosts);
@@ -277,7 +277,7 @@ class Default_Form_SmtpResourcesControl extends ZendX_JQuery_Form
 		$retryrule->setCutoff($request->getParam('retry_cutoff_value'), $request->getParam('retry_cutoff_unit'));
 		$mta->setParam('retry_rule', $retryrule->getRetryRule());
 		
-		foreach (array('rate', 'trusted_rate') as $rtype ) {
+		foreach (['rate', 'trusted_rate') as $rtype ] {
 			
     		$mta->setParam($rtype.'limit_enable', $request->getParam($rtype.'limit_enable'));
 	    	if ($request->getParam($rtype.'limit_enable')) {

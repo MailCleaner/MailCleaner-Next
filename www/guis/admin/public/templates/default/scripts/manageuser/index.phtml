@@ -13,14 +13,14 @@
   <div id="domainnavigpanel">
      <div id="searchpanel" class="addbutton usersearchpanel">
       <form method="<?php echo $this->searchForm->getMethod() ?>" action="<?php echo $this->searchForm->getAction()?>" id="<?php echo $this->searchForm->getId()?>">
-        <p id="searchlabel"><?php echo $this->t->_('Search by')?> : <?php echo $this->inputRow($this->searchForm->getElement('type'), array('field_only'=>true,'nobox'=>true));?></p>
+        <p id="searchlabel"><?php echo $this->t->_('Search by')?> : <?php echo $this->inputRow($this->searchForm->getElement('type'), ['field_only'=>true,'nobox'=>true)];?></p>
         <p id="usersearchlabel"><?php echo $this->t->_('Enter username and select domain')?> : </p>
         <p id="emailsearchlabel"><?php echo $this->t->_('Enter email address')?> : </p>
         <p>
-           <?php echo $this->inputRow($this->searchForm->getElement('search'),array('field_only'=>true,'nobox'=>true));?> @ <?php echo $this->inputRow($this->searchForm->getElement('domain'),array('field_only'=>true,'nobox'=>true));?>
+           <?php echo $this->inputRow($this->searchForm->getElement('search'),['field_only'=>true,'nobox'=>true)];?> @ <?php echo $this->inputRow($this->searchForm->getElement('domain'),['field_only'=>true,'nobox'=>true)];?>
         </p>
         <p id="useraddbutton">
-          <?php echo $this->SubmitRow($this->searchForm->getElement('submit'),array('nobox'=>true,'field_only'=>true))?>
+          <?php echo $this->SubmitRow($this->searchForm->getElement('submit'),['nobox'=>true,'field_only'=>true)]?>
         </p>
       </form>
     </div>
@@ -44,7 +44,7 @@
   <div id="domaincontentpanel">
     <div id="userconfigpanel" class="domainconfigpanel">
     <p class="descmessage"><?php echo $this->t->_('Please select or add a user using the navigation panel on the left')?>.</p>
- <?php echo $this->partial('layouts/message.phtml', array('message' => $this->message, 't' => $this->t)); ?>
+ <?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t)]; ?>
     </div>
   </div>
  

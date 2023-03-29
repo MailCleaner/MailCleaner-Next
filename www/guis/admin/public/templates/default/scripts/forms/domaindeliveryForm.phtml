@@ -6,14 +6,14 @@
  * @copyright 2009, Olivier Diserens
  */
 ?>
-<?php echo $this->partial('layouts/message.phtml', array('message' => $this->message, 't' => $this->t)); ?>
+<?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t)]; ?>
 <fieldset>
-       <?php echo $this->InputRow($this->form->getElement('panel'),array('field_only'=>true,'nobox'=>true));?>
-       <?php echo $this->InputRow($this->form->getElement('name'),array('field_only'=>true,'nobox'=>true));?>
+       <?php echo $this->InputRow($this->form->getElement('panel'),['field_only'=>true,'nobox'=>true)];?>
+       <?php echo $this->InputRow($this->form->getElement('name'),['field_only'=>true,'nobox'=>true)];?>
        <table class="ftable">
-          <?php echo $this->InputRow($this->form->getElement('servers'),array('label_addclass'=>'flabeltextarea'));?>
+          <?php echo $this->InputRow($this->form->getElement('servers'),['label_addclass'=>'flabeltextarea')];?>
           
-          <?php foreach (array('port', 'multipleaction', 'usemx') as $f) {?>
+          <?php foreach (['port', 'multipleaction', 'usemx') as $f] {?>
              <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
 

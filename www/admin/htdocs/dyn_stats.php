@@ -27,13 +27,13 @@ global $lang_;
 // not allowed if we are not a master
 if ($sysconf_->ismaster_ < 1) { exit; }
 // check authorizations
-$admin_->checkPermissions(array('can_view_stats'));
+$admin_->checkPermissions(['can_view_stats')];
 
 // initial values
 $gstatus = 1; // 1 for ok, 0 for critical
 $gload = 0;
-$gspools = array('in' => 0, 'fi' => 0, 'out' => 0);
-$gcounts = array('msgs' => 0, 'spams' => 0, 'viruses' => 0);
+$gspools = ['in' => 0, 'fi' => 0, 'out' => 0];
+$gcounts = ['msgs' => 0, 'spams' => 0, 'viruses' => 0];
 
 // get and check each slaves
 $slaves = $sysconf_->getSlaves();
@@ -128,8 +128,8 @@ function getLoad($gload) {
  * @return          string   html status string
  */
 function getSpools($gspool) {
-   $medium = array('in' => 1000, 'fi' => '1000', 'out' => 1000);
-   $high = array('in' => 2000, 'fi' => '3000', 'out' => 5000);
+   $medium = ['in' => 1000, 'fi' => '1000', 'out' => 1000];
+   $high = ['in' => 2000, 'fi' => '3000', 'out' => 5000];
    foreach ($gspool as $stage => $value) {
      if ($value > $high[$stage]) {
        return "<font color=\"#FF0000\">HIGH</font>";

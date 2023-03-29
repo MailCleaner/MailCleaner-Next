@@ -18,7 +18,7 @@ class ConfigUserAddressParam {
  private $form_;
  private $message_; 
  private $add_;
- private $data_ = array('delivery_type', 'spam_tag', 'quarantine_bounces', 'summary_type', 'summary_to', 'allow_newsletters');
+ private $data_ = ['delivery_type', 'spam_tag', 'quarantine_bounces', 'summary_type', 'summary_to', 'allow_newsletters'];
  
  public function __construct() {
     global $user_;

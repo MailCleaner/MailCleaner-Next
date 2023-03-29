@@ -18,14 +18,14 @@ function getStatus($sid, $params) {
   if (!isset($admin_) || ! $admin_ instanceof Administrator) {
     return "NOTAUTHENTICATED ($admin_)";
   }
-  if (!$admin_->hasPerm(array('can_view_stats'))) {
+  if (!$admin_->hasPerm(['can_view_stats'))] {
     return "NOTALLOWED";
   }
 
   $sysconf_ = SystemConfig::getInstance();
 
   $cmd = $sysconf_->SRCDIR_."/bin/get_status.pl $params";
-  $res_a = array();
+  $res_a = [];
   exec($cmd, $res_a);
 
   return $res_a[0]; 
@@ -68,7 +68,7 @@ function getLoad($sid) {
  */
 function getDiskUsage($sid) {
   $ret = getStatus($sid, "-d");
-  $matches = array();
+  $matches = [];
   if (!preg_match('/^\|\/\|([\d\.]+)\%\|.*\/var\|([\d\.]+)\%\|?/', $ret, $matches)) {
     return "ERRORFETCHINGDISKUSAGESTATUS";
   }
@@ -127,16 +127,16 @@ function getTodaysCounts($sid, $spec) {
     }
     return "NOTAUTHENTICATED";
   }
-  if (!$admin_->hasPerm(array('can_view_stats'))) {
+  if (!$admin_->hasPerm(['can_view_stats'))] {
     return "NOTALLOWED";
   }
   $sysconf_ = SystemConfig::getInstance();
 
   $cmd = $sysconf_->SRCDIR_."/bin/get_today_stats.pl -A  $spec";
-  $res_a = array();
+  $res_a = [];
   exec($cmd, $res_a);
 
-  $res = array();
+  $res = [];
   if (!preg_match('/^([\d\.]+)([\|\d\.]+){10}$/', $res_a[0], $res)) {
     return "ERRORFETCHINGTODAYSCOUNTS ".$res[0];
   }
@@ -156,10 +156,10 @@ function getTodaysCounts($sid, $spec) {
   $sysconf_ = SystemConfig::getInstance();
 
   $cmd = $sysconf_->SRCDIR_."/bin/get_stats.pl $what $start $stop";
-  $res_a = array();
+  $res_a = [];
   exec($cmd, $res_a);
 
-  $res = array();
+  $res = [];
   if (!preg_match('/^([\d\.]+)([\|\d\.]+){10}$/', $res_a[0], $res)) {
     return "ERRORFETCHINGCOUNTS (".$res[0].")";
   }

@@ -62,7 +62,7 @@ class Default_Model_AdministratorMapper
                 $query->where('domains LIKE ?', "%".$domainName."%");
                 $result = $this->getDbTable()->fetchAll($query);
 
-                $parsed_result = array();
+                $parsed_result = [];
                 // remove unsolicited admins
                 foreach ($result as $admin) {
                         $validate = false;
@@ -91,7 +91,7 @@ class Default_Model_AdministratorMapper
     		$query->order('name ASC');
     	}
     	
-    	if (isset($params['limit']) && is_array($params['limit'])) {
+    	if (isset($params['limit']) && is_[$params['limit'])] {
     		$query->limit($params['limit'][0], $params['limit'][1]);
     	}
     	
@@ -101,7 +101,7 @@ class Default_Model_AdministratorMapper
     		$query->where('username LIKE ?', $str."%");
     	}
         $resultSet = $this->getDbTable()->fetchAll($query);
-        $entries   = array();
+        $entries   = [];
         foreach ($resultSet as $row) {
           $entry = new Default_Model_Administrator();
           $entry->find($row['username']);
@@ -120,7 +120,7 @@ class Default_Model_AdministratorMapper
     		}
             $res = $this->getDbTable()->insert($data);
         } else {
-            $res = $this->getDbTable()->update($data, array('id = ?' => $id));
+            $res = $this->getDbTable()->update($data, ['id = ?' => $id)];
         }
         return $res;
     }

@@ -13,11 +13,11 @@ class Default_Form_ContentHTMLControls extends ZendX_JQuery_Form
 	protected $_dangerouscontent;
 	protected $_antispam;
 	protected $_fields = array(
-		   'allow_iframe' => array('text' => 'IFrame objects', 'silent' => 'silent_iframe'),
-		   'allow_form' => array('text' => 'Forms', 'silent' => 'silent_form'),
-		   'allow_script' => array('text' => 'Scripts', 'silent' => 'silent_script'),
-		   'allow_codebase' => array('text' => 'Codebase objects', 'silent' => 'silent_codebase'),
-		   'allow_webbugs' => array('text' => 'Web Bugs', 'silent' => 'silent_webbugs'),
+		   'allow_iframe' => ['text' => 'IFrame objects', 'silent' => 'silent_iframe'],
+		   'allow_form' => ['text' => 'Forms', 'silent' => 'silent_form'],
+		   'allow_script' => ['text' => 'Scripts', 'silent' => 'silent_script'],
+		   'allow_codebase' => ['text' => 'Codebase objects', 'silent' => 'silent_codebase'],
+		   'allow_webbugs' => ['text' => 'Web Bugs', 'silent' => 'silent_webbugs'],
 		);
 	
 	public function __construct($dc,$as) {
@@ -48,7 +48,7 @@ class Default_Form_ContentHTMLControls extends ZendX_JQuery_Form
                'label'      => $t->_($f['text'])." :",
                'title' => $t->_("Choose action to perform when this item is detected inside an HTML document"),
                'required'   => true,
-               'filters'    => array('StringTrim')));
+               'filters'    => ['StringTrim'))];
         
           foreach ($disarmoptions as $lk => $lv) {
              $ff->addMultiOption($lk, $lv);
@@ -74,7 +74,7 @@ class Default_Form_ContentHTMLControls extends ZendX_JQuery_Form
 		      'required'   => false,
 		      'rows' => 5,
 		      'cols' => 30,
-		      'filters'    => array('StringToLower', 'StringTrim')));
+		      'filters'    => ['StringToLower', 'StringTrim'))];
 	    $trustednet->addValidator(new Validate_IpList());
 		$trustednet->setValue($this->_antispam->getParam('html_wl_ips'));
 		$this->addElement($trustednet);

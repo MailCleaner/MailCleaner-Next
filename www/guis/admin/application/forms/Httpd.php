@@ -38,7 +38,7 @@ class Default_Form_Httpd extends ZendX_JQuery_Form
 		      'required'   => false,
 		      'rows' => 5,
 		      'cols' => 30,
-		      'filters'    => array('StringToLower', 'StringTrim')));
+		      'filters'    => ['StringToLower', 'StringTrim'))];
 	    $allowed_ip->addValidator(new Validate_HostList());
 		$allowed_ip->setValue($this->_firewallrule->getParam('allowed_ip'));
 		$this->addElement($allowed_ip);
@@ -57,7 +57,7 @@ class Default_Form_Httpd extends ZendX_JQuery_Form
 	        'label'    => $t->_('HTTPS port')." :",
 		    'required' => false,
 		    'size' => 4,
-		    'filters'    => array('Alnum', 'StringTrim')));
+		    'filters'    => ['Alnum', 'StringTrim'))];
 	    $httpslisten->setValue($this->_httpd->getParam('https_port'));
         $httpslisten->addValidator(new Zend_Validate_Int());
 	    $this->addElement($httpslisten);
@@ -66,7 +66,7 @@ class Default_Form_Httpd extends ZendX_JQuery_Form
 	        'label'    => $t->_('HTTP port')." :",
 		    'required' => true,
 		    'size' => 4,
-		    'filters'    => array('Alnum', 'StringTrim')));
+		    'filters'    => ['Alnum', 'StringTrim'))];
 	    $httplisten->setValue($this->_httpd->getParam('http_port'));
         $httplisten->addValidator(new Zend_Validate_Int());
 	    $this->addElement($httplisten);

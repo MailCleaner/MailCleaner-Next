@@ -7,7 +7,7 @@
  */
 ?>
 <form method="<?php echo $this->form->getMethod() ?>" action="<?php echo $this->form->getAction()?>" id="<?php echo $this->form->getId()?>">
-<?php echo $this->partial('layouts/message.phtml', array('message' => $this->message, 't' => $this->t)); ?>
+<?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t)]; ?>
  <fieldset id="defaultssettings">
        <table class="ftable">
          <?php $options = array(
@@ -19,11 +19,11 @@
          )?>
           <?php foreach ($options as $a => $s) {?>
            <?php echo $this->InputRow($this->form->getElement($a),array(
-                   'post_field_text' => $this->InputRow($this->form->getElement($s), array('field_only'=>true,'nobox'=>true)) .
-                                        $this->InputRow($this->form->getElement($s), array('label_only'=>true,'nobox'=>true))
+                   'post_field_text' => $this->InputRow($this->form->getElement($s), ['field_only'=>true,'nobox'=>true)] .
+                                        $this->InputRow($this->form->getElement($s), ['label_only'=>true,'nobox'=>true)]
             ));?>
           <?php }?>
-          <?php echo $this->InputRow($this->form->getElement('html_wl_ips'),array('label_addclass'=>'flabeltextarea'));?>
+          <?php echo $this->InputRow($this->form->getElement('html_wl_ips'),['label_addclass'=>'flabeltextarea')];?>
        
           <?php echo $this->SubmitRow($this->form->getElement('submit'));?>
           

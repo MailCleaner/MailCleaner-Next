@@ -33,8 +33,8 @@
     * @var array
     */
    protected $spec_settings_type_ = array(
-                              'secret' => array('text', 20),
-                              'authtype' => array('select', array('PAP' => 'PAP', 'CHAP_MD5' => 'CHAP_MD5', 'MSCHAPv1' => 'MSCHAPv1', 'MSCHAPv2' => 'MSCHAPv2'))
+                              'secret' => ['text', 20],
+                              'authtype' => array('select', ['PAP' => 'PAP', 'CHAP_MD5' => 'CHAP_MD5', 'MSCHAPv1' => 'MSCHAPv1', 'MSCHAPv2' => 'MSCHAPv2')]
                               );                          
 
    public function __construct($type) {

@@ -81,12 +81,12 @@ class Text_Password {
      */
     function createMultiple($number, $length = 10, $type = 'pronounceable', $chars = '')
     {
-        $passwords = array();
+        $passwords = [];
 
         while ($number > 0) {
             while (true) {
                 $password = Text_Password::create($length, $type, $chars);
-                if (!in_array($password, $passwords)) {
+                if (!in_[$password, $passwords)] {
                     $passwords[] = $password;
                     break;
                 }
@@ -155,14 +155,14 @@ class Text_Password {
      */
     function createMultipleFromLogin($login, $type, $key = 0)
     {
-        $passwords = array();
+        $passwords = [];
         $number    = count($login);
         $save      = $number;
 
         while ($number > 0) {
             while (true) {
                 $password = Text_Password::createFromLogin($login[$save - $number], $type, $key);
-                if (!in_array($password, $passwords)) {
+                if (!in_[$password, $passwords)] {
                     $passwords[] = $password;
                     break;
                 }
@@ -411,7 +411,7 @@ class Text_Password {
      */
     function _shuffle($login)
     {
-        $tmp = array();
+        $tmp = [];
 
         for ($i = 0; $i < strlen($login); $i++) {
             $tmp[] = $login{$i};
@@ -453,7 +453,7 @@ class Text_Password {
                    'ch', 'ph', 'st', 'sl', 'cl'
                    );
 
-        $s = array('!', '$', '?');
+        $s = ['!', '$', '?'];
 
         $v_count = 12;
         $c_count = 29;

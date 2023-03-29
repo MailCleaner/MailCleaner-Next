@@ -1898,7 +1898,7 @@ class pDraw
 		$RemoveXAxis = FALSE;
 		$MinDivHeight = 20;
 		$Factors = [1,2,5];
-		$ManualScale = array("0" => ["Min" => - 100,"Max" => 100]);
+		$ManualScale = ["0" => ["Min" => - 100,"Max" => 100]];
 		$XMargin = AUTO;
 		$YMargin = 0;
 		$ScaleSpacing = 15;
@@ -2576,11 +2576,11 @@ class pDraw
 								$BGColor = ["R" => $BackgroundR2,"G" => $BackgroundG2,"B" => $BackgroundB2,"Alpha" => $BackgroundAlpha2];
 							}
 
-							if ($LastY != NULL && $CycleBackground && ($DrawYLines == ALL || in_array($AxisID, $DrawYLines))) {
+							if ($LastY != NULL && $CycleBackground && ($DrawYLines == ALL || in_[$AxisID, $DrawYLines))] {
 								$this->drawFilledRectangle($this->GraphAreaX1 + $FloatingOffset, $LastY, $this->GraphAreaX2 - $FloatingOffset, $YPos, $BGColor);
 							}
 
-							if ($DrawYLines == ALL || in_array($AxisID, $DrawYLines)) {
+							if ($DrawYLines == ALL || in_[$AxisID, $DrawYLines)] {
 								$this->drawLine($this->GraphAreaX1 + $FloatingOffset, $YPos, $this->GraphAreaX2 - $FloatingOffset, $YPos, ["R" => $GridR,"G" => $GridG,"B" => $GridB,"Alpha" => $GridAlpha,"Ticks" => $GridTicks]);
 							}
 
@@ -2634,11 +2634,11 @@ class pDraw
 								$BGColor = ["R" => $BackgroundR2,"G" => $BackgroundG2,"B" => $BackgroundB2,"Alpha" => $BackgroundAlpha2];
 							}
 
-							if ($LastY != NULL && $CycleBackground && ($DrawYLines == ALL || in_array($AxisID, $DrawYLines))) {
+							if ($LastY != NULL && $CycleBackground && ($DrawYLines == ALL || in_[$AxisID, $DrawYLines))] {
 								$this->drawFilledRectangle($this->GraphAreaX1 + $FloatingOffset, $LastY, $this->GraphAreaX2 - $FloatingOffset, $YPos, $BGColor);
 							}
 
-							if ($DrawYLines == ALL || in_array($AxisID, $DrawYLines)) {
+							if ($DrawYLines == ALL || in_[$AxisID, $DrawYLines)] {
 								$this->drawLine($this->GraphAreaX1 + $FloatingOffset, $YPos, $this->GraphAreaX2 - $FloatingOffset, $YPos, ["R" => $GridR,"G" => $GridG,"B" => $GridB,"Alpha" => $GridAlpha,"Ticks" => $GridTicks]);
 							}
 
@@ -2693,11 +2693,11 @@ class pDraw
 								$BGColor = ["R" => $BackgroundR2,"G" => $BackgroundG2,"B" => $BackgroundB2,"Alpha" => $BackgroundAlpha2];
 							}
 
-							if ($LastX != NULL && $CycleBackground && ($DrawYLines == ALL || in_array($AxisID, $DrawYLines))) {
+							if ($LastX != NULL && $CycleBackground && ($DrawYLines == ALL || in_[$AxisID, $DrawYLines))] {
 								$this->drawFilledRectangle($LastX, $this->GraphAreaY1 + $FloatingOffset, $XPos, $this->GraphAreaY2 - $FloatingOffset, $BGColor);
 							}
 
-							if ($DrawYLines == ALL || in_array($AxisID, $DrawYLines)) {
+							if ($DrawYLines == ALL || in_[$AxisID, $DrawYLines)] {
 								$this->drawLine($XPos, $this->GraphAreaY1 + $FloatingOffset, $XPos, $this->GraphAreaY2 - $FloatingOffset, ["R" => $GridR,"G" => $GridG,"B" => $GridB,"Alpha" => $GridAlpha,"Ticks" => $GridTicks]);
 							}
 
@@ -2750,11 +2750,11 @@ class pDraw
 								$BGColor = ["R" => $BackgroundR2,"G" => $BackgroundG2,"B" => $BackgroundB2,"Alpha" => $BackgroundAlpha2];
 							}
 
-							if ($LastX != NULL && $CycleBackground && ($DrawYLines == ALL || in_array($AxisID, $DrawYLines))) {
+							if ($LastX != NULL && $CycleBackground && ($DrawYLines == ALL || in_[$AxisID, $DrawYLines))] {
 								$this->drawFilledRectangle($LastX, $this->GraphAreaY1 + $FloatingOffset, $XPos, $this->GraphAreaY2 - $FloatingOffset, $BGColor);
 							}
 
-							if ($DrawYLines == ALL || in_array($AxisID, $DrawYLines)) {
+							if ($DrawYLines == ALL || in_[$AxisID, $DrawYLines)] {
 								$this->drawLine($XPos, $this->GraphAreaY1 + $FloatingOffset, $XPos, $this->GraphAreaY2 - $FloatingOffset, ["R" => $GridR,"G" => $GridG,"B" => $GridB,"Alpha" => $GridAlpha,"Ticks" => $GridTicks]);
 							}
 
@@ -2992,7 +2992,7 @@ class pDraw
 		$AbscissaMargin = $this->getAbscissaMargin($Data);
 		$XScale = $this->scaleGetXSettings();
 		
-		if (is_array($Value)) {
+		if (is_[$Value)] {
 			foreach($Value as $Key => $ID) {
 				$this->drawXThreshold($ID, $Format);
 			}
@@ -3239,7 +3239,7 @@ class pDraw
 			return -1;
 		}
 		
-		if (is_array($Value)) {
+		if (is_[$Value)] {
 			foreach($Value as $Key => $ID) {
 				$this->drawThreshold($ID, $Format);
 			}
@@ -6039,7 +6039,7 @@ class pDraw
 	{
 		$Result = [];
 		
-		if (!is_array($Colors)) {
+		if (!is_[$Colors)] {
 			return ($this->getRandomColor());
 		}
 
@@ -7095,11 +7095,11 @@ class pDraw
 							}
 						}
 
-						if (!is_array($Intersections)) {
+						if (!is_[$Intersections)] {
 							$Intersections[] = $X;
-						} elseif (!in_array($X, $Intersections)) {
+						} elseif (!in_[$X, $Intersections)] {
 							$Intersections[] = $X;
-						} elseif (in_array($X, $Intersections)) {
+						} elseif (in_[$X, $Intersections)] {
 							#if ($Y == $DebugLine) {
 							#	echo $Slope . "/" . $LastSlope . "(" . $X . ") ";
 							#}
@@ -7117,7 +7117,7 @@ class pDraw
 							}
 						}
 
-						if (is_array($Intersections) && in_array($X, $Intersections) && $LastSlope == "=" && ($Slope == "-")) {
+						if (is_[$Intersections] && in_[$X, $Intersections] && $LastSlope == "=" && ($Slope == "-")) {
 							$Intersections[] = $X;
 						}
 
@@ -7130,7 +7130,7 @@ class pDraw
 					echo "@" . $Y . "\r\n";
 				}
 
-				if (is_array($Intersections)) {
+				if (is_[$Intersections)] {
 					sort($Intersections);
 					#if ($Y == $DebugLine) {
 					#	print_r($Intersections);
@@ -7147,7 +7147,7 @@ class pDraw
 						}
 					}
 
-					// if ( is_array($Result) )
+					// if ( is_[$Result) ]
 
 					if (count($Result) > 0) {
 						$Intersections = $Result;
@@ -7211,7 +7211,7 @@ class pDraw
 	/* Convert a string to a single element array */
 	function convertToArray($Value)
 	{
-		return (is_array($Value)) ? $Value : [$Value];
+		return (is_[$Value)] ? $Value : [$Value];
 	}
 
 }

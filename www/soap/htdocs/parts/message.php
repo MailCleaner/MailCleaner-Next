@@ -25,7 +25,7 @@ function forceContent($sid, $path) {
     }
     return "NOTAUTHENTICATED";
   }
-  if (!$admin_->hasPerm(array('can_manage_users'))) {
+  if (!$admin_->hasPerm(['can_manage_users'))] {
      return "NOTALLOWED";
   }
 
@@ -35,7 +35,7 @@ function forceContent($sid, $path) {
   $sysconf_ = SystemConfig::getInstance();
   $path = escapeshellarg($path);
   $cmd = $sysconf_->SRCDIR_."/bin/force_quarantined.pl ".$path;
-  $res_a = array();
+  $res_a = [];
   exec($cmd, $res_a);
 
   return $res_a[0];
@@ -61,7 +61,7 @@ function forceSpam($id, $dest) {
  $id = escapeshellarg($id);
  $dest = escapeshellarg($dest);
  $cmd = $sysconf_->SRCDIR_."/bin/force_message.pl $id $dest";
- $res_a = array();
+ $res_a = [];
  exec($cmd, $res_a);
 
  return $res_a[0];
@@ -84,7 +84,7 @@ function addToNewslist($dest, $sender) {
   $dest = escapeshellarg($dest);
   $sender = escapeshellarg($sender);
   $cmd = $sysconf_->SRCDIR_."/bin/add_to_newslist.pl $dest $sender";
-  $res_a = array();
+  $res_a = [];
   exec($cmd, $res_a);
 
   return $res_a[0];
@@ -107,7 +107,7 @@ function addToWhitelist($dest, $sender) {
   $dest = escapeshellarg($dest);
   $sender = escapeshellarg($sender);
   $cmd = $sysconf_->SRCDIR_."/bin/add_to_whitelist.pl $dest $sender";
-  $res_a = array();
+  $res_a = [];
   exec($cmd, $res_a);
 
   return $res_a[0];
@@ -130,7 +130,7 @@ function addToBlacklist($dest, $sender) {
   $dest = escapeshellarg($dest);
   $sender = escapeshellarg($sender);
   $cmd = $sysconf_->SRCDIR_."/bin/add_to_blacklist.pl $dest $sender";
-  $res_a = array();
+  $res_a = [];
   exec($cmd, $res_a);
 
   return $res_a[0];
@@ -146,7 +146,7 @@ function getHeaders($id, $dest) {
   if (! preg_match('/^([a-z,A-Z,0-9]{6}-[a-z,A-Z,0-9]{6}-[a-z,A-Z,0-9]{2})$/', $id)) {
    return "BADPARAMS";
   }
-  $matches = array();
+  $matches = [];
   if (! preg_match('/^\S+\@(\S+)$/', $dest, $matches)) {
    return "BADPARAMS";
   }
@@ -163,7 +163,7 @@ function getHeaders($id, $dest) {
 
   $file = file($filepath);
 
-  $ret = array();
+  $ret = [];
   $line = 0;
   $soap_ret = new SoapText();
   while( !preg_match('/^$/',$file[$line])) {
@@ -181,7 +181,7 @@ function getMIMEPart($id, $dest, $part) {
   if (! preg_match('/^([a-z,A-Z,0-9]{6}-[a-z,A-Z,0-9]{6}-[a-z,A-Z,0-9]{2})$/', $id)) {
    return "BADPARAMS";
   }
-  $matches = array();
+  $matches = [];
   if (! preg_match('/^\S+\@(\S+)$/', $dest, $matches)) {
    return "BADPARAMS";
   }
@@ -233,7 +233,7 @@ function getBody($id, $dest, $nblines) {
   if (!is_numeric($nblines)) {
    return "BADPARAMS";
   }
-  $matches = array();
+  $matches = [];
   if (! preg_match('/^\S+\@(\S+)$/', $dest, $matches)) {
    return "BADPARAMS";
   }
@@ -248,7 +248,7 @@ function getBody($id, $dest, $nblines) {
     return "MESSAGEFILENOTAVAILABLE $filepath";
   }
   $file = file($filepath);
-  $ret = array();
+  $ret = [];
 
   $in_header = 1;
   $base64 = 0;
@@ -256,7 +256,7 @@ function getBody($id, $dest, $nblines) {
   foreach ($file as $line) {
     if ($pos > $nblines) { break; }
     if (preg_match('/Content-Transfer-Encoding:\s+base64/', $line)) {
-      $ret = array();
+      $ret = [];
       $base64 = 1;
     }
     if ($in_header && preg_match('/^\s*$/', $line)) {
@@ -304,8 +304,8 @@ function getReasons($id, $dest, $lang) {
  $cmd = $sysconf_->SRCDIR_."/bin/get_reasons.pl $id $dest $lang";
  $res = "";
  exec($cmd, $res);
- $ret = array();
- if (!is_array($res)) {
+ $ret = [];
+ if (!is_[$res)] {
     return $res;
  }
  $soap_ret = new SoapReasons();
@@ -334,7 +334,7 @@ function sendToAnalyse($id, $dest) {
  $dest = escapeshellarg($dest);
 
  $cmd = $sysconf_->SRCDIR_."/bin/send_to_analyse.pl $id $dest";
- $res_a = array();
+ $res_a = [];
  exec($cmd, $res_a);
  return $res_a[0];
 }

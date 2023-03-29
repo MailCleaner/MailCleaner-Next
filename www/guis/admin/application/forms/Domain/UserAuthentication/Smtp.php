@@ -11,7 +11,7 @@
 class Default_Form_Domain_UserAuthentication_Smtp
 {
 	protected $_domain;
-	protected $_settings = array();
+	protected $_settings = [];
 
 	public function __construct($domain)
 	{
@@ -29,7 +29,7 @@ class Default_Form_Domain_UserAuthentication_Smtp
 		$server = new  Zend_Form_Element_Text('authserver', array(
 	        'label'    => $t->_('Authentication server')." :",
 		    'required' => false,
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $server->setValue($this->_domain->getPref('auth_server'));
         $server->addValidator(new Validate_SMTPHostList());
 	    $form->addElement($server);
@@ -54,7 +54,7 @@ class Default_Form_Domain_UserAuthentication_Smtp
     }
 
     public function getParams() {
-      $params = array();
+      $params = [];
       if ($this->_domain->getAuthConnector() != 'smtp') {
         return $params;
       }

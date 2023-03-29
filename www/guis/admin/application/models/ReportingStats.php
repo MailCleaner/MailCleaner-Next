@@ -10,13 +10,13 @@
 
 class Default_Model_ReportingStats
 {
-	protected $_values = array();
-	protected $_days = array();
+	protected $_values = [];
+	protected $_days = [];
 	protected $_what = '';
 	protected $_fromdate;
 	protected $_todate;
 	
-	protected $_linemapper = array('msgs', 'spams', 'highspams', 'viruses', 'names', 'others', 'cleans', 'bytes', 'users', 'domains');
+	protected $_linemapper = ['msgs', 'spams', 'highspams', 'viruses', 'names', 'others', 'cleans', 'bytes', 'users', 'domains'];
 
 	protected $_mapper;
 	
@@ -77,7 +77,7 @@ class Default_Model_ReportingStats
 	}
 
 	public function getAvailableParams() {
-		$ret = array();
+		$ret = [];
 		foreach ($this->_values as $key => $value) {
 			$ret[]=$key;
 		}
@@ -245,7 +245,7 @@ class Default_Model_ReportingStats
         return ($va > $vb) ? -1 : +1;
     }
     
-    public function createPieChart($id = null, $data = null, $params = array()) {
+    public function createPieChart($id = null, $data = null, $params = [)] {
         include("pChart/class/pData.class.php"); 
         include("pChart/class/pDraw.class.php"); 
         include("pChart/class/pPie.class.php"); 
@@ -263,65 +263,65 @@ class Default_Model_ReportingStats
               $vdata[] = $value;
             }
         } else {
-        	$vdata = array($data['cleans'], $data['spams'], $data['viruses']+$data['contents']);
+        	$vdata = [$data['cleans'], $data['spams'], $data['viruses']+$data['contents']];
         	$vwhats = array($t->_('clean'), $t->_('spam'), $t->_('dangerous'));
         }
         
-        $size = array(190, 190);
-        $position = array(125, 80);
+        $size = [190, 190];
+        $position = [125, 80];
 
         $radius = 60;
-        $border = array('E'=>true,'R'=>250,'G'=>250,'B'=>250);
-        $value = array('T'=>PIE_VALUE_PERCENTAGE,'P'=>PIE_VALUE_INSIDE,'R'=>50,'G'=>50,'B'=>50);
-        $label_pos = array(60,165);
+        $border = ['E'=>true,'R'=>250,'G'=>250,'B'=>250];
+        $value = ['T'=>PIE_VALUE_PERCENTAGE,'P'=>PIE_VALUE_INSIDE,'R'=>50,'G'=>50,'B'=>50];
+        $label_pos = [60,165];
         if (count($vdata) > 3) {
-        	$label_pos = array(20,165);
+        	$label_pos = [20,165];
         }
         if (count($vdata) > 4) {
-        	$label_pos = array(10,165);
+        	$label_pos = [10,165];
         }
-        $label_bg = array('R'=>240,'G'=>240,'B'=>240,'A'=>255);
-        $label_size = array('S' => -50, 'M' => 5, 'O' => LEGEND_HORIZONTAL);
+        $label_bg = ['R'=>240,'G'=>240,'B'=>240,'A'=>255];
+        $label_size = ['S' => -50, 'M' => 5, 'O' => LEGEND_HORIZONTAL];
       
-        if (isset($params['size']) && is_array($params['size'])) {
+        if (isset($params['size']) && is_[$params['size'])] {
                 $size = $params['size'];
         }
         $picture = new pImage($size[0],$size[1],$DataSet);
         // 2D settings
         if (!isset($params['style']) || $params['style'] != '3D') {
-        	$picture->setShadow(TRUE,array("X"=>2,"Y"=>2,"R"=>150,"G"=>150,"B"=>150,"Alpha"=>100));
+        	$picture->setShadow(TRUE,["X"=>2,"Y"=>2,"R"=>150,"G"=>150,"B"=>150,"Alpha"=>100)];
         
 
             if (isset($params['label_orientation']) && $params['label_orientation'] == 'vertical') {
-            	$label_size = array('S' => -50, 'M' => 5, 'O' => LEGEND_VERTICAL);
+            	$label_size = ['S' => -50, 'M' => 5, 'O' => LEGEND_VERTICAL];
             	if (count($vdata) <= 5) {
-                 	$label_pos = array(10,130);
+                 	$label_pos = [10,130];
     	        } else {
-    		        $label_pos = array(10, 115);
+    		        $label_pos = [10, 115];
     	        }
-                $position = array(155, 80);
+                $position = [155, 80];
             } else {
             	$radius = 80;
-            	$position = array(95, 95);
+            	$position = [95, 95];
             }
 
         } else {
         // 3D settings
-            $position = array(125, 85);
-            $label_pos = array(60,150);
+            $position = [125, 85];
+            $label_pos = [60,150];
 
             if (isset($params['label_orientation']) && $params['label_orientation'] == 'vertical') {
-        		$label_size = array('S' => -50, 'M' => 5, 'O' => LEGEND_VERTICAL);
-            	$label_pos = array(60,150);
+        		$label_size = ['S' => -50, 'M' => 5, 'O' => LEGEND_VERTICAL];
+            	$label_pos = [60,150];
                 if (count($vdata) <= 5) {
-                    $label_pos = array(10,130);
+                    $label_pos = [10,130];
                 } else {
-                    $label_pos = array(10, 115);
+                    $label_pos = [10, 115];
                 }
-                $position = array(135, 80);
+                $position = [135, 80];
             }
         }
-        if (isset($params['position']) && is_array($params['position'])) {
+        if (isset($params['position']) && is_[$params['position'])] {
             $position = $params['position'];
         }
         if (isset($params['radius']) && is_numeric($params['radius'])) {
@@ -333,7 +333,7 @@ class Default_Model_ReportingStats
             $position = array(floor($size[0]/2), floor($size[1]/2));
         }
         if ($radius > min($position[0], $position[1])) {
-            $position = array($radius,$radius);
+            $position = [$radius,$radius];
         }
 
         
@@ -380,7 +380,7 @@ class Default_Model_ReportingStats
         		                  "ValueR"=>$value['R'],"ValueG"=>$value['G'],"ValueB"=>$value['B']));
         	}
         } else {
-             $picture->drawFilledCircle($position[0],$position[1],$radius,array("R"=>230, "G"=>230, "B"=>230));
+             $picture->drawFilledCircle($position[0],$position[1],$radius,["R"=>230, "G"=>230, "B"=>230)];
         }
         $picture->setShadow(FALSE);
         $picture->setFontProperties(array("FontName"=>$config->getOption('SRCDIR')."/www/guis/admin/application/library/pChart/fonts/pf_arma_five.ttf","FontSize"=>6,"R"=>80,"G"=>80,"B"=>80)); 
@@ -452,14 +452,14 @@ class Default_Model_ReportingStats
 	
 	public function getTodayValues($what, $slaveid, $type = 'unknown') {
 	    $slave = new Default_Model_Slave();
-	    $slaves = array();
+	    $slaves = [];
 	    if (is_numeric($slaveid) && $slaveid > 0) {
 	    	$slave->find($slaveid);
-	    	$slaves = array($slave);
+	    	$slaves = [$slave];
 	    } else {
             $slaves = $slave->fetchAll();
 	    }
-        $total = array();
+        $total = [];
         
         foreach ($slaves as $s) {
             $total = $this->cumulStats($total, $s->getTodaySNMPStats($what));
@@ -488,7 +488,7 @@ class Default_Model_ReportingStats
 		return $total;
 	}
 	
-	public function getTodayPie($what, $slaveid, $usecache, $type = 'global', $graph_params = array()) {
+	public function getTodayPie($what, $slaveid, $usecache, $type = 'global', $graph_params = [)] {
 		
     	$total = null;
     	$cachefile = $this->_statscachefile.".".$type;
@@ -507,7 +507,7 @@ class Default_Model_ReportingStats
 	    	$total = $this->getTodayValues($what, $slaveid, $type);
 		}
     	$stats = new Default_Model_ReportingStats();
-        $params = array('render'=>true, 'no_label'=>true);
+        $params = ['render'=>true, 'no_label'=>true];
     	$stats->createPieChart(0,$total,array_merge($params, $graph_params));
 	}
 }

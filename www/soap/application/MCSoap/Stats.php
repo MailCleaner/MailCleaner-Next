@@ -25,7 +25,7 @@ class MCSoap_Stats
     	if (!isset($params['what'])
     	        || !$params['datefrom'] || !preg_match('/^\d{8}$/', $params['datefrom'])
     	        || !$params['dateto'] || !preg_match('/^\d{8}$/', $params['dateto']) ) {
-    		return array('stats_id' => $stats_id);
+    		return ['stats_id' => $stats_id];
     	}
     	$cmd = $mcconfig->getOption('SRCDIR')."/bin/get_stats.pl '".$params['what']."' ".$params['datefrom']." ".$params['dateto'];
     	$cmd .= " -b";
@@ -41,7 +41,7 @@ class MCSoap_Stats
     	
     	$cmd .= "> ".$mcconfig->getOption('VARDIR')."/run/mailcleaner/stats_search/".$stats_id." &";
         $res = `$cmd`;
-    	return array('search_id' => $stats_id, 'cmd' => $cmd) ;
+    	return ['search_id' => $stats_id, 'cmd' => $cmd] ;
 	}
 	
   /**
@@ -51,10 +51,10 @@ class MCSoap_Stats
    * @return array
    */
 	static public function Logs_GetStatsResult($params, $limit = 0) {
-		$res = array();
-                $data_res = array();
+		$res = [];
+                $data_res = [];
 		if (!$params['search_id']) {
-			return array('error' => 'no such results');
+			return ['error' => 'no such results'];
 		}
 		$stats_id = $params['search_id'];
 		
@@ -63,11 +63,11 @@ class MCSoap_Stats
     	
 		$file = $mcconfig->getOption('VARDIR')."/run/mailcleaner/stats_search/".$stats_id;
 		if (!file_exists($file)) {
-			return array('error' => 'no such results');
+			return ['error' => 'no such results'];
 		}
 		
 		$lines = file($file);
-		$res = array('message' => 'search running');
+		$res = ['message' => 'search running'];
 		$pid = 0;
 		$done = 0;
 		$res['stats_id'] = $stats_id;
@@ -124,9 +124,9 @@ class MCSoap_Stats
    * @return array
    */
 	static public function Logs_AbortStats($params) {
-		$res = array();
+		$res = [];
 		if (!$params['search_id']) {
-			return array('message' => 'nothing to abort');
+			return ['message' => 'nothing to abort'];
 		}
 		$stats_id = $params['search_id'];
 	    require_once('MailCleaner/Config.php');
@@ -134,7 +134,7 @@ class MCSoap_Stats
     	
 		$file = $mcconfig->getOption('VARDIR')."/run/mailcleaner/stats_search/".$stats_id;
 		if (!file_exists($file)) {
-			return array('error' => 'no such results');
+			return ['error' => 'no such results'];
 		}
 		
 		$lines = file($file);
@@ -153,9 +153,9 @@ class MCSoap_Stats
 			if (file_exists($file)) {
 				@unlink($file);
 			}
-			return array('message' => 'killed');
+			return ['message' => 'killed'];
 		}
-		return array('error' => 'no such process');
+		return ['error' => 'no such process'];
 	}
 
 }

@@ -12,7 +12,7 @@ class Default_Model_InformationalMessage_PasswordReset extends Default_Model_Inf
 {
 	protected $_title = 'System is not safe';
 	protected $_description = null;
-	protected $_link = array(); // not used, because custom link
+	protected $_link = []; // not used, because custom link
 	public function check() {
 		require_once('MailCleaner/Config.php');
     		$config = new MailCleaner_Config();

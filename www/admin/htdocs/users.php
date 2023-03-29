@@ -31,7 +31,7 @@ global $admin_;
 $remote_search_ = true;
 
 // check authorizations
-$admin_->checkPermissions(array('can_manage_users'));
+$admin_->checkPermissions(['can_manage_users')];
 
 // default values
 $search_username = "";

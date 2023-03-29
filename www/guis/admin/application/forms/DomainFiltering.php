@@ -42,7 +42,7 @@ class Default_Form_DomainFiltering extends Zend_Form
 		$this->setAttrib('id', 'domain_form');
 	    $panellist = new Zend_Form_Element_Select('domainpanel', array(
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         
@@ -212,7 +212,7 @@ class Default_Form_DomainFiltering extends Zend_Form
 
    public function setParams($request, $domain) {
         ### newsl
-    	foreach (array('spamwall', 'contentwall', 'enable_whitelists', 'enable_warnlists', 'enable_blacklists', 'notice_wwlists_hit' , 'allow_newsletters') as $p) {
+    	foreach (['spamwall', 'contentwall', 'enable_whitelists', 'enable_warnlists', 'enable_blacklists', 'notice_wwlists_hit' , 'allow_newsletters') as $p] {
     	    $domain->setPref($p, $request->getParam($p));
     	}
 
@@ -248,7 +248,7 @@ class Default_Form_DomainFiltering extends Zend_Form
 	public function wwlistsEnabled() {
 		$antispam = new Default_Model_AntispamConfig();
 		$antispam->find(1);
-		$ret = array();
+		$ret = [];
 
 		if ( $antispam->getParam('enable_whitelists') ) {
 			$ret[] = 'whitelist';

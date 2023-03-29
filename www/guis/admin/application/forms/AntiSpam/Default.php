@@ -54,7 +54,7 @@ class Default_Form_AntiSpam_Default extends ZendX_JQuery_Form
             'label'      => $t->_('Position in filter chain')." :",
             'title' => $t->_("Rank of the filter in the execution order"),
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
         for ($i = 1; $i <= count($this->_module->fetchAll()); $i++) {
         	$position->addMultiOption($i, $i);
@@ -68,7 +68,7 @@ class Default_Form_AntiSpam_Default extends ZendX_JQuery_Form
 		    'required' => false,
 		    'size' => 4,
             'class' => 'fieldrighted',
-		    'filters'    => array('Alnum', 'StringTrim')));
+		    'filters'    => ['Alnum', 'StringTrim'))];
 	    $timeout->setValue($this->_module->getParam('timeOut'));
         $timeout->addValidator(new Zend_Validate_Int());
 	    $this->addElement($timeout);
@@ -79,7 +79,7 @@ class Default_Form_AntiSpam_Default extends ZendX_JQuery_Form
 		    'required' => false,
 		    'size' => 8,
 	        'class' => 'fieldrighted',
-		    'filters'    => array('Alnum', 'StringTrim')));
+		    'filters'    => ['Alnum', 'StringTrim'))];
 	    $maxsize->setValue($this->_module->getParam('maxSize'));
         $maxsize->addValidator(new Zend_Validate_Int());
 	    $this->addElement($maxsize);

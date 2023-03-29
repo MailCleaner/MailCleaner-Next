@@ -22,10 +22,10 @@
 <div id="datetimeconfigpanel" class="configpanel">
  
     <div id="interfaceformcontent">
-     <?php echo $this->partial('forms/dateandtimeForm.phtml', array('form' => $this->form,'t' => $this->t, 'message' => $this->message, 'images_path' => $this->images_path)); ?>
+     <?php echo $this->partial('forms/dateandtimeForm.phtml', ['form' => $this->form,'t' => $this->t, 'message' => $this->message, 'images_path' => $this->images_path)]; ?>
     </div>
      <div id="configpanelinfos">
-      <?php echo $this->t->_('current local zone is');?> : <strong><?php echo $this->locale->getTextMainZone();?> - <?php echo $this->locale->getTextSubZone();?></strong> (<a href="<?php echo $this->url(array('action'=>'localization', 'controller'=>'baseconfiguration'));?>"><?php echo $this->t->_('set up...');?></a>)
+      <?php echo $this->t->_('current local zone is');?> : <strong><?php echo $this->locale->getTextMainZone();?> - <?php echo $this->locale->getTextSubZone();?></strong> (<a href="<?php echo $this->url(['action'=>'localization', 'controller'=>'baseconfiguration')];?>"><?php echo $this->t->_('set up...');?></a>)
     </div>
  </div>
  </div>

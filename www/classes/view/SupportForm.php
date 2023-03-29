@@ -28,12 +28,12 @@ class SupportForm {
      * @var array
      */
     private $fields_ = array(
-                            'name' => array('', 'name', true),
-                            'firstname' => array('', 'name', true),
-                            'email' => array('', 'email', true),
-                            'whatcanwedo' => array('', 'name', true),
-                            'phone' => array('', 'name', false),
-                            'company' => array('', 'name', false),
+                            'name' => ['', 'name', true],
+                            'firstname' => ['', 'name', true],
+                            'email' => ['', 'email', true],
+                            'whatcanwedo' => ['', 'name', true],
+                            'phone' => ['', 'name', false],
+                            'company' => ['', 'name', false],
                        );
                        
     /**

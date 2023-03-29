@@ -12,22 +12,22 @@
  * @var array
  */
 $services_ = array(
-  'MTA1' => array('restartfile' => "exim_stage1.rn", 'starter' => "S_exim_stage1.sh", 'stopper' => "H_exim_stage1.sh", 'restarter' => "R_exim_stage1.sh"),
-  'MTA2' => array('restartfile' => "exim_stage2.rn", 'starter' => "S_exim_stage2.sh", 'stopper' => "H_exim_stage2.sh", 'restarter' => "R_exim_stage2.sh"),
-  'MTA4' => array('restartfile' => "exim_stage4.rn", 'starter' => "S_exim_stage4.sh", 'stopper' => "H_exim_stage4.sh", 'restarter' => "R_exim_stage4.sh"),
-  'ENGINE' => array('restartfile' => "mailscanner.rn", 'starter' => "S_mailscanner.sh", 'stopper' => "H_mailscanner.sh", 'restarter' => "R_mailscanner.sh"),
-  'HTTPD' => array('restartfile' => "apache.rn", 'starter' => "S_apache.sh", 'stopper' => "H_exim_apache.sh", 'restarter' => "R_apache.sh"),
-  'MASTERDB' => array('restartfile' => "mysql_master.rn", 'starter' => "S_mysql_master.sh", 'stopper' => "H_mysql_master.sh", 'restarter' => "R_mysql_master.sh"),
-  'SLAVEDB' => array('restartfile' => "mysql_slave.rn", 'starter' => "S_mysql_slave.sh", 'stopper' => "H_mysql_slave.sh", 'restarter' => "R_mysql_slave.sh"),
-  'SNMPD' => array('restartfile' => "snmpd.rn", 'starter' => "S_snmpd.sh", 'stopper' => "H_snmpd.sh", 'restarter' => "R_snmpd.sh"),
-  'GREYLISTD' => array('restartfile' => "greylistd.rn", 'starter' => "S_greylistd.sh", 'stopper' => "H_greylistd.sh", 'restarter' => "R_greylistd.sh"),  
-  'CRON' => array('restartfile' => "cron.rn", 'starter' => "S_cron.sh", 'stopper' => "H_cron.sh", 'restarter' => "R_cron.sh"),
-  'PREFDAEMON' => array('restartfile' => "prefdaemon.rn", 'starter' => "S_prefdaemon.sh", 'stopper' => "H_prefdaemon", 'restarter' => "R_prefdaemon.sh"),
-  'SPAMD' => array('restartfile' => "spamd.rn", 'starter' => "S_spamd.sh", 'stopper' => "H_spamd", 'restarter' => "R_spamd.sh"),
-  'CLAMD' => array('restartfile' => "clamd.rn", 'starter' => "S_clamd.sh", 'stopper' => "H_clamd", 'restarter' => "R_clamd.sh"),
-  'SPAMCLAMD' => array('restartfile' => "clamspamd.rn", 'starter' => "S_clamspamd.sh", 'stopper' => "H_clamspamd", 'restarter' => "R_clamspamd.sh"),
-  'SPAMHANDLER' => array('restartfile' => "spamhandler.rn", 'starter' => "S_spamhandler.sh", 'stopper' => "H_spamhandler", 'restarter' => "R_spamhandler.sh"),
-  'FIREWALL' => array('restartfile' => "firewall.rn", 'starter' => "S_firewall.sh", 'stopper' => "H_firewall.sh" ,'restarter' => "R_firewall.sh"),
+  'MTA1' => ['restartfile' => "exim_stage1.rn", 'starter' => "S_exim_stage1.sh", 'stopper' => "H_exim_stage1.sh", 'restarter' => "R_exim_stage1.sh"],
+  'MTA2' => ['restartfile' => "exim_stage2.rn", 'starter' => "S_exim_stage2.sh", 'stopper' => "H_exim_stage2.sh", 'restarter' => "R_exim_stage2.sh"],
+  'MTA4' => ['restartfile' => "exim_stage4.rn", 'starter' => "S_exim_stage4.sh", 'stopper' => "H_exim_stage4.sh", 'restarter' => "R_exim_stage4.sh"],
+  'ENGINE' => ['restartfile' => "mailscanner.rn", 'starter' => "S_mailscanner.sh", 'stopper' => "H_mailscanner.sh", 'restarter' => "R_mailscanner.sh"],
+  'HTTPD' => ['restartfile' => "apache.rn", 'starter' => "S_apache.sh", 'stopper' => "H_exim_apache.sh", 'restarter' => "R_apache.sh"],
+  'MASTERDB' => ['restartfile' => "mysql_master.rn", 'starter' => "S_mysql_master.sh", 'stopper' => "H_mysql_master.sh", 'restarter' => "R_mysql_master.sh"],
+  'SLAVEDB' => ['restartfile' => "mysql_slave.rn", 'starter' => "S_mysql_slave.sh", 'stopper' => "H_mysql_slave.sh", 'restarter' => "R_mysql_slave.sh"],
+  'SNMPD' => ['restartfile' => "snmpd.rn", 'starter' => "S_snmpd.sh", 'stopper' => "H_snmpd.sh", 'restarter' => "R_snmpd.sh"],
+  'GREYLISTD' => ['restartfile' => "greylistd.rn", 'starter' => "S_greylistd.sh", 'stopper' => "H_greylistd.sh", 'restarter' => "R_greylistd.sh"],  
+  'CRON' => ['restartfile' => "cron.rn", 'starter' => "S_cron.sh", 'stopper' => "H_cron.sh", 'restarter' => "R_cron.sh"],
+  'PREFDAEMON' => ['restartfile' => "prefdaemon.rn", 'starter' => "S_prefdaemon.sh", 'stopper' => "H_prefdaemon", 'restarter' => "R_prefdaemon.sh"],
+  'SPAMD' => ['restartfile' => "spamd.rn", 'starter' => "S_spamd.sh", 'stopper' => "H_spamd", 'restarter' => "R_spamd.sh"],
+  'CLAMD' => ['restartfile' => "clamd.rn", 'starter' => "S_clamd.sh", 'stopper' => "H_clamd", 'restarter' => "R_clamd.sh"],
+  'SPAMCLAMD' => ['restartfile' => "clamspamd.rn", 'starter' => "S_clamspamd.sh", 'stopper' => "H_clamspamd", 'restarter' => "R_clamspamd.sh"],
+  'SPAMHANDLER' => ['restartfile' => "spamhandler.rn", 'starter' => "S_spamhandler.sh", 'stopper' => "H_spamhandler", 'restarter' => "R_spamhandler.sh"],
+  'FIREWALL' => ['restartfile' => "firewall.rn", 'starter' => "S_firewall.sh", 'stopper' => "H_firewall.sh" ,'restarter' => "R_firewall.sh"],
 );
          
 /**
@@ -36,7 +36,7 @@ $services_ = array(
  * @return          array    status, array with process as key and status as value
  */
 function getProcessesStatus($sid) {
-  $processes = array();
+  $processes = [];
 
   $ret = getStatus($sid, "-s");
   if (!preg_match('/^(\|[012]){16}$/', $ret)) {

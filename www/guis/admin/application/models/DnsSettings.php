@@ -13,7 +13,7 @@ class Default_Model_DnsSettings
 	protected $_config_file = "/etc/resolv.conf";
 
 	protected $_domainsearch = "";
-	protected $_nameservers = array();
+	protected $_nameservers = [];
 	protected $_heloname = '';
 	
 	public function __construct() {
@@ -43,7 +43,7 @@ class Default_Model_DnsSettings
 	}
 	
 	public function clearNameServers() {
-		$this->_nameservers = array();
+		$this->_nameservers = [];
 	}
 	
 	public function setHeloName($helo) {

@@ -121,7 +121,7 @@ class Default_Model_Email
     }
     
    public function getConfigPanels() {
-    	$panels = array();
+    	$panels = [];
     	$t = Zend_Registry::get('translate');
     	
     	foreach ($this->_configpanels as $panel) {
@@ -283,7 +283,7 @@ class Default_Model_Email
     }
     
     public function setSummaryFrequency($frequency) {
-    	$options = array('daily' => 'daily_summary', 'weekly' => 'weekly_summary', 'monthly' => 'monthly_summary'); 
+    	$options = ['daily' => 'daily_summary', 'weekly' => 'weekly_summary', 'monthly' => 'monthly_summary']; 
     	foreach ($options as $key => $value) {
     		$this->setPref($value, '0');
     	}

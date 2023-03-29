@@ -30,7 +30,7 @@ class Default_Form_Domain_UserAuthentication_Pop3
 		$server = new  Zend_Form_Element_Text('authserver', array(
 	        'label'    => $t->_('Authentication server')." :",
 		    'required' => false,
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $server->setValue($this->_domain->getPref('auth_server'));
         $server->addValidator(new Validate_SMTPHostList());
 	    $form->addElement($server);
@@ -64,7 +64,7 @@ class Default_Form_Domain_UserAuthentication_Pop3
     }
 
     public function getParams() {
-        $params = array('use_ssl' => 0);
+        $params = ['use_ssl' => 0];
         if ($this->_domain->getAuthConnector() != 'pop3') {
            return $params;
         }
@@ -79,7 +79,7 @@ class Default_Form_Domain_UserAuthentication_Pop3
     }
     
     public function getParamsString($params) {
-       $str = implode(':', array($params['use_ssl']));
+       $str = implode(':', [$params['use_ssl'])];
        return $str;
     }
 }

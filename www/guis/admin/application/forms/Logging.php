@@ -38,7 +38,7 @@ class Default_Form_Logging extends ZendX_JQuery_Form
 	    
 	    $sysloghost = new  Zend_Form_Element_Text('syslog_host', array(
             'label'   => $t->_('Syslog server')." :",
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
     	$sysloghost->setValue($this->_systemconf->getParam('syslog_host'));
         $sysloghost->addValidator(new Zend_Validate_Hostname(Zend_Validate_Hostname::ALLOW_LOCAL | Zend_Validate_Hostname::ALLOW_IP));
 	    $this->addElement($sysloghost);

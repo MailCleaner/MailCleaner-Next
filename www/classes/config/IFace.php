@@ -71,7 +71,7 @@ class Iface
     }
   
     $in_if = 0;
-    $matches = array();
+    $matches = [];
     foreach($file as $line) {
       // find the correct block
       if (preg_match('/iface\s*(\S+\d+)/', $line, $matches)) {

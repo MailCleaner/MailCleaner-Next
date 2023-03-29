@@ -24,7 +24,7 @@ class Default_Form_DomainAdvanced extends Zend_Form {
 		$this->setAttrib('id', 'domain_form');
 		$panellist = new Zend_Form_Element_Select('domainpanel', array(
 			'required'   => false,
-			'filters'    => array('StringTrim'))
+			'filters'    => ['StringTrim')]
 		);
 		## TODO: add specific validator
 		$panellist->addValidator(new Zend_Validate_Alnum());
@@ -45,7 +45,7 @@ class Default_Form_DomainAdvanced extends Zend_Form {
 		$domainname = new  Zend_Form_Element_Text('domainname', array(
 			'label'   => $t->_('Domain name')." :",
 			'required' => false,
-			'filters'    => array('StringToLower', 'StringTrim'))
+			'filters'    => ['StringToLower', 'StringTrim')]
 		);
 		$domainname->setValue($this->_domain->getParam('name'));
 		require_once('Validate/DomainName.php');
@@ -61,7 +61,7 @@ class Default_Form_DomainAdvanced extends Zend_Form {
 			'required'	=> false,
 			'rows'		=> 5,
 			'cols'		=> 30,
-			'filters'	=> array('StringToLower', 'StringTrim'))
+			'filters'	=> ['StringToLower', 'StringTrim')]
 		);
 		$black_ip_dom->addValidator(new Validate_IpList());
 		$black_ip_dom->setValue($wwelement->fetchAllField($this->_domain->getParam('name'), 'black-ip-dom', 'sender'));
@@ -77,7 +77,7 @@ class Default_Form_DomainAdvanced extends Zend_Form {
 			'required'   => false,
 			'rows' => 5,
 			'cols' => 30,
-			'filters'    => array('StringToLower', 'StringTrim')));
+			'filters'    => ['StringToLower', 'StringTrim'))];
 		$spam_ip_dom->addValidator(new Validate_IpList());
 		$spam_ip_dom->setValue($wwelement->fetchAllField($this->_domain->getParam('name'), 'spam-ip-dom', 'sender'));
 	        if ($user_role != 'administrator') {
@@ -92,7 +92,7 @@ class Default_Form_DomainAdvanced extends Zend_Form {
 			'required'   => false,
 			'rows' => 5,
 			'cols' => 30,
-			'filters'    => array('StringToLower', 'StringTrim')));
+			'filters'    => ['StringToLower', 'StringTrim'))];
 		$white_ip_dom->addValidator(new Validate_IpList());
 		$white_ip_dom->setValue($wwelement->fetchAllField($this->_domain->getParam('name'), 'white-ip-dom', 'sender'));
 	        if ($user_role != 'administrator') {
@@ -108,7 +108,7 @@ class Default_Form_DomainAdvanced extends Zend_Form {
 			'required'   => false,
 			'rows' => 5,
 			'cols' => 30,
-			'filters'    => array('StringToLower', 'StringTrim')));
+			'filters'    => ['StringToLower', 'StringTrim'))];
 		$wh_spamc_ip_dom->addValidator(new Validate_IpList());
 		$wh_spamc_ip_dom->setValue($wwelement->fetchAllField($this->_domain->getParam('name'), 'wh-spamc-ip-dom', 'sender'));
 	        if ($user_role != 'administrator') {

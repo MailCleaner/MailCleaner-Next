@@ -47,7 +47,7 @@ class Default_Form_Company extends ZendX_JQuery_Form
 	        'label'    => $t->_('Contact email address')." :",
             'size' => 40,
 		    'required' => false,
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $contactemail->setValue($this->_systemconf->getParam('contact_email'));
         $contactemail->addValidator(new Zend_Validate_EmailAddress(Zend_Validate_Hostname::ALLOW_LOCAL));
 	    $this->addElement($contactemail);

@@ -15,7 +15,7 @@
     
     
     public function fetch($username, $domain) {
-        $matches = array();
+        $matches = [];
         if (preg_match('/^(\S+)[\@\%](\S+)$/', $username, $matches )) {
           $username = $matches[1];
         }
@@ -38,11 +38,11 @@
     }
     
     public function searchUsers($u, $d) {
-      return array();
+      return [];
     }
     
     public function searchEmails($l, $d) {
-      return array();
+      return [];
     }
 
     public function canModifyList() {

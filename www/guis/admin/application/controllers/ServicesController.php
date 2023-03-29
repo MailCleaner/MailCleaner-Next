@@ -24,11 +24,11 @@ class ServicesController extends Zend_Controller_Action
     	
     	$this->config_menu = new Zend_Navigation();
     	
-    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(array('label' => 'Web interfaces', 'id' => 'webinterfaces', 'action' => 'httpd', 'controller' => 'services')));
-    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(array('label' => 'SNMP monitoring', 'id' => 'snmp', 'action' => 'snmpd', 'controller' => 'services')));
-    ##	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(array('label' => 'Console access', 'id' => 'console', 'action' => 'sshd', 'controller' => 'services')));
-    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(array('label' => 'Database', 'id' => 'database', 'action' => 'database', 'controller' => 'services')));
-        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(array('label' => 'API', 'id' => 'api', 'action' => 'api', 'controller' => 'services')));
+    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Web interfaces', 'id' => 'webinterfaces', 'action' => 'httpd', 'controller' => 'services'))];
+    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'SNMP monitoring', 'id' => 'snmp', 'action' => 'snmpd', 'controller' => 'services'))];
+    ##	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Console access', 'id' => 'console', 'action' => 'sshd', 'controller' => 'services'))];
+    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Database', 'id' => 'database', 'action' => 'database', 'controller' => 'services'))];
+        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'API', 'id' => 'api', 'action' => 'api', 'controller' => 'services'))];
         $view->config_menu = $this->config_menu;
         
         $view->headScript()->appendFile($view->scripts_path.'/baseconfig.js', 'text/javascript');
@@ -84,7 +84,7 @@ class ServicesController extends Zend_Controller_Action
                  
                  $message = 'OK data saved';
             	 $slaves = new Default_Model_Slave();
-            	 $slaves->sendSoapToAll('Service_setServiceToRestart', array('apache', 'firewall'));
+            	 $slaves->sendSoapToAll('Service_setServiceToRestart', ['apache', 'firewall')];
                } catch (Exception $e) {
                	  $view->ssl_display_class = '';
             	  $message = 'NOK error saving data ('.$e->getMessage().')';
@@ -130,7 +130,7 @@ class ServicesController extends Zend_Controller_Action
                  $form->setParams($request, $snmpdconfig, $fwrule);
                  $message = 'OK data saved';
             	 $slaves = new Default_Model_Slave();
-            	 $slaves->sendSoapToAll('Service_setServiceToRestart', array('snmpd', 'firewall'));
+            	 $slaves->sendSoapToAll('Service_setServiceToRestart', ['snmpd', 'firewall')];
                } catch (Exception $e) {
             	  $message = 'NOK error saving data ('.$e->getMessage().')';
                }
@@ -174,7 +174,7 @@ class ServicesController extends Zend_Controller_Action
                  $form->setParams($request, $fwrule);
                  $message = 'OK data saved';
             	 $slaves = new Default_Model_Slave();
-            	 $slaves->sendSoapToAll('Service_setServiceToRestart', array('firewall'));
+            	 $slaves->sendSoapToAll('Service_setServiceToRestart', ['firewall')];
                } catch (Exception $e) {
             	  $message = 'NOK error saving data ('.$e->getMessage().')';
                }

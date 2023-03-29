@@ -38,12 +38,12 @@
  
   <div id="domaincontentpanel">
     <div id="adminconfigpanel" class="domainconfigpanel">
-<?php echo $this->partial('layouts/message.phtml', array('message' => $this->message, 't' => $this->t)); ?> 
+<?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t)]; ?> 
  <form method="<?php echo $this->form->getMethod() ?>" action="<?php echo $this->form->getAction()?>" id="<?php echo $this->form->getId()?>">
-<?php echo $this->InputRow($this->form->getElement('username'),array('field_only'=>true,'nobox'=>true));?>
-    <h1 class="adddomaincontentpaneltitle"><?php echo $this->t->_('Administrator name');?> : <?php echo $this->InputRow($this->form->getElement('newusername'), array('field_only'=>true,'nobox'=>true)); ?></h1>
+<?php echo $this->InputRow($this->form->getElement('username'),['field_only'=>true,'nobox'=>true)];?>
+    <h1 class="adddomaincontentpaneltitle"><?php echo $this->t->_('Administrator name');?> : <?php echo $this->InputRow($this->form->getElement('newusername'), ['field_only'=>true,'nobox'=>true)]; ?></h1>
   
-     <?php echo $this->partial('forms/admineditForm.phtml', array('form' => $this->form,'t' => $this->t, 'message' => $this->message, 'admin' => $this->admin, 'images_path' => $this->images_path)); ?>
+     <?php echo $this->partial('forms/admineditForm.phtml', ['form' => $this->form,'t' => $this->t, 'message' => $this->message, 'admin' => $this->admin, 'images_path' => $this->images_path)]; ?>
 
  </form>
  

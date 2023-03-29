@@ -28,7 +28,7 @@ class Default_Form_Domain_AddressVerification_Ldap
 		$server = new  Zend_Form_Element_Text('ldapserver', array(
 	        'label'    => $t->_('LDAP server')." :",
 		    'required' => false,
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $server->setValue($this->_domain->getPref('ldapcalloutserver'));
         $server->addValidator(new Validate_SMTPHostList());
 	    $form->addElement($server);
@@ -38,14 +38,14 @@ class Default_Form_Domain_AddressVerification_Ldap
 	    $basedn = new  Zend_Form_Element_Text('basedn', array(
 	        'label'    => $t->_('Base DN')." :",
 		    'required' => false,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 	    $basedn->setValue($ldapparams['basedn']);
 	    $form->addElement($basedn);
 	    
 	    $binddn = new  Zend_Form_Element_Text('binddn', array(
 	        'label'    => $t->_('Bind user')." :",
 		    'required' => false,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 	    $binddn->setValue($ldapparams['binddn']);
 	    $form->addElement($binddn);
 	    
@@ -53,7 +53,7 @@ class Default_Form_Domain_AddressVerification_Ldap
 	        'label'    => $t->_('Bind password')." :",
 		    'required' => false,
 	        'renderPassword' => true,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 	    $bindpass->setValue($ldapparams['bindpass']);
 	    $form->addElement($bindpass);
 
@@ -61,7 +61,7 @@ class Default_Form_Domain_AddressVerification_Ldap
 	        'label'    => $t->_('Only addresses in group')." :",
 		    'required' => false,
 	        'renderPassword' => true,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 	    $group->setValue($ldapparams['group']);
 	    $form->addElement($group);
 
@@ -139,7 +139,7 @@ class Default_Form_Domain_AddressVerification_Ldap
         if (isset($params['usessl']) && $params['usessl']) {
             $usessl = '1';
         }
-		return implode(':', array($basedn, $binddn, $bindpass, $group, $usessl));
+		return implode(':', [$basedn, $binddn, $bindpass, $group, $usessl)];
 	}
 	
 }

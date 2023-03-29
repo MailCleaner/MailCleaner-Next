@@ -18,7 +18,7 @@ class MailCleaner_View_Helper_FormatSize extends Zend_View_Helper_Abstract
                          'K' => 'KB')	
 	);
 	
-	public function formatSize($string = '', $params = array())
+	public function formatSize($string = '', $params = [)]
 	{
 		$t = Zend_Registry::get('translate');
 		

@@ -40,7 +40,7 @@ class Default_Form_Domain_UserAuthentication_Ldap
 		$server = new  Zend_Form_Element_Text('ldapserver', array(
 	        'label'    => $t->_('LDAP server')." :",
 		    'required' => false,
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $server->setValue($this->_domain->getPref('auth_server'));
         $server->addValidator(new Validate_SMTPHostList());
 	    $form->addElement($server);
@@ -50,14 +50,14 @@ class Default_Form_Domain_UserAuthentication_Ldap
 	    $basedn = new  Zend_Form_Element_Text('basedn', array(
 	        'label'    => $t->_('Base DN')." :",
 		    'required' => false,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 	    $basedn->setValue($this->_settings['basedn']);
 	    $form->addElement($basedn);
 	    
 	    $binddn = new  Zend_Form_Element_Text('binddn', array(
 	        'label'    => $t->_('Bind user')." :",
 		    'required' => false,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 	    $binddn->setValue($this->_settings['binddn']);
 	    $form->addElement($binddn);
 	    
@@ -65,14 +65,14 @@ class Default_Form_Domain_UserAuthentication_Ldap
 	        'label'    => $t->_('Bind password')." :",
 		    'required' => false,
 	        'renderPassword' => true,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 	    $bindpass->setValue($this->_settings['bindpw']);
 	    $form->addElement($bindpass);
 	    
 	    $userattr = new  Zend_Form_Element_Text('userattribute', array(
 	        'label'    => $t->_('User attribute')." :",
 		    'required' => false,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 	    $userattr->setValue($this->_settings['userattr']);
 	    $form->addElement($userattr);
 	    
@@ -90,9 +90,9 @@ class Default_Form_Domain_UserAuthentication_Ldap
 	    $version = new Zend_Form_Element_Select('ldapversion', array(
             'label'      => $t->_('Protocol version')." :",
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
-        foreach (array(2, 3) as $value) {
+        foreach ([2, 3) as $value] {
         	$version->addMultiOption($value, $value);
         }
         $version->setValue($this->_settings['version']);
@@ -141,7 +141,7 @@ class Default_Form_Domain_UserAuthentication_Ldap
     }
     
     public function getParamsString($params) {
-    	$fields = array('basedn', 'userattribute', 'binddn', 'bindpass', 'use_ssl', 'ldapversion');
+    	$fields = ['basedn', 'userattribute', 'binddn', 'bindpass', 'use_ssl', 'ldapversion'];
     	$str = '';
     	foreach ($fields as $key) {
     		if (isset($params[$key])) {

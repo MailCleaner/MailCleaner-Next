@@ -37,11 +37,11 @@
     
     public function searchUsers($u, $d) {
       // @todo  everything here ;o)
-      return array();
+      return [];
     }
     
     public function searchEmails($l, $d) {
-      $addresses = array();
+      $addresses = [];
       $sysconf_ = SystemConfig::getInstance();
       $file = $sysconf_->VARDIR_."/spool/mailcleaner/addresses/".$d->getPref('name');
       if (!file_exists($file)) {

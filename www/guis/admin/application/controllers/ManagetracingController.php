@@ -12,8 +12,8 @@ class ManagetracingController extends Zend_Controller_Action
 {
 		protected function getSearchParams() {
 		$request = $this->getRequest();
-		$params = array();
-		foreach (array('search', 'domain', 'sender', 'mpp', 'page', 'sort', 'fd', 'fm', 'td', 'tm', 'submit', 'cancel', 'hiderejected') as $param) {
+		$params = [];
+		foreach (['search', 'domain', 'sender', 'mpp', 'page', 'sort', 'fd', 'fm', 'td', 'tm', 'submit', 'cancel', 'hiderejected') as $param] {
 			$params[$param] = '';
 			if ($request->getParam($param)) {
 				$params[$param] = $request->getParam($param);
@@ -33,13 +33,13 @@ class ManagetracingController extends Zend_Controller_Action
         $fromdate = Zend_Locale_Format::getDate($fromdateO, array('date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()));
        
         
-        foreach ( array('fd' => 'day', 'fm' => 'month') as $tk => $tv) {
+        foreach ( ['fd' => 'day', 'fm' => 'month') as $tk => $tv] {
         	if  (!isset($params[$tk]) || !$params[$tk]) {
         	    $params[$tk] = $fromdate[$tv];
             }
         }
         $params['ty'] = $todate['year'];
-	    foreach ( array('td' => 'day', 'tm' => 'month') as $tk => $tv) {
+	    foreach ( ['td' => 'day', 'tm' => 'month') as $tk => $tv] {
 	    	if  (!isset($params[$tk]) || !$params[$tk]) {
         	    $params[$tk] = $todate[$tv];
             }
@@ -85,7 +85,7 @@ class ManagetracingController extends Zend_Controller_Action
 		$request = $this->getRequest();
 		$form    = new Default_Form_Tracing($this->getSearchParams());
 		$form->setAction(Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managetracing'));
-		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managetracing', NULL, array());
+		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managetracing', NULL, [)];
 
 		$view->form = $form;
     }
@@ -95,7 +95,7 @@ class ManagetracingController extends Zend_Controller_Action
 		$view=$layout->getView();
 		$layout->disableLayout();
 		$view->addScriptPath(Zend_Registry::get('ajax_script_path'));
-		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managecontentquarantine', NULL, array());
+		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managecontentquarantine', NULL, [)];
 		 
 		$request = $this->getRequest();
 		 
@@ -111,15 +111,15 @@ class ManagetracingController extends Zend_Controller_Action
 		$orderorder = 'desc';
 		 
 		$columns = array(
-                  'taction' => array('label' => 'Action'),
-		  'in_date' => array('label' => 'Arrival date'),
-		  'in_status' => array('label' => 'Arrival status'),
-    	  'from' => array('label' => 'Envelope sender'),
-    	  'tos' => array('label' => 'Recipients'),
-    	  'spam' => array('label' => 'Spam status'),
-    	  'content' => array('label' => 'Content status'),
-    	  'out_status' => array('label' => 'Deliver status'),
-    	  'out_date' => array('label' => 'Delivery date')
+                  'taction' => ['label' => 'Action'],
+		  'in_date' => ['label' => 'Arrival date'],
+		  'in_status' => ['label' => 'Arrival status'],
+    	  'from' => ['label' => 'Envelope sender'],
+    	  'tos' => ['label' => 'Recipients'],
+    	  'spam' => ['label' => 'Spam status'],
+    	  'content' => ['label' => 'Content status'],
+    	  'out_status' => ['label' => 'Deliver status'],
+    	  'out_date' => ['label' => 'Delivery date']
 		);
 		if ($request->getParam('sort') && preg_match('/(\S+)_(asc|desc)/', $request->getParam('sort'), $matches)) {
 			$order = $request->getParam('sort');
@@ -130,7 +130,7 @@ class ManagetracingController extends Zend_Controller_Action
 			}
 		}
 		
-		$elements = array();
+		$elements = [];
 		$nbelements = 0;
 		$nbpages = 0;
 		$page = 0;
@@ -235,11 +235,11 @@ class ManagetracingController extends Zend_Controller_Action
                     $slave = new Default_Model_Slave();
                     $slave->find($request->getparam('s'));
                 }
-                $params = array('msgid' => $msgid, 'traceid' => $traceid);
+                $params = ['msgid' => $msgid, 'traceid' => $traceid];
                 if ($slave) {
                     $res = $slave->sendSoap('Logs_ExtractLog', $params);
                 }
-                if (is_array($res) && isset($res['full_log'])) {
+                if (is_[$res] && isset($res['full_log'])) {
                     $log = $res['full_log'];
                 }
                 $view->logs = $res;
@@ -265,7 +265,7 @@ class ManagetracingController extends Zend_Controller_Action
                         
                 $request = $this->getRequest();
 
-                $messages = array();
+                $messages = [];
                 if ($request->getParam('m')) {
                    $messages = preg_split('/,/', $request->getParam('m'));
                 }
@@ -278,17 +278,17 @@ class ManagetracingController extends Zend_Controller_Action
                 if (isset($session->trace_id) && $session->trace_id) {
                     $traceid = $session->trace_id;
                 }
-                $traces = array();
+                $traces = [];
                
                 foreach ($messages as $msg_lid) {
                   if (preg_match('/^(\d+)_([-a-zA-Z0-9]+)$/', $msg_lid, $matches)) {
                     $slave = new Default_Model_Slave();
                     $slave->find($matches[1]);
-                    $params = array('msgid' => $matches[2], 'traceid' => $traceid);
+                    $params = ['msgid' => $matches[2], 'traceid' => $traceid];
                     if ($slave) {
                       $res = $slave->sendSoap('Logs_ExtractLog', $params);
                     }
-                    if (is_array($res) && isset($res['full_log'])) {
+                    if (is_[$res] && isset($res['full_log'])) {
                       array_push($traces, $res);
                     }
                   }
@@ -304,9 +304,9 @@ class ManagetracingController extends Zend_Controller_Action
                 foreach ($traces as $t) {
                    $tstr = '';
                    fwrite($handle, $separator);
-                   foreach (array('log_stage1', 'log_stage2', 'log_engine', 'log_stage4', 'log_spamhandler') as $c) {
+                   foreach (['log_stage1', 'log_stage2', 'log_engine', 'log_stage4', 'log_spamhandler') as $c] {
                        $str = '';
-                       if ( is_array($t[$c]) && count($t[$c]) > 0) {
+                       if ( is_[$t[$c]] && count($t[$c]) > 0) {
                            $sstr = implode("\r\n", $t[$c]);
                            $str .= "\r\n".$sstr;
                        }

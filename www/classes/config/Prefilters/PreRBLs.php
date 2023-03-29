@@ -26,7 +26,7 @@ class PreRBLs extends PreFilter {
                         'lists' => ""
 	                 );
                      
-    private $dnslists_ = array();
+    private $dnslists_ = [];
     private $form_;
 
 public function subload() {
@@ -66,7 +66,7 @@ public function getSpeciticReplace($template, $form) {
     $tlist .= $t;
   }
     
-  $countlist = array();
+  $countlist = [];
   for ($i = 0; $i <= count($this->dnslists_); $i++) {
   	$countlist[$i] = $i;
   }

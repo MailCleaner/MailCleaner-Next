@@ -41,7 +41,7 @@ class Default_Model_FileName
 	}
 	
 	public function getAvailableParams() {
-		$ret = array();
+		$ret = [];
 		foreach ($this->_values as $key => $value) {
 			$ret[]=$key;
 		}

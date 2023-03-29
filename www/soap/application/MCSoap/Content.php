@@ -88,9 +88,9 @@ class MCSoap_Content
         echo $query;
         $result = $query->query()->fetchAll();
         
-        $elements = array();
+        $elements = [];
         if ($limit && count($result) > $limit) {
-        	return array('error' => 'LIMITREACHED');
+        	return ['error' => 'LIMITREACHED'];
         }
         foreach ($result as $c) {
         	foreach (MCSoap_Content::$_fieldstosend as $f) {
@@ -135,9 +135,9 @@ class MCSoap_Content
         $query->where('id = ?', $id);
         $result = $query->query()->fetch();
         if (!$result) {
-        	return array('status' => 0, 'error' => 'MSGNOTFOUND'.$query);
+        	return ['status' => 0, 'error' => 'MSGNOTFOUND'.$query];
         }
-        $ret = array();
+        $ret = [];
         foreach ($result as $key => $value) {
         	$ret[$key] = utf8_encode($value);
         }
@@ -167,6 +167,6 @@ class MCSoap_Content
 		if (preg_match('/^FORCED/', $res)) {
 			$status = 1;
 		}
-		return array('status' => $status, 'message' => "$res", 'cmd' => "$cmd");
+		return ['status' => $status, 'message' => "$res", 'cmd' => "$cmd"];
 	}
 }

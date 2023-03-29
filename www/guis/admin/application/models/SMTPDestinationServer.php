@@ -25,7 +25,7 @@ class Default_Model_SMTPDestinationServer {
 		
 		require_once('Net/SMTP.php');
 		if (! $smtp = new Net_SMTP($this->_hostname, $this->_port, $domain)) {
-			return array('status' => 'NOK', 'message' => 'unable to instantiate SMTP');
+			return ['status' => 'NOK', 'message' => 'unable to instantiate SMTP'];
 		}
 		
 		if (PEAR::isError($e = $smtp->connect())) {
@@ -53,21 +53,21 @@ class Default_Model_SMTPDestinationServer {
         $response = $smtp->getResponse();
 	    if ($response[0] >= 500) {
 	    	$smtp->disconnect();
-        	return array('status' => 'NOK', 'message' => "Message refused <$to>");
+        	return ['status' => 'NOK', 'message' => "Message refused <$to>"];
         }
         
         if ($response[0] < 200 || $response[0] >= 300) {
 	    	$smtp->disconnect();
-        	return array('status' => 'NOK', 'message' => "Message not immediately accepted <$to>");
+        	return ['status' => 'NOK', 'message' => "Message not immediately accepted <$to>"];
         }
         $smtp->disconnect();
-		return array('status' => 'OK', 'message' => 'success !');
+		return ['status' => 'OK', 'message' => 'success !'];
 	}
 	
 	public function testCallout($address, $expected) {
 		require_once('Net/SMTP.php');
 		if (! $smtp = new Net_SMTP($this->_hostname)) {
-			return array('status' => 'NOK', 'message' => 'unable to instantiate SMTP');
+			return ['status' => 'NOK', 'message' => 'unable to instantiate SMTP'];
 		}
 		
 		if (PEAR::isError($e = $smtp->connect())) {
@@ -76,13 +76,13 @@ class Default_Model_SMTPDestinationServer {
 		
         if (PEAR::isError($smtp->mailFrom($address))) {
            $smtp->disconnect();
-           return array('status' => 'NOK', 'message' => "Unable to set sender to <$address>");
+           return ['status' => 'NOK', 'message' => "Unable to set sender to <$address>"];
         }
         
         $message = "correctly accepted !";
 	    if ( PEAR::isError($res = $smtp->rcptTo($address)) && $expected == 'OK') {
 	    	$smtp->disconnect();
-	    	return array('status' => 'NOK', 'message' => "Could not setup recipient <$address>");
+	    	return ['status' => 'NOK', 'message' => "Could not setup recipient <$address>"];
         }
         
         $response = $smtp->getResponse();
@@ -90,20 +90,20 @@ class Default_Model_SMTPDestinationServer {
     
            if ($expected == 'OK') {
                $smtp->disconnect();
-        	   return array('status' => 'NOK', 'message' => "Recipient wrongly refused &lt;$address&gt;");
+        	   return ['status' => 'NOK', 'message' => "Recipient wrongly refused &lt;$address&gt;"];
            } else {
                $smtp->disconnect();
-               return array('status' => 'OK', 'message' => "Recipient correctly refused");
+               return ['status' => 'OK', 'message' => "Recipient correctly refused"];
            }
         }
 
         if ($expected == 'NOK') {
            	$smtp->disconnect();
-            return array('status' => 'NOK', 'message' => "Recipient wrongly accepted &lt;$address&gt;");
+            return ['status' => 'NOK', 'message' => "Recipient wrongly accepted &lt;$address&gt;"];
         }
         
         $smtp->disconnect();
-		return array('status' => 'OK', 'message' => "Recipient correctly accepted");
+		return ['status' => 'OK', 'message' => "Recipient correctly accepted"];
 	}
 	
    static function getRandomString($length) {

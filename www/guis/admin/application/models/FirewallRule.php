@@ -42,7 +42,7 @@ class Default_Model_FirewallRule
 	}
 	
 	public function getAvailableParams() {
-		$ret = array();
+		$ret = [];
 		foreach ($this->_values as $key => $value) {
 			$ret[]=$key;
 		}

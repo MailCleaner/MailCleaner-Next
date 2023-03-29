@@ -14,7 +14,7 @@ class Default_Form_DomainAddressverification extends Zend_Form
 	protected $_panelname = 'addressverification';
 	protected $_request;
 	
-	protected $_connectors = array('smtp', 'ldap', 'local', 'none');
+	protected $_connectors = ['smtp', 'ldap', 'local', 'none'];
 	
 	public function __construct($domain, $whitelist = NULL, $warnlist = NULL, $blacklist = NULL, $newslist = NULL, $request)
 	{
@@ -33,7 +33,7 @@ class Default_Form_DomainAddressverification extends Zend_Form
 		$this->setAttrib('id', 'domain_form');
 	    $panellist = new Zend_Form_Element_Select('domainpanel', array(
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         
@@ -53,7 +53,7 @@ class Default_Form_DomainAddressverification extends Zend_Form
 	    $domainname = new  Zend_Form_Element_Text('domainname', array(
             'label'   => $t->_('Domain name')." :",
 		    'required' => false,
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $domainname->setValue($this->_domain->getParam('name'));
 	    require_once('Validate/DomainName.php');
         $domainname->addValidator(new Validate_DomainName());
@@ -71,7 +71,7 @@ class Default_Form_DomainAddressverification extends Zend_Form
                     'title' => $t->_("choose type of callout"),
             'required'   => true,
 		    'onchange'   => 'javascript:changeConnector();',
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
         foreach ($this->_connectors as $connector) {
         	$connectorlist->addMultiOption($connector, $t->_($connector));

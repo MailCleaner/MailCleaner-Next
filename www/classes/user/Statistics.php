@@ -203,15 +203,15 @@ public function setDate($type, $date) {
 }
 
 public function getDateArray($type) {
-  $matches = array();
+  $matches = [];
   $date = $this->startdate_;
   if ($type == 'stop') {
   	$date = $this->stopdate_;
   }
   if (!preg_match('/^(\d{4})(\d{2})(\d{2})$/', $date, $matches)) {
-  	return array('day' => 1, 'month' => 1, 'year' => 1900);
+  	return ['day' => 1, 'month' => 1, 'year' => 1900];
   }
-  return array('day' => $matches[3], 'month' => $matches[2], 'year' => $matches[1]);
+  return ['day' => $matches[3], 'month' => $matches[2], 'year' => $matches[1]];
 }
 
 public function getStatInTemplate($template, $tpl_name) {
@@ -225,7 +225,7 @@ public function getStatInTemplate($template, $tpl_name) {
   
   $startd = Statistics::getAnyDateAsArray($this->startdate_);
   $stopd = Statistics::getAnyDateAsArray($this->stopdate_);
-  $date_string = $lang_->print_txt_mparam('FROMDATETODATE', array($startd['day'], $startd['month'], $startd['year'], $stopd['day'], $stopd['month'], $stopd['year']));
+  $date_string = $lang_->print_txt_mparam('FROMDATETODATE', [$startd['day'], $startd['month'], $startd['year'], $stopd['day'], $stopd['month'], $stopd['year'])];
   if ($this->date_type_ == 'period') {
   	$date_string = abs($this->startdate_)." ".$lang_->print_txt('LASTDAYS');
   }
@@ -290,17 +290,17 @@ public function addStats($stats) {
 }
 
 public static function getAnyDateAsArray($date) {
-  $matches = array();
+  $matches = [];
   if ($date == 'today' || !preg_match('/^(\d{4})(\d{2})(\d{2})$/', $date, $matches)) {
   	$today = @getdate();
-    return array('day' => $today['mday'], 'month' => $today['mon'], 'year' => $today['year']);
+    return ['day' => $today['mday'], 'month' => $today['mon'], 'year' => $today['year']];
   }
-  return array('day' => $matches[3], 'month' => $matches[2], 'year' => $matches[1]);
+  return ['day' => $matches[3], 'month' => $matches[2], 'year' => $matches[1]];
 }
 
 public static function colorToArray($color) {
   if (!preg_match('/^(\S{2})(\S{2})(\S{2})$/', $color, $matches) ) {
-  	return array(0xFF, 0xFF, 0xFF);
+  	return [0xFF, 0xFF, 0xFF];
   }
   $r = '0x'.$matches[1];
   $rv = eval("return $r;");
@@ -309,7 +309,7 @@ public static function colorToArray($color) {
   $b = '0x'.$matches[3];
   $bv = eval("return $b;");
   
-  return array($rv, $gv, $bv);
+  return [$rv, $gv, $bv];
 }
 
 }

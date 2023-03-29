@@ -23,8 +23,8 @@ class Default_Model_Localization
 	
 	protected $_timezonefile = '/etc/timezone';
 	protected $_zoneinfodir = '/usr/share/zoneinfo';
-	protected $_currenttimezone = array('US', 'Central');
-	protected $_currentsubzones = array();
+	protected $_currenttimezone = ['US', 'Central'];
+	protected $_currentsubzones = [];
 	
 	public function __construct() {
 	}
@@ -37,7 +37,7 @@ class Default_Model_Localization
 	   	   	  $line = preg_replace('/\s+$/', '', $line);
               $zones = preg_split('/\//', $line);
               if (isset($zones[0]) && isset($this->_dlglist[$zones[0]]) && isset($zones[1])) {
-              	  $this->_currenttimezone = array($zones[0], $zones[1]);
+              	  $this->_currenttimezone = [$zones[0], $zones[1]];
               	  $this->getSubZones($zones[0]);
               }
 	   	   }

@@ -35,7 +35,7 @@ class Default_Form_Defaults extends ZendX_JQuery_Form
 		$lang = new Zend_Form_Element_Select('language', array(
             'label'      => $t->_('User GUI Language')." :",
             'required'   => true,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
 		$config = MailCleaner_Config::getInstance();
         foreach ($config->getUserGUIAvailableLanguages() as $lk => $lv) {
@@ -47,7 +47,7 @@ class Default_Form_Defaults extends ZendX_JQuery_Form
         $domain = new Zend_Form_Element_Select('domain', array(
             'label'      => $t->_('Default domain')." :",
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
         foreach ($this->_domains as $d) {
         	$domain->addMultiOption($d->getParam('name'), $d->getParam('name'));
@@ -68,7 +68,7 @@ class Default_Form_Defaults extends ZendX_JQuery_Form
             'title'    => $t->_('Name of the person in charge of the support'),
             'required' => false,
 	        'size' => 40,
-            'filters'    => array('StringToLower', 'StringTrim')));
+            'filters'    => ['StringToLower', 'StringTrim'))];
         $sysadmin->setValue($this->_systemconf->getParam('sysadmin'));
         $sysadmin->addValidator(new Zend_Validate_EmailAddress(Zend_Validate_Hostname::ALLOW_LOCAL));
         $this->addElement($sysadmin); 
@@ -78,7 +78,7 @@ class Default_Form_Defaults extends ZendX_JQuery_Form
             'title'    => $t->_('Mail address for summaries'),
 		    'required' => false,
             'size' => 40,
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $sender->setValue($this->_systemconf->getParam('summary_from'));
         $sender->addValidator(new Zend_Validate_EmailAddress(Zend_Validate_Hostname::ALLOW_LOCAL));
 	    $this->addElement($sender);	
@@ -88,7 +88,7 @@ class Default_Form_Defaults extends ZendX_JQuery_Form
                 'title'    => $t->_('Mail for false negatives (mails which were not detected as spam when they should have been)'),
 		    'required' => false,
             'size' => 40,
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $falseneg->setValue($this->_systemconf->getParam('falseneg_to'));
         $falseneg->addValidator(new Zend_Validate_EmailAddress(Zend_Validate_Hostname::ALLOW_LOCAL));
 	    $this->addElement($falseneg);
@@ -98,7 +98,7 @@ class Default_Form_Defaults extends ZendX_JQuery_Form
                 'title'    => $t->_('Mail for false positives (mails which were detected as spam when they shouldn\'t have been) (sent from analyze button in summaries)'),
 		    'required' => false,
             'size' => 40,
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $falsepos->setValue($this->_systemconf->getParam('falsepos_to'));
         $falsepos->addValidator(new Zend_Validate_EmailAddress(Zend_Validate_Hostname::ALLOW_LOCAL));
 	    $this->addElement($falsepos);

@@ -74,14 +74,14 @@ public function getCount() {
  */
 public function draw($template, $images, $sid) {
   // fields to search and display
-  $fields = array('to' => array(), 'time' => '', 'size' => '', 'id' => '', 'from' => '', 'status' => '');
+  $fields = array('to' => [), 'time' => '', 'size' => '', 'id' => '', 'from' => '', 'status' => ''];
   // exim command to list queue
   $cmd = "/usr/sbin/exim -C ".$this->conf_file_." -bp";
   $list  = popen($cmd, "r");
 
   $ret = "";
   $i = 0;
-  $matches = array();
+  $matches = [];
   while (!feof($list)) {
     $buffer = fgets($list, 4096);
     if (preg_match('/^\s*(\d+[a-z])\s+(\d+.?\d+[a-zA-Z]*)?\s+(\S{6}\-\S{6}\-\S{2})\s+(.*)/', $buffer, $matches)) {
@@ -168,7 +168,7 @@ private function dumpMessage($t, $images, $sid, $f, $i) {
 public function runQueue() {
   $cmd = "/usr/sbin/exim -C ".$this->conf_file_." -qff > /dev/null & echo \$!";  
   $ret = `$cmd`;
-  $matches = array();
+  $matches = [];
   if (preg_match('/^\s*(\d+)\s*$/', $ret, $matches)) {
     return true;
   }
@@ -182,7 +182,7 @@ public function runQueue() {
 public function forceOne($id) {
   $cmd = "/usr/sbin/exim -C ".$this->conf_file_." -M $id > /dev/null & echo \$!";
   $ret = `$cmd`;
-  $matches = array();
+  $matches = [];
   if (preg_match('/^\s*(\d+)\s*$/', $ret, $matches)) {
      return true;
   }

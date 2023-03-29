@@ -28,7 +28,7 @@ class DomainAddFormatter extends LoginFormatter {
            $separator = '%';
            break; 
        }
-       $matches = array();
+       $matches = [];
        if (preg_match('/^(\S+)[\@\%](\S+)$/', $login_given, $matches)) {
          return $matches[1].$separator.$domain_name;
        }

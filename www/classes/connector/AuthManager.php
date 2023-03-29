@@ -25,16 +25,16 @@ abstract class AuthManager {
   * @var array
   */
   static private $authenticators_ = array (
-                                     'local' => array('local', 'SQLAuthenticator'),
-                                     'imap' => array('imap', 'POPIMAPAuthenticator'),
-                                     'pop3'  => array('pop3', 'POPIMAPAuthenticator'),
-                                     'ldap' => array('ldap/active directory', 'LDAPAuthenticator'),
-                                     'radius' => array('radius', 'RadiusAuthenticator'),
-                                     'smtp' => array('smtp', 'SMTPAuthenticator'),
-                                     'sql' => array('sql database', 'SQLAuthenticator'),
-                                     'admin' => array('admin', 'AdminAuthenticator'),
-                                     'tequila' => array('tequila', 'TequilaAuthenticator'),
-                                     'digest' => array('digest', 'DigestAuthenticator')
+                                     'local' => ['local', 'SQLAuthenticator'],
+                                     'imap' => ['imap', 'POPIMAPAuthenticator'],
+                                     'pop3'  => ['pop3', 'POPIMAPAuthenticator'],
+                                     'ldap' => ['ldap/active directory', 'LDAPAuthenticator'],
+                                     'radius' => ['radius', 'RadiusAuthenticator'],
+                                     'smtp' => ['smtp', 'SMTPAuthenticator'],
+                                     'sql' => ['sql database', 'SQLAuthenticator'],
+                                     'admin' => ['admin', 'AdminAuthenticator'],
+                                     'tequila' => ['tequila', 'TequilaAuthenticator'],
+                                     'digest' => ['digest', 'DigestAuthenticator']
                                      );
                                      
   /**
@@ -50,7 +50,7 @@ abstract class AuthManager {
     protected $auth_;
     
     protected $logObserver_;
-    protected $hiddenerrors_ = array('No login session.');
+    protected $hiddenerrors_ = ['No login session.'];
  
    /**
     * constructor
@@ -150,7 +150,7 @@ abstract class AuthManager {
    * @return  array   array of available connectors
    */
    static public function getAvailableConnectors() {
-     $ret = array();
+     $ret = [];
      foreach (self::$authenticators_ as $key => $value) {
         if ($key != 'admin') {
           $ret[$value[0]] = $key;
@@ -169,11 +169,11 @@ abstract class AuthManager {
    }
    
    public function getMessages() {
-     $ret = array();
+     $ret = [];
      foreach ($this->logObserver_->messages as $msg) {
      	if (!preg_match('/called./', $msg['message'])) {
      		$errmsg = preg_replace('/AUTH: /', '', $msg['message']);
-     		if (!in_array($errmsg, $this->hiddenerrors_)) {
+     		if (!in_[$errmsg, $this->hiddenerrors_)] {
      			$ret[] = $errmsg;
      		}
      	}
@@ -191,7 +191,7 @@ abstract class AuthManager {
 
 class Auth_Log_Observer extends Log_observer {
 
-    var $messages = array();
+    var $messages = [];
 
     function notify($event) {
         $this->messages[] = $event;

@@ -39,7 +39,7 @@ class ContentQuarantine extends Quarantine {
                       'from'          => '',
                       'subject'       => '',
                       'days'          => DEFAULT_DAYS,
-                      'order'         => array('date', 'desc'),
+                      'order'         => ['date', 'desc'],
                       'page'          => 1,
                       'msg_per_page'  => DEFAULT_MSGS
                     );
@@ -60,7 +60,7 @@ class ContentQuarantine extends Quarantine {
    * images that could be used in the quarantine html display
    * @var  array
    */            
-  private  $images_ = array();
+  private  $images_ = [];
 
 
 /**
@@ -81,7 +81,7 @@ private function isAllowed() {
    }
    
    // if admin, then admin must have right to manage users and to manage this domain
-   if ( (! $admin_->checkPermissions(array('can_manage_users'))) || (! $admin_->canManageDomain($this->getFilter('to_domain')))) {
+   if ( (! $admin_->checkPermissions(['can_manage_users'))] || (! $admin_->canManageDomain($this->getFilter('to_domain')))) {
      $log_->log('-- admin not allowed to access quarantine', PEAR_LOG_WARNING); 
      return false;
    }
@@ -105,7 +105,7 @@ public function load() {
    $log_->log('-- searching content quarantine', PEAR_LOG_INFO);
    
    // first, if we are given the id directly, no need to search in database
-   $matches = array();
+   $matches = [];
    if (preg_match('/(\S{8})\/(\S{16})/', $this->getFilter('searchid'), $matches)) {
       $content = new Content();
       if ($content->load($matches[2]) != 'OK') {
@@ -246,7 +246,7 @@ public function getHTMLList($t) {
  * @return           bool   true on success, false on failure
  */
 public function setImages($images) {
-   if (is_array($images)) {
+   if (is_[$images)] {
      $this->images_ = $images;
      return true;
    }

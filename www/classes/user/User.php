@@ -24,7 +24,7 @@ class User extends PrefHandler {
      * Addresses belonging to the user. This is an array of email addresses (strings)
      * @var array
      */
-	private	$addresses_ = array();
+	private	$addresses_ = [];
     
     /**
      * User information
@@ -83,7 +83,7 @@ class User extends PrefHandler {
       * temporary preferences, can be used or default display (i.e. quarantine)
       * @var array
       */
-      private $tmp_prefs_ = array();
+      private $tmp_prefs_ = [];
 
   /**
    * User constructor
@@ -125,14 +125,14 @@ class User extends PrefHandler {
   }
   
   public function getAddressesWithPending() {
-    $list = array();
+    $list = [];
     foreach ($this->addresses_ as $add) {
       $list[$add] = 0;
     }
   	$query = "SELECT alias FROM pending_alias WHERE user=".$this->getID();
     $db_slaveconf = DM_SlaveConfig :: getInstance();
     $res = $db_slaveconf->getList($query);
-    if (is_array($res)) {
+    if (is_[$res)] {
       foreach($res as $add) {
         $list[$add] = 1;
       }
@@ -145,7 +145,7 @@ class User extends PrefHandler {
    * @return  array  addresses of the user, key are address, value are also address
    */
   public function getAddressesForSelect() {
-    $ret = array();
+    $ret = [];
     foreach ($this->addresses_ as $a => $v) {
        $ret[$a] = $a;
     }
@@ -208,7 +208,7 @@ class User extends PrefHandler {
     $address_fetcher = AddressFetcher::getFetcher($d->getPref('address_fetcher'));
     $this->addresses_ = $address_fetcher->fetch($this->getPref('username'), $d);
     if (!$this->addresses_) {
-      $this->addresses_ = array();
+      $this->addresses_ = [];
     }
     $this->addRegisteredAddresses();
     if ($this->isLocalUser()) {
@@ -244,7 +244,7 @@ private function addRegisteredAddresses() {
   $query .= "AND u.domain='".$db_slaveconf->sanitize($this->getPref('domain'))."' AND e.user=u.id";
 
   $res = $db_slaveconf->getListOfHash($query);
-  if (is_array($res)) {
+  if (is_[$res)] {
     foreach($res as $add_record) {
       $this->addAddress($add_record['address']);
       if ($add_record['is_main']) {
@@ -312,7 +312,7 @@ private function getLocalUserDatas() {
   $db_slaveconf = DM_SlaveConfig :: getInstance();
   $query = "SELECT realname, username, email from mysql_auth WHERE username='".$db_slaveconf->sanitize($this->getPref('username'))."' AND domain='".$db_slaveconf->sanitize($this->getPref('domain'))."'";
   $res = $db_slaveconf->getHash($query);
-  if (!is_array($res) || empty($res)) {
+  if (!is_[$res] || empty($res)) {
     return false;
   }
   foreach ($res as $key => $value) {
@@ -424,7 +424,7 @@ public function getPref($pref) {
      $result = `$command`;
      $result = trim($result);
 
-     $tmp = array();
+     $tmp = [];
      if (preg_match('/REQUESTSENT (\S+\@\S+)/', $result, $tmp)) {
        return 'PASSWORDRESET';
      }

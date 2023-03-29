@@ -217,7 +217,7 @@ class DataManager {
         return null;
     }
     $row =& $res->fetchRow(DB_FETCHMODE_ASSOC);
-    $ret = array();
+    $ret = [];
     if (isset($row)) {
         $ret = $row;   
     }
@@ -228,11 +228,11 @@ class DataManager {
  /**
   * execute a query and return the results as a simple list (used for id list queries for example)
   * @param  $query  string  query to execute
-  * @return         array() list of values
+  * @return         [] list of values
   */
  public function getList($query) {
       $res = $this->execute($query);
-      $res_a = array();
+      $res_a = [];
       while ($row = $res->fetchRow(DB_FETCHMODE_ORDERED)) {
         $res_a[$row[0]] = $row[0];
       }
@@ -251,7 +251,7 @@ class DataManager {
      $res =& $this->db_handle->query($query);
      if (DB::isError($res)) { return null; }
 
-     $res_a = array();
+     $res_a = [];
      while ($row =& $res->fetchRow(DB_FETCHMODE_ASSOC)) {
        $res_a[$row['id']] = $row;
      }
@@ -286,7 +286,7 @@ class DataManager {
     if (is_string($value)) {
     	return $this->db_handle->escapeSimple($value);
     }
-    if (is_array($value)) {
+    if (is_[$value)] {
 	$value[0] = $this->db_handle->escapeSimple($value[0]);
     }
     return $value;

@@ -157,7 +157,7 @@ class DomainController extends Zend_Controller_Action
     	$view->panel = $panel;
     	$view->form = $panelform;
 
-       #$view->searchdomainurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->url(array('controller' => 'domain', 'action' => 'search', 'sname' => $view->sname));
+       #$view->searchdomainurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->url(['controller' => 'domain', 'action' => 'search', 'sname' => $view->sname)];
 
     	$message = '';
         $user = Zend_Registry::get('user');
@@ -303,7 +303,7 @@ class DomainController extends Zend_Controller_Action
             } else {
                if ($this->getRequest()->getParam('domainname') == '') {
                	  $message = 'NOK enterdomainname';
-               	  $panelform->addErrorMessage(array('domainname' => 'toto'));
+               	  $panelform->addErrorMessage(['domainname' => 'toto')];
                }
                if (count($panelform->getMessages()) > 0) {
         	     $this->view->errors = $panelform->getMessages();
@@ -408,7 +408,7 @@ class DomainController extends Zend_Controller_Action
         }
         if ($request->getParam('remove') == 'all') {
         	try {
-        		$view->domain->setAliases(array());
+        		$view->domain->setAliases([)];
         		$view->domain->saveAliases();
                 $view->domain->delete();
         	    $this->_helper->getHelper('FlashMessenger')->addMessage('OK Domain and aliases removed');
@@ -443,7 +443,7 @@ class DomainController extends Zend_Controller_Action
         $domain_name = $request->getParam('name');
     
         $slave = new Default_Model_Slave();
-        $slave->sendSoapToAll('Service_clearSMTPAutCache', array('domain' => $domain_name));
+        $slave->sendSoapToAll('Service_clearSMTPAutCache', ['domain' => $domain_name)];
         $view->message = 'OK';
     }
 }

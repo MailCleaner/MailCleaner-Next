@@ -11,7 +11,7 @@
 class Default_Form_ContentAntivirus extends ZendX_JQuery_Form
 {
 	protected $_antivirus;
-	public $scanners = array();
+	public $scanners = [];
 	
 	public function __construct($av) {
 		$this->_antivirus = $av;
@@ -49,7 +49,7 @@ class Default_Form_ContentAntivirus extends ZendX_JQuery_Form
 		    'required' => false,
 	        'size' => 4,
 	        'class' => 'fieldrighted',
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $scanner_timeout->setValue($this->_antivirus->getParam('scanner_timeout'));
         $scanner_timeout->addValidator(new Zend_Validate_Int());
 	    $this->addElement($scanner_timeout);

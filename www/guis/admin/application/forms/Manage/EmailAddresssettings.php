@@ -30,7 +30,7 @@ class Default_Form_Manage_EmailAddresssettings extends Zend_Form
 		$this->setAttrib('id', 'email_form');
 	    $panellist = new Zend_Form_Element_Select('emailpanel', array(
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         
@@ -51,7 +51,7 @@ class Default_Form_Manage_EmailAddresssettings extends Zend_Form
 		$action = new Zend_Form_Element_Select('delivery_type', array(
             'required'   => true,
 		    'label'      => $t->_('For each message detected as spam')." : ",
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 		
 		$action->addMultiOption('3', $t->_('immediately delete (drop mode)'));
 		$action->addMultiOption('1', $t->_('deliver with subject keyword (tag mode)'));
@@ -67,7 +67,7 @@ class Default_Form_Manage_EmailAddresssettings extends Zend_Form
             'label'   => $t->_('Subject keyword')." :",
 		    'title' => $t->_('The value will be added in each mail subject detected as SPAM'),
 		    'required' => false,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 		if ($this->_email->getPref('spam_tag') == 'NOTSET') {
 		   $tag->setValue($this->_email->getDomainObject()->getPref('spam_tag'));	
 		} else {
@@ -97,7 +97,7 @@ class Default_Form_Manage_EmailAddresssettings extends Zend_Form
 	    $frequency = new Zend_Form_Element_Select('frequency', array(
             'required'   => true,
 		    'label'      => $t->_('Frequency of quarantine reports')." : ",
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 		
 		$frequency->addMultiOption('daily', $t->_('Daily'));
 		$frequency->addMultiOption('weekly', $t->_('Weekly'));
@@ -109,7 +109,7 @@ class Default_Form_Manage_EmailAddresssettings extends Zend_Form
 		$type = new Zend_Form_Element_Select('summary_type', array(
             'required'   => true,
 		    'label'      => $t->_('Format of quarantine reports')." : ",
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 		
 		$type->addMultiOption('text', $t->_('Plain text'));
 		$type->addMultiOption('html', $t->_('HTML'));
@@ -125,7 +125,7 @@ class Default_Form_Manage_EmailAddresssettings extends Zend_Form
             'label'   => $t->_('Send summary to')." :",
             'required' => false,
 		    'size' => 40,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         $summary_to->setValue($this->_email->getPref('summary_to'));
         $summary_to->addValidator(new Zend_Validate_EmailAddress());
         $this->addElement($summary_to);
@@ -138,7 +138,7 @@ class Default_Form_Manage_EmailAddresssettings extends Zend_Form
 	public function setParams($request, $email) {
 		$email->setPref('quarantine_bounces', '0');
                 $email->setPref('bypass_filtering', '0');
-		foreach (array('delivery_type', 'quarantine_bounces', 'bypass_filtering', 'summary_type') as $pref) {
+		foreach (['delivery_type', 'quarantine_bounces', 'bypass_filtering', 'summary_type') as $pref] {
             if ($request->getParam($pref)) {
 			    $email->setPref($pref, $request->getParam($pref));
 		    }	    

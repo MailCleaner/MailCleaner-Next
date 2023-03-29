@@ -21,7 +21,7 @@ global $sysconf_;
 global $lang_;
 
 // check authorizations
-$admin_->checkPermissions(array('can_configure'));
+$admin_->checkPermissions(['can_configure')];
 
 // defaults
 $action = 'none';
@@ -115,16 +115,16 @@ function doAction($host, $action, $daemon) {
     return $sid;
   }
 
-  $res = array();
+  $res = [];
   switch ($action) {
     case 'stop':
-      $res = $soaper->queryParam('stopService', array($sid, $daemon));
+      $res = $soaper->queryParam('stopService', [$sid, $daemon)];
       break;
     case 'restart':
-      $res = $soaper->queryParam('restartService', array($sid, $daemon));
+      $res = $soaper->queryParam('restartService', [$sid, $daemon)];
       break;
     default:
-      $res = $soaper->queryParam('startService', array($sid, $daemon));
+      $res = $soaper->queryParam('startService', [$sid, $daemon)];
   }
  
   if ($res->status == 'OK') {

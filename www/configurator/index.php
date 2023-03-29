@@ -118,15 +118,15 @@
        }
 
        $pagePath = '../includes/configurator/';
-       $infoPage = array('welcome' => array('page' => 'welcome.inc', 'prev' => '', 'next' => 'updater', 'sesstep' => 'welcome', 'title' => 'Welcome', 'progress' => '0'),
-    'updater' => array('page' => 'updater.inc', 'prev' => 'welcome', 'next' => 'identify', 'sesstep' => 'updater', 'title' => 'MailCleaner Update', 'progress' => '7'),
-  'identify' => array('page' => 'identify.inc', 'prev' => 'updater', 'next' => 'adminpass', 'sesstep' => 'identify', 'title' => 'Configurator Identification', 'progress' => '14'),
+       $infoPage = array('welcome' => ['page' => 'welcome.inc', 'prev' => '', 'next' => 'updater', 'sesstep' => 'welcome', 'title' => 'Welcome', 'progress' => '0'],
+    'updater' => ['page' => 'updater.inc', 'prev' => 'welcome', 'next' => 'identify', 'sesstep' => 'updater', 'title' => 'MailCleaner Update', 'progress' => '7'],
+  'identify' => ['page' => 'identify.inc', 'prev' => 'updater', 'next' => 'adminpass', 'sesstep' => 'identify', 'title' => 'Configurator Identification', 'progress' => '14'],
   'adminpass' => array('page' => 'adminpass.inc', 'prev' => 'identify', 'next' => 'rootpass', 'sesstep' => 'adminpass', 'title' => 'Change Admin (Web) Password', 'progress' => '28'),
-  'rootpass' => array('page' => 'rootpass.inc', 'prev' => 'adminpass', 'next' => 'dbpass', 'sesstep' => 'rootpass', 'title' => 'Change Root Password', 'progress' => '42'),
-  'dbpass' => array('page' => 'dbpass.inc', 'prev' => 'rootpass', 'next' => 'hostid', 'sesstep' => 'dbpass', 'title' => 'Change Database Password', 'progress' => '56'),
-  'hostid' => array('page' => 'hostid.inc', 'prev' => 'dbpass', 'next' => 'baseurl', 'sesstep' => 'hostid', 'title' => 'Change Host ID', 'progress' => '70'),
-  'baseurl' => array('page' => 'baseurl.inc', 'prev' => 'hostid', 'next' => 'ending', 'sesstep' => 'baseurl', 'title' => 'Change Base URL', 'progress' => '84'),
-  'ending' => array('page' => 'ending.inc', 'prev' => 'baseurl', 'next' => '', 'sesstep' => 'ending', 'title' => 'Some tips before you go !', 'progress' => '100')
+  'rootpass' => ['page' => 'rootpass.inc', 'prev' => 'adminpass', 'next' => 'dbpass', 'sesstep' => 'rootpass', 'title' => 'Change Root Password', 'progress' => '42'],
+  'dbpass' => ['page' => 'dbpass.inc', 'prev' => 'rootpass', 'next' => 'hostid', 'sesstep' => 'dbpass', 'title' => 'Change Database Password', 'progress' => '56'],
+  'hostid' => ['page' => 'hostid.inc', 'prev' => 'dbpass', 'next' => 'baseurl', 'sesstep' => 'hostid', 'title' => 'Change Host ID', 'progress' => '70'],
+  'baseurl' => ['page' => 'baseurl.inc', 'prev' => 'hostid', 'next' => 'ending', 'sesstep' => 'baseurl', 'title' => 'Change Base URL', 'progress' => '84'],
+  'ending' => ['page' => 'ending.inc', 'prev' => 'baseurl', 'next' => '', 'sesstep' => 'ending', 'title' => 'Some tips before you go !', 'progress' => '100']
   );
   
   $validStep = $infoPage['welcome'];

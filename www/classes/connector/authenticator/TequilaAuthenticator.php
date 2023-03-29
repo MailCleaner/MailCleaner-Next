@@ -34,7 +34,7 @@ class TequilaAuthenticator extends AuthManager {
      * values to be fetched from authentication
      * @var array
      */
-    private $values_ = array();
+    private $values_ = [];
     
     protected $exhaustive_ = true;
     

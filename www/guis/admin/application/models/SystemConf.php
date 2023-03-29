@@ -36,9 +36,9 @@ class Default_Model_SystemConf
     );
     
     protected $_restart_what = array(
-       'default_domain' => array('exim_stage1','exim_stage4')
+       'default_domain' => ['exim_stage1','exim_stage4']
     );
-    protected $_to_restart = array();
+    protected $_to_restart = [];
 	
 	protected $_mapper;
 	
@@ -76,7 +76,7 @@ class Default_Model_SystemConf
 	}
 	
 	public function getAvailableParams() {
-		$ret = array();
+		$ret = [];
 		foreach ($this->_values as $key => $value) {
 			$ret[]=$key;
 		}
@@ -117,7 +117,7 @@ class Default_Model_SystemConf
     	## do we need to restart anything
     	$slave = new Default_Model_Slave();
     	foreach ($this->_to_restart as $s) {
-    		$params = array('service' => "$s", 'action' => 'restart');
+    		$params = ['service' => "$s", 'action' => 'restart'];
     		$res = $slave->sendSoapToAll('Service_silentStopStart', $params);
     	}
         return $ret;

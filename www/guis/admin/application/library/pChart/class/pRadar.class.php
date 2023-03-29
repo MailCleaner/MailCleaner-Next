@@ -360,7 +360,7 @@ class pRadar
 
 			$Color = ["R" => $Palette[$ID]["R"],"G" => $Palette[$ID]["G"],"B" => $Palette[$ID]["B"],"Alpha" => $Palette[$ID]["Alpha"],"Surrounding" => $PointSurrounding];
 			/* Bubble and labels settings */
-			$TextSettings = array("Align" => TEXT_ALIGN_MIDDLEMIDDLE,"FontName" => $ValueFontName,"FontSize" => $ValueFontSize,"R" => $Palette[$ID]["R"],"G" => $Palette[$ID]["G"],"B" => $Palette[$ID]["B"]);
+			$TextSettings = ["Align" => TEXT_ALIGN_MIDDLEMIDDLE,"FontName" => $ValueFontName,"FontSize" => $ValueFontSize,"R" => $Palette[$ID]["R"],"G" => $Palette[$ID]["G"],"B" => $Palette[$ID]["B"]];
 			$InnerColor = ["R" => $InnerBubbleR,"G" => $InnerBubbleG,"B" => $InnerBubbleB,"Alpha" => $InnerBubbleAlpha];
 			
 			if ($OuterBubbleR != VOID) {
@@ -614,7 +614,7 @@ class pRadar
 		foreach($Data["Series"] as $SerieName => $DataSet) {
 			if ($SerieName != $LabelSerie) {
 				
-				$Color = array("R" => $Palette[$ID]["R"],"G" => $Palette[$ID]["G"],"B" => $Palette[$ID]["B"],"Alpha" => $Palette[$ID]["Alpha"],"Surrounding" => $PointSurrounding);
+				$Color = ["R" => $Palette[$ID]["R"],"G" => $Palette[$ID]["G"],"B" => $Palette[$ID]["B"],"Alpha" => $Palette[$ID]["Alpha"],"Surrounding" => $PointSurrounding];
 				
 				foreach($DataSet["Data"] as $Key => $Value) {
 					$Angle = $Data["Series"][$LabelSerie]["Data"][$Key];
@@ -634,11 +634,11 @@ class pRadar
 
 		/* Draw all that stuff! */
 		foreach($Plot as $ID => $Points) {
-			$Color = array("R" => $Palette[$ID]["R"],"G" => $Palette[$ID]["G"],"B" => $Palette[$ID]["B"],"Alpha" => $Palette[$ID]["Alpha"],"Surrounding" => $PointSurrounding);
+			$Color = ["R" => $Palette[$ID]["R"],"G" => $Palette[$ID]["G"],"B" => $Palette[$ID]["B"],"Alpha" => $Palette[$ID]["Alpha"],"Surrounding" => $PointSurrounding];
 			/* Draw the polygons */
 			if ($DrawPoly) {
 				if ($PolyAlpha != NULL) {
-					$Color = array("R" => $Palette[$ID]["R"],"G" => $Palette[$ID]["G"],"B" => $Palette[$ID]["B"],"Alpha" => $PolyAlpha,"Surrounding" => $PointSurrounding);
+					$Color = ["R" => $Palette[$ID]["R"],"G" => $Palette[$ID]["G"],"B" => $Palette[$ID]["B"],"Alpha" => $PolyAlpha,"Surrounding" => $PointSurrounding];
 				}
 
 				$PointsArray = [];
@@ -650,14 +650,14 @@ class pRadar
 				$Object->drawPolygon($PointsArray, $Color);
 			}
 
-			$Color = array("R" => $Palette[$ID]["R"],"G" => $Palette[$ID]["G"],"B" => $Palette[$ID]["B"],"Alpha" => $Palette[$ID]["Alpha"],"Surrounding" => $PointSurrounding);
+			$Color = ["R" => $Palette[$ID]["R"],"G" => $Palette[$ID]["G"],"B" => $Palette[$ID]["B"],"Alpha" => $Palette[$ID]["Alpha"],"Surrounding" => $PointSurrounding];
 			/* Bubble and labels settings */
-			$TextSettings = array("Align" => TEXT_ALIGN_MIDDLEMIDDLE,"FontName" => $ValueFontName,"FontSize" => $ValueFontSize,"R" => $Palette[$ID]["R"],"G" => $Palette[$ID]["G"],"B" => $Palette[$ID]["B"]);
-			$InnerColor = array("R" => $InnerBubbleR,"G" => $InnerBubbleG,"B" => $InnerBubbleB,"Alpha" => $InnerBubbleAlpha);
+			$TextSettings = ["Align" => TEXT_ALIGN_MIDDLEMIDDLE,"FontName" => $ValueFontName,"FontSize" => $ValueFontSize,"R" => $Palette[$ID]["R"],"G" => $Palette[$ID]["G"],"B" => $Palette[$ID]["B"]];
+			$InnerColor = ["R" => $InnerBubbleR,"G" => $InnerBubbleG,"B" => $InnerBubbleB,"Alpha" => $InnerBubbleAlpha];
 			if ($OuterBubbleR != VOID) {
-				$OuterColor = array("R" => $OuterBubbleR,"G" => $OuterBubbleG,"B" => $OuterBubbleB,"Alpha" => $OuterBubbleAlpha);
+				$OuterColor = ["R" => $OuterBubbleR,"G" => $OuterBubbleG,"B" => $OuterBubbleB,"Alpha" => $OuterBubbleAlpha];
 			} else {
-				$OuterColor = array("R" => $Palette[$ID]["R"] + 20,"G" => $Palette[$ID]["G"] + 20,"B" => $Palette[$ID]["B"] + 20,"Alpha" => $Palette[$ID]["Alpha"]);
+				$OuterColor = ["R" => $Palette[$ID]["R"] + 20,"G" => $Palette[$ID]["G"] + 20,"B" => $Palette[$ID]["B"] + 20,"Alpha" => $Palette[$ID]["Alpha"]];
 			}
 
 			/* Loop to the starting points if asked */

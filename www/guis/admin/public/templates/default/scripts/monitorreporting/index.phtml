@@ -11,12 +11,12 @@
 <div class="addressselectpanel">
     <?php echo $this->t->_('Analyzed data')?> :
     <span id="searchfields">
-      <?php echo $this->InputRow($this->form->getElement('search'),array('field_only'=>true,'nobox'=>true));?> @ </span>
-      <?php echo $this->InputRow($this->form->getElement('domain'),array('field_only'=>true,'nobox'=>true));?>
+      <?php echo $this->InputRow($this->form->getElement('search'),['field_only'=>true,'nobox'=>true)];?> @ </span>
+      <?php echo $this->InputRow($this->form->getElement('domain'),['field_only'=>true,'nobox'=>true)];?>
 
   <div class="subadvsearch">
     <div>
-    <?php echo $this->InputRow($this->form->getElement('top'),array('nobox'=>true));?>
+    <?php echo $this->InputRow($this->form->getElement('top'),['nobox'=>true)];?>
     </div>
    </div>
 </div>
@@ -29,14 +29,14 @@
     <div class="subsearch subsearchdate">
         <img src="<?php echo $this->images_path;?>/loupe.png" alt="<?php echo $this->t->_('search');?>" />
       <?php echo $this->t->_('From')?> 
-      <?php echo $this->InputRow($this->form->getElement('fd'),array('field_only'=>true,'nobox'=>true));?>
-      <?php echo $this->InputRow($this->form->getElement('fm'),array('field_only'=>true,'nobox'=>true));?>
+      <?php echo $this->InputRow($this->form->getElement('fd'),['field_only'=>true,'nobox'=>true)];?>
+      <?php echo $this->InputRow($this->form->getElement('fm'),['field_only'=>true,'nobox'=>true)];?>
       <?php echo $this->t->_('to')?> 
-      <?php echo $this->InputRow($this->form->getElement('td'),array('field_only'=>true,'nobox'=>true));?>
-      <?php echo $this->InputRow($this->form->getElement('tm'),array('field_only'=>true,'nobox'=>true));?>
+      <?php echo $this->InputRow($this->form->getElement('td'),['field_only'=>true,'nobox'=>true)];?>
+      <?php echo $this->InputRow($this->form->getElement('tm'),['field_only'=>true,'nobox'=>true)];?>
     </div>
     <div class="subsearch subsearchdate">
-      <?php echo $this->InputRow($this->form->getElement('sort'),array('nobox'=>true));?>
+      <?php echo $this->InputRow($this->form->getElement('sort'),['nobox'=>true)];?>
     </div>
 
   </div>

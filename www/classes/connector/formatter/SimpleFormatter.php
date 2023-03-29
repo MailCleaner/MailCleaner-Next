@@ -15,7 +15,7 @@ class SimpleFormatter extends LoginFormatter {
      
      
      public function format($login_given, $domain_name) {
-       $matches = array();
+       $matches = [];
        if (preg_match('/^(\S+)[\@\%](\S+)$/', $login_given, $matches)) {
         return $matches[1];
        }

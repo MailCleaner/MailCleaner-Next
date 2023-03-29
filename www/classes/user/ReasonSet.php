@@ -16,7 +16,7 @@ class ReasonSet
      * spam criteria keys are sa's criteria name, values are array of (criteria name, text, score)
      * @var array
      */
-	private $reasons_ = array();
+	private $reasons_ = [];
 	
     /**
      * total score of the message
@@ -46,7 +46,7 @@ public function getReasons($msg_id, $destination, $host) {
     }
     
     $soap_res = $soaper->queryParam('getReasons', array($msg_id, $destination, $lang->getLanguage()));
-    if (!is_object($soap_res) || !is_array($soap_res->reasons)) {
+    if (!is_object($soap_res) || !is_[$soap_res->reasons)] {
       return false;
     }
     $res = $soap_res->reasons;
@@ -54,14 +54,14 @@ public function getReasons($msg_id, $destination, $host) {
       $res = $soap_res->reasons->item;
     }
     
-    $score_a = array();
+    $score_a = [];
 	foreach ($res as $res_l) {
 	  $res_l = utf8_decode($res_l);
 	  if (preg_match('/^(\S+)\:\:(\S+)\:\:(.*)$/', $res_l, $score_a)) {
 	    if ( $score_a[1] == "TOTAL_SCORE") {
 		  $this->total_score_ = $score_a[2];
 	    } else {
-          $this->reasons_[$score_a[1]] = array($score_a[2], $score_a[3]);
+          $this->reasons_[$score_a[1]] = [$score_a[2], $score_a[3]];
         }
 	  }
 	}

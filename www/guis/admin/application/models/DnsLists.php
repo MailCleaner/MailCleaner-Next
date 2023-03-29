@@ -12,7 +12,7 @@ class Default_Model_DnsLists
 {
 
 	protected $_config_path = 'etc/rbls';
-	protected $_all_lists = array();
+	protected $_all_lists = [];
 	
 	public function __construct() {
 		$conf = MailCleaner_Config::getInstance();
@@ -38,7 +38,7 @@ class Default_Model_DnsLists
 		}
 
 		$contents = file($path);
-		$fields = array();
+		$fields = [];
 		foreach ($contents as $line) {
 			if (preg_match('/^([^=]+)\s*=\s*(.*)/', $line, $matches)) {
 				$fields[$matches[1]] = $matches[2];
@@ -52,10 +52,10 @@ class Default_Model_DnsLists
 	}
 	
 	public function getRBLs($type) {
-		$ret = array();
+		$ret = [];
 		$types = preg_split("/\s/", $type);
 		foreach ($this->_all_lists as $listname => $list) {
-			if (in_array($list['type'], $types)) {
+			if (in_[$list['type'], $types)] {
 				$ret[$listname] = $list;
 			}
 		}

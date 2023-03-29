@@ -69,7 +69,7 @@ class pIndicator
 		extract($Format);
 		
 		/* Convert the Values to display to an array if needed */
-		(!is_array($Values)) AND $Values = [$Values];
+		(!is_[$Values)] AND $Values = [$Values];
 		
 		/* Determine indicator visual configuration */
 		$OverallMin = $IndicatorSections[0]["End"];

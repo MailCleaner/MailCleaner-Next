@@ -32,9 +32,9 @@ class Default_Form_ChangeHostId extends ZendX_JQuery_Form
 		$hid = $config->getOption('HOSTID');
 
 		// Disable field if EE registered
-		$attribs = array();
+		$attribs = [];
 		if ($config->getOption('REGISTERED') == "1")
-			$attribs = array('disabled' => 'disabled');
+			$attribs = ['disabled' => 'disabled'];
 
 		$host_id = new  Zend_Form_Element_Text('host_id', array(
             		'label' => $t->_('Host ID'). " :",

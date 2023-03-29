@@ -9,7 +9,7 @@
 <fieldset>
        <table class="ftable">
          <?php echo $this->InputRow($this->form->getElement('delivery_type'));?>
-         <?php echo $this->InputRow($this->form->getElement('spam_tag'),array('row_class'=>'spam_tag_row'));?>
+         <?php echo $this->InputRow($this->form->getElement('spam_tag'),['row_class'=>'spam_tag_row')];?>
           
          <tr><td colspan="2"><hr /></td></tr>
           
@@ -17,7 +17,7 @@
           
          <tr><td colspan="2"><hr /></td></tr>
           
-         <?php foreach (array('frequency', 'summary_type', 'summary_to') as $f) {?>
+         <?php foreach (['frequency', 'summary_type', 'summary_to') as $f] {?>
            <?php echo $this->InputRow($this->form->getElement($f));?>
          <?php }?>   
 

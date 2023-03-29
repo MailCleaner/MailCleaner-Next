@@ -20,7 +20,7 @@ class FileNameList {
    * file names rules list
    * @var array
    */
-  private $filenames_ = array();
+  private $filenames_ = [];
   
   /**
    * keep which rule is selected
@@ -39,7 +39,7 @@ public function load() {
   $db_slaveconf = DM_SlaveConfig :: getInstance();
   
   unset($this->filenames_);
-  $this->filenames_ = array();
+  $this->filenames_ = [];
   $list = $db_slaveconf->getList($query);
   foreach ($list as $id) {
     if ($id != 0) {

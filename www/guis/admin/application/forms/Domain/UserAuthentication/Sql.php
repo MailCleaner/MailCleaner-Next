@@ -32,7 +32,7 @@ class Default_Form_Domain_UserAuthentication_Sql
 		$server = new  Zend_Form_Element_Text('authserver', array(
 	        'label'    => $t->_('Authentication server')." :",
 		    'required' => false,
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $server->setValue($this->_domain->getPref('auth_server'));
         $server->addValidator(new Validate_SMTPHostList());
 	    $form->addElement($server);
@@ -42,7 +42,7 @@ class Default_Form_Domain_UserAuthentication_Sql
 	    $username = new  Zend_Form_Element_Text('sqlusername', array(
 	        'label'    => $t->_('Username')." :",
 		    'required' => false,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 	    $username->setValue($this->_settings['sqlusername']);
 	    $form->addElement($username);
 	    
@@ -50,7 +50,7 @@ class Default_Form_Domain_UserAuthentication_Sql
 	        'label'    => $t->_('Password')." :",
 		    'required' => false,
 	        'renderPassword' => true,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 	    $password->setValue($this->_settings['sqlpassword']);
 	    $form->addElement($password);
 	}
@@ -87,7 +87,7 @@ class Default_Form_Domain_UserAuthentication_Sql
     }
     
     public function getParamsString($params) {
-       $fields = array('sqlusername', 'sqlpassword');
+       $fields = ['sqlusername', 'sqlpassword'];
        $str = '';
         foreach ($fields as $key) {
             if (isset($params[$key])) {

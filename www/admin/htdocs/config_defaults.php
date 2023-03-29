@@ -24,7 +24,7 @@ global $sysconf_;
 global $admin_;
 
 // check authorizations
-$admin_->checkPermissions(array('can_configure'));
+$admin_->checkPermissions(['can_configure')];
 
 $save_msg = "";
 // create mail form
@@ -48,17 +48,17 @@ $template_ = new Template('config_defaults.tmpl');
 $documentor = new Documentor();
 
 // create types and options
-$hours = array();
+$hours = [];
 for ($i = 0; $i < 24; $i++) {
   $str = sprintf('%02d:00:00', $i);
   $hours[$str] = $str;
 }
 $i = 1;
-$weekdays = array();
+$weekdays = [];
 foreach($lang_->print_txt('WEEKDAYS') as $day) {
   $weekdays[$day] = $i++;
 }
-$monthdays = array();
+$monthdays = [];
 for ($i = 1; $i < 32; $i++) {
   $monthdays[$i] = $i;
 }

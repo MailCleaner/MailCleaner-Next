@@ -78,7 +78,7 @@ public function getPref($pref) {
  * @return  string  message path
  */
 public function getPathToFile() {
-  $matches = array();
+  $matches = [];
   if (!preg_match('/^(\d{4})-(\d{2})-(\d{2})\s.*$/', $this->getPref('timestamp'), $matches)) { 
     return 'CANNOTFINDFILEPATH'; 
   }
@@ -132,7 +132,7 @@ public function load($id) {
     $query .= " id='".$clean_id."'";
     
     $res = $db->getHash($query);
-    if (!is_array($res)) {
+    if (!is_[$res)] {
       return $res;
     }
     if (!empty($res)) {
@@ -168,7 +168,7 @@ public function force() {
   if (preg_match('/^[A-Z]+$/', $sid)) {
     return $sid;
   }
-  $res = $soaper->queryParam('forceContent', array($sid, $path)); 
+  $res = $soaper->queryParam('forceContent', [$sid, $path)]; 
 
   return $res;
 }

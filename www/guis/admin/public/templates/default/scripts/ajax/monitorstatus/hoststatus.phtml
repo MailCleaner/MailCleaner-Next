@@ -156,23 +156,23 @@
   <span class='versionstatus'><?php echo $this->slave->getHostPatchLevel();?></span>
 </span>
 
-     <?php $processes = array('exim_stage1' => array('advanced' => 0, 'actions' => array('stop', 'start', 'restart')), 
-                              'exim_stage2' => array('advanced' => 0, 'actions' => array('stop', 'start', 'restart')), 
-                              'exim_stage4' => array('advanced' => 0, 'actions' => array('stop', 'start', 'restart')), 
-                              'apache' => array('advanced' => 0, 'actions' => array('restart')), 
-                              'mailscanner'=> array('advanced' => 0, 'actions' => array('stop', 'start', 'restart')), 
-                              'mysql_master' => array('advanced' => 0, 'actions' => array('restart')), 
-                              'mysql_slave' => array('advanced' => 0, 'actions' => array('stop', 'start', 'restart')), 
-                              'snmpd' => array('advanced' => 0, 'actions' => array('stop', 'start', 'restart')), 
-                              'greylistd' => array('advanced' => 0, 'actions' => array('stop', 'start', 'restart')), 
-                              'cron' => array('advanced' => 1, 'actions' => array('stop', 'start', 'restart')), 
-                              'preftdaemon' => array('advanced' => 1, 'actions' => array('stop', 'start', 'restart')), 
-                              'spamd' => array('advanced' => 1, 'actions' => array('stop', 'start', 'restart')), 
-                              'clamd' => array('advanced' => 1, 'actions' => array('stop', 'start', 'restart')), 
-                              'clamspamd' => array('advanced' => 1, 'actions' => array('stop', 'start', 'restart')), 
-                              'spamhandler' => array('advanced' => 1, 'actions' => array('stop', 'start', 'restart')), 
-                              'newsld' => array('advanced' => 1, 'actions' => array('stop', 'start', 'restart')),
-                              'firewall' => array('advanced' => 1, 'actions' => array('stop', 'start', 'restart'))); ?>
+     <?php $processes = array('exim_stage1' => array('advanced' => 0, 'actions' => ['stop', 'start', 'restart')], 
+                              'exim_stage2' => array('advanced' => 0, 'actions' => ['stop', 'start', 'restart')], 
+                              'exim_stage4' => array('advanced' => 0, 'actions' => ['stop', 'start', 'restart')], 
+                              'apache' => array('advanced' => 0, 'actions' => ['restart')], 
+                              'mailscanner'=> array('advanced' => 0, 'actions' => ['stop', 'start', 'restart')], 
+                              'mysql_master' => array('advanced' => 0, 'actions' => ['restart')], 
+                              'mysql_slave' => array('advanced' => 0, 'actions' => ['stop', 'start', 'restart')], 
+                              'snmpd' => array('advanced' => 0, 'actions' => ['stop', 'start', 'restart')], 
+                              'greylistd' => array('advanced' => 0, 'actions' => ['stop', 'start', 'restart')], 
+                              'cron' => array('advanced' => 1, 'actions' => ['stop', 'start', 'restart')], 
+                              'preftdaemon' => array('advanced' => 1, 'actions' => ['stop', 'start', 'restart')], 
+                              'spamd' => array('advanced' => 1, 'actions' => ['stop', 'start', 'restart')], 
+                              'clamd' => array('advanced' => 1, 'actions' => ['stop', 'start', 'restart')], 
+                              'clamspamd' => array('advanced' => 1, 'actions' => ['stop', 'start', 'restart')], 
+                              'spamhandler' => array('advanced' => 1, 'actions' => ['stop', 'start', 'restart')], 
+                              'newsld' => array('advanced' => 1, 'actions' => ['stop', 'start', 'restart')],
+                              'firewall' => array('advanced' => 1, 'actions' => ['stop', 'start', 'restart'))]; ?>
      <?php foreach ($processes as $p => $option) {?>
      <span class="procrow<?php if ($option['advanced']) { echo " procadvanced";}?>">
        <span class='statusdescr'><?php echo $this->t->_('process_'.$p)?> : </span>
@@ -201,7 +201,7 @@
    <tr class="showmorerow">
      <?php foreach ($this->more_content as $type => $c) {?>
      <td>
-         <a class="host_<?php echo $this->slave->getId()?>_graph_<?php echo $type?>_link <?php if ( in_array($type, $this->more_to_show) ) { echo ' hidden'; }?>" href="javascript:showGraph('host_<?php echo $this->slave->getId()?>_graph_<?php echo $type?>');"><?php echo $this->t->_('show more...')?></a>
+         <a class="host_<?php echo $this->slave->getId()?>_graph_<?php echo $type?>_link <?php if ( in_[$type, $this->more_to_show) ] { echo ' hidden'; }?>" href="javascript:showGraph('host_<?php echo $this->slave->getId()?>_graph_<?php echo $type?>');"><?php echo $this->t->_('show more...')?></a>
      </td>
      <?php }?>
      <td><a class="notprocadvanced" href="javascript:showAdvancedProcs();"><?php echo $this->t->_('show advanced...')?></a>
@@ -211,7 +211,7 @@
    
    
    <?php foreach ($this->more_content as $type => $c) { ?> 
-   <tr class="graphisrow <?php if ( !in_array($type, $this->more_to_show) ) { echo 'hidden '; }?> host_<?php echo $this->slave->getId();?>_graph_<?php echo $type; ?>">
+   <tr class="graphisrow <?php if ( !in_[$type, $this->more_to_show) ] { echo 'hidden '; }?> host_<?php echo $this->slave->getId();?>_graph_<?php echo $type; ?>">
       <td class="graprowresc">
          <p class="graprowrescp"><?php echo $this->t->_($type)?> : </p>
         <?php ## graph type 

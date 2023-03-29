@@ -10,7 +10,7 @@
 
 class Default_Form_Reporting extends ZendX_JQuery_Form
 {	
-	protected $_params = array();
+	protected $_params = [];
 	
 	public function __construct($params) {
 		
@@ -48,7 +48,7 @@ class Default_Form_Reporting extends ZendX_JQuery_Form
 	    $domainField->setValue($this->_params['domain']);
 	    $this->addElement($domainField);
 	    	    
-	    $months = array('Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.');
+	    $months = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
 	    $fd = new Zend_Form_Element_Select('fd', array(
 		    'required' => true));
 	    for ($d = 1; $d <= 31; $d++) {
@@ -108,7 +108,7 @@ class Default_Form_Reporting extends ZendX_JQuery_Form
 	    }
 	    $this->addElement($sort);
 	    
-	    $tops = array(3, 10, 20, 100, 1000, 10000);
+	    $tops = [3, 10, 20, 100, 1000, 10000];
 	    $top = new Zend_Form_Element_Select('top', array(
 	        'label' => $t->_('Top items shown')." : ",
 	        'required' => false));

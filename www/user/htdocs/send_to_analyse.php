@@ -40,7 +40,7 @@ if (isset($_GET['doit'])) {
   if ($ret != "OK") {
     $res = $ret;
   } else {
-    $res = $soaper->queryParam('sendToAnalyse', array($_GET['id'], $_GET['a']));
+    $res = $soaper->queryParam('sendToAnalyse', [$_GET['id'], $_GET['a'])];
   }
   $askfirst = false;
   $message = $lang_->print_txt($res);

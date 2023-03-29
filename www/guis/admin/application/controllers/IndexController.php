@@ -44,7 +44,7 @@ class IndexController extends Zend_Controller_Action
         	$stats_type = 'global';
         }
         $reporting = new Default_Model_ReportingStats();
-        $what = array();
+        $what = [];
 		$what['stats'] = $reporting->getTodayStatElements($stats_type);
         $data = $reporting->getTodayValues($what, 0, $stats_type);
         
@@ -76,10 +76,10 @@ class IndexController extends Zend_Controller_Action
         $slave = new Default_Model_Slave();
         $slaves = $slave->fetchAll();
         
-        $res = array();
+        $res = [];
         
-        foreach (array('hardware', 'disk', 'raid', 'load', 'spools') as $service) {
-        	$res[$service] = array('status' => 'ok', 'message' => '', 'value' => '');
+        foreach (['hardware', 'disk', 'raid', 'load', 'spools') as $service] {
+        	$res[$service] = ['status' => 'ok', 'message' => '', 'value' => ''];
             foreach ($slaves as $s) {
                $tmpres = $s->getStatus($service);
                if ($tmpres['status'] != 'ok') {
@@ -137,7 +137,7 @@ class IndexController extends Zend_Controller_Action
 		} 
         
 		$reporting = new Default_Model_ReportingStats();
-		$what = array();
+		$what = [];
 		$what['stats'] = $reporting->getTodayStatElements($request->getParam('t'));
 		return $reporting->getTodayPie($what, 0, $usecache, $request->getParam('t'));
 	}

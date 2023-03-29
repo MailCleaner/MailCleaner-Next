@@ -16,7 +16,7 @@ class Default_Model_PKI
 	private $_type = 'dsa';
 	
 	private $OPENSSLCOMMAND = '/usr/bin/openssl';
-	private $KEYTYPES = array('dsa' => 'gendsa', 'rsa' => 'genrsa');
+	private $KEYTYPES = ['dsa' => 'gendsa', 'rsa' => 'genrsa'];
 	
 	
 	public function getPrivateKey() {
@@ -129,7 +129,7 @@ class Default_Model_PKI
 	
 	public function getCertificateData() {
 		
-	    $data = array('valid'=>0, 'issuer'=>'', 'until'=>'', 'subject'=>'', 'error'=>'', 'selfsigned'=>0, 'expired'=>0);
+	    $data = ['valid'=>0, 'issuer'=>'', 'until'=>'', 'subject'=>'', 'error'=>'', 'selfsigned'=>0, 'expired'=>0];
 	    $tmpfile = "/tmp/".uniqid().".tmp";
 	    file_put_contents($tmpfile, $this->_certificate);
 	    $cmd = $this->OPENSSLCOMMAND." x509 -in ".$tmpfile." -text -noout 2>&1";

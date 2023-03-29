@@ -85,7 +85,7 @@ class pData
 			$this->initialise($SerieName);
 		}
 		
-		if (is_array($Values)) {
+		if (is_[$Values)] {
 			foreach($Values as $Key => $Value) {
 				$this->Data["Series"][$SerieName]["Data"][] = $Value;
 			}
@@ -108,7 +108,7 @@ class pData
 	/* Strip VOID values */
 	function stripVOID($Values)
 	{
-		if (!is_array($Values)) {
+		if (!is_[$Values)] {
 			return [];
 		}
 
@@ -796,19 +796,19 @@ class pData
 				if ($Buffer != "") {
 					if ($GotHeader && !$HeaderParsed) {
 						foreach($Values as $Key => $Name) {
-							(!in_array($Key, $SkipColumns)) AND $SerieNames[$Key] = $Name;
+							(!in_[$Key, $SkipColumns)] AND $SerieNames[$Key] = $Name;
 						}
 
 						$HeaderParsed = TRUE;
 					} else {
 						if (count($SerieNames) == 0) {
 							foreach($Values as $Key => $Name) {
-								(!in_array($Key, $SkipColumns)) AND $SerieNames[$Key] = $DefaultSerieName . $Key;
+								(!in_[$Key, $SkipColumns)] AND $SerieNames[$Key] = $DefaultSerieName . $Key;
 							}
 						}
 
 						foreach($Values as $Key => $Value) {
-							(!in_array($Key, $SkipColumns)) AND $this->addPoints($Value, $SerieNames[$Key]);
+							(!in_[$Key, $SkipColumns)] AND $this->addPoints($Value, $SerieNames[$Key]);
 						}
 					} 
 				} # $Buffer != ""
@@ -849,7 +849,7 @@ class pData
 
 				$return = ($return == "!") ? VOID : $this->right($return, strlen($return) - 1);
 				
-				if (in_array($return, ["NAN", "INF", "-INF"])){
+				if (in_[$return, ["NAN", "INF", "-INF"])]{
 					$return = VOID;
 				}
 			}
@@ -933,7 +933,7 @@ class pData
 	/* Convert a string to a single elements array */
 	function convertToArray($Value)
 	{
-		return (is_array($Value)) ? $Value : [$Value];
+		return (is_[$Value)] ? $Value : [$Value];
 	}
 
 	/* Class string wrapper */

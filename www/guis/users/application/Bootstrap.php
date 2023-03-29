@@ -112,7 +112,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
        
     	// set users language
     	if (!empty($_GET['lang'])) {
-            if (in_array($_GET['lang'], array('en', 'fr', 'de', 'es', 'it'))) {
+            if (in_array($_GET['lang'], ['en', 'fr', 'de', 'es', 'it'))] {
                 $lang = $_GET['lang'];
             } else {
                 $lang = 'en';

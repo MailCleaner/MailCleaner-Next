@@ -12,7 +12,7 @@ class SoapClass_ProcessusStatus
 	public $proc2 = 1;
 	
 	public function getSoapedValue() {
-		return array('proc1' => $this->proc1, 'proc2' => $this->proc2);
+		return ['proc1' => $this->proc1, 'proc2' => $this->proc2];
 	}
 }
 ?>

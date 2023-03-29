@@ -57,7 +57,7 @@ class Default_Model_PendingAliasMapper
         if (isset($params['user'])) {
             $query->where('user = ?', $params['user']);
         }
-        $entries = array();
+        $entries = [];
         $resultSet = $this->getDbTable()->fetchAll($query);
         foreach ($resultSet as $row) {
             $entry = new Default_Model_PendingAlias();
@@ -79,7 +79,7 @@ class Default_Model_PendingAliasMapper
             }
             $res = $this->getDbTable()->insert($data);
         } else {
-            $res = $this->getDbTable()->update($data, array('id = ?' => $id));
+            $res = $this->getDbTable()->update($data, ['id = ?' => $id)];
         }
         return $res;
     }

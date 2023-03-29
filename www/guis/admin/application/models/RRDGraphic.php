@@ -11,7 +11,7 @@
 class Default_Model_RRDGraphic
 {
 	private $RRD_command = '/usr/bin/rrdtool';
-	private $_elements = array();
+	private $_elements = [];
 
 	private $_mapper = null;
 	
@@ -30,7 +30,7 @@ class Default_Model_RRDGraphic
 	private $_width = 500;
 	private $_height = 100;
 	
-	private $_colors = array();
+	private $_colors = [];
 	private $_max_legend_length = 0;
 	
 	private $_base = 1024;
@@ -166,8 +166,8 @@ class Default_Model_RRDGraphic
 		return $this->getMapper()->fetchAll($params);
 	}
 	
-	public function getFamilies($params = array()) {
-		$families = array();
+	public function getFamilies($params = [)] {
+		$families = [];
 		$list = $this->fetchAll($params);
 		foreach ($list as $g) {
 			$families[$g->getFamily()][] = $g;

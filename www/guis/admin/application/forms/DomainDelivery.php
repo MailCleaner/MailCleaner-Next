@@ -30,7 +30,7 @@ class Default_Form_DomainDelivery extends Zend_Form
 		$this->setAttrib('id', 'domain_form');
 	    $panellist = new Zend_Form_Element_Select('domainpanel', array(
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         
@@ -50,7 +50,7 @@ class Default_Form_DomainDelivery extends Zend_Form
 		$domainname = new  Zend_Form_Element_Text('domainname', array(
             'label'   => $t->_('Domain name')." :",
 		    'required' => false,
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $domainname->setValue($this->_domain->getParam('name'));
 	    require_once('Validate/DomainName.php');
         $domainname->addValidator(new Validate_DomainName());
@@ -63,7 +63,7 @@ class Default_Form_DomainDelivery extends Zend_Form
 		      'required'   => false,
 		      'rows' => 5,
 		      'cols' => 30,
-		      'filters'    => array('StringToLower', 'StringTrim')));
+		      'filters'    => ['StringToLower', 'StringTrim'))];
 	    $servers->addValidator(new Validate_SMTPHostList());
 		$servers->setValue($this->_domain->getDestinationFieldString());
 		$this->addElement($servers);
@@ -72,7 +72,7 @@ class Default_Form_DomainDelivery extends Zend_Form
 	        'label'    => $t->_('Destination port')." :",
 		    'required' => false,
 		    'size' => 4,
-		    'filters'    => array('Alnum', 'StringTrim')));
+		    'filters'    => ['Alnum', 'StringTrim'))];
 	    $port->setValue($this->_domain->getDestinationPort());
         $port->addValidator(new Zend_Validate_Int());
 	    $this->addElement($port);
@@ -81,7 +81,7 @@ class Default_Form_DomainDelivery extends Zend_Form
             'label'      => $t->_('Use multiple servers as')." :",
             'title' => $t->_("Choose method to deliver mails to destination server"),
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
         foreach ($this->_domain->getDestinationActionOptions() as $key => $value) {
         	$multiple->addMultiOption($key, $t->_($key));

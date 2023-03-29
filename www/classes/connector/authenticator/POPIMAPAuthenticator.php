@@ -17,13 +17,13 @@ class POPIMAPAuthenticator extends AuthManager {
      * values to be fetched from authentication
      * @var array
      */
-    private $values_ = array('stub_user' => 1);
+    private $values_ = ['stub_user' => 1];
     
     protected $exhaustive_ = false;
     
     private $server_;
     private $status_ = 0;
-    private $params_ = array('type' => 'imap', 'host' => '', 'port' => '', 'usessl' => '');
+    private $params_ = ['type' => 'imap', 'host' => '', 'port' => '', 'usessl' => ''];
     
     /**
      * create the authenticator

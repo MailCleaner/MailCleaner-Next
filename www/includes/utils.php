@@ -7,7 +7,7 @@
  * @todo this file has to be set in a static class
  */
 function is_exim_id($id) {
-    $tmp = array();
+    $tmp = [];
 	if (preg_match('/^[a-z,A-Z,0-9]{6}\-[a-z,A-Z,0-9]{6}\-[a-z,A-Z,0-9]{2}$/',$id, $tmp)) {
 		return true;
 	}
@@ -22,7 +22,7 @@ function is_email($a) {
 }
 
 function isname($s) {
-    $tmp = array();
+    $tmp = [];
 	if (preg_match('/\S+/', $s, $tmp)) {
 		return true;
 	}

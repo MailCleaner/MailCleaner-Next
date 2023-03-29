@@ -124,7 +124,7 @@ class Api_Model_UserAPI
 			Zend_Registry::get('response')->setResponse(401, 'authentication required');
 			return false;
 		}
-		$list = array();
+		$list = [];
 		try {
 		    if (!isset($params['domain'])) {
 			    throw new Exception('Domain not provided');
@@ -134,7 +134,7 @@ class Api_Model_UserAPI
 			if (isset($params['search'])) {
 				$search = $params['search'];
 			}
-			$users = $user->fetchAllName(array('domain' => $params['domain'], 'username' => $search));
+			$users = $user->fetchAllName(['domain' => $params['domain'], 'username' => $search)];
 			foreach ($users as $u) {
 				$list[] = $u->getParam('username');
 			}
@@ -152,7 +152,7 @@ class Api_Model_UserAPI
 			return false;
 		}
 		$user = null;
-		$settings = array();
+		$settings = [];
 		try {
 			$user = $this->findUser($params);
 			if (!$user->getId()) {
@@ -192,7 +192,7 @@ class Api_Model_UserAPI
 			$user->setPref('language', $params['language']);
 		}
 		
-		$added_addresses = array();
+		$added_addresses = [];
 		if (isset($params['addresses'])) {
 		   $as = preg_split('/,/', $params['addresses']);
 		   foreach ($as as $a) {
@@ -206,7 +206,7 @@ class Api_Model_UserAPI
 		
 		if (isset($params['gui_default_address'])) {
 			$addresses = $user->getAddresses();
-			if (!in_array($params['gui_default_address'], $addresses) && !in_array($params['gui_default_address'], $added_addresses)) {
+			if (!in_[$params['gui_default_address'], $addresses] && !in_[$params['gui_default_address'], $added_addresses)] {
 				throw new Exception('Requested default address does not exists for this user');
 			} else {
 				$user->setPref('gui_default_address', $params['gui_default_address']);
@@ -236,14 +236,14 @@ class Api_Model_UserAPI
 		}
 	}
 	
-	private function getParams($user, $params = array()) {
-		$data = array();
+	private function getParams($user, $params = [)] {
+		$data = [];
 		$data['username'] = $user->getParam('username');
 		$data['domain'] = $user->getParam('domain');
-		foreach (array('gui_default_address', 'gui_displayed_spams', 'gui_displayed_days', 'gui_mask_forced') as $pref) {
+		foreach (['gui_default_address', 'gui_displayed_spams', 'gui_displayed_days', 'gui_mask_forced') as $pref] {
 		   $data[$pref] = $user->getPref($pref);
 		}
-		$data['addresses'] = array();
+		$data['addresses'] = [];
 		foreach ($user->getAddresses() as $add) {
        		array_push($data['addresses'], $add);
 		} 

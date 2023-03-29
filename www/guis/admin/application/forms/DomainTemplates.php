@@ -30,7 +30,7 @@ class Default_Form_DomainTemplates extends Zend_Form
 		$this->setAttrib('id', 'domain_form');
 	    $panellist = new Zend_Form_Element_Select('domainpanel', array(
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         
@@ -49,7 +49,7 @@ class Default_Form_DomainTemplates extends Zend_Form
 	    $domainname = new  Zend_Form_Element_Text('domainname', array(
             'label'   => $t->_('Domain name')." :",
 		    'required' => false,
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $domainname->setValue($this->_domain->getParam('name'));
 	    require_once('Validate/DomainName.php');
         $domainname->addValidator(new Validate_DomainName());
@@ -59,7 +59,7 @@ class Default_Form_DomainTemplates extends Zend_Form
             'required'   => false,
 		    'label'      => $t->_('Web user GUI')." : ",
                     'title' => $t->_("Template name for the user's web interface"),
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
         foreach ($this->_domain->getWebTemplates() as $template) {
         	$webtemplate->addMultiOption($template, $template);
@@ -71,7 +71,7 @@ class Default_Form_DomainTemplates extends Zend_Form
             'required'   => false,
 		    'label'      => $t->_('Quarantine summary')." : ",
                     'title' => $t->_("Template name for the emails quarantine"),
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
         foreach ($this->_domain->getSummaryTemplates() as $template) {
         	$sumtemplate->addMultiOption($template, $template);
@@ -84,7 +84,7 @@ class Default_Form_DomainTemplates extends Zend_Form
             'required'   => false,
             'label'      => $t->_('Content protection reports')." : ",
             'title' => $t->_("Template name for content protection's reports"),
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 
         foreach ($this->_domain->getReportTemplates() as $template) {
                 $reptemplate->addMultiOption($template, $template);
@@ -99,7 +99,7 @@ class Default_Form_DomainTemplates extends Zend_Form
         }
 
     public function setParams($request, $domain) {
-    	foreach (array('web_template', 'summary_template', 'report_template') as $p) {
+    	foreach (['web_template', 'summary_template', 'report_template') as $p] {
     	    $domain->setPref($p, $request->getParam($p));
     	}
 		return true;

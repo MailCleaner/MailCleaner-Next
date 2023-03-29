@@ -12,7 +12,7 @@ class Default_Model_InformationalMessage_Registration extends Default_Model_Info
 {
 	protected $_title = 'System is unregistered';
 	protected $_description = 'unregistered system has low efficiency';
-	protected $_link = array('controller' => 'baseconfiguration', 'action' => 'registration');
+	protected $_link = ['controller' => 'baseconfiguration', 'action' => 'registration'];
 	public function check() {
 		require_once('MailCleaner/Config.php');
     		$config = new MailCleaner_Config();

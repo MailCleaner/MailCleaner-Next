@@ -29,9 +29,9 @@ global $lang_;
 // not allowed if we are not a master
 if ($sysconf_->ismaster_ < 1) { exit; }
 // check authorizations
-$admin_->checkPermissions(array('can_view_stats'));
+$admin_->checkPermissions(['can_view_stats')];
 
-$gcounts = array('msgs' => 0, 'spams' => 0, 'viruses' => 0, 'users' => 0);
+$gcounts = ['msgs' => 0, 'spams' => 0, 'viruses' => 0, 'users' => 0];
 
 // instanciate the main form and get results if any
 $form_ = new Form('search', 'post', $_SERVER['PHP_SELF']);

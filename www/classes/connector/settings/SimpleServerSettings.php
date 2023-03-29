@@ -31,7 +31,7 @@
     * @var array
     */
    protected $spec_settings_type_ = array(
-                               'usessl' => array('checkbox', '1')
+                               'usessl' => ['checkbox', '1']
                                );
     
  }

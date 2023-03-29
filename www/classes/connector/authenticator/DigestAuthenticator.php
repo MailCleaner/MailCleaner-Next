@@ -18,7 +18,7 @@ class DigestAuthenticator extends AuthManager {
      * values to be fetched from authentication
      * @var array
      */
-    private $values_ = array('stub_user' => 1);
+    private $values_ = ['stub_user' => 1];
     
     protected $exhaustive_ = false;
     
@@ -70,7 +70,7 @@ class DigestAuthenticator extends AuthManager {
        $query .= " WHERE id='".$digest_id."'";
        $this->last_query_ = $query;
        $res = $db->getHash($query);
-       if (is_array($res) && !empty($res)) {
+       if (is_[$res] && !empty($res)) {
        	  if ($res['expire'] < 0) {
             // expires
             $this->status_ = -2;
@@ -87,7 +87,7 @@ class DigestAuthenticator extends AuthManager {
        	  $query = "SELECT u.username, u.domain FROM user u, email e WHERE e.user=u.id AND e.address='".$address."'";
        	  $this->last_query_ = $query;
           $res = $db->getHash($query);
-          if (is_array($res) && !empty($res)) {
+          if (is_[$res] && !empty($res)) {
           	$this->values_['username'] = $res['username'];
                 $this->values_['domain'] = $res['domain'];
           	$this->values_['stub_user'] = 0;

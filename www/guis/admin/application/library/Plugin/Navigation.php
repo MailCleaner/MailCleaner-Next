@@ -16,12 +16,12 @@ class Plugin_Navigation extends Zend_Controller_Plugin_Abstract
   	public function preDispatch(Zend_Controller_Request_Abstract $request) 
     {
     	$t = Zend_Registry::get('translate');
-    	$main_menus_defs = array('Configuration' => array('controller' => 'baseconfiguration'),
-    	                    'Management' => array('controller' => 'manageuser'),
-    	                    'Monitoring' => array('controller' => 'monitorreporting'));
+    	$main_menus_defs = array('Configuration' => ['controller' => 'baseconfiguration'],
+    	                    'Management' => ['controller' => 'manageuser'],
+    	                    'Monitoring' => ['controller' => 'monitorreporting')];
     	
     	$main_menu = new Zend_Navigation();
-    	$main_menus = array();
+    	$main_menus = [];
     	
     	$role = 'guest';
     	try {
@@ -64,15 +64,15 @@ class Plugin_Navigation extends Zend_Controller_Plugin_Abstract
     protected function setupConfigurationMenu($nav) {
     	$t = Zend_Registry::get('translate');
     	$config_menus_defs = array(
-    	                    'BaseSystem' => array('controller' => 'baseconfiguration', 'action' => 'networksettings'),
-    	                    'GeneralSettings' => array('controller' => 'generalsettings', 'action' => 'defaults'),
-    	                    'Domains' => array('controller' => 'domain', 'action' => ''),
-    	                    'SMTP' => array('controller' => 'smtp', 'action' => 'smtpchecks'),
-    	                    'AntiSpam' => array('controller' => 'antispam', 'action' => 'globalsettings'),
-    	                    'ContentProtection' => array('controller' => 'contentprotection', 'action' => 'globalsettings'),
-    	                    'Accesses' => array('controller' => 'accesses', 'action' => ''),
-    	                    'Services' => array('controller' => 'services', 'action' => 'httpd'),
-    	                #    'Cluster' => array('controller' => 'cluster', 'action' => '')
+    	                    'BaseSystem' => ['controller' => 'baseconfiguration', 'action' => 'networksettings'],
+    	                    'GeneralSettings' => ['controller' => 'generalsettings', 'action' => 'defaults'],
+    	                    'Domains' => ['controller' => 'domain', 'action' => ''],
+    	                    'SMTP' => ['controller' => 'smtp', 'action' => 'smtpchecks'],
+    	                    'AntiSpam' => ['controller' => 'antispam', 'action' => 'globalsettings'],
+    	                    'ContentProtection' => ['controller' => 'contentprotection', 'action' => 'globalsettings'],
+    	                    'Accesses' => ['controller' => 'accesses', 'action' => ''],
+    	                    'Services' => ['controller' => 'services', 'action' => 'httpd'],
+    	                #    'Cluster' => ['controller' => 'cluster', 'action' => '']
     	);
 
         foreach ($config_menus_defs as $mk => $m) {
@@ -87,10 +87,10 @@ class Plugin_Navigation extends Zend_Controller_Plugin_Abstract
     protected function setupManagementMenu($nav) {
     	$t = Zend_Registry::get('translate');
     	$manage_menus_defs = array(
-    	                    'Users' => array('controller' => 'manageuser', 'action' => ''),
-    	                    'SpamQuarantine' => array('controller' => 'managespamquarantine', 'action' => ''),
-    	                    'ContentQuarantine' => array('controller' => 'managecontentquarantine', 'action' => ''),
-    	                    'Tracing' => array('controller' => 'managetracing', 'action' => '')
+    	                    'Users' => ['controller' => 'manageuser', 'action' => ''],
+    	                    'SpamQuarantine' => ['controller' => 'managespamquarantine', 'action' => ''],
+    	                    'ContentQuarantine' => ['controller' => 'managecontentquarantine', 'action' => ''],
+    	                    'Tracing' => ['controller' => 'managetracing', 'action' => '']
     	);
         foreach ($manage_menus_defs as $mk => $m) {
     		$page = new Zend_Navigation_Page_Mvc(array('label' => $t->_($mk), 'id' => "submanage_$mk", 'action' => '', 'controller' => $m['controller'], 'class' => 'submenubutton'));
@@ -101,10 +101,10 @@ class Plugin_Navigation extends Zend_Controller_Plugin_Abstract
     protected function setupMonitoringMenu($nav) {
         $t = Zend_Registry::get('translate');
     	$monitor_menus_defs = array(
-    	                    'Reporting' => array('controller' => 'monitorreporting', 'action' => ''),
-    	                    'Logs' => array('controller' => 'monitorlogs', 'action' => ''),
-    	                    #'Maintenance' => array('controller' => 'monitormaintenance', 'action' => ''),
-    	                    'Status' => array('controller' => 'monitorstatus', 'action' => '')
+    	                    'Reporting' => ['controller' => 'monitorreporting', 'action' => ''],
+    	                    'Logs' => ['controller' => 'monitorlogs', 'action' => ''],
+    	                    #'Maintenance' => ['controller' => 'monitormaintenance', 'action' => ''],
+    	                    'Status' => ['controller' => 'monitorstatus', 'action' => '']
     	);
         foreach ($monitor_menus_defs as $mk => $m) {
             if (!$this->_acl->isAllowed($this->_role, $m['controller'])) {

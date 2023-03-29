@@ -31,14 +31,14 @@ class Language
      * Available language
      * @var array array of language. Shortcut name as key, and full name as value
      */
-    private $available_languages_ = array(); 
+    private $available_languages_ = []; 
 
     /*
      * Available languages array in reversed key <==> value
      * This one is useful for html select inputs
      * @var array  array of language. Full name as key, and shortcut as value
      */
-    private $inversed_languages_ = array();
+    private $inversed_languages_ = [];
 
     /**
      * Array of translated message
@@ -84,7 +84,7 @@ class Language
     $dirs = array_filter(glob($langDir.'*'), 'is_dir'); // get all lang in directories
 
     // read langages csv
-    $language_codes = array();
+    $language_codes = [];
     $row = 1;
     if (($handle = fopen($this->sysconf_->SRCDIR_."/www/classes/view/languages.csv", "r")) !== FALSE) {
       while (($data = fgetcsv($handle, 0, ",")) !== FALSE) {
@@ -99,7 +99,7 @@ class Language
     require_once ('helpers/DataManager.php');
     $baseconf = DataManager::getFileConfig(SystemConfig::$CONFIGFILE_);
     $ISENTERPRISE = $baseconf['REGISTERED'] == '1';
-    $ee_languages = array();
+    $ee_languages = [];
     if ($ISENTERPRISE) {
 	if (($handle = fopen($this->sysconf_->SRCDIR_."/www/classes/view/EELanguages.txt", "r")) !== FALSE) {
 		while (($data = fgets($handle)) !== FALSE) {
@@ -111,27 +111,27 @@ class Language
 
     // Exception for last langages who doesn't respect standards naming conventions
     // for langs.
-    $currLangs = array("en" => "en_US", "de" => "de_DE", "fr" => "fr_FR", "it" => "it_IT", "nl" => "nl_NL", "es" => "es_ES");
+    $currLangs = ["en" => "en_US", "de" => "de_DE", "fr" => "fr_FR", "it" => "it_IT", "nl" => "nl_NL", "es" => "es_ES"];
     foreach ($dirs as $l) {
         foreach ($language_codes as $l_code => $l_title) {
                 $ll = basename($l);
 		// Ignore duplicates
-		if (array_key_exists($ll, $this->available_languages_) || in_array($l_title, $this->available_languages_) ) {
+		if (array_key_exists($ll, $this->available_languages_) || in_[$l_title, $this->available_languages_) ] {
 			continue;
 		}
 		if (array_key_exists($ll, $currLangs)) {
-			if ( in_array($language_codes[$currLangs[$ll]], $this->available_languages_) ) {
+			if ( in_[$language_codes[$currLangs[$ll]], $this->available_languages_) ] {
 				continue;
 			}
 		}
 
                 if ($ISENTERPRISE) {
-                        if (array_key_exists($ll, $currLangs) && in_array($ll, $ee_languages)) {
+                        if (array_key_exists($ll, $currLangs) && in_[$ll, $ee_languages)] {
                                 $this->available_languages_[$ll] = $language_codes[$currLangs[$ll]];
                                 $this->inversed_languages_[$language_codes[$currLangs[$ll]]] = $ll;
                                 break;
                         } else {
-                                if (preg_match("/^${ll}/", $l_code) == 1 && in_array($ll, $ee_languages)) {
+                                if (preg_match("/^${ll}/", $l_code) == 1 && in_[$ll, $ee_languages)] {
                                         $this->available_languages_[$ll] = $l_title;
                                         $this->inversed_languages_[$l_title] = $ll;
                                         break;
@@ -241,8 +241,8 @@ class Language
     $this->lang_ = 'en';
   }
 
-  $txt = array();
-  $this->txts_ = array();
+  $txt = [];
+  $this->txts_ = [];
 
     // Load the default arrays and overwrite it by selected language.
     // This permits to have default words for missing translations.

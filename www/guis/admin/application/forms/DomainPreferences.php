@@ -30,7 +30,7 @@ class Default_Form_DomainPreferences extends Zend_Form
 		$this->setAttrib('id', 'domain_form');
 	    $panellist = new Zend_Form_Element_Select('domainpanel', array(
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
 
@@ -49,7 +49,7 @@ class Default_Form_DomainPreferences extends Zend_Form
 	    $domainname = new  Zend_Form_Element_Text('domainname', array(
             'label'   => $t->_('Domain name')." :",
 		    'required' => false,
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
 	    $domainname->setValue($this->_domain->getParam('name'));
 	    require_once('Validate/DomainName.php');
         $domainname->addValidator(new Validate_DomainName());
@@ -58,7 +58,7 @@ class Default_Form_DomainPreferences extends Zend_Form
 		$language = new Zend_Form_Element_Select('language', array(
 		    'label'      => $t->_('Language')." : ",
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
         
 	    $config = MailCleaner_Config::getInstance();
@@ -85,7 +85,7 @@ class Default_Form_DomainPreferences extends Zend_Form
             'label'     => $t->_('Action on spams')." : ",
             'title' => $t->_("Quarantine sends the detected messages in the user's quarantine / Tag delivers the email in a classical way but adds a tag in the subject of the email / Drop drops the concerned emails"),
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $action->addValidator(new Zend_Validate_Alnum());
         
@@ -127,7 +127,7 @@ class Default_Form_DomainPreferences extends Zend_Form
             'label'     => $t->_('Summary frequency')." : ",
             'title' => $t->_("Choose the spam summaries send frequency"),
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
         
         foreach ($this->_domain->getSummaryFrequencies() as $key => $value) {
@@ -140,7 +140,7 @@ class Default_Form_DomainPreferences extends Zend_Form
             'label'     => $t->_('Summary type')." : ",
             'title' => $t->_("Choose the spam summaries type"),
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
         
         foreach ($this->_domain->getSummaryTypes() as $key => $value) {
@@ -153,7 +153,7 @@ class Default_Form_DomainPreferences extends Zend_Form
                 'label'    => $t->_('Default summary recipient')." :",
                 'title' => $t->_("Define a unique recipient for this domain"),
                 'required' => false,
-                'filters'    => array('StringToLower', 'StringTrim')));
+                'filters'    => ['StringToLower', 'StringTrim'))];
         $summaryto->setValue($this->_domain->getPref('summary_to'));
         $summaryto->addValidator(new Zend_Validate_EmailAddress(Zend_Validate_Hostname::ALLOW_LOCAL));
         $this->addElement($summaryto);
@@ -164,7 +164,7 @@ class Default_Form_DomainPreferences extends Zend_Form
 	}
 	
     public function setParams($request, $domain) {
-		foreach (array('language', 'gui_group_quarantines', 'summary_type', 'summary_to', 'virus_subject', 'file_subject', 'content_subject', 'spam_tag', 'delivery_type') as $pref) {
+		foreach (['language', 'gui_group_quarantines', 'summary_type', 'summary_to', 'virus_subject', 'file_subject', 'content_subject', 'spam_tag', 'delivery_type') as $pref] {
             if ($request->getParam($pref) || is_string($request->getParam($pref)) ) {
 			    $domain->setPref($pref, $request->getParam($pref));
 		    }	    

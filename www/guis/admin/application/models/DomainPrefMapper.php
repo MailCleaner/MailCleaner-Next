@@ -53,7 +53,7 @@ class Default_Model_DomainPrefMapper
     public function save(Default_Model_DomainPref $conf, $global = false) {
        $data = $conf->getParamArray();
        $res = '';
-       foreach (array('enable_whitelists', 'enable_warnlists', 'notice_wwlists_hit') as $key) {
+       foreach (['enable_whitelists', 'enable_warnlists', 'notice_wwlists_hit') as $key] {
            if (is_null($data[$key])) {
                unset($data[$key]);
            }
@@ -67,7 +67,7 @@ class Default_Model_DomainPrefMapper
             $res = $this->getDbTable()->insert($data);
             $conf->setId($res);
         } else {
-            $res = $this->getDbTable()->update($data, array('id = ?' => $id));
+            $res = $this->getDbTable()->update($data, ['id = ?' => $id)];
         }
         return $res;
     }

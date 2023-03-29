@@ -65,7 +65,7 @@ class Default_Model_LocalUserMapper
             $res = $this->getDbTable()->insert($data);
             $user->setId($res);
         } else {
-            $res = $this->getDbTable()->update($data, array('id = ?' => $id));
+            $res = $this->getDbTable()->update($data, ['id = ?' => $id)];
         }
         return $res;
     }

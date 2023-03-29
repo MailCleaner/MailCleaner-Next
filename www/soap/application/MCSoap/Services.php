@@ -8,7 +8,7 @@
 
 class MCSoap_Services
 {
-    public static $STATUS_LOG = array('syslog' => '/tmp/local_service_syslog.log');
+    public static $STATUS_LOG = ['syslog' => '/tmp/local_service_syslog.log'];
    
   /**
    * This function restart syslog services
@@ -32,7 +32,7 @@ class MCSoap_Services
 		#`$cmd`;
 		
         ## restart MTAs
-		#MCSoap_Services::Services_stopstartMTA(array(1,2,4), 'restart', MCSoap_Services::$STATUS_LOG[$s]);
+		#MCSoap_Services::Services_stopstartMTA([1,2,4), 'restart', MCSoap_Services::$STATUS_LOG[$s]];
 		
 		## restart syslog (or rsyslog)
 		$starter = '/etc/init.d/syslogd';
@@ -66,7 +66,7 @@ class MCSoap_Services
 		$config = new MailCleaner_Config();
 		
 		if (empty($stages)) {
-			$stages = array(1,2,4);
+			$stages = [1,2,4];
 		}
 		$status = 'unknown status';
 		$outcmd = '';
@@ -102,7 +102,7 @@ class MCSoap_Services
 		$logfile = MCSoap_Services::$STATUS_LOG[$service];
 		
 		$res = "";
-		$logexprs = array();
+		$logexprs = [];
 		require_once('MailCleaner/Config.php');
 		$config = new MailCleaner_Config();
 		$service = preg_replace('/\//', '', $service);
@@ -155,7 +155,7 @@ class MCSoap_Services
 	 * @return array
 	 */
 	static public function Service_silentStopStart($params) {
-        $ret = array('status' => '', 'message' => '');		
+        $ret = ['status' => '', 'message' => ''];		
 
         $service = '';
         $action = 'start';
@@ -200,7 +200,7 @@ class MCSoap_Services
      * @return array
      */
     static public function Service_silentDump($params) {
-        $ret = array('status' => '', 'message' => '');      
+        $ret = ['status' => '', 'message' => ''];      
     
         $cmd = "";
     	require_once('MailCleaner/Config.php');
@@ -233,13 +233,13 @@ class MCSoap_Services
     * @return array
     */
     static public function Service_clearCalloutCache($params) {	
-    	$ret = array('status' => 'OK', 'message' => 'Cache cleared', 'debug' => '');
+    	$ret = ['status' => 'OK', 'message' => 'Cache cleared', 'debug' => ''];
     	$cmd = "/bin/rm ";
     	
     	require_once('MailCleaner/Config.php');
     	$config = new MailCleaner_Config();
     	$dir = $config->getOption('VARDIR')."/spool/exim_stage1/db";
-    	$files = array($dir.'/callout', $dir.'/callout.lockfile');
+    	$files = [$dir.'/callout', $dir.'/callout.lockfile'];
     	
     	foreach ($files as $file) {
          	if (file_exists($file) && is_file($file)) {
@@ -259,7 +259,7 @@ class MCSoap_Services
     }
 
     static public function Service_clearSMTPAutCache($params) {
-        $ret = array('status' => 'OK', 'message' => 'Cache cleared', 'debug' => '');
+        $ret = ['status' => 'OK', 'message' => 'Cache cleared', 'debug' => ''];
         $cmd = "/bin/rm ";
 
         require_once('MailCleaner/Config.php');

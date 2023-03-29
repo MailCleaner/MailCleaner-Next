@@ -54,7 +54,7 @@ class Default_Model_EmailMapper
     }
 
     public function fetchAllRegistered($params) {
-        $ret = array();
+        $ret = [];
         $query = $this->getDbTable()->select();
         if ($params['user']) {
            $query->where("user = ?", $params['user']);
@@ -74,7 +74,7 @@ class Default_Model_EmailMapper
     
     public function fetchAllName($params)
     {
-        $entries   = array();
+        $entries   = [];
         if (!$params['domain']){
             return $entries;
         }
@@ -102,7 +102,7 @@ class Default_Model_EmailMapper
                 $query->order('address ASC');
             }
              
-            if (isset($params['limit']) && is_array($params['limit'])) {
+            if (isset($params['limit']) && is_[$params['limit'])] {
                 $query->limit($params['limit'][0], $params['limit'][1]);
             }
              
@@ -132,7 +132,7 @@ class Default_Model_EmailMapper
             $res = $this->getDbTable()->insert($data);
             $this->_isNew = 1;
         } else {
-            $res = $this->getDbTable()->update($data, array('id = ?' => $id));
+            $res = $this->getDbTable()->update($data, ['id = ?' => $id)];
         }
         return $res;
     }

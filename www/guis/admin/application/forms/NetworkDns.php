@@ -27,7 +27,7 @@ class Default_Form_NetworkDns extends Zend_Form
 		$search = new  Zend_Form_Element_Text('domainsearch', array(
 		    'label'    => $t->_('DomainSearch'). " :",
 		    'required' => false,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $search->setValue($this->_dns->getDomainSearch());
 	    require_once('Validate/DomainName.php');
@@ -41,7 +41,7 @@ class Default_Form_NetworkDns extends Zend_Form
 		    'label'    => $t->_('Primary DNS server'). " :",
                     'title'    => $t->_("We recommend to use the local DNS (or the master's one if you use the cluster version) as primary DNS"),
 		    'required' => false,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $primary->setValue($this->_dns->getNameServer(1));
 	    $primary->addValidator(new Zend_Validate_Ip());
@@ -53,7 +53,7 @@ class Default_Form_NetworkDns extends Zend_Form
 		$secondary = new  Zend_Form_Element_Text('secondarydns', array(
 		    'label'    => $t->_('Secondary DNS server'). " :",
 		    'required' => false,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $secondary->setValue($this->_dns->getNameServer(2));
 	    $secondary->addValidator(new Zend_Validate_Ip());
@@ -65,7 +65,7 @@ class Default_Form_NetworkDns extends Zend_Form
 		$tertiary = new  Zend_Form_Element_Text('tertiarydns', array(
 		    'label'    => $t->_('Tertiary DNS server'). " :",
 		    'required' => false,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $tertiary->setValue($this->_dns->getNameServer(3));
 	    $tertiary->addValidator(new Zend_Validate_Ip());
@@ -78,7 +78,7 @@ class Default_Form_NetworkDns extends Zend_Form
 				    'label'    => $t->_('Force HELO / EHLO identity with'). " :",
 				    'required' => false,
 				    'size' => 40,
-				    'filters'    => array('StringTrim')));
+				    'filters'    => ['StringTrim'))];
 		
 		$heloname->setValue($this->_dns->getHeloName());
 		$heloname->addValidator(new Zend_Validate_Hostname(

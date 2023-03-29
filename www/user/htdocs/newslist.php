@@ -32,7 +32,7 @@ function get_sender_address_body($spam_mail) {
     // Get the mail sender
     $headers = $spam_mail->getHeadersArray();
 
-    $sender = array();
+    $sender = [];
     preg_match('/[<]?([-0-9a-zA-Z.+_\']+@[-0-9a-zA-Z.+_\']+\.[a-zA-Z-0-9]+)[>]?/', trim($headers['From']), $sender);
 
     if (!empty($sender[1])) {
@@ -99,7 +99,7 @@ if (isset($_GET['l'])) {
 
 
 // Cheking if the necessary arguments are here
-$in_args = array('id', 'a');
+$in_args = ['id', 'a'];
 foreach ($in_args as $arg) {
     if (!isset($_GET[$arg])){
         $bad_arg = $arg;
@@ -134,7 +134,7 @@ if (!isset($bad_arg)) {
         $is_sender_added_to_news = send_SOAP_request(
             $master,
             "addToNewslist",
-            array($dest, $sender)
+            [$dest, $sender]
         );
         if ($is_sender_added_to_news != 'OK') {
             $is_sender_added_to_news = $lang_->print_txt($is_sender_added_to_news);
@@ -147,7 +147,7 @@ if (!isset($bad_arg)) {
 
 // Parse the template
 $template_ = new Template('add_rule.tmpl');
-$replace = array();
+$replace = [];
 
 // Setting the page text
 if ($is_sender_added_to_news == 'OK') {

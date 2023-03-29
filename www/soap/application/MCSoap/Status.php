@@ -45,7 +45,7 @@ class MCSoap_Status
 	}
 	
 	if ($element == 'disksusage') {
-		$data = array();
+		$data = [];
 		$cmdres = `/bin/df -lP`;
 		foreach (preg_split("/\n/", $cmdres) as $line ) {
 			if (preg_match('/^(\/\S+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)%\s+(\S+)/', $line, $matches)) {
@@ -61,7 +61,7 @@ class MCSoap_Status
 	}
 	
 	if ($element == 'memoryusage') {
-		$data = array();
+		$data = [];
 		$cmdres = `/usr/bin/free -o`;
 		foreach (preg_split("/\n/", $cmdres) as $line ) {
             if (preg_match('/^Mem:\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/', $line, $matches)) {
@@ -82,7 +82,7 @@ class MCSoap_Status
 	}
 	
 	if ($element == 'spools') {
-		$data = array();
+		$data = [];
 		$cmd = $config->getOption('SRCDIR')."/bin/check_spools.sh";
 		$cmdres = `$cmd`;
 		foreach (preg_split("/\n/", $cmdres) as $line ) {
@@ -94,7 +94,7 @@ class MCSoap_Status
 	}
 	
 	if ($element == 'processes') {
-		$data = array();
+		$data = [];
 		$cmd = $config->getOption('SRCDIR')."/bin/get_status.pl -s";
 		$order = array('exim_stage1', 'exim_stage2', 'exim_stage4', 'apache', 'mailscanner', 'mysql_master', 'mysql_slave', 'snmpd', 
 		               'greylistd', 'cron', 'preftdaemon', 'spamd', 'clamd', 'clamspamd', 'spamhandler', 'newsld', 'firewall');
@@ -122,9 +122,9 @@ class MCSoap_Status
    * @return array
    */
    static public function Status_getStatusValues($params) {
-   	  $res = array('data' => array());
+   	  $res = array('data' => [)];
    	  
-   	  $data = array();
+   	  $data = [];
    	  foreach ($params as $param) {
    	  	$data[$param] = MCSoap_Status::getMcStatusElement($param);
    	  }
@@ -158,7 +158,7 @@ class MCSoap_Status
 	static public function Status_getHardwareHealth() {
 		$disks = MCSoap_Status::getMcStatusElement('disks');
 		$swap =  MCSoap_Status::getMcStatusElement('swap');
-		return array();
+		return [];
 	}
 	
 	/**
@@ -167,11 +167,11 @@ class MCSoap_Status
 	 * @return array
 	 */
 	static public function Status_getTodayStats($params) {
-		$res = array('data' => array());
+		$res = array('data' => [)];
 		
 		$data = array( 'bytes' => 0, 'msgs' => 0, 'spams' => 0, 'pspam' => 0, 'viruses' => 0, 'pvirus' => 0, 
 		              'contents' => 0, 'pcontent' => 0, 'cleans' => 0, 'pclean' => 0);
-		$order = array('bytes', 'msgs', 'spams', 'pspam', 'viruses', 'pvirus', 'contents', 'pcontent', 'users', 'cleans', 'pclean');
+		$order = ['bytes', 'msgs', 'spams', 'pspam', 'viruses', 'pvirus', 'contents', 'pcontent', 'users', 'cleans', 'pclean'];
 		
 		require_once('MailCleaner/Config.php');
     
@@ -196,14 +196,14 @@ class MCSoap_Status
      * @return array
      */
     static public function Status_getSpool($params) {
-       $ret = array('message' => 'OK','msgs' => array(), 'nbmsgs' => 0);
+       $ret = array('message' => 'OK','msgs' => [), 'nbmsgs' => 0];
        
        require_once('MailCleaner/Config.php');
        $config = new MailCleaner_Config();
        
-       $available_spools = array(1, 2, 4);
+       $available_spools = [1, 2, 4];
        $spool = 1;
-       if (isset($params['spool']) && in_array($params['spool'], $available_spools)) {
+       if (isset($params['spool']) && in_[$params['spool'], $available_spools)] {
        	 $spool = $params['spool'];
        }
        $cmd = "/opt/exim4/bin/exipick --spool ".$config->getOption('VARDIR')."/spool/exim_stage".$spool." -flatq --show-vars deliver_freeze,dont_deliver,first_delivery,warning_count,shown_message_size,message_age";
@@ -236,7 +236,7 @@ class MCSoap_Status
        	 	      'raw_to' => utf8_encode($m[5]),
        	 	      'frozen' => 0,
        	 	      'from' => '',
-       	 	      'to' => array(),
+       	 	      'to' => [],
        	 	      'size' => 0,
        	 	      'age' => 0,
        	 	      'sending' => 0,
@@ -259,7 +259,7 @@ class MCSoap_Status
        	 		$message['from'] = utf8_encode($m[1]);
        	    }
             $tos_lines = preg_split('/\s/', $message['raw_to']);
-            $message['to'] = array();
+            $message['to'] = [];
             foreach ($tos_lines as $line) {
               array_push($message['to'], utf8_encode($line));
             }
@@ -275,7 +275,7 @@ class MCSoap_Status
        	    $msglogpath = $config->getOption('VARDIR')."/spool/exim_stage".$spool."/msglog";
        	    $msglogfile = '';
 
-       	    $msglog = array('Message log file not found.', 'Message is probably being sent at the moment.');
+       	    $msglog = ['Message log file not found.', 'Message is probably being sent at the moment.'];
        	    if (file_exists($msglogpath."/".$message['id'])) {
        	    	$msglogfile = $msglogpath."/".$message['id'];
        	    } elseif (file_exists($msglogpath."/".substr($message['id'], 5, 1)."/".$message['id'])) {
@@ -289,8 +289,8 @@ class MCSoap_Status
        	    		$msglog = preg_split('/[\n\r]+/', $log, -1, PREG_SPLIT_NO_EMPTY);
        	    	}
        	    }
-            $log_lines = array();
-            $message['log'] = array();
+            $log_lines = [];
+            $message['log'] = [];
             foreach ($msglog as $line) {
               array_push($message['log'], utf8_encode($line));
             }
@@ -316,18 +316,18 @@ class MCSoap_Status
      */
     static public function Status_spoolDelete($params) {
     	
-    	$ret = array('message' => 'OK','msgsdeleted' => array(), 'errors' => array());
+    	$ret = array('message' => 'OK','msgsdeleted' => [], 'errors' => [)];
     	
-    	$msgs = array();
-    	if (is_array($params['msg'])) {
+    	$msgs = [];
+    	if (is_[$params['msg'])] {
     		$msgs = $params['msg'];
     	} else {
-    		$msgs = array($params['msg']);
+    		$msgs = [$params['msg']];
     	}
     	
-        $available_spools = array(1, 2, 4);
+        $available_spools = [1, 2, 4];
         $spool = 1;
-        if (isset($params['spool']) && in_array($params['spool'], $available_spools)) {
+        if (isset($params['spool']) && in_[$params['spool'], $available_spools)] {
           $spool = $params['spool'];
         }
         
@@ -355,18 +355,18 @@ class MCSoap_Status
      */
     static public function Status_spoolTry($params) {
     	
-    	$ret = array('message' => 'OK','msgstried' => array(), 'errors' => array());
+    	$ret = array('message' => 'OK','msgstried' => [], 'errors' => [)];
     	
-    	$msgs = array();
-        if (is_array($params['msg'])) {
+    	$msgs = [];
+        if (is_[$params['msg'])] {
             $msgs = $params['msg'];
         } else {
-            $msgs = array($params['msg']);
+            $msgs = [$params['msg']];
         }
 
-        $available_spools = array(1, 2, 4);
+        $available_spools = [1, 2, 4];
         $spool = 1;
-        if (isset($params['spool']) && in_array($params['spool'], $available_spools)) {
+        if (isset($params['spool']) && in_[$params['spool'], $available_spools)] {
           $spool = $params['spool'];
         }
         
@@ -395,7 +395,7 @@ class MCSoap_Status
     static public function Status_getInformationalMessages($params) {
     	require_once('InformationalMessage.php');
     	
-    	$messages = array();
+    	$messages = [];
     	
     	## we need to check here:
     	# - registration

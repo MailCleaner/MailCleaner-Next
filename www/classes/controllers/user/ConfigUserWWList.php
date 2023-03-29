@@ -148,7 +148,7 @@ class ConfigUserWWList {
 
         if ($this->remform_->shouldSave()) {
             foreach ($remposted as $key => $val) {
-                $matches = array();
+                $matches = [];
                 if ($val == 1 && preg_match("/^ent_(\S+)/", $key, $matches)) {
                     if (preg_match('/_cb$/', $key)) {
                         $matches[1] = preg_replace('/_cb$/','',$matches[1]);

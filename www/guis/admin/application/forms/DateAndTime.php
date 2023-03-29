@@ -42,7 +42,7 @@ class Default_Form_DateAndTime extends ZendX_JQuery_Form
        $hour = new  Zend_Form_Element_Text('hour', array(
 		    'required' => false,
             'class' => 'timefield',
-		    'filters'    => array('Alnum')));
+		    'filters'    => ['Alnum'))];
 	   $hour->addValidator(new Zend_Validate_Int());
 	   $hour->addValidator(new Zend_Validate_LessThan(24));
 	   $this->addElement($hour);
@@ -50,7 +50,7 @@ class Default_Form_DateAndTime extends ZendX_JQuery_Form
 	   $minute = new  Zend_Form_Element_Text('minute', array(
 		    'required' => false,
             'class' => 'timefield',
-		    'filters'    => array('Alnum')));
+		    'filters'    => ['Alnum'))];
 	   $minute->addValidator(new Zend_Validate_Int());
 	   $minute->addValidator(new Zend_Validate_LessThan(60));
 	   $this->addElement($minute);
@@ -58,7 +58,7 @@ class Default_Form_DateAndTime extends ZendX_JQuery_Form
        $second = new  Zend_Form_Element_Text('second', array(
 		    'required' => false,
             'class' => 'timefield',
-		    'filters'    => array('Alnum')));
+		    'filters'    => ['Alnum'))];
 	   $second->addValidator(new Zend_Validate_Int());
 	   $second->addValidator(new Zend_Validate_LessThan(60));
 	   $this->addElement($second);	   

@@ -26,7 +26,7 @@ class ListManager {
    * list of elements found
    * @var  array
    */
-  protected $elements_ = array();
+  protected $elements_ = [];
   
   /**
    * name of the form that includes the list
@@ -43,7 +43,7 @@ class ListManager {
   
   public function clearList() {
   	unset($this->elements_);
-    $this->elements_ = array();
+    $this->elements_ = [];
   }
   /**
    * set an element of the list

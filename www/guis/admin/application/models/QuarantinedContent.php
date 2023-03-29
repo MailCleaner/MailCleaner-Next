@@ -86,7 +86,7 @@ class Default_Model_QuarantinedContent
 	}
 
 	public function getAvailableParams() {
-		$ret = array();
+		$ret = [];
 		foreach ($this->_values as $key => $value) {
 			$ret[]=$key;
 		}
@@ -118,7 +118,7 @@ class Default_Model_QuarantinedContent
 		$locallen = 25;
 		$domainlen = 25;
 		$res = $address;
-		$ca = array();
+		$ca = [];
 		foreach (preg_split('/,/', $address) as $a) {
 		if (preg_match('/(\S+)\@(\S+)/', $a, $matches)) {
 			$str = "";
@@ -181,12 +181,12 @@ class Default_Model_QuarantinedContent
 	}
 
 	static public function parseHeaders($str) {
-		$res = array();
+		$res = [];
 			
 		$lines = preg_split('/\n/', $str);
 			
 		$last_header="";
-		$matches = array();
+		$matches = [];
 
 		$lh = "";
 		foreach ($lines as $line) {
@@ -201,7 +201,7 @@ class Default_Model_QuarantinedContent
             $line = htmlentities($line, ENT_COMPAT, 'UTF-8');
 			if (preg_match('/^([A-Z]\S+):(.*)/', $line, $matches)) {
 				if ($last_header != "" && $lh != "") {
-					array_push($res, array($last_header, $lh));
+					array_push($res, [$last_header, $lh)];
 				}
 				$last_header=$matches[1];
 				$lh = $matches[2];
@@ -214,7 +214,7 @@ class Default_Model_QuarantinedContent
 			if (strlen($lh) > 72) {
 				$lh = substr($lh, 0, 72)."...";
 			}
-			#array_push($res, array($last_header, $lh."-"));
+			#array_push($res, [$last_header, $lh."-")];
 		}
 		return $res;
 	}

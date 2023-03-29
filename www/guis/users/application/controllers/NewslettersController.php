@@ -63,7 +63,7 @@ class NewslettersController extends Zend_Controller_Action
                 if (! $this->getRequest()->isXmlHttpRequest()) {
                   $this->release($eximId, $recipient, $storage);
                 } else {
-                    return $this->_helper->json(array('id' => $eximId, 'username' => $recipient, 'storage' => $storage, 'status' => $status));
+                    return $this->_helper->json(['id' => $eximId, 'username' => $recipient, 'storage' => $storage, 'status' => $status)];
                 }                
             }  
         }
@@ -78,7 +78,7 @@ class NewslettersController extends Zend_Controller_Action
         $spam->loadHeadersAndBody();
         $headers = $spam->getHeadersArray();
         
-        $match = array();
+        $match = [];
         preg_match('/[<]?([-0-9a-zA-Z.+_\']+@[-0-9a-zA-Z.+_\']+\.[a-zA-Z-0-9]+)[>]?/', trim($headers['From']), $match);
         
         if (!empty($match[1])) {

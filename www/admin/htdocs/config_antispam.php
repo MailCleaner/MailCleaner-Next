@@ -26,7 +26,7 @@ global $sysconf_;
 global $admin_;
 
 // check authorizations
-$admin_->checkPermissions(array('can_configure'));
+$admin_->checkPermissions(['can_configure')];
 
 // create and load antispam configuration handler
 $antispam_ = new AntiSpam();
@@ -79,7 +79,7 @@ if ($mform->shouldSave()) {
        continue;
     }
     
-    $prefs = array('active', 'neg_decisive', 'pos_decisive');
+    $prefs = ['active', 'neg_decisive', 'pos_decisive'];
     foreach($prefs as $pref) {
       if (isset($mposted[$pref."_".$i])) {
       	$pf->setPref($pref, $mposted[$pref."_".$i]);

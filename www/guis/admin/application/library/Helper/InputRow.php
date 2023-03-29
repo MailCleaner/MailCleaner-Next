@@ -38,7 +38,7 @@ class MailCleaner_View_Helper_InputRow extends Zend_View_Helper_Abstract
 	 * error_addclass: string
 	 */
 	
-	public function InputRow($element, $params = array())
+	public function InputRow($element, $params = [)]
 	{
 		$t = Zend_Registry::get('translate');
 		

@@ -31,7 +31,7 @@ class Default_Form_Localization extends ZendX_JQuery_Form
 	    $zlist = new Zend_Form_Element_Select('zone', array(
             'label'      => $t->_('Main zone')." :",
             'required'   => true,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
         foreach ($this->_locale->getZones() as $zk => $zv) {
         	$zlist->addMultiOption($zk, $t->_($zv));
@@ -43,7 +43,7 @@ class Default_Form_Localization extends ZendX_JQuery_Form
         $subzlist = new Zend_Form_Element_Select('selectsubzone', array(
             'label'      => $t->_('Sub zone')." :",
             'required'   => true,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
         foreach ($this->_locale->getSubZones() as $zk => $zv) {
         	$subzlist->addMultiOption($zk, $t->_($zv));

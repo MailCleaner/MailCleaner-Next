@@ -28,7 +28,7 @@ class Quarantine {
    * allowed orders with corresponding column names
    * @var array
    */
-  protected $ordered_fields_ = array();
+  protected $ordered_fields_ = [];
                     
  /**
   * the total number of elements found according to filters
@@ -40,7 +40,7 @@ class Quarantine {
    * the actual list of elements (only those present in the actual displayed page)
    * @var  array
    */
-  protected $elements_ = array();
+  protected $elements_ = [];
   
 /**
  * set a filter criteria
@@ -49,11 +49,11 @@ class Quarantine {
  * @return           bool    true on success, false on failure
  */
 public function setFilter($criteria, $value) {
-  $matches = array();
+  $matches = [];
   if ($criteria == 'order') {
     if (preg_match('/(\S+)_(asc|desc)/', $value, $matches)) {
       if (isset($this->ordered_fields_[$matches[1]])) {
-       $this->filters_['order'] = array($matches[1], $matches[2]);
+       $this->filters_['order'] = [$matches[1], $matches[2]];
        return true; 
       }
     }
@@ -95,7 +95,7 @@ public function getFilter($criteria) {
  * @return    bool    true on success, false on failure
  */
  public function setSearchAddress($a) {
-    $matches = array();
+    $matches = [];
    if ( preg_match('/^([a-zA-Z0-9\.\!\#\$\%\&\'\*\+\-\/\=\?\^\_\`\{\|\}\~]+)\@([a-zA-Z0-9\.\_\-]+)$/', $a, $matches)) {
      $this->setFilter('to_local', $matches[1]);
      $this->setFilter('to_domain', $matches[2]);
@@ -131,7 +131,7 @@ public function getHTMLCriterias($template, $sep) {
   if ($template == '') {
   	return '';
   }
-  $wantedfilters = array('from' => 'OSENDER', 'subject' => 'OSUBJECT');
+  $wantedfilters = ['from' => 'OSENDER', 'subject' => 'OSUBJECT'];
   $t = "";
   foreach ($wantedfilters as $filter => $fname) {
     if ($this->getFilter($filter) == "") { continue; }

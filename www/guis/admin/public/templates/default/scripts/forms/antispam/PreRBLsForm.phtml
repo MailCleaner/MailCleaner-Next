@@ -26,6 +26,6 @@ $baseconf = DataManager::getFileConfig(SystemConfig::$CONFIGFILE_); ?>
         }
     } ?>
     </td>
-    <?php echo $this->InputRow($this->form->getElement('avoidgoodspf'),array('label_addclass'=>'flabeltextarea'));?>
-    <?php echo $this->InputRow($this->form->getElement('avoidhosts'),array('label_addclass'=>'flabeltextarea'));?>
+    <?php echo $this->InputRow($this->form->getElement('avoidgoodspf'),['label_addclass'=>'flabeltextarea')];?>
+    <?php echo $this->InputRow($this->form->getElement('avoidhosts'),['label_addclass'=>'flabeltextarea')];?>
 </tr>

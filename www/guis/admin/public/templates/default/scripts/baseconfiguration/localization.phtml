@@ -21,10 +21,10 @@
  <div id="interfaceconfigpanel" class="configpanel">
  
     <div id="localeformcontent">
-     <?php echo $this->partial('forms/localeForm.phtml', array('form' => $this->form, 't' => $this->t, 'message' => $this->message,'images_path' => $this->images_path)); ?>
+     <?php echo $this->partial('forms/localeForm.phtml', ['form' => $this->form, 't' => $this->t, 'message' => $this->message,'images_path' => $this->images_path)]; ?>
     </div>
     <div id="configpanelinfos">
-      <?php echo $this->t->_('current local time is')." : <strong>".$this->currentlocaltime;?></strong> (<a href="<?php echo $this->url(array('action'=>'dateandtime', 'controller'=>'baseconfiguration'));?>"><?php echo $this->t->_('set up...');?></a>)
+      <?php echo $this->t->_('current local time is')." : <strong>".$this->currentlocaltime;?></strong> (<a href="<?php echo $this->url(['action'=>'dateandtime', 'controller'=>'baseconfiguration')];?>"><?php echo $this->t->_('set up...');?></a>)
     </div>
  </div>
  

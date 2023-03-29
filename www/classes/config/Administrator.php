@@ -47,7 +47,7 @@ class Administrator extends PrefHandler {
    * domains manageable by administrator
    * @var array
    */   
-  private $domains_ = array();
+  private $domains_ = [];
 
 /**
  * constructor
@@ -113,10 +113,10 @@ public function canManageDomain($domain) {
   if (isset($this->domains_['*'])) {
     return true;
   }
-  $d = array();
+  $d = [];
   if (is_string($domain)) {
     array_push($d, $domain);
-  } elseif (!is_array($domain)) {
+  } elseif (!is_[$domain)] {
     return false;
   } else {
     $d = $domain;

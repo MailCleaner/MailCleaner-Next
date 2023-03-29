@@ -16,15 +16,15 @@ class Default_Model_Logfile
 	      'exim_stage4' => array('basefile' => 'exim_stage4/mainlog', 'cat' => 'Message handling', 'name' => 'Outgoing MTA', 'pos' => 3, 'nextId_regex' => '\b([0-9a-zA-Z]{6}-[0-9a-zA-Z]{6}-[0-9a-zA-Z]{2})\b.*T=spam_store'),
 	
 	      'mailscanner' => array('basefile' => 'mailscanner/infolog', 'cat' => 'Filter engine', 'name' => 'Filtering engine', 'pos' => 1, 'nextId_regex' => '\b([0-9a-zA-Z]{6}-[0-9a-zA-Z]{6}-[0-9a-zA-Z]{2})\b'),
-	      'clamd' => array('basefile' => 'clamav/clamd.log', 'cat' => 'Filter engine', 'name' => 'Virus signatures engine', 'pos' => 4),
-	      'spamd' => array('basefile' => 'mailscanner/spamd.log', 'cat' => 'Filter engine', 'name' => 'SpamAssassin engine', 'pos' => 2),
-	      'clamspamd' => array('basefile' => 'clamav/clamspamd.log', 'cat' => 'Filter engine', 'name' => 'Spam signatures engine', 'pos' => 3),
-	      'spamhandler' => array('basefile' => 'mailcleaner/SpamHandler.log', 'cat' => 'Filter engine', 'name' => 'Spam handling process', 'pos' => 5),
+	      'clamd' => ['basefile' => 'clamav/clamd.log', 'cat' => 'Filter engine', 'name' => 'Virus signatures engine', 'pos' => 4],
+	      'spamd' => ['basefile' => 'mailscanner/spamd.log', 'cat' => 'Filter engine', 'name' => 'SpamAssassin engine', 'pos' => 2],
+	      'clamspamd' => ['basefile' => 'clamav/clamspamd.log', 'cat' => 'Filter engine', 'name' => 'Spam signatures engine', 'pos' => 3],
+	      'spamhandler' => ['basefile' => 'mailcleaner/SpamHandler.log', 'cat' => 'Filter engine', 'name' => 'Spam handling process', 'pos' => 5],
 	
-	      'freshclam' =>  array('basefile' => 'clamav/freshclam.log', 'cat' => 'Updates', 'name' => 'Antivirus engine', 'pos' => 1),
+	      'freshclam' =>  ['basefile' => 'clamav/freshclam.log', 'cat' => 'Updates', 'name' => 'Antivirus engine', 'pos' => 1],
 	
-	      'apache' => array('basefile' => 'apache/access.log', 'cat' => 'Misc', 'name' => 'Web server', 'pos' => 1),
-	      'mysql_slave' => array('basefile' => 'mysql_slave/mysql.log', 'cat' => 'Misc', 'name' => 'Local database', 'pos' => 2),
+	      'apache' => ['basefile' => 'apache/access.log', 'cat' => 'Misc', 'name' => 'Web server', 'pos' => 1],
+	      'mysql_slave' => ['basefile' => 'mysql_slave/mysql.log', 'cat' => 'Misc', 'name' => 'Local database', 'pos' => 2],
 	);
 	
 	protected $_values = array(
@@ -39,12 +39,12 @@ class Default_Model_Logfile
 	      'shortfile' => ''
 	);
 	
-	protected $_delivery_log_order = array('exim_stage1', 'mailscanner','exim_stage4','spamhandler');
+	protected $_delivery_log_order = ['exim_stage1', 'mailscanner','exim_stage4','spamhandler'];
 	
 	public function getCategories() {
-		$ret = array();
+		$ret = [];
 		foreach ($this->_available_types as $type => $t) {
-			if (!in_array($t['cat'], $ret)) {
+			if (!in_[$t['cat'], $ret)] {
 				array_push($ret, $t['cat']);
 			}
 		}
@@ -73,7 +73,7 @@ class Default_Model_Logfile
 	}
 
 	public function getAvailableParams() {
-		$ret = array();
+		$ret = [];
 		foreach ($this->_values as $key => $value) {
 			$ret[]=$key;
 		}
@@ -97,12 +97,12 @@ class Default_Model_Logfile
 	}
 
 	public function fetchAll($params = NULL) {
-		$res = array();
+		$res = [];
 
 		$slave = new Default_Model_Slave();
         $slaves = $slave->fetchAll();
         
-        $params['files'] = array();
+        $params['files'] = [];
         foreach ($this->_available_types as $c => $v) {
         	$params['files'][] = $v['basefile'];
         }

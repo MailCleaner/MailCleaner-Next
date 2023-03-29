@@ -20,7 +20,7 @@
  <div id="generalconfigcontent">   
     <div id="settingsconfigpanel" class="configpanel">
      <div id="settingsformcontent">
-      <?php echo $this->partial('forms/smtpTls.phtml', array('form' => $this->form,'t' => $this->t, 'message' => $this->message, 'ssl_display_class' => $this->ssl_display_class, 'images_path'=>$this->images_path, 'certdata' => $this->certdata )); ?>
+      <?php echo $this->partial('forms/smtpTls.phtml', ['form' => $this->form,'t' => $this->t, 'message' => $this->message, 'ssl_display_class' => $this->ssl_display_class, 'images_path'=>$this->images_path, 'certdata' => $this->certdata )]; ?>
      </div>
     </div>
  </div>

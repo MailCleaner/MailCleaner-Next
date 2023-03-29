@@ -10,8 +10,8 @@
 
 class Default_Model_HostIdManager
 {	
-	private $_serial = array('abc1', 'def2', 'ghi3');
-        private $_data = array('host_id' => '');
+	private $_serial = ['abc1', 'def2', 'ghi3'];
+        private $_data = ['host_id' => ''];
     
 	public function load() {
 		//TODO: implement

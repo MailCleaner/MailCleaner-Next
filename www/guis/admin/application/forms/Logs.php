@@ -10,7 +10,7 @@
 
 class Default_Form_Logs extends ZendX_JQuery_Form
 {	
-	protected $_params = array();
+	protected $_params = [];
 	
 	public function __construct($params) {
 		
@@ -29,7 +29,7 @@ class Default_Form_Logs extends ZendX_JQuery_Form
 	           
 		$this->setAttrib('id', 'filter_form');
 	    	    
-	    $months = array('Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.');
+	    $months = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
 	    $fd = new Zend_Form_Element_Select('fd', array(
 		    'required' => true));
 	    for ($d = 1; $d <= 31; $d++) {

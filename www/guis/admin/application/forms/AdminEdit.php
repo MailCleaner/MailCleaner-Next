@@ -60,7 +60,7 @@ class Default_Form_AdminEdit extends ZendX_JQuery_Form
 	    $roleselect = new Zend_Form_Element_Select('role', array(
             'label'      => $t->_('Role')." :",
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
         foreach ($this->_admin->getRoles() as $r) {
         	$roleselect->addMultiOption($r['name'], $t->_($r['name']));
@@ -74,7 +74,7 @@ class Default_Form_AdminEdit extends ZendX_JQuery_Form
 		      'required'   => false,
 		      'rows' => 5,
 		      'cols' => 40,
-		      'filters'    => array('StringToLower', 'StringTrim')));
+		      'filters'    => ['StringToLower', 'StringTrim'))];
 	    $domains->addValidator(new Validate_DomainList());
 		$domains->setValue( implode("\n", $this->_admin->getDomainsArray() ));
 		$this->addElement($domains);

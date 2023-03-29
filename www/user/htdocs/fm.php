@@ -47,7 +47,7 @@ if ($ret != "OK") {
   $res = $ret;
 } else {
   // actually force the message
-  $res = $soaper->queryParam('forceSpam', array($_GET['id'], $_GET['a']));
+  $res = $soaper->queryParam('forceSpam', [$_GET['id'], $_GET['a'])];
   $res = preg_replace('/^(\S*)\s.*/', '$1', $res);
 } 
 

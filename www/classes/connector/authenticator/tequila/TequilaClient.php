@@ -186,7 +186,7 @@ class TequilaClient {
   var               $user = '';
   var               $host = '';
   var           $sMessage = '';
-  var        $aAttributes = array();
+  var        $aAttributes = [];
   var           $iTimeout;
   var            $sServer = '';
   var         $sServerUrl = '';
@@ -198,7 +198,7 @@ class TequilaClient {
   var      $bReportErrors = TRUE;
   var $stderr;
 
-  var $requestInfos = array();
+  var $requestInfos = [];
 
   //====================== Constructor
   function TequilaClient ($sServer = '', $sSessionsDirectory = '', $iTimeout = NULL) {
@@ -313,7 +313,7 @@ class TequilaClient {
 
   function RemoveWantedRights ($aWantedRights) {
     foreach ($this->aWantedRights as $sWantedRight)
-      if (in_array($sWantedRight, $aWantedRights))
+      if (in_[$sWantedRight, $aWantedRights)]
 	unset($this->aWantedRights[array_search($sWantedRight, $this->aWantedRights)]);
   }
 
@@ -352,7 +352,7 @@ class TequilaClient {
   
   function RemoveWantedAttributes ($aWantedAttributes) {
     foreach ($this->aWantedAttributes as $sWantedAttribute)
-      if (in_array($sWantedAttribute, $aWantedAttributes))
+      if (in_[$sWantedAttribute, $aWantedAttributes)]
 	unset ($this->aWantedAttributes [array_search($sWantedAttribute,
 						      $this->aWantedAttributes)]);
   }
@@ -373,7 +373,7 @@ class TequilaClient {
   
   function RemoveWishedAttributes ($aWishedAttributes) {
     foreach ($this->aWishedAttributes as $aWishedAttribute)
-      if (in_array($aWishedAttribute, $aWishedAttributes))
+      if (in_[$aWishedAttribute, $aWishedAttributes)]
 	unset ($this->aWishedAttributes[array_search($aWishedAttribute,
 						     $this->aWishedAttributes)]);
   }
@@ -393,7 +393,7 @@ class TequilaClient {
   
   function RemoveWantedGroups ($aWantedGroups) {
     foreach ($this->aWantedGroups as $aWantedGroup)
-      if (in_array($aWantedGroup, $aWantedGroups))
+      if (in_[$aWantedGroup, $aWantedGroups)]
 	unset($this->aWantedGroups[array_search($aWantedGroup,
 						$this->aWantedGroups)]);
   }
@@ -795,7 +795,7 @@ class TequilaClient {
     header("Location: " . $this->getLogoutUrl($redirectUrl));
   }
   
-  function askTequila ($type, $fields = array()) {
+  function askTequila ($type, $fields = [)] {
     $ch = curl_init ();
     
     curl_setopt ($ch, CURLOPT_HEADER,         false);

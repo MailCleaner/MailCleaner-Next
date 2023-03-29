@@ -25,7 +25,7 @@ global $sysconf_;
 global $admin_;
 
 // check authorizations
-$admin_->checkPermissions(array('can_configure'));
+$admin_->checkPermissions(['can_configure')];
 
 // create and load dangerous content objects
 $dangerous_ = new DangerousContent();

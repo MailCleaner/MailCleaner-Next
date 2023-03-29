@@ -25,7 +25,7 @@ class Plugin_TemplatePath extends Zend_Controller_Plugin_Abstract
         $view->images_path = $view->template_dir.'/images';
     	$view->headLink()->appendStylesheet($view->css_path.'/global.css');
     	
-    	$view->statusUrl = $view->url(array('action'=> 'quickstatus', 'controller' => 'status'));
+    	$view->statusUrl = $view->url(['action'=> 'quickstatus', 'controller' => 'status')];
         
         $view->addHelperPath('ZendX/JQuery/View/Helper/', 'ZendX_JQuery_View_Helper');
         $view->jQuery()->enable();

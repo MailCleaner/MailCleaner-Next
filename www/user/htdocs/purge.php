@@ -41,7 +41,7 @@ if (isset($_GET['doit'])) {
   }
 } else {
     if (isset($_GET['a']) && $user_->hasAddress($_GET['a'])) {
-      $res = $lang_->print_txt_mparam('ASKPURGECONFIRM', array($_GET['days'], $_GET['a']));
+      $res = $lang_->print_txt_mparam('ASKPURGECONFIRM', [$_GET['days'], $_GET['a'])];
     }
 }
 

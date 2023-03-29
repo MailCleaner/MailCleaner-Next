@@ -119,7 +119,7 @@ public function getAvailableCertificates() {
 	global $sysconf_;
     
     $dir = $sysconf_->SRCDIR_."/etc/exim/certs";
-    $certs = array();
+    $certs = [];
     
     if (exists)
     $files = @scandir($dir);

@@ -26,7 +26,7 @@ class Default_Form_Domain_UserAuthentication_None
 	}
 	
 	public function setParams($request, $domain) {
-		$this->setParamsFromArray(array(), $domain);
+		$this->setParamsFromArray([), $domain];
 	}
 	
     public function setParamsFromArray($array, $domain) {
@@ -35,7 +35,7 @@ class Default_Form_Domain_UserAuthentication_None
     }
 
     public function getParams() {
-       return array();
+       return [];
     }
     
     public function getParamsString($params) {

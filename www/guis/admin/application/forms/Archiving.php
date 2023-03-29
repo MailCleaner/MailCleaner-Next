@@ -31,7 +31,7 @@ class Default_Form_Archiving extends ZendX_JQuery_Form
 		$type = new Zend_Form_Element_Select('archiving_type', array(
 		            'label'      => $t->_('Archiving mode')." :",
 		            'required'   => true,
-		            'filters'    => array('StringTrim')));
+		            'filters'    => ['StringTrim'))];
 		
 		$type->addMultiOption('none', $t->_('none'));
 		$type->addMultiOption('external', $t->_('external'));
@@ -48,7 +48,7 @@ class Default_Form_Archiving extends ZendX_JQuery_Form
 	    $archiverhost = new  Zend_Form_Element_Text('archiver_host', array(
             'label'   => $t->_('External archiver server')." :",
             'size' => 40,
-		    'filters'    => array('StringToLower', 'StringTrim')));
+		    'filters'    => ['StringToLower', 'StringTrim'))];
     	$archiverhost->setValue($this->_systemconf->getParam('archiver_host'));
     	require_once('Validate/HostWithPort.php');
         $archiverhost->addValidator(new Validate_HostWithPort());

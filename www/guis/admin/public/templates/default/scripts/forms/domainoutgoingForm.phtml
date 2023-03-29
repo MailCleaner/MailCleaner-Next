@@ -6,10 +6,10 @@
  * @copyright 2009, Olivier Diserens
  */
 ?>&nbsp;
-<?php echo $this->partial('layouts/message.phtml', array('message' => $this->message, 't' => $this->t)); ?>
+<?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t)]; ?>
 <fieldset>
-       <?php echo $this->InputRow($this->form->getElement('panel'),array('field_only'=>true,'nobox'=>true));?>
-       <?php echo $this->InputRow($this->form->getElement('name'),array('field_only'=>true,'nobox'=>true));?>
+       <?php echo $this->InputRow($this->form->getElement('panel'),['field_only'=>true,'nobox'=>true)];?>
+       <?php echo $this->InputRow($this->form->getElement('name'),['field_only'=>true,'nobox'=>true)];?>
        <table class="ftable">
           <?php echo $this->InputRow($this->form->getElement('smtpauth'));?>
           <?php echo $this->InputRow($this->form->getElement('smtp_auth_cachetime'), array('row_class' => 'smtp_auth_cachetime', 'post_field_text' => $this->t->_('seconds').'<input type="button" id="clearsmtpauthcachebutton" value="'.$this->t->_('Clear cache now...').'" />'));?>
@@ -17,7 +17,7 @@
           <tr>
             <td colspan="2"><hr /></td>
           </tr>
-          <?php foreach (array('batv_check', 'batv_secret') as $f) {?>
+          <?php foreach (['batv_check', 'batv_secret') as $f] {?>
             <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           <tr>
@@ -25,9 +25,9 @@
           </tr>
 
           <?php echo $this->InputRow($this->form->getElement('dkim_signature'));?>          
-          <?php echo $this->InputRow($this->form->getElement('dkim_domain'),array('row_class'=>'dkim_domain_fieldset'));?>
-          <?php echo $this->InputRow($this->form->getElement('dkim_selector'),array('row_class'=>'dkim_selandkey_fieldset'));?>
-          <?php echo $this->InputRow($this->form->getElement('dkim_pkey'),array('row_class'=>'dkim_selandkey_fieldset','label_addclass'=>'flabeltextarea'));?>
+          <?php echo $this->InputRow($this->form->getElement('dkim_domain'),['row_class'=>'dkim_domain_fieldset')];?>
+          <?php echo $this->InputRow($this->form->getElement('dkim_selector'),['row_class'=>'dkim_selandkey_fieldset')];?>
+          <?php echo $this->InputRow($this->form->getElement('dkim_pkey'),['row_class'=>'dkim_selandkey_fieldset','label_addclass'=>'flabeltextarea')];?>
           
           <tr class="dkim_selandkey_fieldset">
             <td class="flabel flabelstrict"></td>
@@ -52,9 +52,9 @@
           <?php
 		echo $this->InputRow($this->form->getElement('relay_smarthost'));
 		if ($this->form->getElement('relay_smarthost')->isChecked() ) {
-			echo $this->InputRow($this->form->getElement('servers_smarthost'),array('label_addclass'=>'flabeltextarea'));
+			echo $this->InputRow($this->form->getElement('servers_smarthost'),['label_addclass'=>'flabeltextarea')];
 
-			foreach (array('port_smarthost', 'multiple_smarthost') as $f) {
+			foreach (['port_smarthost', 'multiple_smarthost') as $f] {
 				echo $this->InputRow($this->form->getElement($f));
 			}
 		}

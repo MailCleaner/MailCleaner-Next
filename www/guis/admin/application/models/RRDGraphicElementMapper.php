@@ -66,7 +66,7 @@ class Default_Model_RRDGraphicElementMapper
         }
         $query->order('draw_order');
         
-        $elements = array();
+        $elements = [];
         $resultSet = $this->getDbTable()->fetchAll($query);
         foreach ($resultSet as $row) {
             $e = new Default_Model_RRDGraphicElement();

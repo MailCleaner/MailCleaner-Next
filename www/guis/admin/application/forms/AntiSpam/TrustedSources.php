@@ -11,7 +11,7 @@
 class Default_Form_AntiSpam_TrustedSources extends Default_Form_AntiSpam_Default
 {
 	protected $_viewscript = 'forms/antispam/TrustedSourcesForm.phtml';
-	public $_rwl_checks = array();
+	public $_rwl_checks = [];
 	
 	public function getViewScriptFile() {
 		return $this->_viewscript;
@@ -46,7 +46,7 @@ class Default_Form_AntiSpam_TrustedSources extends Default_Form_AntiSpam_Default
 		      'required'   => false,
 		      'rows' => 5,
 		      'cols' => 40,
-		      'filters'    => array('StringToLower', 'StringTrim')));
+		      'filters'    => ['StringToLower', 'StringTrim'))];
 		$domainstospf->addValidator(new Validate_DomainList());
 		$domainstospf->setValue($trustedsources->getParam('domainsToSPF'));
 		$this->addElement($domainstospf);
@@ -57,7 +57,7 @@ class Default_Form_AntiSpam_TrustedSources extends Default_Form_AntiSpam_Default
 		      'required'   => false,
 		      'rows' => 5,
 		      'cols' => 40,
-		      'filters'    => array('StringToLower', 'StringTrim')));
+		      'filters'    => ['StringToLower', 'StringTrim'))];
 	    $smtpservers->addValidator(new Validate_SMTPHostList());
 		$smtpservers->setValue(preg_replace('/\s+/', "\n", $trustedsources->getParam('authservers')));
 		$this->addElement($smtpservers);

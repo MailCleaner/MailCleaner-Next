@@ -21,7 +21,7 @@ class TimeConfig
    * ntp servers list
    * @var  array
    */
-  private $servers_ = array();
+  private $servers_ = [];
   
   /**
    * ntp config file
@@ -70,7 +70,7 @@ function load() {
     return false;
   }
   $lines = file($this->getConfigFilePath());
-  $matches = array();
+  $matches = [];
 
   foreach($lines as $line) {
     if (preg_match('/^\s*server\s+(\S+)/', $line, $matches)) {
@@ -134,7 +134,7 @@ private function addServer($server) {
  */
 private function resetServers() {
   unset($this->servers_);
-  $this->servers = array();
+  $this->servers = [];
 }
 
 /**
@@ -175,7 +175,7 @@ public function getServers() {
  * @return   string  OKSAVED on success, error code on failure
  */
 public function save() {
-  $res_a = array();
+  $res_a = [];
   $res = "";
   
   $sudocmd = "/usr/bin/sudo";

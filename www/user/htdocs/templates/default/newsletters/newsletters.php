@@ -5,7 +5,7 @@ if (!empty($_POST)):
 else: 
 
 require_once ' Default/Model/Newsletter.php';
-$newsletters = array();
+$newsletters = [];
 
 ?>
 <table>

@@ -134,7 +134,7 @@ class Domain extends PrefHandler {
   
     $use_id = 0;
     if (is_numeric($name)) { $this->setPref('id', $name); $use_id = 1;}
-    $matches = array();
+    $matches = [];
     if (!preg_match('/^[A-Za-z0-9\_\-\.\*]+$/', $name, $matches)) { return false; } // bad domain name 
 
     $where_clause = "p.id=d.prefs";
@@ -181,7 +181,7 @@ class Domain extends PrefHandler {
       $this->connector->setServerSettings($this->getPref('auth_server'));
       $this->connector->setParamSettings($this->getPref('auth_param'));
     }
-    $matches = array();
+    $matches = [];
     if (preg_match('/^conn_(\S+)/', $pref, $matches)) {
       return $this->connector->setSetting($matches[1], $value);
     }

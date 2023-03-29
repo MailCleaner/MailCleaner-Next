@@ -32,7 +32,7 @@ class Default_Form_Manage_UserInterfacesettings extends Zend_Form
 		$this->setAttrib('id', 'user_form');
 	    $panellist = new Zend_Form_Element_Select('userpanel', array(
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         
@@ -59,7 +59,7 @@ class Default_Form_Manage_UserInterfacesettings extends Zend_Form
 		$language = new Zend_Form_Element_Select('language', array(
 		    'label'      => $t->_('Language')." : ",
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
         
 	    $config = MailCleaner_Config::getInstance();
@@ -75,7 +75,7 @@ class Default_Form_Manage_UserInterfacesettings extends Zend_Form
 	}
 	
 	public function setParams($request, $user) {
-		foreach (array('language') as $pref) {
+		foreach (['language') as $pref] {
             if ($request->getParam($pref)) {
 			    $user->setPref($pref, $request->getParam($pref));
 		    }	    

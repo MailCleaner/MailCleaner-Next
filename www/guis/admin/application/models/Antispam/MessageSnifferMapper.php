@@ -53,7 +53,7 @@ class Default_Model_Antispam_MessageSnifferMapper
             unset($data['id']);
             $res = $this->getDbTable()->insert($data);
         } else {
-            $res = $this->getDbTable()->update($data, array("set_id = ?" => $id));
+            $res = $this->getDbTable()->update($data, ["set_id = ?" => $id)];
         }
         return $res;
     }

@@ -20,9 +20,9 @@ abstract class LoginFormatter {
   * @var array
   */
   static private $formatters_ = array (
-                                     'username_only' => array('username', 'SimpleFormatter'),
-                                     'at_add' => array('username@domain', 'DomainAddFormatter'),
-                                     'percent_add'  => array('username%domain', 'DomainAddFormatter')
+                                     'username_only' => ['username', 'SimpleFormatter'],
+                                     'at_add' => ['username@domain', 'DomainAddFormatter'],
+                                     'percent_add'  => ['username%domain', 'DomainAddFormatter']
                                      );
                            
   /**
@@ -77,7 +77,7 @@ abstract class LoginFormatter {
    * @return   array  list of available formatters
    */
    static public function getAvailableFormatters() {
-     $ret = array();
+     $ret = [];
      foreach (self::$formatters_ as $key => $value) {
         $ret[$value[0]] = $key;
      }

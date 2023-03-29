@@ -43,7 +43,7 @@ class Default_Model_Antispam_TrustedSources
 	}
 	
 	public function getAvailableParams() {
-		$ret = array();
+		$ret = [];
 		foreach ($this->_values as $key => $value) {
 			$ret[]=$key;
 		}

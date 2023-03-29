@@ -6,13 +6,13 @@
  * @copyright 2009, Olivier Diserens
  */
 ?>&nbsp;
-<?php echo $this->partial('layouts/message.phtml', array('message' => $this->message, 't' => $this->t)); ?>
+<?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t)]; ?>
 <fieldset>
-       <?php echo $this->InputRow($this->form->getElement('panel'),array('field_only'=>true,'nobox'=>true));?>
-       <?php echo $this->InputRow($this->form->getElement('name'),array('field_only'=>true,'nobox'=>true));?>
+       <?php echo $this->InputRow($this->form->getElement('panel'),['field_only'=>true,'nobox'=>true)];?>
+       <?php echo $this->InputRow($this->form->getElement('name'),['field_only'=>true,'nobox'=>true)];?>
        <table class="ftable">
        
-          <?php foreach (array('language', 'gui_group_quarantines') as $f) {?>
+          <?php foreach (['language', 'gui_group_quarantines') as $f] {?>
            <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           
@@ -20,7 +20,7 @@
             <td colspan="2"><hr /></td>
           </tr>
           
-           <?php foreach (array('summaryfrequency', 'summary_type', 'summary_to') as $f) {?>
+           <?php foreach (['summaryfrequency', 'summary_type', 'summary_to') as $f] {?>
            <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           
@@ -28,7 +28,7 @@
             <td colspan="2"><hr /></td>
           </tr>
           
-           <?php foreach (array('delivery_type', 'spam_tag', 'content_subject', 'file_subject', 'virus_subject') as $f) {?>
+           <?php foreach (['delivery_type', 'spam_tag', 'content_subject', 'file_subject', 'virus_subject') as $f] {?>
            <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           

@@ -20,14 +20,14 @@ global $user_;
 
 // some defaults
 // sets the different menu options and corresponding templates and controllers
-$topics = array();
-$topics['int'] = array('INTERFACETOPIC', 'conf_interface.tmpl', 'ConfigUserInterface');
-$topics['addparam'] = array('ADDRESSPARAMTOPIC', 'conf_addressparam.tmpl', 'ConfigUserAddressParam');
-$topics['quar'] = array('QUARPARAMTOPIC', 'conf_quarantine.tmpl', 'ConfigUserQuarantine');
+$topics = [];
+$topics['int'] = ['INTERFACETOPIC', 'conf_interface.tmpl', 'ConfigUserInterface'];
+$topics['addparam'] = ['ADDRESSPARAMTOPIC', 'conf_addressparam.tmpl', 'ConfigUserAddressParam'];
+$topics['quar'] = ['QUARPARAMTOPIC', 'conf_quarantine.tmpl', 'ConfigUserQuarantine'];
 if (!$user_->isStub()) {
   // if ldap connector..
   if ($user_->getDomain()->getPref('auth_type') != 'ldap' || file_exists('/var/mailcleaner/flags/www/user_auth/address_group_for_ldap') ) {
-    $topics['addlist'] = array('ADDRESSLISTTOPIC', 'conf_addresslist.tmpl', 'ConfigUserAddressList');
+    $topics['addlist'] = ['ADDRESSLISTTOPIC', 'conf_addresslist.tmpl', 'ConfigUserAddressList'];
   }
 }
 
@@ -38,16 +38,16 @@ $antispam_ = new AntiSpam();
 $antispam_->load();
 
 if ($antispam_->getPref('enable_warnlists') && $user_->getDomain()->getPref('enable_warnlists')) {
-  $topics['warn'] = array('WARNLISTTOPIC', 'conf_warnlist.tmpl', 'ConfigUserWWList');  
+  $topics['warn'] = ['WARNLISTTOPIC', 'conf_warnlist.tmpl', 'ConfigUserWWList'];  
 }
 
 /*
 if ($antispam_->getPref('enable_whitelists') && $user_->getDomain()->getPref('enable_whitelists')) {
 } */
 
-$topics['white'] = array('WHITELISTTOPIC', 'conf_whitelist.tmpl', 'ConfigUserWWList');
-$topics['black'] = array('BLACKLISTTOPIC', 'conf_blacklist.tmpl', 'ConfigUserWWList');
-$topics['wnews'] = array('NEWSLISTTOPIC', 'conf_newslist.tmpl', 'ConfigUserWWList');
+$topics['white'] = ['WHITELISTTOPIC', 'conf_whitelist.tmpl', 'ConfigUserWWList'];
+$topics['black'] = ['BLACKLISTTOPIC', 'conf_blacklist.tmpl', 'ConfigUserWWList'];
+$topics['wnews'] = ['NEWSLISTTOPIC', 'conf_newslist.tmpl', 'ConfigUserWWList'];
 
 
 $topic = 'int';

@@ -35,7 +35,7 @@ if (isset($_GET['t']) && $_GET['t'] && in_array($_GET['t'], preg_split('/,/', $t
 }
 
 // fetch help topic
-$htxt = array();
+$htxt = [];
 $helpfile = $sysconf_->SRCDIR_."/www/user/htdocs/lang/".$lang_->getLanguage()."/help_texts.php";
 if (file_exists($helpfile)) {
   include($helpfile);
@@ -133,7 +133,7 @@ function getHelpContent($carray) {
   $ret = preg_replace('/__ICON_FORCED__/', $template_->getDefaultValue('ICONFORCED'), $ret);
   $ret = preg_replace('/__ICON_SCOREFILLED__/', $template_->getDefaultValue('SCOREFILLED'), $ret);
   $ret = preg_replace('/__IMAGE_BASE__/', 'templates/'.$template_->getModel()."/", $ret);
-  $matches = array();
+  $matches = [];
   while (preg_match('/__(MANUAL_([A-Z]+)_NAME)__/', $ret, $matches)) {
   	$str = $matches[1];
     $ret = preg_replace("/__($str)__/", $htxt[$str], $ret);

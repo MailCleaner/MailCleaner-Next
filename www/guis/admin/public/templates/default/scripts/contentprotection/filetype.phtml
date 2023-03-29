@@ -21,7 +21,7 @@
 
  <div id="generalconfigcontent">
    <form method="<?php echo $this->listform->getMethod() ?>" action="<?php echo $this->listform->getAction()?>" id="<?php echo $this->listform->getId()?>">
-   <?php echo $this->partial('layouts/message.phtml', array('message' => $this->message, 't' => $this->t)); ?>
+   <?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t)]; ?>
    
     <ul class="configlist">
       <?php foreach ($this->filetypes as $f) {?>
@@ -41,7 +41,7 @@
  
     <div class="sublistelement editremelement">
      <h1>Disable or enable file type blocking</h1>
-       <p class="submitlist"><?php echo $this->SubmitRow($this->listform->getElement('disable'),array('field_only'=>true,'nobox'=>true));?></p>
+       <p class="submitlist"><?php echo $this->SubmitRow($this->listform->getElement('disable'),['field_only'=>true,'nobox'=>true)];?></p>
    </div>
    </form>
  

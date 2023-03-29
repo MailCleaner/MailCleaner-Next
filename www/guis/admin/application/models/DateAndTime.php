@@ -10,7 +10,7 @@
 
 class Default_Model_DateAndTime
 {	
-	protected $_datearray = array('hour' => 0, 'minute' => 0, 'second' => 0);
+	protected $_datearray = ['hour' => 0, 'minute' => 0, 'second' => 0];
 	
 	public function __construct() {
 	}

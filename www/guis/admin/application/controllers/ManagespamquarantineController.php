@@ -12,8 +12,8 @@ class ManagespamquarantineController extends Zend_Controller_Action
 {
 	protected function getSearchParams() {
 		$request = $this->getRequest();
-		$params = array();
-		foreach (array('search', 'domain', 'sender', 'subject', 'mpp', 'page', 'sort', 'forced', 'fd', 'fm', 'td', 'tm', 'hidedup', 'showSpamOnly', 'showNewslettersOnly') as $param) {
+		$params = [];
+		foreach (['search', 'domain', 'sender', 'subject', 'mpp', 'page', 'sort', 'forced', 'fd', 'fm', 'td', 'tm', 'hidedup', 'showSpamOnly', 'showNewslettersOnly') as $param] {
 			$params[$param] = '';
 			if ($request->getParam($param)) {
 				$params[$param] = $request->getParam($param);
@@ -32,13 +32,13 @@ class ManagespamquarantineController extends Zend_Controller_Action
         $todate = Zend_Locale_Format::getDate($todateO, array('date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()));      
         $fromdate = Zend_Locale_Format::getDate($fromdateO, array('date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()));
         
-        foreach ( array('fd' => 'day', 'fm' => 'month') as $tk => $tv) {
+        foreach ( ['fd' => 'day', 'fm' => 'month') as $tk => $tv] {
         	if  (!isset($params[$tk]) || !$params[$tk]) {
         	    $params[$tk] = $fromdate[$tv];
             }
         }
         $params['ty'] = $todate['year'];
-	    foreach ( array('td' => 'day', 'tm' => 'month') as $tk => $tv) {
+	    foreach ( ['td' => 'day', 'tm' => 'month') as $tk => $tv] {
 	    	if  (!isset($params[$tk]) || !$params[$tk]) {
         	    $params[$tk] = $todate[$tv];
             }
@@ -74,7 +74,7 @@ class ManagespamquarantineController extends Zend_Controller_Action
 		$request = $this->getRequest();
 		$form    = new Default_Form_SpamQuarantine($this->getSearchParams());
 		$form->setAction(Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managespamquarantine'));
-		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managespamquarantine', NULL, array());
+		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managespamquarantine', NULL, [)];
 
 		$view->form = $form;
 	}
@@ -84,7 +84,7 @@ class ManagespamquarantineController extends Zend_Controller_Action
 		$view=$layout->getView();
 		$layout->disableLayout();
 		$view->addScriptPath(Zend_Registry::get('ajax_script_path'));
-		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managespamquarantine', NULL, array());
+		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managespamquarantine', NULL, [)];
 		 
 		$request = $this->getRequest();
 		 
@@ -101,15 +101,15 @@ class ManagespamquarantineController extends Zend_Controller_Action
 		$orderorder = 'desc';
 		$nbpages = 0;
 		$page = 0;
-		$spams = array();
+		$spams = [];
 		 
 		$columns = array(
-    	  'action' => array('label' => 'Action'),
-    	  'date' => array('label' => 'Date', 'label2' => 'date', 'order' => 'desc'),
-    	  'to' => array('label' => 'Recipient', 'label2' => 'recipient', 'order' => 'desc'),
-    	  'from' => array('label' => 'Sender', 'label2' => 'sender', 'order' => 'desc'),
-    	  'subject' => array('label' => 'Subject', 'label2' => 'subject', 'order' => 'desc'),
-    	  'globalscore' => array('label' => 'Score', 'label2' => 'score', 'order' => 'asc')
+    	  'action' => ['label' => 'Action'],
+    	  'date' => ['label' => 'Date', 'label2' => 'date', 'order' => 'desc'],
+    	  'to' => ['label' => 'Recipient', 'label2' => 'recipient', 'order' => 'desc'],
+    	  'from' => ['label' => 'Sender', 'label2' => 'sender', 'order' => 'desc'],
+    	  'subject' => ['label' => 'Subject', 'label2' => 'subject', 'order' => 'desc'],
+    	  'globalscore' => ['label' => 'Score', 'label2' => 'score', 'order' => 'asc']
 		);
 		if ($request->getParam('sort') && preg_match('/(\S+)_(asc|desc)/', $request->getParam('sort'), $matches)) {
 			$order = $request->getParam('sort');

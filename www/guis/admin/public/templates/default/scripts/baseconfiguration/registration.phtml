@@ -22,7 +22,7 @@
 
 
       <div id="registrationformcontent">
-          <?php echo $this->partial('forms/changeHostIdForm.phtml', array('form' => $this->formhostid,'t' => $this->t, 'message' => $this->message, 'images_path' => $this->images_path)); ?>
+          <?php echo $this->partial('forms/changeHostIdForm.phtml', ['form' => $this->formhostid,'t' => $this->t, 'message' => $this->message, 'images_path' => $this->images_path)]; ?>
       </div>
 
 	<hr/>
@@ -33,12 +33,12 @@
       <hr/>
 <?php } ?>
       <div id="commercialoptions">
-          <?php echo $this->partial('forms/commercialOptionsForm.phtml', array('is_registered' => $this->is_registered)); ?>
+          <?php echo $this->partial('forms/commercialOptionsForm.phtml', ['is_registered' => $this->is_registered)]; ?>
       </div>
       <hr/>
 
       <div id="registrationformcontent">
-          <?php echo $this->partial('forms/registrationForm.phtml', array('form' => $this->form,'t' => $this->t, 'message' => $this->message, 'images_path' => $this->images_path)); ?>
+          <?php echo $this->partial('forms/registrationForm.phtml', ['form' => $this->form,'t' => $this->t, 'message' => $this->message, 'images_path' => $this->images_path)]; ?>
       </div>
 
       <div class="registerstatus">
@@ -53,7 +53,7 @@
 	<hr/>	
 
       <div id="registrationformcontent">
-          <?php echo $this->partial('forms/registrationCEForm.phtml', array('form' => $this->formCE,'t' => $this->t, 'message' => $this->message, 'images_path' => $this->images_path)); ?>
+          <?php echo $this->partial('forms/registrationCEForm.phtml', ['form' => $this->formCE,'t' => $this->t, 'message' => $this->message, 'images_path' => $this->images_path)]; ?>
       </div>
 
       <div class="registerstatus">
@@ -68,7 +68,7 @@
       <?php if ($this->registered == 2 || $this->registered == 1) {?>
 	<hr/>
       	<div id="registrationformcontent">
-          	<?php echo $this->partial('forms/unregistrationForm.phtml', array('form' => $this->formun,'t' => $this->t, 'message' => $this->message, 'images_path' => $this->images_path, 'registered' => $this->registered)); ?>
+          	<?php echo $this->partial('forms/unregistrationForm.phtml', ['form' => $this->formun,'t' => $this->t, 'message' => $this->message, 'images_path' => $this->images_path, 'registered' => $this->registered)]; ?>
       	</div>
       <?php } ?>
 </div>

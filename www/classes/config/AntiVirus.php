@@ -45,7 +45,7 @@ class AntiVirus extends PrefHandler {
    * scanners list
    * @var array
    */                
-  private $scanners_ = array();
+  private $scanners_ = [];
 
 /**
  * constructor

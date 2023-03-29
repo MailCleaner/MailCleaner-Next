@@ -41,7 +41,7 @@ class Default_Form_DomainArchiving extends Zend_Form
 		$this->setAttrib('id', 'domain_form');
 	    $panellist = new Zend_Form_Element_Select('domainpanel', array(
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         
@@ -74,7 +74,7 @@ class Default_Form_DomainArchiving extends Zend_Form
                             'title' => $t->_("Concerns only regular and released mails"),
 		            'required' => false,
 		            'size' => 40,
-		            'filters'    => array('StringTrim')));
+		            'filters'    => ['StringTrim'))];
 		$copyto_mail->setValue($this->_domain->getPref('copyto_mail'));
         $copyto_mail->addValidator(new Zend_Validate_EmailAddress(Zend_Validate_Hostname::ALLOW_LOCAL));
 		$this->addElement($copyto_mail);

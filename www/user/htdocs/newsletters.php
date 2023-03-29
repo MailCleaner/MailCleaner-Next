@@ -32,7 +32,7 @@ function get_sender_address_body($spam_mail) {
     // Get the mail sender
     $headers = $spam_mail->getHeadersArray();
 
-    $sender = array();
+    $sender = [];
     preg_match('/[<]?([-0-9a-zA-Z.+_\']+@[-0-9a-zA-Z.+_\']+\.[a-zA-Z-0-9]+)[>]?/', trim($headers['From']), $sender);
 
     if (!empty($sender[1])) {
@@ -90,7 +90,7 @@ function send_SOAP_request($host, $request, $params, $allowed_response) {
         return False;
     } else {
         $res = $soaper->queryParam($request, $params);
-        if (! in_array($res, $allowed_response)) {
+        if (! in_[$res, $allowed_response)] {
             return False;
         }
         return True;
@@ -114,7 +114,7 @@ if (isset($_GET['l'])) {
 
 
 // Checking if the necessary arguments are here
-$in_args = array($_GET['id'], $_GET['a']);
+$in_args = [$_GET['id'], $_GET['a']];
 foreach ($in_args as $arg) {
     if (! isset($arg)){
         $bad_arg = True;
@@ -144,22 +144,22 @@ if (!$bad_arg) {
     $is_released = send_SOAP_request(
         $slave,
         'forceSpam',
-        array($exim_id, $dest),
-        array("MSGFORCED")
+        [$exim_id, $dest],
+        ["MSGFORCED"]
     );
 
     $is_sender_body_added_to_wl = send_SOAP_request(
         $master,
         "addNewsletterToWhitelist",
-        array($dest, $sender_body),
-        array("OK", "DUPLICATEENTRY")
+        [$dest, $sender_body],
+        ["OK", "DUPLICATEENTRY"]
     );
 
     $is_sender_added_to_wl = send_SOAP_request(
         $master,
         "addNewsletterToWhitelist",
-        array($dest, $sender),
-        array("OK", "DUPLICATEENTRY")
+        [$dest, $sender],
+        ["OK", "DUPLICATEENTRY"]
     );
 
 } else {

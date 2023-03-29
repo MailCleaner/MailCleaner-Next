@@ -32,7 +32,7 @@ global $admin_;
 $remote_search_ = true;
 
 // check authorizations
-$admin_->checkPermissions(array('can_manage_users'));
+$admin_->checkPermissions(['can_manage_users')];
   
 // create email object and edition form
 $selected_address = new Email();

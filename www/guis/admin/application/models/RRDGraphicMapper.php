@@ -65,7 +65,7 @@ class Default_Model_RRDGraphicMapper
     
     public function fetchAll($params)
     {
-        $elements = array();
+        $elements = [];
         
         $query = $this->getDbTable()->select();
         foreach ($params as $key => $value) {

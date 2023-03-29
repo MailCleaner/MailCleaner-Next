@@ -45,7 +45,7 @@ class Default_Form_SmtpTls extends ZendX_JQuery_Form
 			'title' => $t->_("If you are unsure about what to set there, leave the field empty to get default value"),
                         'required' => false,
                         'size' => 40,
-                        'filters'    => array()));
+                        'filters'    => [))];
             $ciphers->setValue($this->_mta->getParam('ciphers'));
             $this->addElement($ciphers);
 
@@ -107,7 +107,7 @@ class Default_Form_SmtpTls extends ZendX_JQuery_Form
               'required'   => false,
               'rows' => 5,
               'cols' => 30,
-              'filters'    => array('StringToLower', 'StringTrim')));
+              'filters'    => ['StringToLower', 'StringTrim'))];
         $require_tls->addValidator(new Validate_HostList());
         $require_tls->setValue($this->_mta->getParam('hosts_require_tls'));
         $this->addElement($require_tls);
@@ -118,7 +118,7 @@ class Default_Form_SmtpTls extends ZendX_JQuery_Form
               'required'   => false,
               'rows' => 5,
               'cols' => 30,
-              'filters'    => array('StringToLower', 'StringTrim')));
+              'filters'    => ['StringToLower', 'StringTrim'))];
         $require_incoming_tls->addValidator(new Validate_HostList());
         $require_incoming_tls->setValue($this->_mta->getParam('hosts_require_incoming_tls'));
         $this->addElement($require_incoming_tls);
@@ -130,7 +130,7 @@ class Default_Form_SmtpTls extends ZendX_JQuery_Form
               'required'   => false,
               'rows' => 5,
               'cols' => 30,
-              'filters'    => array('StringToLower', 'StringTrim')));
+              'filters'    => ['StringToLower', 'StringTrim'))];
         $domains_require_tls_to->addValidator(new Validate_DomainList());
         $domains_require_tls_to->setValue($this->_mta->getParam('domains_require_tls_to'));
         $this->addElement($domains_require_tls_to);
@@ -141,7 +141,7 @@ class Default_Form_SmtpTls extends ZendX_JQuery_Form
               'required'   => false,
               'rows' => 5,
               'cols' => 30,
-              'filters'    => array('StringToLower', 'StringTrim')));
+              'filters'    => ['StringToLower', 'StringTrim'))];
         $domains_require_tls_from->addValidator(new Validate_DomainList());
         $domains_require_tls_from->setValue($this->_mta->getParam('domains_require_tls_from'));
         $this->addElement($domains_require_tls_from);

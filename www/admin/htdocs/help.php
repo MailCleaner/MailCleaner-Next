@@ -22,7 +22,7 @@ $template = new Template('help.tmpl');
  
 // prepare replacements 
 $replace = array(
-        '__DOC_TEXT__' => $template->processText($doc->getHelpText($_GET['s']), array())
+        '__DOC_TEXT__' => $template->processText($doc->getHelpText($_GET['s']), [)]
 );
 
 // output page

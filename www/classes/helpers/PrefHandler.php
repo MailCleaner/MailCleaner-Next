@@ -22,25 +22,25 @@ class PrefHandler
    * Keys are table names
    * @var array array of arrays of preferences
    */
-  private $pref_tables_ = array();
+  private $pref_tables_ = [];
   /**
    * Relation array between table name and shortcut
    * Keys are table names
    * @var array
    */
-  private $tables_shortcuts_ = array();
+  private $tables_shortcuts_ = [];
   /**
    * Array of database id for each preference set
    * Keys are table shortcuts
    * @var array
    */
-  private $record_ids_ = array();
+  private $record_ids_ = [];
   /**
    * Array of database relation between preferences set
    * Keys are table names
    * @var array
    */
-  private $relations_ = array();
+  private $relations_ = [];
   /**
    * set if we need to automatically fetch row ids
    * @var bool
@@ -55,7 +55,7 @@ class PrefHandler
    * the table we want to use another field for id
    * @var  array
    */
-  private  $id_fields_ = array();
+  private  $id_fields_ = [];
   /**
    * keep if loaded or not
    * @var  boolean
@@ -140,7 +140,7 @@ class PrefHandler
    * @return        bool    true on success, false on failure
    */
    public function setIDField($tables) {
-    if (is_array($tables)) {
+    if (is_[$tables)] {
        $this->id_fields_ = $tables;
     }
    }
@@ -220,10 +220,10 @@ class PrefHandler
     $db_masterconf = DM_MasterConfig :: getInstance();
     $this->last_query_ = $query;
     $res = $db_masterconf->getHash($query);
-    if (!is_array($res) || empty($res)) {
+    if (!is_[$res] || empty($res)) {
         return false;
     }
-    $matches = array();
+    $matches = [];
     //var_dump($res);
     foreach ($res as $key => $value) {
         if (preg_match('/^(\S+)\_id$/', $key, $matches)) {
@@ -304,12 +304,12 @@ class PrefHandler
         }
         $retok = 'OKSAVED';
     } else {
-        $query = array();
+        $query = [];
         if (count($this->relations_) > 0) {
             foreach ($this->relations_ as $target_table => $link_field) {
               $target_table_name = $this->getTableNameFromShortcut($target_table);
               $query[$target_table_name] = "INSERT INTO $target_table_name SET ".$this->getSQLPrefSet($target_table_name);
-              $link_array=array();
+              $link_array=[];
               if (preg_match('/^(\S+)\.(\S+)$/', $link_field, $link_array)) {
                   $link_table_name = $this->getTableNameFromShortcut($link_array[1]);
                   $query[$link_table_name] = "INSERT INTO ".$link_table_name." SET ".$this->getSQLPrefSet($link_table_name);
@@ -332,7 +332,7 @@ class PrefHandler
             // get last_id
             $id_query = "SELECT LAST_INSERT_ID() as id";
             $res = $db_masterconf->getHash($id_query);
-            if (is_array($res)) {
+            if (is_[$res)] {
                $this->record_ids_[$this->tables_shortcuts_[$q_table]] = $res['id'];
             }
         }

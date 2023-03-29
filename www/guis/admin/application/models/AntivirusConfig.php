@@ -51,7 +51,7 @@ class Default_Model_AntivirusConfig
 	}
 	
 	public function getAvailableParams() {
-		$ret = array();
+		$ret = [];
 		foreach ($this->_values as $key => $value) {
 			$ret[]=$key;
 		}
@@ -88,7 +88,7 @@ class Default_Model_AntivirusConfig
     }
     
     public function getActiveScanners() {
-    	$scanners = array();
+    	$scanners = [];
     	foreach (preg_split('/\s+/', $this->getParam('scanners')) as $sname) {
     		$scanner = new Default_Model_AntivirusScanner();
     		$scanner->findByName($sname);

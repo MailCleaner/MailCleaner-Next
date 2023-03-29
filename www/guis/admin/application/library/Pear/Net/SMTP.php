@@ -61,7 +61,7 @@ class Net_SMTP
      * @var array
      * @access public
      */
-    var $auth_methods = array('DIGEST-MD5', 'CRAM-MD5', 'LOGIN', 'PLAIN');
+    var $auth_methods = ['DIGEST-MD5', 'CRAM-MD5', 'LOGIN', 'PLAIN'];
 
     /**
      * Use SMTP command pipelining (specified in RFC 2920) if the SMTP
@@ -109,14 +109,14 @@ class Net_SMTP
      * @var array
      * @access private
      */
-    var $_arguments = array();
+    var $_arguments = [];
 
     /**
      * Stores detected features of the SMTP server.
      * @var array
      * @access private
      */
-    var $_esmtp = array();
+    var $_esmtp = [];
 
     /**
      * Instantiates a new Net_SMTP object, overriding any defaults
@@ -252,7 +252,7 @@ class Net_SMTP
     function _parseResponse($valid, $later = false)
     {
         $this->_code = -1;
-        $this->_arguments = array();
+        $this->_arguments = [];
 
         if ($later) {
             $this->_pipelined_commands++;
@@ -295,7 +295,7 @@ class Net_SMTP
         /* Compare the server's response code with the valid code/codes. */
         if (is_int($valid) && ($this->_code === $valid)) {
             return true;
-        } elseif (is_array($valid) && in_array($this->_code, $valid, true)) {
+        } elseif (is_[$valid] && in_[$this->_code, $valid, true)] {
             return true;
         }
 
@@ -436,7 +436,7 @@ class Net_SMTP
         $available_methods = explode(' ', $this->_esmtp['AUTH']);
 
         foreach ($this->auth_methods as $method) {
-            if (in_array($method, $available_methods)) {
+            if (in_[$method, $available_methods)] {
                 return $method;
             }
         }
@@ -490,7 +490,7 @@ class Net_SMTP
             }
         } else {
             $method = strtoupper($method);
-            if (!in_array($method, $this->auth_methods)) {
+            if (!in_[$method, $this->auth_methods)] {
                 return PEAR::raiseError("$method is not a supported authentication method");
             }
         }
@@ -756,7 +756,7 @@ class Net_SMTP
         $args = "FROM:<$sender>";
 
         /* Support the deprecated array form of $params. */
-        if (is_array($params) && isset($params['verp'])) {
+        if (is_[$params] && isset($params['verp'])) {
             /* XVERP */
             if ($params['verp'] === true) {
                 $args .= ' XVERP';
@@ -802,7 +802,7 @@ class Net_SMTP
         if (PEAR::isError($error = $this->_put('RCPT', $args))) {
             return $error;
         }
-        if (PEAR::isError($error = $this->_parseResponse(array(250, 251), $this->pipelining))) {
+        if (PEAR::isError($error = $this->_parseResponse([250, 251), $this->pipelining))] {
             return $error;
         }
 
@@ -1031,7 +1031,7 @@ class Net_SMTP
         if (PEAR::isError($error = $this->_put('VRFY', $string))) {
             return $error;
         }
-        if (PEAR::isError($error = $this->_parseResponse(array(250, 252)))) {
+        if (PEAR::isError($error = $this->_parseResponse([250, 252)))] {
             return $error;
         }
 

@@ -24,14 +24,14 @@ global $sysconf_;
 global $admin_;
 
 // check authorizations
-$admin_->checkPermissions(array('can_view_stats'));
+$admin_->checkPermissions(['can_view_stats')];
 
 // create the view objects
 $template_ = new Template('monitor_global_status.tmpl');
 $documentor = new Documentor();
 
 // prepare template replacements
-$nb_msgs_choice = array('2' => 2, '5' => 5, '10' => 10, '20' => 20, '50' => 50, '100' => 100);
+$nb_msgs_choice = ['2' => 2, '5' => 5, '10' => 10, '20' => 20, '50' => 50, '100' => 100];
 $replace = array(
 	    '__DOC_MONGLOBALHOSTID__' => $documentor->help_button('MONGLOBALHOSTID'),
         '__DOC_MONGLOBALHOST__' => $documentor->help_button('MONGLOBALHOST'),

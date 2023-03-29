@@ -10,7 +10,7 @@
 
 class Default_Form_NetworkInterface extends Zend_Form
 {
-	protected $_interfaces = array();
+	protected $_interfaces = [];
 	protected $_interface;
 	
 	public function __construct($interfaces, $interface)
@@ -44,7 +44,7 @@ class Default_Form_NetworkInterface extends Zend_Form
 	    $iflist = new Zend_Form_Element_Select('selectinterface', array(
             'label'      => $t->_('Interface')." :",
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $iflist->addValidator(new Zend_Validate_Alnum());
         
@@ -70,7 +70,7 @@ class Default_Form_NetworkInterface extends Zend_Form
          $address = new  Zend_Form_Element_Text('address', array(
 		    'label'    => $t->_('IPv4 address'). " :",
 		    'required' => false,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $address->setValue($this->_interface->getIPv4Param('address'));
 	    $address->addValidator(new Zend_Validate_Ip());
@@ -84,7 +84,7 @@ class Default_Form_NetworkInterface extends Zend_Form
 				    'required' => false,
 		            'rows' => 3,
 		            'cols' => 30,
-				    'filters'    => array('StringTrim')));
+				    'filters'    => ['StringTrim'))];
 		$virtaddresses->setValue(implode("\n", $this->_interface->getIPv4Param('virtual_addresses')));
 		require_once('Validate/IpList.php');
 		$virtaddresses->addValidator(new Validate_IpList());
@@ -96,7 +96,7 @@ class Default_Form_NetworkInterface extends Zend_Form
 		$netmask = new  Zend_Form_Element_Text('netmask', array(
 		    'label'    => $t->_('Network mask'). " :",
 		    'required' => false,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $netmask->setValue($this->_interface->getIPv4Param('netmask'));
 	    $netmask->addValidator(new Zend_Validate_Ip());
@@ -108,7 +108,7 @@ class Default_Form_NetworkInterface extends Zend_Form
 		$gateway = new  Zend_Form_Element_Text('gateway', array(
 		    'label'    => $t->_('Gateway'). " :",
 		    'required' => false,
-		    'filters'    => array('StringTrim')));
+		    'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $gateway->setValue($this->_interface->getIPv4Param('gateway'));
 	    $gateway->addValidator(new Zend_Validate_Ip());
@@ -124,7 +124,7 @@ class Default_Form_NetworkInterface extends Zend_Form
 		$ipv4mode = new Zend_Form_Element_Select('ipv4mode', array(
 				            'label'      => $t->_('Configure IPv4')." :",
 				            'required'   => true,
-				            'filters'    => array('StringTrim')));
+				            'filters'    => ['StringTrim'))];
 		
 		$ipv4mode->addMultiOption('disabled', $t->_('Disabled'));
 		$ipv4mode->addMultiOption('static', $t->_('Manually'));
@@ -138,7 +138,7 @@ class Default_Form_NetworkInterface extends Zend_Form
 		$ipv6mode = new Zend_Form_Element_Select('ipv6mode', array(
 						            'label'      => $t->_('Configure IPv6')." :",
 						            'required'   => true,
-						            'filters'    => array('StringTrim')));
+						            'filters'    => ['StringTrim'))];
 		
 		$ipv6mode->addMultiOption('disabled', $t->_('Disabled'));
 		$ipv6mode->addMultiOption('static', $t->_('Manually'));
@@ -152,7 +152,7 @@ class Default_Form_NetworkInterface extends Zend_Form
 				    'label'    => $t->_('IPv6 address'). " :",
 				    'required' => false,
 				    'size' => 46,
-				    'filters'    => array('StringTrim')));
+				    'filters'    => ['StringTrim'))];
 		$ipv6address->setValue($this->_interface->getIPv6Param('address'));
 		$ipv6address->addValidator(new Zend_Validate_Ip());
 		$this->addElement($ipv6address);
@@ -164,7 +164,7 @@ class Default_Form_NetworkInterface extends Zend_Form
 				    'label'    => $t->_('Prefix length'). " :",
 				    'required' => false,
 				    'size'     => 3,
-				    'filters'    => array('StringTrim')));
+				    'filters'    => ['StringTrim'))];
 		$ipv6netmask->setValue($this->_interface->getIPv6Param('netmask'));
 		$ipv6netmask->addValidator(new Zend_Validate_Int());
 		$this->addElement($ipv6netmask);
@@ -176,7 +176,7 @@ class Default_Form_NetworkInterface extends Zend_Form
 				    'label'    => $t->_('Gateway'). " :",
 				    'required' => false,
 				    'size' => 46,
-				    'filters'    => array('StringTrim')));
+				    'filters'    => ['StringTrim'))];
 		$ipv6gateway->setValue($this->_interface->getIPv6Param('gateway'));
 		$ipv6gateway->addValidator(new Zend_Validate_Ip());
 		$this->addElement($ipv6gateway);

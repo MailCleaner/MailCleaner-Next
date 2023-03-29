@@ -11,9 +11,9 @@
 class Default_Form_AntiSpam_Spamc extends Default_Form_AntiSpam_Default
 {
 	protected $_viewscript = 'forms/antispam/SpamcForm.phtml';
-	public $_rbl_checks = array();
-	public $_ip_rbls = array();
-	public $_uri_rbls = array();
+	public $_rbl_checks = [];
+	public $_ip_rbls = [];
+	public $_uri_rbls = [];
 	public $_rbls_class = '';
 	
 	public function getViewScriptFile() {
@@ -87,19 +87,19 @@ class Default_Form_AntiSpam_Spamc extends Default_Form_AntiSpam_Default
 	    }
 	    /*
 	    $netchecks = array(
-	    	'use_rbls' => array('label' => 'Enable RBLs controls', 'timeout' => 'rbls_timeout', 'title' => 'Use DNS RBLs for Spam detection'),
-	    	'use_dcc' => array('label' => 'Enable DCC control', 'timeout' => 'dcc_timeout', 'title' => 'The idea of DCC is that if mail recipients could compare the mail they receive, they could recognize unsolicited bulk mail'),
-	    	'use_razor' => array('label' => 'Enable Razor control', 'timeout' => 'razor_timeout', 'title' => 'Vipul's Razor is a distributed, collaborative, spam detection and filtering network'),
-	        'use_pyzor' => array('label' => 'Enable Pyzor control', 'timeout' => 'pyzor_timeout', 'title' => 'Exactly the same thing than razor. Chose/Select only of one of them'),
-	    	'use_spf' => array('label' => 'Enable SPF control', 'timeout' => 'spf_timeout', 'title' => 'This plugin checks a message against Sender Policy Framework records published by the domain owners in DNS to fight email address forgery and make it easier to identify spams'),
+	    	'use_rbls' => ['label' => 'Enable RBLs controls', 'timeout' => 'rbls_timeout', 'title' => 'Use DNS RBLs for Spam detection'],
+	    	'use_dcc' => ['label' => 'Enable DCC control', 'timeout' => 'dcc_timeout', 'title' => 'The idea of DCC is that if mail recipients could compare the mail they receive, they could recognize unsolicited bulk mail'],
+	    	'use_razor' => ['label' => 'Enable Razor control', 'timeout' => 'razor_timeout', 'title' => 'Vipul's Razor is a distributed, collaborative, spam detection and filtering network'],
+	        'use_pyzor' => ['label' => 'Enable Pyzor control', 'timeout' => 'pyzor_timeout', 'title' => 'Exactly the same thing than razor. Chose/Select only of one of them'],
+	    	'use_spf' => ['label' => 'Enable SPF control', 'timeout' => 'spf_timeout', 'title' => 'This plugin checks a message against Sender Policy Framework records published by the domain owners in DNS to fight email address forgery and make it easier to identify spams'],
 	    	'use_dkim' => array('label' => 'Enable DKIM control', 'timeout' => 'dkim_timeout', 'title' => 'DomainKeys Identified Mail (DKIM) is a method by which emails are signed by the organisation responsible for the senders domain and are placed in the DKIM-Signature: header field ')
 	    );*/
 		$netchecks = array(
-                'use_rbls' => array('label' => 'Enable RBLs controls', 'timeout' => 'rbls_timeout', 'title' => "Use DNS RBLs for Spam detection"),
-                'use_dcc' => array('label' => 'Enable DCC control', 'timeout' => 'dcc_timeout', 'title' => "The idea of DCC is that if mail recipients could compare the mail they receive, they could recognize unsolicited bulk mail"),
-                'use_razor' => array('label' => 'Enable Razor control', 'timeout' => 'razor_timeout', 'title' => "Vipul's Razor is a distributed, collaborative, spam detection and filtering network"),
-                'use_pyzor' => array('label' => 'Enable Pyzor control', 'timeout' => 'pyzor_timeout', 'title' => "Exactly the same thing than razor. Chose/Select only one of them"),
-                'use_spf' => array('label' => 'Enable SPF control', 'timeout' => 'spf_timeout', 'title' => "This plugin checks a message against Sender Policy Framework records published by the domain owners in DNS to fight email address forgery and make it easier to identify spams"),
+                'use_rbls' => ['label' => 'Enable RBLs controls', 'timeout' => 'rbls_timeout', 'title' => "Use DNS RBLs for Spam detection"],
+                'use_dcc' => ['label' => 'Enable DCC control', 'timeout' => 'dcc_timeout', 'title' => "The idea of DCC is that if mail recipients could compare the mail they receive, they could recognize unsolicited bulk mail"],
+                'use_razor' => ['label' => 'Enable Razor control', 'timeout' => 'razor_timeout', 'title' => "Vipul's Razor is a distributed, collaborative, spam detection and filtering network"],
+                'use_pyzor' => ['label' => 'Enable Pyzor control', 'timeout' => 'pyzor_timeout', 'title' => "Exactly the same thing than razor. Chose/Select only one of them"],
+                'use_spf' => ['label' => 'Enable SPF control', 'timeout' => 'spf_timeout', 'title' => "This plugin checks a message against Sender Policy Framework records published by the domain owners in DNS to fight email address forgery and make it easier to identify spams"],
                 'use_dkim' => array('label' => 'Enable DKIM control', 'timeout' => 'dkim_timeout', 'title' => "DomainKeys Identified Mail (DKIM) is a method by which emails are signed by the organisation responsible for the senders domain and are placed in the DKIM-Signature: header field"),
             );
 	    foreach ($netchecks as $checkname => $check) {
@@ -117,7 +117,7 @@ class Default_Form_AntiSpam_Spamc extends Default_Form_AntiSpam_Default
 		         'required' => false,
 		         'size' => 4,
                          'class' => 'fieldrighted',
-		         'filters'    => array('Alnum', 'StringTrim')));
+		         'filters'    => ['Alnum', 'StringTrim'))];
 	        $el_timeout->setValue($as->getParam($check{'timeout'}));
             $el_timeout->addValidator(new Zend_Validate_Int());
             if (!$as->getParam($checkname)) {
@@ -151,7 +151,7 @@ class Default_Form_AntiSpam_Spamc extends Default_Form_AntiSpam_Default
            $as->setParam('sa_rbls', $rblstr);
 		}
 		
-		foreach (array('use_bayes', 'bayes_autolearn', 'use_fuzzyocr', 'use_imageinfo', 'use_pdfinfo', 'use_botnet', 'dmarc_follow_quarantine_policy') as $p) {
+		foreach (['use_bayes', 'bayes_autolearn', 'use_fuzzyocr', 'use_imageinfo', 'use_pdfinfo', 'use_botnet', 'dmarc_follow_quarantine_policy') as $p] {
 			$as->setParam($p, $request->getParam($p));
 		}
 		

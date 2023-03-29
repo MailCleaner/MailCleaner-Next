@@ -7,6 +7,6 @@
  */
 ?>
 
-<?php foreach (array('licenseid', 'authentication') as $f) {?>
+<?php foreach (['licenseid', 'authentication') as $f] {?>
 <?php echo $this->InputRow($this->form->getElement($f));?>
 <?php }?>

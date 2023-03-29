@@ -9,7 +9,7 @@
     <div class="adminformcontent">
    
        <table class="ftable">
-          <?php foreach (array('password', 'confirm') as $f) {?>
+          <?php foreach (['password', 'confirm') as $f] {?>
             <?php echo $this->InputRow($this->form->getElement($f)); ?>
           <?php }?>
           
@@ -20,9 +20,9 @@
 
 
             <?php if ($this->form->_admin->getUserType() == 'administrator') { $hideshowclass = 'hidden'; } else { $hideshowclass = 'shown'; } ?> 
-            <?php echo $this->InputRow($this->form->getElement('domains'),array('label_addclass'=>'flabeltextarea', 'row_class' => 'advanced_admin '.$hideshowclass)); ?>
+            <?php echo $this->InputRow($this->form->getElement('domains'),['label_addclass'=>'flabeltextarea', 'row_class' => 'advanced_admin '.$hideshowclass)]; ?>
 
-             <?php echo $this->InputRow($this->form->getElement('allow_subdomains'),array('row_class' => 'advanced_admin '.$hideshowclass)); ?>
+             <?php echo $this->InputRow($this->form->getElement('allow_subdomains'),['row_class' => 'advanced_admin '.$hideshowclass)]; ?>
           <?php } ?>          
           <?php echo $this->SubmitRow($this->form->getElement('submit'));?>
           

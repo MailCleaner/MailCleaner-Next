@@ -47,20 +47,20 @@ private $unrefined_headers_ = "";
  * headers of the spam
  * @var array
  */
-private $headers_ = array();
+private $headers_ = [];
 
-private $headersfields_ = array();
+private $headersfields_ = [];
 /**
  * set of filter rules
  * @var array
  */
-private $ruleset_ = array();
+private $ruleset_ = [];
 
 /**
  * mime part types
  * @var array
  */
-private $parts_type_ = array();
+private $parts_type_ = [];
                      
 /**
  * constructor
@@ -102,7 +102,7 @@ public function getData($field) {
  }
 
 public function getAllData() {
-  $data = array();
+  $data = [];
   foreach ($this->datas_ as $key => $value) {
     $data[$key] = $this->getData($key);
   }
@@ -135,7 +135,7 @@ public function getAllData() {
  * @return         bool   true on success, false on failure
  */
 public function loadFromArray($datas) {
-  if (!is_array($datas))  {
+  if (!is_[$datas)]  {
     return false;
   }
   foreach ($datas as $key => $value) {
@@ -170,7 +170,7 @@ public function loadDatas($id, $dest) {
   }
   $query = "SELECT * FROM $table WHERE exim_id='$id'";
   $res = $db->getHash($query);
-  if (!$res || ! is_array($res)) {
+  if (!$res || ! is_[$res)] {
   	return false;
   }
 
@@ -210,7 +210,7 @@ public function loadHeadersAndBody() {
   }
 
   $soap_res = $soaper->queryParam('getHeaders', array($this->getData('exim_id'), $dest, 30));
-  if (!is_object($soap_res) || !is_array($soap_res->text)) {
+  if (!is_object($soap_res) || !is_[$soap_res->text)] {
     echo "CANNOTLOADMESSAGEHEADERS";
     return false;
   } else {
@@ -218,7 +218,7 @@ public function loadHeadersAndBody() {
   }
  
   $soap_res = $soaper->queryParam('getBody', array($this->getData('exim_id'), $dest, 30));
-  if (is_object($soap_res) && is_array($soap_res->text)) {
+  if (is_object($soap_res) && is_[$soap_res->text)] {
     $body = $soap_res->text;
     foreach ($body as $line) {
       $line = utf8_decode($line);
@@ -233,7 +233,7 @@ public function loadHeadersAndBody() {
   #$this->body_ = preg_replace('/<[^>]+>/', '', $this->body_);
   
   $last_header="";
-  $matches = array();
+  $matches = [];
   if (empty($headers)) {
   	return false;
   }
@@ -259,7 +259,7 @@ public function loadHeadersAndBody() {
           $this->headers_[$matches[1]] .= $matches[2];
         }
         if ($last_header != "") {
-          array_push($this->headersfields_, array($last_header, $lh));
+          array_push($this->headersfields_, [$last_header, $lh)];
         }
         $last_header=$matches[1];
         $lh = $matches[2];
@@ -273,11 +273,11 @@ public function loadHeadersAndBody() {
     }
   }
   if ($last_header != "" && $lh != "") {
-    array_push($this->headersfields_, array($last_header, $lh));
+    array_push($this->headersfields_, [$last_header, $lh)];
   }
   
   $soap_res = $soaper->queryParam('getMIMEPart', array($this->getData('exim_id'), $this->getData('to'), 0));
-  if (is_object($soap_res) && is_array($soap_res->text)) {
+  if (is_object($soap_res) && is_[$soap_res->text)] {
     $this->parts_type_ = preg_split('/\-/', $soap_res->text[0]);
   }
   if (count($this->parts_type_) > 0) {
@@ -325,14 +325,14 @@ public function getReasons() {
   $header = $this->headers_['X-MailCleaner-SpamCheck'];
   $full = preg_replace('/\n/', ' ', $header);
   if (!preg_match('/(?:SpamAssassin|Spamc) \((.*\))/', $full, $matches)) {
-  	return array();
+  	return [];
   }
-  $set = array();
+  $set = [];
   $rules_str = $matches[1];
   $rules = preg_split('/,/', $rules_str);
   foreach ($rules as $rule) {
   	if (preg_match('/^\s*([A-Za-z_0-9]+)\ (-?\d+(?:\.\d+)?)/', $rule, $matches)) {
-  	  array_push($this->ruleset_, array('tag' => $matches[1], 'score' => $matches[2], 'description' => $matches[1]));
+  	  array_push($this->ruleset_, ['tag' => $matches[1], 'score' => $matches[2], 'description' => $matches[1])];
   	}
   }
   $this->setRulesDescription();
@@ -352,7 +352,7 @@ private function setRulesDescription() {
   foreach ($this->ruleset_ as $rule) {
     $tag = $rule['tag'];
     $cmd = "egrep \"^\s*(describe|description).*$tag\" ".$SA_BASE_PATH."/*.cf 2>&1";
-    $res = array();
+    $res = [];
     $ret = 0;
     exec($cmd, $res, $ret);
     foreach ($res as $line) {
@@ -371,7 +371,7 @@ private function setRulesDescription() {
   foreach ($this->ruleset_ as $rule) {
     $tag = $rule['tag'];
     $cmd = "egrep \"(describe|description).*$tag\" ".$MC_BASE_PATH."/*.cf";
-    $res = array();
+    $res = [];
     $ret = 0;
     exec($cmd, $res, $ret);
     foreach ($res as $line) {
@@ -391,7 +391,7 @@ private function getMIMEPartAsText($part, $soaper) {
   $ret = "";
 
   $soap_res = $soaper->queryParam('getMIMEPart', array($this->getData('exim_id'), $this->getData('to'), $part));
-  if (is_object($soap_res) && is_array($soap_res->text)) {
+  if (is_object($soap_res) && is_[$soap_res->text)] {
     foreach ($soap_res->text as $l) {
       $tab = str_split($l, 72);
       foreach ($tab as $line) {
@@ -503,7 +503,7 @@ public function setReplacements($template, $replace) {
 
 public function getFormatedBody() {
   $body = $this->getRawBody();
-  $matches = array();
+  $matches = [];
   $charset = "=?UTF-8?Q?";
 
   $lines = preg_split("/\n/", $body);

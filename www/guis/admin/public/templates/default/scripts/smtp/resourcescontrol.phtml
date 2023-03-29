@@ -20,7 +20,7 @@
  <div id="generalconfigcontent">   
     <div id="resourcescontrolconfigpanel" class="configpanel">
      <div id="resourcescontrolformcontent">
-      <?php echo $this->partial('forms/smtpResourcesControl.phtml', array('form' => $this->form,'t' => $this->t, 'message' => $this->message, 'rate_display_class' => $this->rate_display_class, 'images_path'=>$this->images_path )); ?>
+      <?php echo $this->partial('forms/smtpResourcesControl.phtml', ['form' => $this->form,'t' => $this->t, 'message' => $this->message, 'rate_display_class' => $this->rate_display_class, 'images_path'=>$this->images_path )]; ?>
      </div>
     </div>
  </div>

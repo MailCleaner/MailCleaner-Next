@@ -20,7 +20,7 @@ class Default_Model_DbTable_UserPreference extends Zend_Db_Table_Abstract
     /**
      * @var array
      */
-    protected $_dependentTables = array('user');
+    protected $_dependentTables = ['user'];
         
     /**
      * Constructor

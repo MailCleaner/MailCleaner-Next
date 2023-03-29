@@ -32,7 +32,7 @@ class Default_Form_Manage_UserQuarantinedisplay extends Zend_Form
 		$this->setAttrib('id', 'user_form');
 	    $panellist = new Zend_Form_Element_Select('userpanel', array(
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         
@@ -59,7 +59,7 @@ class Default_Form_Manage_UserQuarantinedisplay extends Zend_Form
 		$addresses = new Zend_Form_Element_Select('gui_default_address', array(
 	        'label'    => $t->_('Address displayed by default')." :",
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
        
         foreach ($this->_user->getAddresses() as $address => $ismain) {
         	$addresses->addMultiOption($address, $address);
@@ -71,9 +71,9 @@ class Default_Form_Manage_UserQuarantinedisplay extends Zend_Form
         $nblines = new Zend_Form_Element_Select('gui_displayed_spams', array(
 	        'label'    => $t->_('Number of lines displayed')." :",
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
-        foreach (array(5, 10, 20, 50, 100) as $nb) {
+        foreach ([5, 10, 20, 50, 100) as $nb] {
             $nblines->addMultiOption($nb, $nb);
         }
         $nblines->setValue($this->_user->getPref('gui_displayed_spams'));
@@ -104,7 +104,7 @@ class Default_Form_Manage_UserQuarantinedisplay extends Zend_Form
 	}
 	
 	public function setParams($request, $user) {
-		foreach (array('gui_default_address', 'gui_displayed_spams', 'gui_displayed_days') as $pref) {
+		foreach (['gui_default_address', 'gui_displayed_spams', 'gui_displayed_days') as $pref] {
             if ($request->getParam($pref)) {
 			    $user->setPref($pref, $request->getParam($pref));
 		    }	    

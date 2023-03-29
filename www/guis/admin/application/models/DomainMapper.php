@@ -66,7 +66,7 @@ class Default_Model_DomainMapper
     public function fetchAll()
     {
         $resultSet = $this->getDbTable()->fetchAll($this->getDbTable()->select()->order('name ASC'));
-        $entries   = array();
+        $entries   = [];
         
         $user = Zend_Registry::get('user');
         
@@ -86,7 +86,7 @@ class Default_Model_DomainMapper
 
      public function getDistinctDomainsCount() {
         $res = 0;
-        $query = $this->getDbTable()->select()->from(array('d' => 'domain'), array('dc' => 'count(distinct d.prefs)'))->where("name != '__global__'");
+        $query = $this->getDbTable()->select()->from(['d' => 'domain'], array('dc' => 'count(distinct d.prefs)'))->where("name != '__global__'");
         $row = $this->getDbTable()->fetchRow($query);
         if ($row && isset($row['dc'])) {
           return $row['dc'];
@@ -105,7 +105,7 @@ class Default_Model_DomainMapper
     		$query->order('name ASC');
     	}
     	
-    	if (isset($params['limit']) && is_array($params['limit'])) {
+    	if (isset($params['limit']) && is_[$params['limit'])] {
     		$query->limit($params['limit'][0], $params['limit'][1]);
     	}
     	
@@ -115,7 +115,7 @@ class Default_Model_DomainMapper
     		$query->where('name LIKE ?', $str."%");
     	}
         $resultSet = $this->getDbTable()->fetchAll($query);
-        $entries   = array();
+        $entries   = [];
         foreach ($resultSet as $row) {
           if ($row['name'] == '__global__') {
         		continue;
@@ -147,7 +147,7 @@ class Default_Model_DomainMapper
     		}
             $res = $this->getDbTable()->insert($data);
         } else {
-            $res = $this->getDbTable()->update($data, array('id = ?' => $id));
+            $res = $this->getDbTable()->update($data, ['id = ?' => $id)];
         }
         
         ## check if default domain is empty. If yes, put me as default
@@ -164,7 +164,7 @@ class Default_Model_DomainMapper
     	$query = $this->getDbTable()->select();
     	$query->where('prefs = ?', $d->getParam('prefs'));
     	$resultSet = $this->getDbTable()->fetchAll($query);
-    	$entries   = array();
+    	$entries   = [];
     	foreach ($resultSet as $row) {
     		if ($row->id == $d->getId()) {
     			continue;

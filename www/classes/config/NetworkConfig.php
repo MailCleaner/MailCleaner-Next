@@ -24,7 +24,7 @@ class NetworkConfig
    * list of interface available on system
    * @var  array
    */
-  private $interfaces_ = array();
+  private $interfaces_ = [];
 
   /**
    * global network properties
@@ -117,7 +117,7 @@ class NetworkConfig
     
     // search for available interfaces
     $lines = file(IFACE_DEV_FILE);
-    $matches = array();
+    $matches = [];
     foreach($lines as $line) {
       if (preg_match('/^\s*(\S+\d+)\:/', $line, $matches)) {
        $this->addInterface($matches[1]);
@@ -127,8 +127,8 @@ class NetworkConfig
     // search for global network settings
     unset($lines);
     $lines = file(RESOLV_FILE);
-    $search_domains = array();
-    $dns_servers = array();
+    $search_domains = [];
+    $dns_servers = [];
     foreach( $lines as $line) {
       if (preg_match('/^search\s+(\S+)/', $line, $matches)) {
         $search_domains[$matches[1]] = true;
@@ -146,7 +146,7 @@ class NetworkConfig
    * @return   string  OKSAVED on success, error code on failure 
    */
   public function save() {
-    $res_a = array();
+    $res_a = [];
     $res = "";
 
     $sudocmd = "/usr/bin/sudo";
@@ -283,7 +283,7 @@ class NetworkConfig
         return false;
      }
      $dns = preg_split('/\\,/', $servers);
-     $servs = array();
+     $servs = [];
      foreach ($dns as $s) {
         $servs[trim($s)] = true;
      }
@@ -301,7 +301,7 @@ class NetworkConfig
         return false;
      }
      $d = preg_split('/\\,/', $domains);
-     $doms = array();
+     $doms = [];
      foreach ($d as $s) {
        $doms[trim($s)] = true;
      }
@@ -314,7 +314,7 @@ class NetworkConfig
    * @return   array  interfaces
    */
   public function getInterfaces() {
-    $ret = array();
+    $ret = [];
     foreach ($this->interfaces_ as $if => $o) {
       $ret[$if] = $if;  
     }

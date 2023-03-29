@@ -11,7 +11,7 @@
 class Default_Form_AntiSpam_Commtouch extends Default_Form_AntiSpam_Default
 {
 	protected $_viewscript = 'forms/antispam/CommtouchForm.phtml';
-	public $_rbl_checks = array();
+	public $_rbl_checks = [];
 	
 	public function getViewScriptFile() {
 		return $this->_viewscript;
@@ -33,7 +33,7 @@ class Default_Form_AntiSpam_Commtouch extends Default_Form_AntiSpam_Default
                             'label'   => $t->_('Ctasd Licence')." :",
                             'required' => false,
                             'size' => 40,
-                            'filters'    => array('StringTrim')));
+                            'filters'    => ['StringTrim'))];
                 $ctasdLicense->setValue($as->getParam('ctasdLicense'));
                 $this->addElement($ctasdLicense);     
 
@@ -41,7 +41,7 @@ class Default_Form_AntiSpam_Commtouch extends Default_Form_AntiSpam_Default
                             'label'   => $t->_('Ctipd Licence')." :",
                             'required' => false,
                             'size' => 40,
-                            'filters'    => array('StringTrim')));
+                            'filters'    => ['StringTrim'))];
                 $ctipdLicense->setValue($as->getParam('ctipdLicense'));
                 $this->addElement($ctipdLicense);
 		

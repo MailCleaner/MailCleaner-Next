@@ -32,7 +32,7 @@ class Default_Form_Manage_UserActions extends Zend_Form
 		$this->setAttrib('id', 'user_form');
 	    $panellist = new Zend_Form_Element_Select('userpanel', array(
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         
@@ -59,7 +59,7 @@ class Default_Form_Manage_UserActions extends Zend_Form
 		$addresses = new Zend_Form_Element_Select('addresses', array(
 	        'label'    => $t->_('Address')." :",
             'required'   => false,
-            'filters'    => array('StringTrim')));
+            'filters'    => ['StringTrim'))];
         
         foreach ($this->_user->getAddresses() as $address => $ismain) {
         	$addresses->addMultiOption($address, $address);
@@ -83,7 +83,7 @@ class Default_Form_Manage_UserActions extends Zend_Form
 		   'type' => 'email'
 		);
 		Zend_Controller_Action_HelperBroker::getStaticHelper('Redirector')->gotoSimple('editemail', null, null, $params);
-		foreach (array('') as $pref) {
+		foreach (['') as $pref] {
             if ($request->getParam($pref)) {
 			    $domain->setPref($pref, $request->getParam($pref));
 		    }	    
