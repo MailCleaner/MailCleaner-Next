@@ -62,19 +62,19 @@ class TequilaAuthenticator extends AuthManager {
                                 'request'   => $settings->getSetting('fields'),
                              );
         $tequila->setApplicationName('MailCleaner');
-        $tequila->SetWantedAttributes(split(',', $settings->getSetting('fields')));
+        $tequila->SetWantedAttributes(preg_split('/,/', $settings->getSetting('fields')));
         $tequila->SetAllowsFilter($settings->getSetting('allowsfilter'));
         $tequila->Authenticate();    
         if ($tequila->Authenticate()) {
             $att = $tequila->GetAttributes();
             if (!empty($att)) {
                 
-            	foreach(split(',', $settings->getSetting('fields')) as $f) {
+                foreach(preg_split('/,/', $settings->getSetting('fields')) as $f) {
                    
-            		if (! isset($att[$f])) {
-            			// redirects user to the Tequila auth form
-                      $tequila->Authenticate();
-            		}
+            	    if (! isset($att[$f])) {
+                        // redirects user to the Tequila auth form
+                        $tequila->Authenticate();
+            	    }
             	}
                 // if here, then authentication passed !
                 $this->authenticated_ = true;
