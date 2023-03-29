@@ -57,12 +57,6 @@ $(document).ready(function(){
 		 }
 	 });
 	 
-/*	 $("#saveandsync").mousedown(function(event) {
-		$("#saveandsynccontainer").html(loadingimg);
-		$("#dateandtimeform").submit();
-	 });
-*/
-	 
 	 $("#use_syslog").click(function(event) {
 		 setSyslogField();
 	 });
