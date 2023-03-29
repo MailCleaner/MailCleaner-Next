@@ -292,7 +292,7 @@ class Api_Model_AddressAPI
 		if ($email->getLinkedUser()) {
 			$data['user'] = $email->getLinkedUser()->getParam('username');
 		}
-        $data['allow_newsletters'] = $email->getPref('allow_newsletters');
+        	$data['allow_newsletters'] = $email->getPref('allow_newsletters');
 		return $data;
 	}
 }
