@@ -224,7 +224,7 @@ function getMIMEParts() {
           $ret .= ",html";
           break;
         default:
-          $ts = split('/', $part);
+          $ts = preg_split('/\//', $part);
           $ret .= ",$ts[1]";
     }
   }

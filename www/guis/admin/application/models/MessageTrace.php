@@ -133,7 +133,7 @@ class Default_Model_MessageTrace
 		$domainlen = 25;
 		$res = $address;
 		$ca = array();
-		foreach (split(',', $address) as $a) {
+		foreach (preg_split('/,/', $address) as $a) {
 		if (preg_match('/(\S+)\@(\S+)/', $a, $matches)) {
 			$str = "";
 			if (strlen($matches[1]) > $locallen && !$nocut) {

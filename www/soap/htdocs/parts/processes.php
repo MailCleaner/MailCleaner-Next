@@ -42,7 +42,7 @@ function getProcessesStatus($sid) {
   if (!preg_match('/^(\|[012]){16}$/', $ret)) {
      return "ERRORFETCHINGPROCESSESSTATUS";
    }
-   $processes = split('\|', $ret);
+   $processes = preg_split('/\|/', $ret);
    $ret = new SoapProcesses();
    $ret->mtaincoming = $processes[1];
    $ret->mtafiltering = $processes[2];
@@ -64,10 +64,10 @@ function getProcessesStatus($sid) {
 }
  
 /**
- * stop a given service daemon
+ * stop a given service deamon
  * @param $sid     string   soap session id
  * @param $service string   service name
- * @return         string   OK result set on success, error result set on failure
+ * @return         string   OK resultset on success, error result set on failure
  */ 
 function stopService($sid, $service) {
   global $services_;
@@ -98,10 +98,10 @@ function stopService($sid, $service) {
 }
 
 /**
- * start a given service daemon, will dump the configuration file first
+ * start a given service deamon, will dump the configuration file first
  * @param $sid     string   soap session id
  * @param $service string   service name
- * @return         string   OK result set on success, error result set on failure
+ * @return         string   OK resultset on success, error result set on failure
  */ 
 function startService($sid, $service) {
   global $services_;

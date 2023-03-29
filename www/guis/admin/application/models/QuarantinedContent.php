@@ -23,8 +23,7 @@ class Default_Model_QuarantinedContent
 	  'otherinfected' => 0,
 	  'nameinfected' => 0,
 	  'report' => '',
-	  'size' => 0,
-          'content_forced' => 0
+	  'size' => 0
 	);
 
 	protected $_mapper;
@@ -120,7 +119,7 @@ class Default_Model_QuarantinedContent
 		$domainlen = 25;
 		$res = $address;
 		$ca = array();
-		foreach (split(',', $address) as $a) {
+		foreach (preg_split('/,/', $address) as $a) {
 		if (preg_match('/(\S+)\@(\S+)/', $a, $matches)) {
 			$str = "";
 			if (strlen($matches[1]) > $locallen) {

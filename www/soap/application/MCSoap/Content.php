@@ -97,12 +97,6 @@ class MCSoap_Content
         		$elements[$c['id']][$f] = utf8_encode($c[$f]);
 			$elements[$c['id']][$f] = preg_replace('/[\x00-\x1F\x7F]/u', '', $elements[$c['id']][$f]);
         	}
-        	#foreach (split('/\n/', $c['headers']) as $hl) {
-        		#if (preg_match('/subject\s*:\s*(.*)/i', $hl, $matches)) {
-        		#	$elements[$c['id']]['subject'] = utf8_encode($matches[1]);
-        		#}
-        	#}
-   
         }
         
         return $elements;
@@ -147,11 +141,6 @@ class MCSoap_Content
         foreach ($result as $key => $value) {
         	$ret[$key] = utf8_encode($value);
         }
-	#foreach (split('/\n/', $result['headers']) as $hl) {
-            #if (preg_match('/subject\s*:\s*(.*)/i', $hl, $matches)) {
-            #	   $ret['subject'] = utf8_encode($matches[1]);
-            #}
-        #}
         	
         $ret['status'] = 1;
         return $ret;

@@ -41,7 +41,7 @@ function getSpools($sid) {
   if (!preg_match('/^(\|\d+){3}$/', $ret)) {
      return "ERRORFETCHINGSPOOLSSTATUS ($ret)";
   }
-  list($tmp, $stage1, $stage2, $stage4) = split('\|', $ret);
+  list($tmp, $stage1, $stage2, $stage4) = preg_split('/\|/', $ret);
   $soap_res = new SoapSpools($stage1, $stage2, $stage4);
   return $soap_res;
 }
@@ -56,7 +56,7 @@ function getLoad($sid) {
   if (!preg_match('/^(\|[\d\.]+){3}$/', $ret)) {
      return "ERRORFETCHINGLOADSTATUS";
   }
-  list($tmp, $av5, $av10, $av15) = split('\|', $ret);
+  list($tmp, $av5, $av10, $av15) = preg_split('/\|/', $ret);
   $soap_res = new SoapLoad($av5, $av10, $av15);
   return $soap_res;
 }
@@ -86,7 +86,7 @@ function getMemUsage($sid) {
   if (!preg_match('/^(\|\d+){4}$/', $ret)) {
     return "ERRORFETCHINGMEMUSAGESTATUS";
   }
-  list($tmp, $total, $free, $stotal, $sfree) = split('\|', $ret);
+  list($tmp, $total, $free, $stotal, $sfree) = preg_split('/\|/', $ret);
   return new SoapMemoryUsage($total, $free, $stotal, $sfree);
 }
 
@@ -140,7 +140,7 @@ function getTodaysCounts($sid, $spec) {
   if (!preg_match('/^([\d\.]+)([\|\d\.]+){10}$/', $res_a[0], $res)) {
     return "ERRORFETCHINGTODAYSCOUNTS ".$res[0];
   }
-  list($bytes, $msg, $spam, $pspam, $virus, $pvirus, $content, $pcontent, $user, $clean, $pclean) = split('\|', $res_a[0]);
+  list($bytes, $msg, $spam, $pspam, $virus, $pvirus, $content, $pcontent, $user, $clean, $pclean) = preg_split('/\|/', $res_a[0]);
   return new SoapStats($bytes, $msg, $spam, $pspam, $virus, $pvirus, $content, $pcontent, $user, $clean, $pclean);
 }
 
@@ -151,23 +151,19 @@ function getTodaysCounts($sid, $spec) {
  * @param   $stop   string  end date, can be YYYYMMDD or +X where X is a number of day
  * @return          array   counts as array (key is counted value, value is actual count)
  */
-  function getStats($what, $start, $stop) {
+ function getStats($what, $start, $stop) {
+    
+  $sysconf_ = SystemConfig::getInstance();
 
-    $sysconf_ = SystemConfig::getInstance();
+  $cmd = $sysconf_->SRCDIR_."/bin/get_stats.pl $what $start $stop";
+  $res_a = array();
+  exec($cmd, $res_a);
 
-    $cmd = $sysconf_->SRCDIR_."/bin/get_stats.pl $what $start $stop";
-    $res_a = array();
-    $return_code = NULL;
-    exec($cmd, $res_a, $return_code);
-    if(!$return_code && !empty($res_a)){
-      $res = array();
-      if (!preg_match('/^([\d\.]+)([\|\d\.]+){10}$/', $res_a[0], $res)) {
-        return "ERRORFETCHINGCOUNTS (".$res[0].")";
-      }
-      list($msg, $spam, $highspam, $virus, $names, $others, $cleans, $bytes, $users, $domains) = split('\|', $res_a[0]);
-      return new SoapStats($bytes, $msg, $spam, 0, $virus, 0, $names+$others, 0, $users, $cleans, 0);
-    }
-    else
-      return "ERRORFETCHINGCOUNTS";
+  $res = array();
+  if (!preg_match('/^([\d\.]+)([\|\d\.]+){10}$/', $res_a[0], $res)) {
+    return "ERRORFETCHINGCOUNTS (".$res[0].")";
   }
+  list($msg, $spam, $highspam, $virus, $names, $others, $cleans, $bytes, $users, $domains) = preg_split('/\|/', $res_a[0]);
+  return new SoapStats($bytes, $msg, $spam, 0, $virus, 0, $names+$others, 0, $users, $cleans, 0);
+ }
 ?>

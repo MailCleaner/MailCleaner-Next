@@ -161,20 +161,11 @@ class Default_Model_QuarantinedSpamMapper
             }
 		}
 		$query = $this->getDbTable()->select();
-
-                ### newsl
-		if (isset($params['hidedup']) && $params['hidedup']!="") {
-		    $query->from($this->getDbTable()->getTableName(), 'COUNT(DISTINCT exim_id) as count');
-		} else if (!empty($params['showSpamOnly'])) {
-		    $query->from($this->getDbTable()->getTableName(), 'COUNT(*) as count');
-		    $query->where('is_newsletter != ?', 1);
-		} else if (!empty($params['showNewslettersOnly'])) {
-		    $query->from($this->getDbTable()->getTableName(), 'COUNT(*) as count');
-		    $query->where('is_newsletter = ?', 1);
-		} else {
-		    $query->from($this->getDbTable()->getTableName(), 'COUNT(*) as count');
-		}
-                
+                if (isset($params['hidedup']) && $params['hidedup']!="") {
+	   	    $query->from($this->getDbTable()->getTableName(), 'COUNT(DISTINCT exim_id) as count');
+                } else {
+                    $query->from($this->getDbTable()->getTableName(), 'COUNT(*) as count');
+                }
 		$this->buildBaseFetchAll($query, $params);
 		 
 		$nbspams = 0;
@@ -226,7 +217,7 @@ class Default_Model_QuarantinedSpamMapper
 
             ## set order
             if (isset($params['orderfield']) && array_key_exists($params['orderfield'], $orders) && $params['orderorder']) {
-            	$sorders = split(',', $orders[$params['orderfield']]);
+            	$sorders = preg_split('/,/', $orders[$params['orderfield']]);
             	$sorders2 = array();
             	foreach ($sorders as $o) {
             		$sorders2[] = $o." ".$params['orderorder'];
@@ -255,22 +246,6 @@ class Default_Model_QuarantinedSpamMapper
                 }
             	$entries[] = $entry;
             }
-            
-            if (!empty($params['showSpamOnly'])) {
-                foreach ($entries as $key => $element) {
-                    if ($element->getParam('is_newsletter') == '1') {
-                        unset($entries[$key]);
-                    }
-                }
-            # newsl
-            } elseif (!empty($params['showNewslettersOnly'])) {
-                foreach ($entries as $key => $element) {
-                    if ($element->getParam('is_newsletter') != '1') {
-                        unset($entries[$key]);
-                    }
-                }
-            }
-            
             return $entries;
 	}
 

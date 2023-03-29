@@ -30,7 +30,7 @@ $admin_->checkPermissions(array('can_configure'));
 
 // get ldap settings
 //@todo clean up this ! maybe use a LDAPSettings object
-list($ldap_basedn_, $ldap_binduser_, $ldap_bindpass_) = split (":", $sysconf_->getPref('ad_param'));
+list($ldap_basedn_, $ldap_binduser_, $ldap_bindpass_) = preg_split('/:/', $sysconf_->getPref('ad_param'));
 
 // create and loas incoming smtp daemon configuration
 $mta_in = new MTAConfig();
