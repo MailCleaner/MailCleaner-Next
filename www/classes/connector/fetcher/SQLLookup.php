@@ -32,7 +32,7 @@
         $res =& $db->query($query);
         if ($res->numRows() <1 ) { return $this->getAddresses(); }
         if (!$row =& $res->fetchRow(DB_FETCHMODE_ASSOC))  { return $this->getAddresses(); }
-        $adds = split(',', $row['email']);
+        $adds = preg_split('/,/', $row['email']);
         foreach ($adds as $add) {
           $this->addAddress($add, $add);
         }
@@ -73,7 +73,7 @@
       }
       $ret = array();
       foreach($res as $email) {
-        $emails = split(',', $email['email']);
+        $emails = preg_split('/,/', $email['email']);
         foreach ($emails as $add) {
            $ret[$add] = $add;
         }

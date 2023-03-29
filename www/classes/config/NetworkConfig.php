@@ -282,7 +282,7 @@ class NetworkConfig
      if (!is_string($servers)) {
         return false;
      }
-     $dns = split('\,', $servers);
+     $dns = preg_split('/\\,/', $servers);
      $servs = array();
      foreach ($dns as $s) {
         $servs[trim($s)] = true;
@@ -300,7 +300,7 @@ class NetworkConfig
      if (!is_string($domains)) {
         return false;
      }
-     $d = split('\,', $domains);
+     $d = preg_split('/\\,/', $domains);
      $doms = array();
      foreach ($d as $s) {
        $doms[trim($s)] = true;

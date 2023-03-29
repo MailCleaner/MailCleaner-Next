@@ -96,7 +96,7 @@ public function getAllowedIPSString() {
  * @return       boolean true on success, false on failure
  */
 public function setIPS($ips) {
-  $ip_array = split(':', $ips);
+  $ip_array = preg_split('/:/', $ips);
   $tmp = array();
 
   // first delete rules not needed anymore

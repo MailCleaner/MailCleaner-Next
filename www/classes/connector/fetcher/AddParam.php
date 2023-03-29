@@ -29,7 +29,7 @@
             break;
           case 'param_add':
             //@todo this should be taken from a ConnectorSettings object
-            list($t1, $t2, $t3, $t4, $t5, $suffix) = split(':', $domain->getPref('auth_param'));
+            list($t1, $t2, $t3, $t4, $t5, $suffix) = preg_split('/:/', $domain->getPref('auth_param'));
             $add = $username.'@'.$suffix;            
             break;
         }

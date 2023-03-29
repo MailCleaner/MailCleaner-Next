@@ -147,7 +147,7 @@ private function setServers($list) {
     return false;
   }
   $this->resetServers();
-  $ta = split('\,', $list);
+  $ta = preg_split('/\,/', $list);
   foreach ($ta as $s) {
      $se = trim($s);
      $this->addServer($se);
@@ -209,7 +209,7 @@ public function save() {
     }
 
     if (file_exists('/usr/sbin/ntpdate')) {
-      $ntpservs = split(',', $servers);
+      $ntpservs = preg_split('/,/', $servers);
       exec("$sudocmd /usr/sbin/ntpdate ".$ntpservs[0], $res_a, $res);
       #if (!preg_match('/step time server\.$/', $res_a[0]) || $res != 0) {
       # return "CANNOTSYNCHRONIZECLOCK";

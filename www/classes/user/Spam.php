@@ -278,7 +278,7 @@ public function loadHeadersAndBody() {
   
   $soap_res = $soaper->queryParam('getMIMEPart', array($this->getData('exim_id'), $this->getData('to'), 0));
   if (is_object($soap_res) && is_array($soap_res->text)) {
-    $this->parts_type_ = split('-', $soap_res->text[0]);
+    $this->parts_type_ = preg_split('/\-/', $soap_res->text[0]);
   }
   if (count($this->parts_type_) > 0) {
     $b = $this->getMIMEPartAsText('text/plain', $soaper);
@@ -329,7 +329,7 @@ public function getReasons() {
   }
   $set = array();
   $rules_str = $matches[1];
-  $rules = split(',', $rules_str);
+  $rules = preg_split('/,/', $rules_str);
   foreach ($rules as $rule) {
   	if (preg_match('/^\s*([A-Za-z_0-9]+)\ (-?\d+(?:\.\d+)?)/', $rule, $matches)) {
   	  array_push($this->ruleset_, array('tag' => $matches[1], 'score' => $matches[2], 'description' => $matches[1]));
@@ -595,7 +595,7 @@ private function getMIMEPartsType() {
           $ret .= ",html";
           break;
         default:
-          $ts = split('/', $part);
+          $ts = preg_split('/\//', $part);
           $ret .= ",$ts[1]";
     }
   }

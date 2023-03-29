@@ -145,7 +145,7 @@ public function load($name) {
   $name = $db_slaveconf->sanitize($name);
   $where = "username='".$name."'";
   $ret = $this->loadPrefs('username as a_id, ', $where, false);
-  $domains = split(',', $this->getPref('domains'));
+  $domains = preg_split('/,/', $this->getPref('domains'));
   foreach ($domains as $domain) {
     if ($domain != "") {
      $this->domains_[$domain] = $domain; 

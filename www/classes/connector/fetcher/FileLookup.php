@@ -25,12 +25,12 @@
       if ($res == '') {
          return $this->getAddresses();
       }
-      $adds = split(',', $res);
+      $adds = preg_split('/,/', $res);
       foreach ($adds as $a) {
         $this->addAddress($a, $a);
       }
   
-      // old way of doing that: list($t1, $t2, $t3, $field, $file) = split (":", $domain->getPref('auth_param'));
+      // old way of doing that: list($t1, $t2, $t3, $field, $file) = preg_split ("/:/", $domain->getPref('auth_param'));
       
       return $this->getAddresses();
     }
