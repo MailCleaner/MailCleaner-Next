@@ -115,6 +115,9 @@ class Default_Model_WWElementMapper
 
     public function save(Default_Model_WWElement $element) {
        $data = $element->getParamArray();
+       if (is_null($data['expiracy']) || $data['expiracy'] == '') {
+            $data['expiracy'] = '0000-00-00';
+       }
        $res = '';
        if (null === ($id = $element->getId())) {
             unset($data['id']);
