@@ -62,13 +62,12 @@ class MCSoap_Config
           }
       }
           	  
-#      $cmd = 'invoke-rc.d networking stop 2> /dev/null; sleep 2; invoke-rc.d networking start 2> /dev/null && /etc/init.d/ssh restart 2> /dev/null && echo done.';
-      $cmd = '/etc/init.d/networking restart 2>/dev/null && /etc/init.d/ssh restart 2> /dev/null && echo done.';
+      $cmd = '/usr/bin/systemctl restart networking 2>/dev/null && /usr/bin/systemctl restart ssh 2> /dev/null && echo done.';
       $res = `$cmd`;
       $status = 'OK networkingrestarted';
    	  
       $res = preg_replace('/\n/', '', $res);
-   	  if (! preg_match('/done\./', $res)) {
+   	  if (! preg_match('/^$/', $res)) {
    	  	return "NOK $res";
    	  }
    	  
@@ -82,6 +81,7 @@ class MCSoap_Config
    	  	}
    	  }
 
+	  // TODO: Upgrade firewall
           require_once('MailCleaner/Config.php');
           $sysconf = MailCleaner_Config::getInstance();
           $cmd = $sysconf->getOption('SRCDIR')."/etc/init.d/firewall restart";
@@ -110,6 +110,7 @@ class MCSoap_Config
 			$status = 'NOK '.$res;
 		}
 		
+		// TODO: Upgrade caching name server
 		if (file_exists('/etc/init.d/nscd')) {
 			$cmd = '/etc/init.d/nscd restart';
 			$res = `$cmd`;
@@ -152,8 +153,7 @@ class MCSoap_Config
             unlink($localtimefile);
             `ln -s $fullfile $localtimefile`;
 	    putenv("TZ=".$zone);
-           # `/opt/mailcleaner/etc/init.d/apache restart`;
-             return 'OK saved';
+            return 'OK saved';
 	}
 	
 
@@ -163,6 +163,7 @@ class MCSoap_Config
    * @param  boolean  sync
    * @return string
    */
+   	// TODO: NTP -> SystemD
 	static public function Config_saveNTPConfig($sync = false) {
 		$tmpconfigfile = '/tmp/mc_ntp.tmp';
 		$configfile = '/etc/ntp.conf';
@@ -279,7 +280,7 @@ class MCSoap_Config
 	
 	    $written = file_put_contents($configfile, $txt);
 	    if (!$written) {
-	    	return 'NOK could not same config file';
+	    	return 'NOK could not save config file';
 	    }
 	    return 'OK saved';
 	}
