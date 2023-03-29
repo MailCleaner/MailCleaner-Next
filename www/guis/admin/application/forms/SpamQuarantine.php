@@ -50,7 +50,7 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
 	        'label' => $t->_('Sender')." : ",
 		    'required' => false));
 	    $sender->setValue($this->_params['sender']);
-	    $sender->addValidator(Zend_Validate_EmailAddress);
+	    $sender->addValidator('Zend_Validate_EmailAddress');
 	    $this->addElement($sender);
 	    
 	    $subject = new  Zend_Form_Element_Text('subject', array(
@@ -58,16 +58,6 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
 		    'required' => false));
 	    $subject->setValue($this->_params['subject']);
 	    $this->addElement($subject);
-	    
-	    
-	    ## dates
-#	    $fromdateO = Zend_Date::now();
-#	    $todateO = Zend_Date::now();
-#        $fromdateO->sub('4d');
-#        var_dump($this->_params);
-        
-#        $todate = Zend_Locale_Format::getDate($todateO);
-#        $fromdate = Zend_Locale_Format::getDate($fromdateO);
 	    
 	    $months = array('Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.');
 	    $fd = new Zend_Form_Element_Select('fd', array(
