@@ -1,0 +1,140 @@
+#_preseed_V1
+### Localization
+d-i debian-installer/locale string en_CA
+
+# Keyboard selection.
+d-i keyboard-configuration/xkb-keymap select dvorak
+
+# Skip network interface selection (choose default)
+d-i netcfg/choose_interface select auto
+
+# Prevent hostname/domain questions
+d-i netcfg/get_hostname string unassigned-hostname
+d-i netcfg/get_domain string unassigned-domain
+
+# If you want to force a hostname, regardless of what either the DHCP
+# server returns or what the reverse DNS entry for the IP is, uncomment
+# and adjust the following line.
+#d-i netcfg/hostname string __NAME__
+
+# Disable that annoying WEP key dialog.
+d-i netcfg/wireless_wep string
+
+# If non-free firmware is needed for the network or other hardware, you can
+# configure the installer to always try to load it, without prompting. Or
+# change to false to disable asking.
+d-i hw-detect/load_firmware boolean false
+
+# Authentication
+d-i network-console/authorized_keys_url string https://john.me.tz/id_ed.pub
+
+# Mirror settings
+d-i mirror/country string automatic
+#d-i mirror/http/hostname string http.us.debian.org
+#d-i mirror/http/directory string /debian
+#d-i mirror/http/proxy string
+
+# TODO: update to stable
+# Suite to install.
+d-i mirror/suite string testing
+
+# Account setup
+d-i passwd/root-login boolean false
+# Alternatively, to skip creation of a normal user account.
+d-i passwd/make-user boolean false
+
+# Root password, either in clear text
+
+# Clock and time zone setup
+d-i clock-setup/utc boolean true
+d-i time/zone string America/Toronto
+
+# Controls whether to use NTP to set the clock during the install
+d-i clock-setup/ntp boolean true
+
+# Partitioning
+d-i partman-auto/disk string /dev/sda
+d-i partman-auto/method string regular
+d-i partman-auto/expert_recipe string               \
+    boot-root-var ::                                \
+        2048 2048 2048 ext3                         \
+            $primary{ } $bootable{ }                \
+            method{ format } format{ }              \
+            use_filesystem{ } filesystem{ ext3 }    \
+            mountpoint{ /boot }                     \
+        .                                           \
+        1024 4096 8192000 ext3                      \
+            method{ format } format{ }              \
+            use_filesystem{ } filesystem{ ext3 }    \
+            mountpoint{ / }                         \
+        .                                           \
+        64 512 8192000 linux-swap                   \
+            method{ swap } format{ }                \
+        .                                           \
+        1024 4096 1000000000 ext3                   \
+            method{ format } format{ }              \
+            use_filesystem{ } filesystem{ xfs }     \
+            mountpoint{ /var }                      \
+        .
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+
+# Force UEFI booting ('BIOS compatibility' will be lost). Default: false.
+#d-i partman-efi/non_efi_system boolean true
+
+# Ensure the partition table is GPT - this is required for EFI
+
+# Controlling how partitions are mounted
+#d-i partman/mount_style select uuid
+
+# Base system installation
+# Configure APT to not install recommended packages by default. Use of this
+# option can result in an incomplete system and should only be used by very
+# experienced users.
+#d-i base-installer/install-recommends boolean false
+
+# Choose, if you want to scan additional installation media
+d-i apt-setup/cdrom/set-first boolean false
+d-i apt-setup/disable-cdrom-entries boolean true
+# You can choose to install non-free firmware.
+d-i apt-setup/non-free-firmware boolean false
+
+# You can choose to install non-free and contrib software.
+d-i apt-setup/non-free boolean true
+d-i apt-setup/contrib boolean true
+
+# Select which update services to use; define the mirrors to be used.
+d-i apt-setup/services-select multiselect security, updates
+d-i apt-setup/security_host string security.debian.org
+
+# Package selection
+tasksel tasksel/first multiselect standard, web-server
+
+# Individual additional packages to install
+d-i pkgsel/include string git apache2 php8.2 php8.2-snmp php8.2-zip libapache2-mpm-itk libapache2-mod-php links exim4 mariadb-client mariadb-server libdbd-mariadb-perl libnet-http-perl libnet-ip-perl libnet-dns-perl libnet-cidr-perl libmath-int128-perl libdata-validate-ip-perl telnet 
+# Whether to upgrade packages after debootstrap.
+d-i pkgsel/upgrade select full-upgrade
+
+# Don't participate in popularity-contest
+popularity-contest popularity-contest/participate boolean false
+
+# No other operating systems
+d-i grub-installer/only_debian boolean true
+d-i grub-installer/with_other_os boolean false
+
+# To install to the primary device (assuming it is not a USB stick):
+#d-i grub-installer/bootdev  string default
+
+# Avoid that last message about the install being complete.
+d-i finish-install/reboot_in_progress note
+
+# Shutdown without rebooting once done
+d-i debian-installer/exit/halt boolean true
+
+# This command is run just before the install finishes, but when there is
+# still a usable /target directory. You can chroot to /target and use it
+# directly, or use the apt-install and in-target commands to easily install
+# packages and run commands in the target system.
+#d-i preseed/late_command string apt-install zsh; in-target chsh -s /bin/zsh
