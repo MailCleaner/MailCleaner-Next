@@ -41,7 +41,7 @@ if (isset($_GET['doit'])) {
   }
 } else {
     if (isset($_GET['a']) && $user_->hasAddress($_GET['a'])) {
-      $res = $lang_->print_txt_mparam('ASKPURGECONFIRM', [$_GET['days'], $_GET['a'])];
+      $res = $lang_->print_txt_mparam('ASKPURGECONFIRM', [$_GET['days'], $_GET['a']]);
     }
 }
 
@@ -52,7 +52,7 @@ if ($doit) {
 }
 
 // prepare replacements
-$replace = array(
+$replace = [
   '__INCLUDE_JS__' => "<script type=\"text/javascript\" charset=\"utf-8\">
                         function confirmation() {
                           window.location.href=\"".$_SERVER['PHP_SELF']."?".preg_replace('/&/', ';', $_SERVER['QUERY_STRING']."&doit=1")."\";
@@ -60,7 +60,7 @@ $replace = array(
                        </script>",
   '__MESSAGE__' => $res,
   '__CONFIRM_BUTTON__' => confirm_button($doit)
-);
+];
 
 // display page
 $template_->output($replace);

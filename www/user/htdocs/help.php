@@ -49,15 +49,15 @@ $templatehelpfile = $sysconf_->SRCDIR_."/www/user/htdocs/templates/".$template_-
 if (file_exists($templatehelpfile)) {
    include($templatehelpfile);
 }
-$replace = array(
+$replace = [
     "__PRINT_USERNAME__" => $user_->getName(),
     "__LINK_LOGOUT__" => '/logout.php',
     
     "__MENULIST__" => getMenuList(),
     "__THISTOPIC__" => $topic,
     "__HELP_TOPIC__" => $lang_->print_txt(strtoupper($topic)."TOPICTITLE"),
-    "__HELP_CONTENT__" => getHelpContent(array(strtoupper($topic)))
-);
+    "__HELP_CONTENT__" => getHelpContent([strtoupper($topic)])
+];
 
 // display page
 $template_->output($replace);

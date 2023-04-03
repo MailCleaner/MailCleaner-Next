@@ -11,7 +11,7 @@
 class Default_Form_Domain_UserAuthentication_Ldap 
 {
 	protected $_domain;
-	protected $_settings = array(
+	protected $_settings = [
                         "basedn" =>'',
                         "binddn" => '',
                         "bindpw" => '',
@@ -22,7 +22,7 @@ class Default_Form_Domain_UserAuthentication_Ldap
 	                    'use_ssl' => false,
                         "version" => 3,
                         "referrals" => false
-                      );
+	];
 	
 	public function __construct($domain)
 	{
@@ -37,60 +37,66 @@ class Default_Form_Domain_UserAuthentication_Ldap
 	    $t = Zend_Registry::get('translate');
 		
 		require_once('Validate/SMTPHostList.php');
-		$server = new  Zend_Form_Element_Text('ldapserver', array(
+		$server = new  Zend_Form_Element_Text('ldapserver', [
 	        'label'    => $t->_('LDAP server')." :",
 		    'required' => false,
-		    'filters'    => ['StringToLower', 'StringTrim'))];
+		    'filters'    => ['StringToLower', 'StringTrim']
+		]);
 	    $server->setValue($this->_domain->getPref('auth_server'));
         $server->addValidator(new Validate_SMTPHostList());
 	    $form->addElement($server);
 	    
 	    $this->_settings = $this->getParams();
 	    	    
-	    $basedn = new  Zend_Form_Element_Text('basedn', array(
+	    $basedn = new  Zend_Form_Element_Text('basedn', [
 	        'label'    => $t->_('Base DN')." :",
 		    'required' => false,
-		    'filters'    => ['StringTrim'))];
+		    'filters'    => ['StringTrim']
+	    ]);
 	    $basedn->setValue($this->_settings['basedn']);
 	    $form->addElement($basedn);
 	    
-	    $binddn = new  Zend_Form_Element_Text('binddn', array(
+	    $binddn = new  Zend_Form_Element_Text('binddn', [
 	        'label'    => $t->_('Bind user')." :",
 		    'required' => false,
-		    'filters'    => ['StringTrim'))];
+		    'filters'    => ['StringTrim']
+	    ]);
 	    $binddn->setValue($this->_settings['binddn']);
 	    $form->addElement($binddn);
 	    
-	    $bindpass = new  Zend_Form_Element_Password('bindpass', array(
+	    $bindpass = new  Zend_Form_Element_Password('bindpass', [
 	        'label'    => $t->_('Bind password')." :",
 		    'required' => false,
 	        'renderPassword' => true,
-		    'filters'    => ['StringTrim'))];
+		'filters'    => ['StringTrim']
+	    ]);
 	    $bindpass->setValue($this->_settings['bindpw']);
 	    $form->addElement($bindpass);
 	    
-	    $userattr = new  Zend_Form_Element_Text('userattribute', array(
+	    $userattr = new  Zend_Form_Element_Text('userattribute', [
 	        'label'    => $t->_('User attribute')." :",
 		    'required' => false,
-		    'filters'    => ['StringTrim'))];
+		    'filters'    => ['StringTrim']
+	    ]);
 	    $userattr->setValue($this->_settings['userattr']);
 	    $form->addElement($userattr);
 	    
-	    $ldapusesslcheck = new Zend_Form_Element_Checkbox('ldapusessl', array(
+	    $ldapusesslcheck = new Zend_Form_Element_Checkbox('ldapusessl', [
 	        'label'   => $t->_('Use SSL'). " :",
             'uncheckedValue' => "0",
 	        'checkedValue' => "1"
-	              ));
+	    ]);
 	              
 	    if ($this->_settings['use_ssl']) {
             $ldapusesslcheck->setChecked(true);
 	    }
 	    $form->addElement($ldapusesslcheck);
 	    
-	    $version = new Zend_Form_Element_Select('ldapversion', array(
+	    $version = new Zend_Form_Element_Select('ldapversion', [
             'label'      => $t->_('Protocol version')." :",
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	    ]);
         
         foreach ([2, 3) as $value] {
         	$version->addMultiOption($value, $value);
@@ -100,7 +106,7 @@ class Default_Form_Domain_UserAuthentication_Ldap
 	}
 	
 	public function setParams($request, $domain) {
-		$array = array(
+		$array = [
 		   'basedn' => $request->getParam('basedn'),
 		   'userattribute' => $request->getParam('userattribute'),
 		   'binddn' => $request->getParam('binddn'),
@@ -108,7 +114,7 @@ class Default_Form_Domain_UserAuthentication_Ldap
 		   'use_ssl' => $request->getParam('ldapusessl'),
 		   'ldapversion' => $request->getParam('ldapversion'),
 		   'auth_server' => $request->getParam('ldapserver')
-		);
+		];
 		$this->setParamsFromArray($array, $domain);
 	}
 	

@@ -40,7 +40,7 @@ if (isset($_GET['doit'])) {
 $template_ = new Template('rem_address.tmpl');
 $params = $_GET;
 $params['doit'] = '1';
-$replace = array(
+$replace = [
         '__INCLUDE_JS__' => 
 "<script type=\"text/javascript\" language=\"javascript\">
     function confirm() {
@@ -49,7 +49,7 @@ $replace = array(
 </script>",
         '__MESSAGE__' => $message,
         '__CONFIRM_BUTTON__' => confirm_button()
-);
+];
 // display page
 $template_->output($replace);
 

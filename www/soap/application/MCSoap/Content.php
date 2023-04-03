@@ -9,9 +9,21 @@
 class MCSoap_Content 
 {
 
-	static public $_fieldstosend = array(
-	   'id', 'size', 'from_address', 'to_address', 'to_domain', 'subject', 'virusinfected', 'nameinfected', 'otherinfected', 'report', 'date', 'time', 'content_forced'
-	);
+	static public $_fieldstosend = [
+		'id',
+		'size',
+		'from_address',
+		'to_address',
+		'to_domain',
+		'subject',
+		'virusinfected',
+		'nameinfected',
+		'otherinfected',
+		'report',
+		'date',
+		'time',
+		'content_forced'
+	];
   /**
    * This function will search for quarantined content
    *
@@ -28,13 +40,13 @@ class MCSoap_Content
     	$mcconfig = MailCleaner_Config::getInstance();
     	
     	require_once('Zend/Db/Adapter/Pdo/Mysql.php');
-    	$contentDb = new Zend_Db_Adapter_Pdo_Mysql(array(
+    	$contentDb = new Zend_Db_Adapter_Pdo_Mysql([
     	                      'host'        => 'localhost',
                               'unix_socket' => $mcconfig->getOption('VARDIR')."/run/mysql_slave/mysqld.sock",
                               'username'    => 'mailcleaner',
                               'password'    => $mcconfig->getOption('MYMAILCLEANERPWD'),
                               'dbname'      => 'mc_stats'
-                             ));
+	]);
         $query = $contentDb->select();
         $query->from('maillog');
     #    var_dump($params);
@@ -115,20 +127,20 @@ class MCSoap_Content
             $id = $params['id'];
 		}
 		if (!$id || !preg_match('/^(\d{8})\/([a-z,A-Z,0-9]{6}-[a-z,A-Z,0-9]{6}-[a-z,A-Z,0-9]{2})$/', $id, $matches)) {
-			return array('status' => 0, 'error' => 'BADMSGID ('.$id.")");
+			return ['status' => 0, 'error' => 'BADMSGID ('.$id.")"];
 		}
 		$id = $matches[2];
 		require_once('MailCleaner/Config.php');
     	$mcconfig = MailCleaner_Config::getInstance();
     	
     	require_once('Zend/Db/Adapter/Pdo/Mysql.php');
-    	$contentDb = new Zend_Db_Adapter_Pdo_Mysql(array(
+    	$contentDb = new Zend_Db_Adapter_Pdo_Mysql([
     	                      'host'        => 'localhost',
                               'unix_socket' => $mcconfig->getOption('VARDIR')."/run/mysql_slave/mysqld.sock",
                               'username'    => 'mailcleaner',
                               'password'    => $mcconfig->getOption('MYMAILCLEANERPWD'),
                               'dbname'      => 'mc_stats'
-                             ));
+	]);
         $query = $contentDb->select();
         $query->from('maillog');
         

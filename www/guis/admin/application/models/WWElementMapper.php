@@ -76,16 +76,13 @@ class Default_Model_WWElementMapper
 
 	if ($senders != '') {
 		foreach ($senders_array as $sender) {
-			$this->getDbTable()->insert(
-				array(
-					'sender'	=> $sender,
-					'recipient'	=> $domain,
-					'type'		=> $type,
-					'expiracy'	=> '',
-					'status'	=> 1,
-				)
-	
-			);
+			$this->getDbTable()->insert([
+				'sender'	=> $sender,
+				'recipient'	=> $domain,
+				'type'		=> $type,
+				'expiracy'	=> '',
+				'status'	=> 1,
+			]);
 		}
 	}
      }
@@ -98,17 +95,14 @@ class Default_Model_WWElementMapper
 
 	if ($comments != '') {
 		foreach ($comments_array as $comment) {
-			$this->getDbTable()->insert(
-				array(
-					'sender'	=> '',
-					'recipient'	=> $domain,
-					'type'		=> $type,
-					'expiracy'	=> '',
-					'status'	=> 1,
-					'comments'	=> $comment,
-				)
-	
-			);
+			$this->getDbTable()->insert([
+				'sender'	=> '',
+				'recipient'	=> $domain,
+				'type'		=> $type,
+				'expiracy'	=> '',
+				'status'	=> 1,
+				'comments'	=> $comment,
+			]);
 		}
 	}
      }
@@ -124,7 +118,7 @@ class Default_Model_WWElementMapper
             $res = $this->getDbTable()->insert($data);
             $element->setId($res);
         } else {
-            $res = $this->getDbTable()->update($data, ['id = ?' => $id)];
+            $res = $this->getDbTable()->update($data, ['id = ?' => $id]);
         }
         return $res;
     }

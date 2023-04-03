@@ -27,7 +27,7 @@ global $sysconf_;
 global $admin_;
 
 // check authorizations
-$admin_->checkPermissions(['can_configure')];
+$admin_->checkPermissions(['can_configure']);
 
 // create and load time configuration object
 $timeconf = new TimeConfig();
@@ -112,7 +112,7 @@ $template_ = new Template('config_base.tmpl');
 $documentor = new Documentor();
 
 // prepare replacements
-$replace = array(
+$replace = [
         '__DOC_BASENETCONFIG__' => $documentor->help_button('BASENETCONFIG'),
         '__DOC_BASEDATETIMECONFIG__' => $documentor->help_button('BASEDATETIMECONFIG'),
         '__DOC_BASEPROXIESCONFIG__' => $documentor->help_button('BASEPROXIESCONFIG'),
@@ -150,7 +150,7 @@ $replace = array(
         "__FORM_INPUTROOTPASS__" => $rform->password('password', 20, '*******'),
         "__FORM_INPUTCONFIRM__" => $rform->password('confirm', 20, '#######'),
         "__ROOTPASS_SAVE_STATUS__" => $rootpassmsg
-);
+];
 
 // output page
 $template_->output($replace);

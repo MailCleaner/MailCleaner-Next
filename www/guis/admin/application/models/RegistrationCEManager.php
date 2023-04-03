@@ -10,17 +10,19 @@
 class Default_Model_RegistrationCEManager
 {	
 	private $_serial = ['abc1', 'def2', 'ghi3'];
-        private $_data = array('first_name'  => '', 
-	'last_name' => '', 
-	'email' => '' , 
-	'company_name' => '', 
-	'address' => '', 
-	'postal_code' => '', 
-	'city' => '', 
-	'country' => '', 
-	'accept_newsletters' => 0, 
-	'accept_releases' => 0, 
-	'accept_send_statistics' => 0);
+	private $_data = [
+		'first_name'  => '', 
+		'last_name' => '', 
+		'email' => '' , 
+		'company_name' => '', 
+		'address' => '', 
+		'postal_code' => '', 
+		'city' => '', 
+		'country' => '', 
+		'accept_newsletters' => 0, 
+		'accept_releases' => 0, 
+		'accept_send_statistics' => 0
+	];
 
     
 	public function load() {

@@ -36,11 +36,11 @@ $heightfactor = $template_->getDefaultValue('heightfactor');
 $heightlimit = $template_->getDefaultValue('heightlimit');
 
 // prepare replacements
-$replace = array(
+$replace = [
   '__HEIGHT__' => get_window_height($heightfactor, $heightlimit, $rs_->getNbReasons()),
   '__TOTAL_SCORE__' => round($rs_->getTotalScore(),2) ,
   '__REASONS_LIST__' => $rs_->getHtmlList($template_->getTemplate('REASON'))
-);
+];
 //display page
 $template_->output($replace);
 

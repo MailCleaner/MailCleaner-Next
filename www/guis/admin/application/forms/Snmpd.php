@@ -32,10 +32,11 @@ class Default_Form_Snmpd extends ZendX_JQuery_Form
 	           
 		$this->setAttrib('id', 'snmpd_form');
 	    
-		$community = new  Zend_Form_Element_Text('community', array(
+		$community = new  Zend_Form_Element_Text('community', [
 	        'label'    => $t->_('Read community')." :",
                 'title' => $t->_("SNMP community key for SNMP"),
-		    'required' => true));
+		'required' => true
+		]);
 	    $community->setValue($this->_snmpd->getParam('community'));
 	    $this->addElement($community);
             if ($restrictions->isRestricted('ServicesSNMP', 'community')) {
@@ -44,13 +45,14 @@ class Default_Form_Snmpd extends ZendX_JQuery_Form
 
 	    
 	    require_once('Validate/HostList.php');
-		$allowed_ip = new Zend_Form_Element_Textarea('allowed_ip', array(
+		$allowed_ip = new Zend_Form_Element_Textarea('allowed_ip', [
 		      'label'    =>  $t->_('Allowed IP/ranges')." :",
                       'title' => $t->_("IP/ranges allowed to send SNMP requests to the MailCleaner server"),
 		      'required'   => false,
 		      'rows' => 5,
 		      'cols' => 30,
-		      'filters'    => ['StringToLower', 'StringTrim'))];
+		      'filters'    => ['StringToLower', 'StringTrim']
+		]);
 	    $allowed_ip->addValidator(new Validate_HostList());
 		$allowed_ip->setValue($this->_snmpd->getParam('allowed_ip'));
 		$this->addElement($allowed_ip);
@@ -59,8 +61,9 @@ class Default_Form_Snmpd extends ZendX_JQuery_Form
                         $allowed_ip->setAttrib('disabled', 'disabled');
             }
 	    
-		$submit = new Zend_Form_Element_Submit('submit', array(
-		     'label'    => $t->_('Submit')));
+		$submit = new Zend_Form_Element_Submit('submit', [
+			'label'    => $t->_('Submit')
+		]);
 		$this->addElement($submit);
              if ($restrictions->isRestricted('ServicesSNMP', 'submit')) {
                         $submit->setAttrib('disabled', 'disabled');

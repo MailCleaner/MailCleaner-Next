@@ -20,24 +20,24 @@ class DangerousContent extends PrefHandler {
      * scanner properties
      * @var array
      */
-    private $pref_ = array(
-  	                     'block_encrypt' => 1,
-	                     'block_unencrypt' => 'no',
-	                     'allow_passwd_archives' => 'no',
-	                     'allow_partial' => 'no',
-	                     'allow_external_bodies' => 'no',
-	                     'allow_iframe' => 'no',
-	                     'silent_iframe' => 'yes',
-	                     'allow_form' => 'yes',
-	                     'silent_form' => 'no',
-	                     'allow_script' => 'yes',
-	                     'silent_script' => 'no',
-	                     'allow_webbugs' => 'yes',
-	                     'silent_webbugs' => 'no',
-	                     'allow_codebase' => 'no',
-	                     'silent_codebase' => 'no',
-	                     'notify_sender' => 'no'
-                       );
+    private $pref_ = [
+        'block_encrypt' => 1,
+	'block_unencrypt' => 'no',
+	'allow_passwd_archives' => 'no',
+	'allow_partial' => 'no',
+	'allow_external_bodies' => 'no',
+	'allow_iframe' => 'no',
+	'silent_iframe' => 'yes',
+	'allow_form' => 'yes',
+	'silent_form' => 'no',
+	'allow_script' => 'yes',
+	'silent_script' => 'no',
+	'allow_webbugs' => 'yes',
+	'silent_webbugs' => 'no',
+	'allow_codebase' => 'no',
+	'silent_codebase' => 'no',
+	'notify_sender' => 'no'
+    ];
 
 /**
  * constructor

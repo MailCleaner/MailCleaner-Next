@@ -15,7 +15,7 @@ class Content {
   * datas of the content
   * @var array
   */
-  private $prefs_ = array(
+  private $prefs_ = [
        'timestamp' => '',
        'date' => '',
        'time' => '',
@@ -34,7 +34,7 @@ class Content {
        'headers' => '',
        'slave' => 0,
        'content_forced' => 0
-  );
+  ];
  
 
 /**
@@ -132,7 +132,7 @@ public function load($id) {
     $query .= " id='".$clean_id."'";
     
     $res = $db->getHash($query);
-    if (!is_[$res)] {
+    if (!is_[$res]) {
       return $res;
     }
     if (!empty($res)) {
@@ -168,7 +168,7 @@ public function force() {
   if (preg_match('/^[A-Z]+$/', $sid)) {
     return $sid;
   }
-  $res = $soaper->queryParam('forceContent', [$sid, $path)]; 
+  $res = $soaper->queryParam('forceContent', [$sid, $path]); 
 
   return $res;
 }

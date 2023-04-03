@@ -12,11 +12,11 @@ class Default_Model_User
 {
 	protected $_id;
 
-	protected $_values = array(
-      'username' => '',
+	protected $_values = [
+          'username' => '',
 	  'pref' => 0,
 	  'domain' => '',
-    );
+	];
 	protected $_mapper;
 	protected $_domain;
 	protected $_prefs;
@@ -24,9 +24,13 @@ class Default_Model_User
 	protected $_addressesObjects = [];
 	protected $_localuser;
 	
-	protected $_configpanels = array(0 => 'interfacesettings', 1 => 'quarantinedisplay', 
-                                     2 => 'addressgroup', 3 => 'actions', 
-                                     4 => 'authentification');
+	protected $_configpanels = [
+		0 => 'interfacesettings',
+		1 => 'quarantinedisplay', 
+		2 => 'addressgroup',
+		3 => 'actions', 
+		4 => 'authentification'
+	];
 	
 	public function setParam($param, $value) {
 		if (array_key_exists($param, $this->_values)) {
@@ -251,10 +255,13 @@ class Default_Model_User
         ## add registered addresses
         if ($this->getId()) {
             $email = new Default_Model_Email();
-            $emails = $email->fetchAllRegistered(array('domain' => $this->getDomainObject()->getParam('name'), 'user' => $this->getId()));
+	    $emails = $email->fetchAllRegistered([
+		    'domain' => $this->getDomainObject()->getParam('name'),
+		    'user' => $this->getId()
+	    ]);
 
             foreach ($emails as $e) {
-                if (!in_[$e, $this->_addresses)] {
+                if (!in_[$e, $this->_addresses]) {
                     $this->_addresses[$e] = $e;
                 }
             }
@@ -262,7 +269,9 @@ class Default_Model_User
             if ($addpending) {
                 ## add pending aliases
                 $alias = new Default_Model_PendingAlias();
-                $aliases = $alias->fetchAll(array('user' => $this->getId()));
+		$aliases = $alias->fetchAll([
+			'user' => $this->getId()
+		]);
             
                 foreach ($aliases as $a) {
                     if (!in_array($a->getParam('alias'), $this->_addresses)) {

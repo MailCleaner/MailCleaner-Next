@@ -32,9 +32,10 @@ class Default_Form_Manage_EmailWhitelist extends Default_Form_ElementList
 		$t = Zend_Registry::get('translate');
 
 		$this->setAttrib('id', 'email_form');
-	    $panellist = new Zend_Form_Element_Select('emailpanel', array(
+	    $panellist = new Zend_Form_Element_Select('emailpanel', [
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	    ]);
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         
@@ -54,7 +55,10 @@ class Default_Form_Manage_EmailWhitelist extends Default_Form_ElementList
 	}
 	
 	public function setParams($request, $email) {
-		$this->setAddedValues(array('recipient' => $email->getParam('address'), 'type' => 'white'));
+		$this->setAddedValues([
+			'recipient' => $email->getParam('address'),
+			'type' => 'white'
+		]);
 		$this->manageRequest($request);
 		$this->addFields($this);
 		return true;

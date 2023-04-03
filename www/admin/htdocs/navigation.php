@@ -27,7 +27,7 @@ global $sysconf_;
 $template_ = new Template('navigation.tmpl');
 
 // prepare replacements
-$replace = array(
+$replace = [
         "__LANG__" => $lang_->getLanguage(),
         "__LINK_DOMAIN_LIST__" => "domainlist.php",
         "__LINK_EMAILS__" => "emails.php",
@@ -47,7 +47,7 @@ $replace = array(
         "__LINK_LOGS__" => "view_logs.php",
         "__LINK_HELP__" => "welcome.php",
         "__RESTART_STATUS__" => getRestartStatus()
-);
+];
 
 // output page
 $template_->output($replace);

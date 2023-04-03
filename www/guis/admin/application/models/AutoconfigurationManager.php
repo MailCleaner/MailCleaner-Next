@@ -29,12 +29,14 @@ class Default_Model_AutoconfigurationManager
 
 	public function save()
 	{
-		return Default_Model_Localhost::sendSoapRequest('Config_autoconfiguration', array('autoconfenabled' => $this->getAutoconfenabled()));
+		return Default_Model_Localhost::sendSoapRequest('Config_autoconfiguration', [
+			'autoconfenabled' => $this->getAutoconfenabled()
+		]);
     	}
 
 	public function download()
 	{
-		return Default_Model_Localhost::sendSoapRequest('Config_autoconfigurationDownload', ['download' => true)];
+		return Default_Model_Localhost::sendSoapRequest('Config_autoconfigurationDownload', ['download' => true]);
 	}
 
 }

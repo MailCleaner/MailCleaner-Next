@@ -7,14 +7,18 @@
  */
 ?>
 <?php foreach (['panel', 'username', 'domain') as $f] {
- echo $this->InputRow($this->form->getElement($f),['field_only'=>true,'nobox'=>true)];;
+ echo $this->InputRow($this->form->getElement($f),['field_only'=>true,'nobox'=>true]);
   }?>
-<?php echo $this->partial('forms/manageuser/'.strtolower($this->panel).'Form.phtml', array(
-                                        'form' => $this->form,
-                                        't' => $this->t, 
-                                        'images_path' => $this->images_path,
-                                        'message' => $this->message, 
-                                        'domain' => $this->domain,
-                                        'user' => $this->user,
-                                        'urls' => $this->urls,
-                                        'username' => $this->username ) ); ?>
+<?php echo $this->partial(
+	'forms/manageuser/'.strtolower($this->panel).'Form.phtml',
+	[
+        	'form' => $this->form,
+        	't' => $this->t, 
+        	'images_path' => $this->images_path,
+        	'message' => $this->message, 
+        	'domain' => $this->domain,
+        	'user' => $this->user,
+        	'urls' => $this->urls,
+		'username' => $this->username
+	]
+); ?>

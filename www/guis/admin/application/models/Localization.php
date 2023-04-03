@@ -10,7 +10,7 @@
 
 class Default_Model_Localization
 {	
-	protected $_dlglist = array(
+	protected $_dlglist = [
 	                     'Africa' => 'Africa', 
 	                     'America' => 'America',
 	                     'Asia' => 'Asia', 
@@ -19,7 +19,8 @@ class Default_Model_Localization
 	                     'Europe' => 'Europe',
 	                     'Indian' => 'Indian Ocean',
 	                     'Pacific' => 'Pacific Ocean', 
-	                     'Etc' => 'None of the above');
+			     'Etc' => 'None of the above'
+	];
 	
 	protected $_timezonefile = '/etc/timezone';
 	protected $_zoneinfodir = '/usr/share/zoneinfo';

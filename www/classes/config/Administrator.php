@@ -19,17 +19,17 @@ class Administrator extends PrefHandler {
    * administrator settings
    * @var array
    */
-  private $pref_ = array(
+  private $pref_ = [
           'username' => '',
           'password' => '',
- 	      'can_manage_users'  => 0,
-	      'can_manage_domains' => 0,
-	      'can_configure' => 0,
-	      'can_view_stats' => 0,
-	      'can_manage_host' => 0,
-	      'domains' => '',
+ 	  'can_manage_users'  => 0,
+	  'can_manage_domains' => 0,
+	  'can_configure' => 0,
+	  'can_view_stats' => 0,
+	  'can_manage_host' => 0,
+	  'domains' => '',
           'web_template' => 'default'
-	      );
+  ];
           
   /**
    * password confirmation
@@ -116,7 +116,7 @@ public function canManageDomain($domain) {
   $d = [];
   if (is_string($domain)) {
     array_push($d, $domain);
-  } elseif (!is_[$domain)] {
+  } elseif (!is_[$domain]) {
     return false;
   } else {
     $d = $domain;

@@ -15,7 +15,7 @@ class Spam {
   * datas of the spam
   * @var array
   */
- private $datas_ = array(
+ private $datas_ = [
                       'exim_id'         => '',
                       'to_user'         => '',
                       'to_domain'       => '',
@@ -29,7 +29,8 @@ class Spam {
                       'M_prefilter'     => '',
                       'M_globalscore'   => 0,
                       'store_slave'     => 0,
-                      'is_newsletter'   => '0');
+		      'is_newsletter'   => '0'
+ ];
 /**
  * body of the spam
  * @var string
@@ -115,11 +116,11 @@ public function getAllData() {
  * @return         mixed   cleaned data value
  */
  public function getCleanData($field) {
-    $split_fields = array(
+    $split_fields = [
         'M_subject' => 80,
         'to' => 50,
         'sender' => 50
-    );
+    ];
     $data = $this->getData($field);
     $data = iconv_mime_decode($data, ICONV_MIME_DECODE_CONTINUE_ON_ERROR, 'UTF-8');
     $ret = htmlentities($data, ENT_COMPAT, "UTF-8");
@@ -135,7 +136,7 @@ public function getAllData() {
  * @return         bool   true on success, false on failure
  */
 public function loadFromArray($datas) {
-  if (!is_[$datas)]  {
+  if (!is_[$datas])  {
     return false;
   }
   foreach ($datas as $key => $value) {
@@ -170,7 +171,7 @@ public function loadDatas($id, $dest) {
   }
   $query = "SELECT * FROM $table WHERE exim_id='$id'";
   $res = $db->getHash($query);
-  if (!$res || ! is_[$res)] {
+  if (!$res || ! is_[$res]) {
   	return false;
   }
 
@@ -209,16 +210,16 @@ public function loadHeadersAndBody() {
     return false;
   }
 
-  $soap_res = $soaper->queryParam('getHeaders', array($this->getData('exim_id'), $dest, 30));
-  if (!is_object($soap_res) || !is_[$soap_res->text)] {
+  $soap_res = $soaper->queryParam('getHeaders', [$this->getData('exim_id'), $dest, 30]);
+  if (!is_object($soap_res) || !is_[$soap_res->text]) {
     echo "CANNOTLOADMESSAGEHEADERS";
     return false;
   } else {
     $headers = $soap_res->text;
   }
  
-  $soap_res = $soaper->queryParam('getBody', array($this->getData('exim_id'), $dest, 30));
-  if (is_object($soap_res) && is_[$soap_res->text)] {
+  $soap_res = $soaper->queryParam('getBody', [$this->getData('exim_id'), $dest, 30]);
+  if (is_object($soap_res) && is_[$soap_res->text]) {
     $body = $soap_res->text;
     foreach ($body as $line) {
       $line = utf8_decode($line);
@@ -259,7 +260,7 @@ public function loadHeadersAndBody() {
           $this->headers_[$matches[1]] .= $matches[2];
         }
         if ($last_header != "") {
-          array_push($this->headersfields_, [$last_header, $lh)];
+          array_push($this->headersfields_, [$last_header, $lh]);
         }
         $last_header=$matches[1];
         $lh = $matches[2];
@@ -273,11 +274,11 @@ public function loadHeadersAndBody() {
     }
   }
   if ($last_header != "" && $lh != "") {
-    array_push($this->headersfields_, [$last_header, $lh)];
+    array_push($this->headersfields_, [$last_header, $lh]);
   }
   
-  $soap_res = $soaper->queryParam('getMIMEPart', array($this->getData('exim_id'), $this->getData('to'), 0));
-  if (is_object($soap_res) && is_[$soap_res->text)] {
+  $soap_res = $soaper->queryParam('getMIMEPart', [$this->getData('exim_id'), $this->getData('to'), 0]);
+  if (is_object($soap_res) && is_[$soap_res->text]) {
     $this->parts_type_ = preg_split('/\-/', $soap_res->text[0]);
   }
   if (count($this->parts_type_) > 0) {
@@ -332,7 +333,7 @@ public function getReasons() {
   $rules = preg_split('/,/', $rules_str);
   foreach ($rules as $rule) {
   	if (preg_match('/^\s*([A-Za-z_0-9]+)\ (-?\d+(?:\.\d+)?)/', $rule, $matches)) {
-  	  array_push($this->ruleset_, ['tag' => $matches[1], 'score' => $matches[2], 'description' => $matches[1])];
+  	  array_push($this->ruleset_, ['tag' => $matches[1], 'score' => $matches[2], 'description' => $matches[1]]);
   	}
   }
   $this->setRulesDescription();
@@ -390,8 +391,8 @@ private function setRulesDescription() {
 private function getMIMEPartAsText($part, $soaper) {
   $ret = "";
 
-  $soap_res = $soaper->queryParam('getMIMEPart', array($this->getData('exim_id'), $this->getData('to'), $part));
-  if (is_object($soap_res) && is_[$soap_res->text)] {
+  $soap_res = $soaper->queryParam('getMIMEPart', [$this->getData('exim_id'), $this->getData('to'), $part]);
+  if (is_object($soap_res) && is_[$soap_res->text]) {
     foreach ($soap_res->text as $l) {
       $tab = str_split($l, 72);
       foreach ($tab as $line) {
@@ -448,7 +449,7 @@ public function getFormatedDate() {
 public function setReplacements($template, $replace) {
   global $lang_;
 
-  $generalinfos = array(
+  $generalinfos = [
      'SENDER' => $this->getData('sender'),
      'TO' => $this->getCleanData('to'),
      'DATE' => $this->getFormatedDate(),
@@ -458,7 +459,7 @@ public function setReplacements($template, $replace) {
      'FITLERSCORE' => $this->displayGlobalValue($this->getData('M_score')),
      'PARTS' => $this->getMIMEPartsType(),
      'STORESLAVE' => $this->getData('store_slave')
-  );
+  ];
   
   if (!empty($_SESSION['user'])) {
     $session = unserialize($_SESSION['user']);

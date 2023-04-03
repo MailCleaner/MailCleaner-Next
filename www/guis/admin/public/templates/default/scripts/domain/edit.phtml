@@ -34,17 +34,20 @@
       </form>
     </div>
     <div id="resultpanel">
-<?php echo $this->partial('ajax/domain/search.phtml', array(
-                         'domains' => $this->domains,
-                         'domainscount' => $this->domainscount,
-                         'page' => $this->page,
-                         'lastpage' => $this->lastpage,
-                         'images_path' => $this->images_path,
-                         'sname' => $this->sname,
-                         'name' => $this->name,
-                         'searchurl' => $this->searchurl,
-                         't' => $this->t
-));?>
+<?php echo $this->partial(
+	'ajax/domain/search.phtml', 
+	[
+        	'domains' => $this->domains,
+        	'domainscount' => $this->domainscount,
+        	'page' => $this->page,
+        	'lastpage' => $this->lastpage,
+        	'images_path' => $this->images_path,
+        	'sname' => $this->sname,
+        	'name' => $this->name,
+        	'searchurl' => $this->searchurl,
+        	't' => $this->t
+	]
+);?>
     </div>
   </div>
  
@@ -58,13 +61,13 @@
   <?php } else {?>
         <h1 id ="domaincontentpaneltitle"><?php echo $this->t->_('Domain default settings');?></h1>
   <?php } ?> 
-        <h2><span class="domainconfigselect"><?php echo $this->inputRow($this->form->getElement('domainpanel'),['field_only'=>true,'nobox'=>true)];?></span>
+        <h2><span class="domainconfigselect"><?php echo $this->inputRow($this->form->getElement('domainpanel'),['field_only'=>true,'nobox'=>true]);?></span>
             <span class="h2nextpreviouslinks" id="nextpreviouslinks">
-               <?php echo $this->partial('ajax/domain/panellink.phtml', ['panel' => $this->panel,'t' => $this->t, 'name' => $this->name, 'previouspanel' => $this->previouspanel, 'nextpanel' => $this->nextpanel, 'searchurl' => $this->searchurl)]; ?>
+               <?php echo $this->partial('ajax/domain/panellink.phtml', ['panel' => $this->panel,'t' => $this->t, 'name' => $this->name, 'previouspanel' => $this->previouspanel, 'nextpanel' => $this->nextpanel, 'searchurl' => $this->searchurl]); ?>
             </span>
         </h2>
 
-        <div id="domainformcontent"><?php echo $this->partial('forms/domain'.strtolower($this->panel).'Form.phtml', ['form' => $this->form,'t' => $this->t, 'message' => $this->message, 'domain' => $this->domain, 'images_path' => $this->images_path, 'request'=>$this->request)]; ?>
+        <div id="domainformcontent"><?php echo $this->partial('forms/domain'.strtolower($this->panel).'Form.phtml', ['form' => $this->form,'t' => $this->t, 'message' => $this->message, 'domain' => $this->domain, 'images_path' => $this->images_path, 'request'=>$this->request]); ?>
         </div>
       </form>
     </div>

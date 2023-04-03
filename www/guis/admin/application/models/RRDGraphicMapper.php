@@ -60,7 +60,9 @@ class Default_Model_RRDGraphicMapper
         $graphic->setBase($row->base);
         $graphic->setYValue($row->min_yvalue);
         $elements = new Default_Model_RRDGraphicElement();
-        $graphic->addElements($elements->fetchAll(array('graphicid' => $graphic->getID())));
+	$graphic->addElements($elements->fetchAll([
+		'graphicid' => $graphic->getID())
+	]);
     }
     
     public function fetchAll($params)

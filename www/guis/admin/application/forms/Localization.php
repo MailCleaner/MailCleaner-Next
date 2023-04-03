@@ -28,10 +28,11 @@ class Default_Form_Localization extends ZendX_JQuery_Form
 		$this->setMethod('post');
 	           
 		$this->setAttrib('id', 'localization_form');
-	    $zlist = new Zend_Form_Element_Select('zone', array(
+	    $zlist = new Zend_Form_Element_Select('zone', [
             'label'      => $t->_('Main zone')." :",
             'required'   => true,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	    ]);
         
         foreach ($this->_locale->getZones() as $zk => $zv) {
         	$zlist->addMultiOption($zk, $t->_($zv));
@@ -40,10 +41,11 @@ class Default_Form_Localization extends ZendX_JQuery_Form
         $this->addElement($zlist);
         
         
-        $subzlist = new Zend_Form_Element_Select('selectsubzone', array(
+        $subzlist = new Zend_Form_Element_Select('selectsubzone', [
             'label'      => $t->_('Sub zone')." :",
             'required'   => true,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	]);
         
         foreach ($this->_locale->getSubZones() as $zk => $zv) {
         	$subzlist->addMultiOption($zk, $t->_($zv));
@@ -52,8 +54,9 @@ class Default_Form_Localization extends ZendX_JQuery_Form
         $this->addElement($subzlist);
         
         
-		$submit = new Zend_Form_Element_Submit('localesubmit', array(
-		     'label'    => $t->_('Submit')));
+		$submit = new Zend_Form_Element_Submit('localesubmit', [
+			'label'    => $t->_('Submit')
+		]);
 		$this->addElement($submit);
 		
 	}

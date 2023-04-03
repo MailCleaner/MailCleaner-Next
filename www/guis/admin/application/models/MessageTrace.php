@@ -10,7 +10,7 @@
 
 class Default_Model_MessageTrace
 {
-	protected $_values = array(
+	protected $_values = [
 	    'date_in' => '',
 	    'accepted' => '',
             'relayed' => '',
@@ -31,7 +31,7 @@ class Default_Model_MessageTrace
             'senderhostname' => '',
             'senderhostip' => '',
             'outhost' => ''
-	);
+	];
 
 	protected $_mapper;
 
@@ -54,9 +54,9 @@ class Default_Model_MessageTrace
 
 	public function getCleanParam($param) {
 		$t = Zend_Registry::get('translate');
-		$split_fields = array(
-        'subject' => 80,
-		);
+		$split_fields = [
+        		'subject' => 80,
+		];
 		$data = $this->getParam($param);
 		
 		if ($param == 'from' || $param == 'tos') {

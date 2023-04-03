@@ -28,7 +28,7 @@ global $sysconf_;
 global $lang_;
 
 // check authorizations
-$admin_->checkPermissions(['can_manage_domains')];
+$admin_->checkPermissions(['can_manage_domains']);
 
 $saved_msg = "";
 $added_msg = "";
@@ -190,12 +190,12 @@ if ($antispam_->getPref('enable_blacklists') && $selected_domain->getPref('enabl
   $template_->setCondition('SEELISTS', true);
 }
 
-$delivery_types = array($lang_->print_txt('TAGMODE') => '1', $lang_->print_txt('QUARANTINEMODE') => '2', $lang_->print_txt('DROPMODE') => '3');
-$frequencies = array($lang_->print_txt('DAILY') => 1, $lang_->print_txt('WEEKLY') => 1,  $lang_->print_txt('MONTHLY') => 1);
-$summarytypes = array($lang_->print_txt('SUMMHTML') => 'html', $lang_->print_txt('SUMMTEXT') => 'text');
+$delivery_types = [$lang_->print_txt('TAGMODE') => '1', $lang_->print_txt('QUARANTINEMODE') => '2', $lang_->print_txt('DROPMODE') => '3'];
+$frequencies = [$lang_->print_txt('DAILY') => 1, $lang_->print_txt('WEEKLY') => 1,  $lang_->print_txt('MONTHLY') => 1];
+$summarytypes = [$lang_->print_txt('SUMMHTML') => 'html', $lang_->print_txt('SUMMTEXT') => 'text'];
 $sysconf_->getTemplates();
 
-$replace = array(
+$replace = [
   "__DOC_DOMAINLISTTITLE__" => $documentor->help_button('DOMAINLISTTITLE'),
   "__DOC_DOMAINNAME__" => $documentor->help_button('DOMAINNAME'),
   "__DOC_DOMAINDELIVERY__" => $documentor->help_button('DOMAINDELIVERY'),
@@ -280,7 +280,7 @@ $replace = array(
   "__LINK_EDITBLACKLIST__" => "wwlist.php?t=3&a=@".$selected_domain->getPref('name'),
   "__LINK_GOBATCHADD__" => $_SERVER['PHP_SELF']."?d=0&ba",
    
-);
+];
 
 $template_->output($replace);
 

@@ -52,7 +52,7 @@ if ('adminpass.inc' == basename($_SERVER['SCRIPT_FILENAME']))
 		    require_once('db_functions.php');
 		    if($db = getDb('mc_config', 'mailcleaner', trim($mymcpass))) {
 			$sth = $db->prepare("UPDATE administrator SET password=:mcpass WHERE username='admin'");
-			$retaw = $sth->execute([':mcpass' => $cryptedaw)] == true ? 0 : 1;
+			$retaw = $sth->execute([':mcpass' => $cryptedaw]) == true ? 0 : 1;
 		    } else {
 			$retaw = 1;
 		    }

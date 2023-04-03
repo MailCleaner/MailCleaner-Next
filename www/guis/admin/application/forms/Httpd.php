@@ -23,61 +23,66 @@ class Default_Form_Httpd extends ZendX_JQuery_Form
 	           
 		$this->setAttrib('id', 'httpd_form');
 	    
-		$baseurl = new  Zend_Form_Element_Text('servername', array(
+		$baseurl = new  Zend_Form_Element_Text('servername', [
 	        'label'    => $t->_('Base URL')." :",
                 'title' => $t->_("Base URL to access this we interface"),
 		    'size'     => 30,
-		    'required' => true));
+		    'required' => true
+		]);
 	    $baseurl->setValue($this->_httpd->getParam('servername'));
 	    $this->addElement($baseurl);
 	    
 	    require_once('Validate/HostList.php');
-		$allowed_ip = new Zend_Form_Element_Textarea('allowed_ip', array(
+		$allowed_ip = new Zend_Form_Element_Textarea('allowed_ip', [
 		      'label'    =>  $t->_('Allowed IP/ranges')." :",
                       'title' => $t->_("IP/range allowed to connect to the MailCleaner web interface"),
 		      'required'   => false,
 		      'rows' => 5,
 		      'cols' => 30,
-		      'filters'    => ['StringToLower', 'StringTrim'))];
+		      'filters'    => ['StringToLower', 'StringTrim']
+		]);
 	    $allowed_ip->addValidator(new Validate_HostList());
 		$allowed_ip->setValue($this->_firewallrule->getParam('allowed_ip'));
 		$this->addElement($allowed_ip);
 	    
-		$sslenable = new Zend_Form_Element_Checkbox('use_ssl', array(
+		$sslenable = new Zend_Form_Element_Checkbox('use_ssl', [
 	        'label'   => $t->_('Enable SSL (HTTPS)'). " :",
             'uncheckedValue' => "0",
 	        'checkedValue' => "1"
-	              ));
+		]);
 	    if ($this->_httpd->getParam('use_ssl') == 'true') {
             $sslenable->setChecked(true);
 	    }
 	    $this->addElement($sslenable);
 	    
-	    $httpslisten = new  Zend_Form_Element_Text('https_port', array(
+	    $httpslisten = new  Zend_Form_Element_Text('https_port', [
 	        'label'    => $t->_('HTTPS port')." :",
 		    'required' => false,
 		    'size' => 4,
-		    'filters'    => ['Alnum', 'StringTrim'))];
+		    'filters'    => ['Alnum', 'StringTrim']
+	    ]);
 	    $httpslisten->setValue($this->_httpd->getParam('https_port'));
         $httpslisten->addValidator(new Zend_Validate_Int());
 	    $this->addElement($httpslisten);
 	    
-	    $httplisten = new  Zend_Form_Element_Text('http_port', array(
+	    $httplisten = new  Zend_Form_Element_Text('http_port', [
 	        'label'    => $t->_('HTTP port')." :",
 		    'required' => true,
 		    'size' => 4,
-		    'filters'    => ['Alnum', 'StringTrim'))];
+		    'filters'    => ['Alnum', 'StringTrim']
+	    ]);
 	    $httplisten->setValue($this->_httpd->getParam('http_port'));
         $httplisten->addValidator(new Zend_Validate_Int());
 	    $this->addElement($httplisten);
 	   
         $restrictions = Zend_Registry::get('restrictions');
 
-	    $sslcert = new Zend_Form_Element_Textarea('tls_certificate_data', array(
+	    $sslcert = new Zend_Form_Element_Textarea('tls_certificate_data', [
 		      'label'    =>  $t->_('Encoded SSL certificate')." :",
 		      'required'   => false,
 		      'rows' => 7,
-		      'cols' => 50));
+		      'cols' => 50
+	    ]);
 		$sslcert->setValue($this->_httpd->getParam('tls_certificate_data'));
 		$this->addElement($sslcert);
 
@@ -88,11 +93,12 @@ class Default_Form_Httpd extends ZendX_JQuery_Form
             $sslcert->addValidator(new Validate_PKICertificate());
         }
 		
-		$sslkey = new Zend_Form_Element_Textarea('tls_certificate_key', array(
+		$sslkey = new Zend_Form_Element_Textarea('tls_certificate_key', [
 		      'label'    =>  $t->_('Encoded SSL private key')." :",
 		      'required'   => false,
 		      'rows' => 7,
-		      'cols' => 50));
+		      'cols' => 50
+		]);
 		$sslkey->setValue($this->_httpd->getParam('tls_certificate_key'));
 		$this->addElement($sslkey);
 
@@ -104,11 +110,12 @@ class Default_Form_Httpd extends ZendX_JQuery_Form
             $sslkey->addValidator(new Validate_PKIPrivateKey());
         }
 
-        $sslchain = new Zend_Form_Element_Textarea('tls_certificate_chain', array(
+        $sslchain = new Zend_Form_Element_Textarea('tls_certificate_chain', [
               'label'    =>  $t->_('Encoded SSL certificate chain')." :",
               'required'   => false,
               'rows' => 7,
-              'cols' => 50));
+	      'cols' => 50
+	]);
         $sslchain->setValue($this->_httpd->getParam('tls_certificate_chain'));
         $this->addElement($sslchain);
 
@@ -122,8 +129,9 @@ class Default_Form_Httpd extends ZendX_JQuery_Form
 		if ($this->_httpd->getParam('use_ssl') == 'true') {
 			$this->_urlsheme = 'https';
 		}
-		$submit = new Zend_Form_Element_Submit('submit', array(
-		     'label'    => $t->_('Submit')));
+		$submit = new Zend_Form_Element_Submit('submit', [
+			'label'    => $t->_('Submit')
+		]);
 		$this->addElement($submit);
 		
 	}

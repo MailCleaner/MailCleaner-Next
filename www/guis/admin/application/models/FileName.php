@@ -11,12 +11,12 @@
 class Default_Model_FileName
 {
     protected $_id;
-    protected $_values = array(
+    protected $_values = [
           'status' => 'allow',
           'rule' => '',
           'name' => '',
           'description' => ''
-    );
+    ];
 	
 	protected $_mapper;
 	

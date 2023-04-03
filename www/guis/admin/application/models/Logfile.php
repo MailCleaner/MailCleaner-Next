@@ -10,12 +10,12 @@
 
 class Default_Model_Logfile
 {	
-	protected $_available_types = array(
-	      'exim_stage1' => array('basefile' => 'exim_stage1/mainlog', 'cat' => 'Message handling', 'name' => 'Incoming MTA', 'pos' => 1, 'nextId_regex' => 'R=filter_forward.*OK id=([0-9a-zA-Z]{6}-[0-9a-zA-Z]{6}-[0-9a-zA-Z]{2})'),
-	      'exim_stage2' => array('basefile' => 'exim_stage2/mainlog', 'cat' => 'Message handling', 'name' => 'Filtering MTA', 'pos' => 2, 'nextId_regex' => '\b([0-9a-zA-Z]{6}-[0-9a-zA-Z]{6}-[0-9a-zA-Z]{2})\b'),
-	      'exim_stage4' => array('basefile' => 'exim_stage4/mainlog', 'cat' => 'Message handling', 'name' => 'Outgoing MTA', 'pos' => 3, 'nextId_regex' => '\b([0-9a-zA-Z]{6}-[0-9a-zA-Z]{6}-[0-9a-zA-Z]{2})\b.*T=spam_store'),
+	protected $_available_types = [
+	      'exim_stage1' => ['basefile' => 'exim_stage1/mainlog', 'cat' => 'Message handling', 'name' => 'Incoming MTA', 'pos' => 1, 'nextId_regex' => 'R=filter_forward.*OK id=([0-9a-zA-Z]{6}-[0-9a-zA-Z]{6}-[0-9a-zA-Z]{2})'],
+	      'exim_stage2' => ['basefile' => 'exim_stage2/mainlog', 'cat' => 'Message handling', 'name' => 'Filtering MTA', 'pos' => 2, 'nextId_regex' => '\b([0-9a-zA-Z]{6}-[0-9a-zA-Z]{6}-[0-9a-zA-Z]{2})\b'],
+	      'exim_stage4' => ['basefile' => 'exim_stage4/mainlog', 'cat' => 'Message handling', 'name' => 'Outgoing MTA', 'pos' => 3, 'nextId_regex' => '\b([0-9a-zA-Z]{6}-[0-9a-zA-Z]{6}-[0-9a-zA-Z]{2})\b.*T=spam_store'],
 	
-	      'mailscanner' => array('basefile' => 'mailscanner/infolog', 'cat' => 'Filter engine', 'name' => 'Filtering engine', 'pos' => 1, 'nextId_regex' => '\b([0-9a-zA-Z]{6}-[0-9a-zA-Z]{6}-[0-9a-zA-Z]{2})\b'),
+	      'mailscanner' => ['basefile' => 'mailscanner/infolog', 'cat' => 'Filter engine', 'name' => 'Filtering engine', 'pos' => 1, 'nextId_regex' => '\b([0-9a-zA-Z]{6}-[0-9a-zA-Z]{6}-[0-9a-zA-Z]{2})\b'],
 	      'clamd' => ['basefile' => 'clamav/clamd.log', 'cat' => 'Filter engine', 'name' => 'Virus signatures engine', 'pos' => 4],
 	      'spamd' => ['basefile' => 'mailscanner/spamd.log', 'cat' => 'Filter engine', 'name' => 'SpamAssassin engine', 'pos' => 2],
 	      'clamspamd' => ['basefile' => 'clamav/clamspamd.log', 'cat' => 'Filter engine', 'name' => 'Spam signatures engine', 'pos' => 3],
@@ -25,9 +25,9 @@ class Default_Model_Logfile
 	
 	      'apache' => ['basefile' => 'apache/access.log', 'cat' => 'Misc', 'name' => 'Web server', 'pos' => 1],
 	      'mysql_slave' => ['basefile' => 'mysql_slave/mysql.log', 'cat' => 'Misc', 'name' => 'Local database', 'pos' => 2],
-	);
+	];
 	
-	protected $_values = array(
+	protected $_values = [
  	      'file' => '',
 	      'linkname' => '',
 	      'date' => '',
@@ -37,14 +37,14 @@ class Default_Model_Logfile
 	      'category' => '',
 	      'name' => '',
 	      'shortfile' => ''
-	);
+	];
 	
 	protected $_delivery_log_order = ['exim_stage1', 'mailscanner','exim_stage4','spamhandler'];
 	
 	public function getCategories() {
 		$ret = [];
 		foreach ($this->_available_types as $type => $t) {
-			if (!in_[$t['cat'], $ret)] {
+			if (!in_[$t['cat'], $ret]) {
 				array_push($ret, $t['cat']);
 			}
 		}

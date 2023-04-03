@@ -11,14 +11,16 @@
 class MailCleaner_View_Helper_FormatSize extends Zend_View_Helper_Abstract
 {
 	
-	protected $_params = array(
-	   'sizes' => array ('T' => 'TB',
+	protected $_params = [
+		'sizes' => [
+			'T' => 'TB',
                          'G' => 'GB',
                          'M' => 'MB',
-                         'K' => 'KB')	
-	);
+			 'K' => 'KB'
+		]
+	];
 	
-	public function formatSize($string = '', $params = [)]
+	public function formatSize($string = '', $params = [])
 	{
 		$t = Zend_Registry::get('translate');
 		

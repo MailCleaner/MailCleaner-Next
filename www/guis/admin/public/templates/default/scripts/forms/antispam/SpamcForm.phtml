@@ -13,11 +13,27 @@ $baseconf = DataManager::getFileConfig(SystemConfig::$CONFIGFILE_); ?>
 <?php echo $this->InputRow($this->form->getElement($f));?>
 <?php }?>
 
-    <?php echo $this->InputRow($this->form->getElement('use_rbls'),
-         array('post_field_text'=> 
-                    $this->InputRow($this->form->getElement('rbls_timeout'), ['label_only'=>true,'nobox'=>true)].
-                    $this->InputRow($this->form->getElement('rbls_timeout'), array('field_only'=>true,'nobox'=>true,'post_field_text'=>$this->t->_('seconds'))))
-    );?>
+<?php echo $this->InputRow(
+	$this->form->getElement('use_rbls'),
+        [
+		'post_field_text'=> 
+			$this->InputRow(
+				$this->form->getElement('rbls_timeout'),
+				[
+					'label_only'=>true,
+					'nobox'=>true
+				]
+			) .
+			$this->InputRow(
+				$this->form->getElement('rbls_timeout'),
+				[
+					'field_only'=>true,
+					'nobox'=>true,
+					'post_field_text'=>$this->t->_('seconds')
+				]
+			)
+	]
+);?>
     
 <tr id="iprbls" class="<?php echo $this->form->_rbls_class?>">
     <td class="flabel flabeltextarea flabelchecklist"><?php echo $this->t->_('Using these DNS RBLs')?> : </td>
@@ -31,7 +47,14 @@ $baseconf = DataManager::getFileConfig(SystemConfig::$CONFIGFILE_); ?>
             echo '<button onclick="window.open(\'https://www.mailcleaner.net/community-edition-add-ons.html\', \'_blank\');">Premium Add-On</button></span><br />';
           }
 	} else {
-	  echo $this->InputRow($check, array('field_only'=>true,'nobox'=>'true','post_field_text'=>$check->getLabel()."<br />"));
+		echo $this->InputRow(
+			$check,
+			[
+				'field_only'=>true,
+				'nobox'=>'true',
+				'post_field_text'=>$check->getLabel()."<br />"
+			]
+		);
         }
     } ?>
     </td>
@@ -49,23 +72,46 @@ $baseconf = DataManager::getFileConfig(SystemConfig::$CONFIGFILE_); ?>
             echo '<button onclick="window.open(\'https://www.mailcleaner.net/community-edition-add-ons.html\', \'_blank\');">Premium Add-On</button></span><br />';
           }
 	} else {
-	  echo $this->InputRow($check, array('field_only'=>true,'nobox'=>'true','post_field_text'=>$check->getLabel()."<br />"));
+		echo $this->InputRow(
+			$check,
+			[
+				'field_only'=>true,
+				'nobox'=>'true',
+				'post_field_text'=>$check->getLabel()."<br />"
+			]
+		);
         }
     } ?>
     </td>
 </tr>
 
-<?php foreach (array(
+<?php foreach ([
         'use_dcc' => 'dcc_timeout', 
         'use_razor' => 'razor_timeout',
         'use_pyzor' => 'pyzor_timeout',
         'use_spf' => 'spf_timeout', 
         'use_dkim' => 'dkim_timeout',
-       ) as $f => $tf) {?>
+] as $f => $tf) {?>
        
-     <?php echo $this->InputRow($this->form->getElement($f),
-         array('post_field_text'=> 
-                    $this->InputRow($this->form->getElement($tf), ['label_only'=>true,'nobox'=>true)].
-                    $this->InputRow($this->form->getElement($tf), array('field_only'=>true,'nobox'=>true,'post_field_text'=>$this->t->_('seconds'))))
-      );?>
+<?php echo $this->InputRow(
+	$this->form->getElement($f),
+	[
+		'post_field_text'=> 
+			$this->InputRow(
+				$this->form->getElement($tf),
+				[
+					'label_only'=>true,
+					'nobox'=>true
+				]
+			) .
+			$this->InputRow(
+				$this->form->getElement($tf),
+				[
+					'field_only'=>true,
+					'nobox'=>true,
+					'post_field_text'=>$this->t->_('seconds')
+				]
+			)
+	]
+);?>
 <?php }?>

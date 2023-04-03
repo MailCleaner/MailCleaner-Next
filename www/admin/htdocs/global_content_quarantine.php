@@ -24,7 +24,7 @@ global $sysconf_;
 global $admin_;
 
 // check authorizations
-$admin_->checkPermissions(['can_manage_users')];
+$admin_->checkPermissions(['can_manage_users']);
 
 // set defaults
 $nb_messages = 20;
@@ -61,7 +61,7 @@ $quarantine->setImages($images);
 $nb_msgs_choice = ['2' => 2, '5' => 5, '10' => 10, '20' => 20, '50' => 50, '100' => 100];
     
 // prepare replacements
-$replace = array(
+$replace = [
         '__DOC_CONTENTFILTERTITLE__' => $documentor->help_button('CONTENTFILTERTITLE'),
         '__LANG__' => $lang_->getLanguage(),
         '__PAGE_JS__' => $quarantine->getJavascripts($form->getName()),
@@ -96,8 +96,8 @@ $replace = array(
         '__LINK_ORDERTO__' => $quarantine->getOrderLink('tolocal'),
         '__LINK_ORDERFROM__' => $quarantine->getOrderLink('from'),
         '__LINK_ORDERSUBJECT__'=> $quarantine->getOrderLink('subject'),
-        '__LINK_EMAILPREFS__' => 'emails.php?'.http_build_query(array('localpart' => $quarantine->getFilter('to_local'), 'domainpart' => $quarantine->getFilter('to_domain')))  
-);
+        '__LINK_EMAILPREFS__' => 'emails.php?'.http_build_query(['localpart' => $quarantine->getFilter('to_local'), 'domainpart' => $quarantine->getFilter('to_domain')])  
+];
 
 // output page
 $template_->output($replace);

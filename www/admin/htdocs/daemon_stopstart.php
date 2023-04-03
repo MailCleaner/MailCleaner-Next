@@ -21,7 +21,7 @@ global $sysconf_;
 global $lang_;
 
 // check authorizations
-$admin_->checkPermissions(['can_configure')];
+$admin_->checkPermissions(['can_configure']);
 
 // defaults
 $action = 'none';
@@ -42,12 +42,12 @@ if (!isset($_GET['h']) || !is_numeric($_GET['h']) ||
 // output waiting template
 $template_ = new Template('daemon_stopstart1.tmpl');
 
-$replace = array(
+$replace = [
     '__LANG__' => $lang_->getLanguage(),
     '__ERROR__' => $lang_->print_txt($error),
     '__ACTION_TEXT__' => printAction($action, $daemon)."<script>window.opener.location.reload()</script>",
     '__HOSTNAME__' => $host
-);
+];
 $template_->output($replace);
 
 // force window refresh by filling the buffers
@@ -62,10 +62,10 @@ echo "&nbsp;";
 
 // output finished template
 $template2_ = new Template('daemon_stopstart2.tmpl');
-$replace2 = array(
+$replace2 = [
     '__LANG__' => $lang_->getLanguage(),
     '__ACTION__' => doAction($host, $action, $daemon)     
-    );
+    ];
 
 $template2_->output($replace2);
 
@@ -118,13 +118,13 @@ function doAction($host, $action, $daemon) {
   $res = [];
   switch ($action) {
     case 'stop':
-      $res = $soaper->queryParam('stopService', [$sid, $daemon)];
+      $res = $soaper->queryParam('stopService', [$sid, $daemon]);
       break;
     case 'restart':
-      $res = $soaper->queryParam('restartService', [$sid, $daemon)];
+      $res = $soaper->queryParam('restartService', [$sid, $daemon]);
       break;
     default:
-      $res = $soaper->queryParam('startService', [$sid, $daemon)];
+      $res = $soaper->queryParam('startService', [$sid, $daemon]);
   }
  
   if ($res->status == 'OK') {

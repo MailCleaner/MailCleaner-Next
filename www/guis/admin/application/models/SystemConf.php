@@ -11,7 +11,7 @@
 class Default_Model_SystemConf
 {
     protected $_id;
-    protected $_values = array(
+    protected $_values = [
       'organisation' => '',
       'company_name' => '',
       'contact'      => '',
@@ -33,11 +33,11 @@ class Default_Model_SystemConf
       'archiver_host'  => '',
       'api_fulladmin_ips' => '',
       'api_admin_ips' => ''
-    );
+    ];
     
-    protected $_restart_what = array(
+    protected $_restart_what = [
        'default_domain' => ['exim_stage1','exim_stage4']
-    );
+    ];
     protected $_to_restart = [];
 	
 	protected $_mapper;

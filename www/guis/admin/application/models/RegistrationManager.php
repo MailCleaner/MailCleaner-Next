@@ -11,10 +11,11 @@
 class Default_Model_RegistrationManager
 {	
 	private $_serial = ['abc1', 'def2', 'ghi3'];
-        private $_data = array(
+        private $_data = [
                               'clientid' => 0,
                               'resellerid' => 0,
-                              'resellerpwd' => '');
+			      'resellerpwd' => ''
+	];
     
 	public function load() {
 		//TODO: implement

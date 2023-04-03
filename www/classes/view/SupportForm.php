@@ -27,14 +27,14 @@ class SupportForm {
      * form fields
      * @var array
      */
-    private $fields_ = array(
+    private $fields_ = [
                             'name' => ['', 'name', true],
                             'firstname' => ['', 'name', true],
                             'email' => ['', 'email', true],
                             'whatcanwedo' => ['', 'name', true],
                             'phone' => ['', 'name', false],
                             'company' => ['', 'name', false],
-                       );
+    ];
                        
     /**
      * unfilled needed field

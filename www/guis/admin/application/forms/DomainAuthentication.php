@@ -33,9 +33,10 @@ class Default_Form_DomainAuthentication extends Zend_Form
 		$t = Zend_Registry::get('translate');
 
 		$this->setAttrib('id', 'domain_form');
-	    $panellist = new Zend_Form_Element_Select('domainpanel', array(
+	    $panellist = new Zend_Form_Element_Select('domainpanel', [
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	    ]);
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         
@@ -51,10 +52,11 @@ class Default_Form_DomainAuthentication extends Zend_Form
 		$name = new Zend_Form_Element_Hidden('name');
 		$name->setValue($this->_domain->getParam('name'));
 		$this->addElement($name);
-		$domainname = new  Zend_Form_Element_Text('domainname', array(
+		$domainname = new  Zend_Form_Element_Text('domainname', [
             'label'   => $t->_('Domain name')." :",
 		    'required' => false,
-		    'filters'    => ['StringToLower', 'StringTrim'))];
+		    'filters'    => ['StringToLower', 'StringTrim']
+		]);
 	    $domainname->setValue($this->_domain->getParam('name'));
 	    require_once('Validate/DomainName.php');
         $domainname->addValidator(new Validate_DomainName());
@@ -66,12 +68,13 @@ class Default_Form_DomainAuthentication extends Zend_Form
 			$connectorform->addForm($this);
 		}
 		
-		$connectorlist = new Zend_Form_Element_Select('connector', array(
+		$connectorlist = new Zend_Form_Element_Select('connector', [
 		    'label'      => $t->_('Authentication type')." : ",
                     'title' => $t->_("Choose how users will authenticate on MailCleaner web interface"),
             'required'   => true,
 		    'onchange'   => 'javascript:changeAuthConnector();',
-            'filters'    => ['StringTrim'))];
+		    'filters'    => ['StringTrim']
+		]);
         
         foreach ($this->_connectors as $connector) {
         	$connectorlist->addMultiOption($connector, $t->_('userauthconn_'.$connector));
@@ -80,11 +83,12 @@ class Default_Form_DomainAuthentication extends Zend_Form
         $this->addElement($connectorlist);
         
         
-        $usernameformat = new Zend_Form_Element_Select('usernameformat', array(
+        $usernameformat = new Zend_Form_Element_Select('usernameformat', [
             'label'      => $t->_('Username modifier')." : ",
             'title' => $t->_("How MailCleaner will send the login to the auth server"),
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	]);
         
         foreach ($this->_usernameformats as $format) {
         	$usernameformat->addMultiOption($format, $t->_('usermod_'.$format));
@@ -92,11 +96,12 @@ class Default_Form_DomainAuthentication extends Zend_Form
         $usernameformat->setValue($this->_domain->getPref('auth_modif'));
         $this->addElement($usernameformat);
         
-        $addresslookup = new Zend_Form_Element_Select('addresslookup', array(
+        $addresslookup = new Zend_Form_Element_Select('addresslookup', [
             'label'      => $t->_('Address lookup')." : ",
             'title' => $t->_("How MailCleaner fetch or build address for a user"),
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	]);
         
         foreach ($this->_addresslookups as $lookup) {
         	$addresslookup->addMultiOption($lookup, $t->_('addlook_'.$lookup));
@@ -104,28 +109,31 @@ class Default_Form_DomainAuthentication extends Zend_Form
         $addresslookup->setValue($this->_domain->getPref('address_fetcher'));
         $this->addElement($addresslookup);
         
-		$submit = new Zend_Form_Element_Submit('submit', array(
-		     'label'    => $t->_('Submit')));
+		$submit = new Zend_Form_Element_Submit('submit', [
+			'label'    => $t->_('Submit')
+		]);
 		$this->addElement($submit);	
 		
 		
-		$testusername = new  Zend_Form_Element_Text('testusername', array(
+		$testusername = new  Zend_Form_Element_Text('testusername', [
 	        'label'    => $t->_('Test username')." :",
                 'title' => $t->_("Data used to ensure the chosen authentication type is working"),
 		    'required' => false,
-		    'filters'    => ['StringTrim'))];
+		    'filters'    => ['StringTrim']
+		]);
 	    $this->addElement($testusername);
 	    
-	    $testpassword = new  Zend_Form_Element_Password('testpassword', array(
+	    $testpassword = new  Zend_Form_Element_Password('testpassword', [
 	        'label'    => $t->_('Test password')." :",
                 'title' => $t->_("Data used to ensure the chosen authentication type is working"),
 		    'required' => false
-		    ));
+	    ]);
 	    $this->addElement($testpassword);
 	    
-		$test = new Zend_Form_Element_Button('testuserauth', array(
+		$test = new Zend_Form_Element_Button('testuserauth', [
 		     'label'    => $t->_('Test authentication'),
-             'onclick' => 'javascript:stopreloadtest=0;testUserauth(\''.$this->_domain->getParam('name').'\', 1);'));
+		     'onclick' => 'javascript:stopreloadtest=0;testUserauth(\''.$this->_domain->getParam('name').'\', 1);'
+		]);
 		$this->addElement($test);
 	}
 	

@@ -44,14 +44,14 @@ class NewslettersController extends Zend_Controller_Action
                 
                 $status = 3;
                 
-                $data = array(
+                $data = [
                     'sender'    => $sender,
                     'recipient' => $recipient,
                     'type'      => 'wnews',
                     'expiracy'  => '0000-00-00',
                     'status'    => '1',
                     'comments'  => '[Newsletter]'
-                );
+		];
                 
                 try {
                     $rule = new Default_Model_DbTable_NewsletterRule();
@@ -63,7 +63,7 @@ class NewslettersController extends Zend_Controller_Action
                 if (! $this->getRequest()->isXmlHttpRequest()) {
                   $this->release($eximId, $recipient, $storage);
                 } else {
-                    return $this->_helper->json(['id' => $eximId, 'username' => $recipient, 'storage' => $storage, 'status' => $status)];
+                    return $this->_helper->json(['id' => $eximId, 'username' => $recipient, 'storage' => $storage, 'status' => $status]);
                 }                
             }  
         }

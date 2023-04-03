@@ -24,13 +24,13 @@ $sysconf_ = SystemConfig::getInstance();
 $lang_ = Language::getInstance('admin');
 
 // log files available
-$logfiles = array(
+$logfiles = [
             'mta1' => 'exim_stage1/mainlog',
             'mta2' => 'exim_stage2/mainlog',
             'mta4' => 'exim_stage4/mainlog',
             'engine' => 'mailscanner/infolog',
             'httpd' => 'apache/access.log'
-           );
+           ];
 
 $error = "";
 $message = "";
@@ -90,17 +90,18 @@ $template_ = new Template('logs.tmpl');
 $nblines = $template_->getDefaultValue('LOG_LINES');
 
 // prepare options
-$lines = array (
+$lines = [
     '10' => '10',
     '20' => '20',
     '50' => '50',
     '200' => '200',
     '1000' => '1000',
-    '5000' => '5000');
+    '5000' => '5000'
+];
 $lines[$lang_->print_txt('ALL')] = 'all';
 
 // prepare replacements
-$replace = array(
+$replace = [
     '__LANG__' => $lang_->getLanguage(),
     '__ERROR__' => $lang_->print_txt($error),
     '__MESSAGE__' => $lang_->print_txt($message),
@@ -111,7 +112,7 @@ $replace = array(
     '__SEARCH__' => $vform->input('search', 30, $posted['search']),
     '__INPUT_LOGLINES__' => $vform->select('loglines', $lines, $posted['loglines'], '', 1),
     '__VIEW_LOG__' => viewLog($log, $date, $posted)
-);
+];
 
 // display page
 $template_->output($replace);

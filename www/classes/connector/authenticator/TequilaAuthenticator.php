@@ -56,11 +56,11 @@ class TequilaAuthenticator extends AuthManager {
         }
         $url .= $settings->getSetting('server').":".$settings->getSetting('port');
         $tequila = new TequilaClient($url, '/tmp/tequila');
-        $requestInfo = array(
+        $requestInfo = [
                                 'urlacces'  => $tequila->getCurrentUrl(),
                                 'service'   => 'MailCleaner',
                                 'request'   => $settings->getSetting('fields'),
-                             );
+	];
         $tequila->setApplicationName('MailCleaner');
         $tequila->SetWantedAttributes(preg_split('/,/', $settings->getSetting('fields')));
         $tequila->SetAllowsFilter($settings->getSetting('allowsfilter'));

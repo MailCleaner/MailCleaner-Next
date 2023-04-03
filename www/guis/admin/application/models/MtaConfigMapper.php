@@ -65,7 +65,7 @@ class Default_Model_MtaConfigMapper
             unset($data['id']);
             $res = $this->getDbTable()->insert($data);
         } else {
-            $res = $this->getDbTable()->update($data, ['stage = ?' => $id)];
+            $res = $this->getDbTable()->update($data, ['stage = ?' => $id]);
         }
         return $res;
     }

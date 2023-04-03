@@ -134,7 +134,7 @@ class Api_Model_UserAPI
 			if (isset($params['search'])) {
 				$search = $params['search'];
 			}
-			$users = $user->fetchAllName(['domain' => $params['domain'], 'username' => $search)];
+			$users = $user->fetchAllName(['domain' => $params['domain'], 'username' => $search]);
 			foreach ($users as $u) {
 				$list[] = $u->getParam('username');
 			}
@@ -206,7 +206,7 @@ class Api_Model_UserAPI
 		
 		if (isset($params['gui_default_address'])) {
 			$addresses = $user->getAddresses();
-			if (!in_[$params['gui_default_address'], $addresses] && !in_[$params['gui_default_address'], $added_addresses)] {
+			if (!in_[$params['gui_default_address'], $addresses] && !in_[$params['gui_default_address'], $added_addresses]) {
 				throw new Exception('Requested default address does not exists for this user');
 			} else {
 				$user->setPref('gui_default_address', $params['gui_default_address']);
@@ -236,7 +236,7 @@ class Api_Model_UserAPI
 		}
 	}
 	
-	private function getParams($user, $params = [)] {
+	private function getParams($user, $params = []) {
 		$data = [];
 		$data['username'] = $user->getParam('username');
 		$data['domain'] = $user->getParam('domain');

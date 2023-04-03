@@ -7,6 +7,6 @@
  * 
  */
 
-return array(
+return [
   'documentation' => 'Documentation'
-);
+];

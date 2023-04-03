@@ -25,7 +25,7 @@ global $sysconf_;
 global $admin_;
 
 // check authorizations
-$admin_->checkPermissions(['can_configure')];
+$admin_->checkPermissions(['can_configure']);
 
 // create and load antivirus configuration handler
 $antivirus_ = new AntiVirus();
@@ -73,9 +73,13 @@ if ($cform->shouldSave()) {
 $template_ = new Template('config_antivirus.tmpl');
 $documentor = new Documentor();
 
-$usetnefoptions = array($lang_->print_txt('NOTNEF') => 'no', $lang_->print_txt('ADDTNEF') => 'add', $lang_->print_txt('REPLACETNEF') => 'replace');
+$usetnefoptions = [
+	$lang_->print_txt('NOTNEF') => 'no',
+	$lang_->print_txt('ADDTNEF') => 'add',
+	$lang_->print_txt('REPLACETNEF') => 'replace'
+];
 // prepare replacements
-$replace = array(
+$replace = [
         '__DOC_ANTIVIRUSSCANNERS__' => $documentor->help_button('ANTIVIRUSSCANNERS'),
         '__DOC_ANTIVIRUSSETTINGS__' => $documentor->help_button('ANTIVIRUSSETTINGS'),
         "__LANG__" => $lang_->getLanguage(),
@@ -100,7 +104,7 @@ $replace = array(
         "__FORM_INPUTFILETIMEOUT__" => $cform->input('file_timeout', 3, $antivirus_->getPref('file_timeout')),
         "__FORM_INPUTTNETIMEOUT__" => $cform->input('tnef_timeout', 3, $antivirus_->getPref('tnef_timeout')),
         "__RELOAD_NAV_JS__" => "window.parent.frames['navig_frame'].location.reload(true)"
-);
+];
 
 // output page
 $template_->output($replace);

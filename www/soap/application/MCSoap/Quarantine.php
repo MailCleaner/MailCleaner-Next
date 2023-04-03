@@ -21,7 +21,7 @@ class MCSoap_Quarantine
       $id = $params['id'];
     }
     if (!$id || !preg_match('/^(\d{8})\/([a-z,A-Z,0-9]{6}-[a-z,A-Z,0-9]{6}-[a-z,A-Z,0-9]{2})$/', $id, $matches)) {
-      return array('status' => 0, 'error' => 'BADMSGID ('.$id.")");
+      return ['status' => 0, 'error' => 'BADMSGID ('.$id.")"];
     }
     $id = $matches[2];
     if (!isset($params['recipient']) || !preg_match('/^(\S+)\@(\S+)$/', $params['recipient'], $matches)) {

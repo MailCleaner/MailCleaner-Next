@@ -27,7 +27,7 @@ global $lang_;
 // not allowed if we are not a master
 if ($sysconf_->ismaster_ < 1) { exit; }
 // check authorizations
-$admin_->checkPermissions(['can_view_stats')];
+$admin_->checkPermissions(['can_view_stats']);
 
 // initial values
 $gstatus = 1; // 1 for ok, 0 for critical
@@ -80,7 +80,7 @@ foreach ($slaves as $slave) {
 $template_ = new Template('dyn_stats.tmpl');
 
 // prepare replacements
-$replace = array(
+$replace = [
         "__SYSTEM_STATUS__" => getStatus($gstatus),
         "__SYSTEM_LOAD__" => getLoad($gload),
         "__SPOOLSTATUS__" => getSpools($gspools),
@@ -88,7 +88,7 @@ $replace = array(
         "__NB_SPAMS__" => $gcounts['spams'],
         "__NB_VIRUSES__" => $gcounts['viruses'],
         "__SERVER_SELF__" => $_SERVER['PHP_SELF']
-);
+];
 
 // output page
 $template_->output($replace);

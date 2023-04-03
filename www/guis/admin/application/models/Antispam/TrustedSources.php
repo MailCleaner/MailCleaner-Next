@@ -11,14 +11,14 @@
 class Default_Model_Antispam_TrustedSources
 {
     protected $_id;
-    protected $_values = array(
+    protected $_values = [
         'use_alltrusted' => 1,
         'use_authservers' => 0,
         'domainsToSPF' => '',
         'authservers' => '',
         'authstring' => '',
         'whiterbls' => ''
-      );
+    ];
 	
 	protected $_mapper;
 	

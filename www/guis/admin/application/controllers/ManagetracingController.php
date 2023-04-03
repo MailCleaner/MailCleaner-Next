@@ -29,8 +29,8 @@ class ManagetracingController extends Zend_Controller_Action
 	    $fromdateO = Zend_Date::now();
 #        $fromdateO->sub('1', Zend_Date::DAY, Zend_Registry::get('Zend_Locale')->getLanguage());
         
-        $todate = Zend_Locale_Format::getDate($todateO, array('date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()));      
-        $fromdate = Zend_Locale_Format::getDate($fromdateO, array('date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()));
+        $todate = Zend_Locale_Format::getDate($todateO, ['date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()]);
+        $fromdate = Zend_Locale_Format::getDate($fromdateO, ['date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()]);
        
         
         foreach ( ['fd' => 'day', 'fm' => 'month') as $tk => $tv] {
@@ -85,7 +85,7 @@ class ManagetracingController extends Zend_Controller_Action
 		$request = $this->getRequest();
 		$form    = new Default_Form_Tracing($this->getSearchParams());
 		$form->setAction(Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managetracing'));
-		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managetracing', NULL, [)];
+		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managetracing', NULL, []);
 
 		$view->form = $form;
     }
@@ -95,7 +95,7 @@ class ManagetracingController extends Zend_Controller_Action
 		$view=$layout->getView();
 		$layout->disableLayout();
 		$view->addScriptPath(Zend_Registry::get('ajax_script_path'));
-		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managecontentquarantine', NULL, [)];
+		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managecontentquarantine', NULL, []);
 		 
 		$request = $this->getRequest();
 		 
@@ -110,7 +110,7 @@ class ManagetracingController extends Zend_Controller_Action
 		$orderfield = 'date';
 		$orderorder = 'desc';
 		 
-		$columns = array(
+		$columns = [
                   'taction' => ['label' => 'Action'],
 		  'in_date' => ['label' => 'Arrival date'],
 		  'in_status' => ['label' => 'Arrival status'],
@@ -120,7 +120,7 @@ class ManagetracingController extends Zend_Controller_Action
     	  'content' => ['label' => 'Content status'],
     	  'out_status' => ['label' => 'Deliver status'],
     	  'out_date' => ['label' => 'Delivery date']
-		);
+		];
 		if ($request->getParam('sort') && preg_match('/(\S+)_(asc|desc)/', $request->getParam('sort'), $matches)) {
 			$order = $request->getParam('sort');
 			$orderfield = $matches[1];
@@ -142,8 +142,9 @@ class ManagetracingController extends Zend_Controller_Action
 		
 		// escape params args
                 array_walk($params, function(&$arg_value, $key) {
-                        if ($key == 'regexp')
+                        if ($key == 'regexp') {
                                 $arg_value = escapeshellarg($arg_value);
+			}
                 });
 
 		$view->canceled = 0;

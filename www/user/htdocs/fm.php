@@ -47,7 +47,7 @@ if ($ret != "OK") {
   $res = $ret;
 } else {
   // actually force the message
-  $res = $soaper->queryParam('forceSpam', [$_GET['id'], $_GET['a'])];
+  $res = $soaper->queryParam('forceSpam', [$_GET['id'], $_GET['a']]);
   $res = preg_replace('/^(\S*)\s.*/', '$1', $res);
 } 
 
@@ -57,9 +57,9 @@ if (isset($_GET['pop']) && $_GET['pop'] == 'up') {
   $template_model = 'fm_pop.tmpl';
 }
 $template_ = new Template($template_model);
-$replace = array(
+$replace = [
   '__MESSAGE__' => $lang_->print_txt($res)
-);
+];
 
 $replace['__ACTIONS__'] = '';
 

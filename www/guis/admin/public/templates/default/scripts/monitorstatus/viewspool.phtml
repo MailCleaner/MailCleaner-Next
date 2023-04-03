@@ -39,7 +39,7 @@
 <div id="tooltip">empty</div>
 
 <div class="spoolbloc">
-<?php echo $this->partial('ajax/monitorstatus/viewspool.phtml', array(
+<?php echo $this->partial('ajax/monitorstatus/viewspool.phtml', [
                          'slave' => $this->slave,
                          'spool' => $this->spool,
                          'msgs' => $this->msgs,
@@ -48,7 +48,7 @@
                          'pages' => $this->pages,
                          'loading' => 1,
                          't' => $this->t,
-)); ?>
+]); ?>
 </div>
 </div>
 </body>

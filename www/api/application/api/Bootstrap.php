@@ -13,15 +13,15 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
 	protected function _initAutoload()
 	{
-		$autoloader = new Zend_Application_Module_Autoloader(array(
-            'namespace' => 'Api_',
-            'basePath'  => dirname(__FILE__),
-		));
+		$autoloader = new Zend_Application_Module_Autoloader([
+            		'namespace' => 'Api_',
+            		'basePath'  => dirname(__FILE__),
+		]);
 
-		$defaultLoader = new Zend_Application_Module_Autoloader(array(
-              'basePath'  => APPLICATION_PATH . '/../../guis/admin/application/',
-              'namespace' => 'Default_',
-		));
+		$defaultLoader = new Zend_Application_Module_Autoloader([
+                	'basePath'  => APPLICATION_PATH . '/../../guis/admin/application/',
+                	'namespace' => 'Default_',
+		]);
 		$loader = Zend_Loader_Autoloader::getInstance();
 		$loader->pushAutoloader($defaultLoader);
 
@@ -45,15 +45,15 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 		require_once('MailCleaner/Config.php');
 		$mcconfig = MailCleaner_Config::getInstance();
 			
-		$writeConfigDb = new Zend_Db_Adapter_Pdo_Mysql(array(
-    	                      'host'        => 'localhost',
-                              'unix_socket' => $mcconfig->getOption('VARDIR')."/run/mysql_master/mysqld.sock",
-                              'username'    => 'mailcleaner',
-                              'password'    => $mcconfig->getOption('MYMAILCLEANERPWD'),
-                              'dbname'      => 'mc_config'
-                              ));
+		$writeConfigDb = new Zend_Db_Adapter_Pdo_Mysql([
+    	                'host'        => 'localhost',
+                        'unix_socket' => $mcconfig->getOption('VARDIR')."/run/mysql_master/mysqld.sock",
+                        'username'    => 'mailcleaner',
+                        'password'    => $mcconfig->getOption('MYMAILCLEANERPWD'),
+                        'dbname'      => 'mc_config'
+                ]);
                                
-                              Zend_Registry::set('writedb', $writeConfigDb);
+                Zend_Registry::set('writedb', $writeConfigDb);
 	}
 
 	protected function _initAuth()

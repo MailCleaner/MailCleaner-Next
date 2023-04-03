@@ -23,19 +23,19 @@
    * Specialized settings array with default values
    * @var array
    */
-   protected $spec_settings_ = array(
+   protected $spec_settings_ = [
                               'secret' => '',
                               'authtype'   => 'PAP'
-                             );
+   ];
                              
    /**
     * fields type
     * @var array
     */
-   protected $spec_settings_type_ = array(
+   protected $spec_settings_type_ = [
                               'secret' => ['text', 20],
-                              'authtype' => array('select', ['PAP' => 'PAP', 'CHAP_MD5' => 'CHAP_MD5', 'MSCHAPv1' => 'MSCHAPv1', 'MSCHAPv2' => 'MSCHAPv2')]
-                              );                          
+                              'authtype' => ['select', ['PAP' => 'PAP', 'CHAP_MD5' => 'CHAP_MD5', 'MSCHAPv1' => 'MSCHAPv1', 'MSCHAPv2' => 'MSCHAPv2']]
+   ];                          
 
    public function __construct($type) {
       parent::__construct($type);

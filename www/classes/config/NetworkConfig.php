@@ -30,10 +30,10 @@ class NetworkConfig
    * global network properties
    * @var  $array
    */
-  private $props_ = array(
-                      'dns_servers' => "",
-                      'search_domains' => ""
-                   );
+  private $props_ = [
+    'dns_servers' => "",
+    'search_domains' => ""
+  ];
 
  
   /**

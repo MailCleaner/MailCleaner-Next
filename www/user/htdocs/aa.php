@@ -54,9 +54,9 @@ if (isset($_GET['m']) && $_GET['m'] == 'd') {
 
 // create view
 $template_ = new Template('aa.tmpl');
-$replace = array(
+$replace = [
         '__MESSAGE__' => $lang_->print_txt($message)
-);
+];
 // display page
 $template_->output($replace);
 ?>

@@ -15,14 +15,14 @@ class Validate_EmailList extends Zend_Validate_Abstract
 
     public $email = '';
     
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::MSG_EMAILLIST => "'%value%' is not a valid email address list",
         self::MSG_BADEMAIL => "'%mail%' is not a valid email address"
-    );
+    ];
     
-    protected $_messageVariables = array(
+    protected $_messageVariables = [
         'mail' => 'email'
-    );
+    ];
 
     public function isValid($value)
     {

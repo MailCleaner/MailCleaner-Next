@@ -26,14 +26,18 @@ class Default_Model_ReportingStatsMapper
         		$search_id = $res['search_id'];
                 $params['search_id'] = $search_id;
         	} else {
-        		return array('error' => "could not start search on host: ".$s->getHostname());
+			return [
+				'error' => "could not start search on host: ".$s->getHostname()
+			];
         	}
         }
         return $search_id;
 	}
 	
 	public function getStatusFetchAll($params) {
-		$res = array('finished' => 0, 'count' => 0, 'data' => [)];
+		$res = [
+			'finished' => 0, 'count' => 0, 'data' => []
+		];
 	    $slave = new Default_Model_Slave();
         $slaves = $slave->fetchAll();
         
@@ -137,25 +141,25 @@ class Default_Model_ReportingStatsMapper
         if (isset($params['sort'])) {
            switch ($params['sort']) {
            	case 'msgs':  
-           	    usort($entries, ['Default_Model_ReportingStats', 'compareMsgs')];
+           	    usort($entries, ['Default_Model_ReportingStats', 'compareMsgs']);
            	    break;
            	case 'spams':
-           		usort($entries, ['Default_Model_ReportingStats', 'compareSpams')];
+           		usort($entries, ['Default_Model_ReportingStats', 'compareSpams']);
            		break;
            	case 'viruses':
-           		usort($entries, ['Default_Model_ReportingStats', 'compareViruses')];
+           		usort($entries, ['Default_Model_ReportingStats', 'compareViruses']);
            		break;
            	case 'spamspercent':
-           		usort($entries, ['Default_Model_ReportingStats', 'compareSpamsPercent')];
+           		usort($entries, ['Default_Model_ReportingStats', 'compareSpamsPercent']);
            		break;
            	case 'users':
-           		usort($entries, ['Default_Model_ReportingStats', 'compareUsers')];
+           		usort($entries, ['Default_Model_ReportingStats', 'compareUsers']);
            		break;
            	default:
-           		usort($entries, ['Default_Model_ReportingStats', 'compareWhat')];
+           		usort($entries, ['Default_Model_ReportingStats', 'compareWhat']);
            }
         } else {
-        	usort($entries, ['Default_Model_ReportingStats', 'compareWhat')];
+        	usort($entries, ['Default_Model_ReportingStats', 'compareWhat']);
         }
         if (isset($params['top']) && $params['top']) {
         	$entries = array_slice($entries, 0, $params['top']);

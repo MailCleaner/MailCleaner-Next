@@ -10,7 +10,7 @@
 
 class Default_Model_QuarantinedSpam
 {
-	protected $_values = array(
+	protected $_values = [
       'to_domain' => '',
 	  'to_user' => '',
 	  'exim_id' => '',
@@ -23,7 +23,7 @@ class Default_Model_QuarantinedSpam
 	  'store_slave' => 0,
           ### newsl
           'is_newsletter' => '0',
-    );
+	];
     
 	protected $_mapper;
 	protected $_table = 'spam';
@@ -57,12 +57,12 @@ class Default_Model_QuarantinedSpam
 	}
 	
     public function getCleanParam($param) {
-      $split_fields = array(
+      $split_fields = [
         'M_subject' => 80,
         'to_user' => 25,
         'to_domain' => 25,
         'sender' => 40
-      );
+      ];
       $data = $this->getParam($param);
       $data = iconv_mime_decode($data, ICONV_MIME_DECODE_CONTINUE_ON_ERROR, 'UTF-8');
       $ret = htmlentities($data, ENT_COMPAT, "UTF-8");

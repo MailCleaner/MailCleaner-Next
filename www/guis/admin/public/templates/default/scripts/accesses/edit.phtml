@@ -22,17 +22,19 @@
       </form>
     </div>
     <div id="resultpanel">
-<?php echo $this->partial('ajax/accesses/search.phtml', array(
-                         'admins' => $this->admins,
-                         'adminscount' => $this->adminscount,
-                         'page' => $this->page,
-                         'lastpage' => $this->lastpage,
-                         'images_path' => $this->images_path,
-                         'sname' => $this->sname,
-                         'username' => $this->username,
-                         'searchurl' => $this->searchurl,
-                         't' => $this->t,
-)); ?>   
+<?php echo $this->partial(
+	'ajax/accesses/search.phtml', [
+        	'admins' => $this->admins,
+        	'adminscount' => $this->adminscount,
+        	'page' => $this->page,
+        	'lastpage' => $this->lastpage,
+        	'images_path' => $this->images_path,
+        	'sname' => $this->sname,
+        	'username' => $this->username,
+        	'searchurl' => $this->searchurl,
+        	't' => $this->t,
+	]
+); ?>   
     </div>
   </div>
  
@@ -41,14 +43,14 @@
  
  <form method="<?php echo $this->form->getMethod() ?>" action="<?php echo $this->form->getAction()?>" id="<?php echo $this->form->getId()?>">
 
-<?php echo $this->InputRow($this->form->getElement('username'),['field_only'=>true,'nobox'=>true)];?>
+<?php echo $this->InputRow($this->form->getElement('username'),['field_only'=>true,'nobox'=>true]);?>
     <h1 id="domaincontentpaneltitle"><?php echo $this->admin->getParam('username');?>
     <?php if ($this->admin->getParam('username') != 'admin') {?> 
    <div class="removedomain removedomaintitle"><a href="<?php echo $this->removeurl;?>"><?php echo $this->t->_('Remove from MailCleaner');?></a></div>
     <?php }?>
     </h1>
-    <?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t)]; ?>
-     <?php echo $this->partial('forms/admineditForm.phtml', ['form' => $this->form,'t' => $this->t, 'message' => $this->message, 'admin' => $this->admin, 'images_path' => $this->images_path)]; ?>
+    <?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t]); ?>
+     <?php echo $this->partial('forms/admineditForm.phtml', ['form' => $this->form,'t' => $this->t, 'message' => $this->message, 'admin' => $this->admin, 'images_path' => $this->images_path]); ?>
 
  </form>
  

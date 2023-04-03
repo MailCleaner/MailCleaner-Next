@@ -92,7 +92,7 @@ if ($spoolid == "MTA2") {
 }
 
 // prepare replacements
-$replace = array(
+$replace = [
     '__LANG__' => $lang->getLanguage(),
     '__ERROR__' => $lang->print_txt($error),
     '__MESSAGE__' => $lang->print_txt($message),
@@ -102,7 +102,7 @@ $replace = array(
     '__COUNT__' => $spool->getCount(),
     '__LINK_REFRESH__' => "javascript:window.location.href='".$_SERVER['PHP_SELF']."?s=$spoolid&sid=$sid&p=$pid';",
     '__LINK_FORCEALL__' => "javascript:window.location.href='".$_SERVER['PHP_SELF']."?s=$spoolid&sid=$sid&m=fa&p=$pid';"
-);
+];
 
 // output page
 $template_->output($replace);

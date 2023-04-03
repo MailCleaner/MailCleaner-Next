@@ -31,7 +31,7 @@ global $admin_;
 $remote_search_ = true;
 
 // check authorizations
-$admin_->checkPermissions(['can_manage_users')];
+$admin_->checkPermissions(['can_manage_users']);
 
 // default values
 $search_username = "";
@@ -126,7 +126,7 @@ if (!isset($search_user)) {
 }
 
 // prepare replacements
-$replace = array(
+$replace = [
         "__LANG__" => $lang_->getLanguage(),
         "__DOC_USERLISTTITLE__" => $documentor->help_button('USERLISTTITLE'),
         "__DOC_USERSETTINGS__" => $documentor->help_button('USERSETTINGS'),
@@ -158,7 +158,7 @@ $replace = array(
         "__LINK_SETASMAIN__" => "javascript:window.document.forms['user'].user_m.value='sm';window.document.forms['user'].submit();",
         "__LINK_REMOVEADDRESS__" => "javascript:window.document.forms['user'].user_m.value='da';window.document.forms['user'].submit();",
         "__RESETUSER_LINK__" => "javascript:window.document.forms['user'].user_m.value='du';window.document.forms['user'].submit();"
-);
+];
 
 // output page
 $template_->output($replace);

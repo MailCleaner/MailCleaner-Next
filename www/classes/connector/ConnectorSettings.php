@@ -17,21 +17,21 @@ class ConnectorSettings {
    * Settings array with default values
    * @var array
    */
-   private $settings_ = array(
+   private $settings_ = [
                               'server' => 'localhost',
                               'port'   => 0
-                             );
+   ];
                              
-   private $settings_type_ = array(
+   private $settings_type_ = [
                                'server' => ['text', 20],
                                'port' => ['text', 5]
-                               );                          
+   ];                          
     
    /**
     * List of available connector with corresponding classes
     * @var array
     */
-    static private $connectors_ = array (
+    static private $connectors_ = [
                               'none' => 'SQLSettings',
                               'local' => 'SQLSettings',
                               'sql' => 'SQLSettings',
@@ -42,7 +42,7 @@ class ConnectorSettings {
                               'smtp'  => 'SimpleServerSettings',
                               'radius'=> 'RadiusSettings',
                               'tequila' => 'TequilaSettings'
-                           );
+    ];
                            
     /**
      * internal type of connector

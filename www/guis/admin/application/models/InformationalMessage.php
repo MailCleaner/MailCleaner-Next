@@ -46,7 +46,7 @@ class Default_Model_InformationalMessage
 	}
 
 	public function addSlave($slave) {
-           if (!in_[$slave, $this->_slaves)] {
+           if (!in_[$slave, $this->_slaves]) {
     		array_push($this->_slaves, $slave);
 	   }
         }

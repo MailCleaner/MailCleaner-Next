@@ -77,7 +77,7 @@ class Default_Model_NTPSettings
     		}
     	    $written = file_put_contents($tmpfile, $txt);
     	    if ($written) {
-    	       $soapres = Default_Model_Localhost::sendSoapRequest('Config_saveNTPConfig', ['sync' => $sync, 'timeout' => 20)];
+    	       $soapres = Default_Model_Localhost::sendSoapRequest('Config_saveNTPConfig', ['sync' => $sync, 'timeout' => 20]);
     	       return $soapres;
     	    } else {
     	    	'NOK could not write to temporary file';

@@ -31,7 +31,7 @@ class ContentQuarantine extends Quarantine {
    * filter criterias
    * @var  array
    */
-  protected  $filters_ = array(
+  protected  $filters_ = [
                       'searchid'      => '',
                       'slave'         => '127.0.0.1',
                       'to_local'      => '',
@@ -42,19 +42,19 @@ class ContentQuarantine extends Quarantine {
                       'order'         => ['date', 'desc'],
                       'page'          => 1,
                       'msg_per_page'  => DEFAULT_MSGS
-                    );
+  ];
                   
   /**
    * allowed orders with corresponding column names
    * @var array
    */
-  protected $ordered_fields_ = array(
+  protected $ordered_fields_ = [
                      'date'       => 'date',
                      'time'       => 'time',
                      'tolocal'    => 'to_address',
                      'from'       => 'from_address',
                      'subject'    => 'subject',
-                    );
+  ];
                     
   /**
    * images that could be used in the quarantine html display
@@ -81,7 +81,7 @@ private function isAllowed() {
    }
    
    // if admin, then admin must have right to manage users and to manage this domain
-   if ( (! $admin_->checkPermissions(['can_manage_users'))] || (! $admin_->canManageDomain($this->getFilter('to_domain')))) {
+   if ( (! $admin_->checkPermissions(['can_manage_users'])) || (! $admin_->canManageDomain($this->getFilter('to_domain')))) {
      $log_->log('-- admin not allowed to access quarantine', PEAR_LOG_WARNING); 
      return false;
    }
@@ -246,7 +246,7 @@ public function getHTMLList($t) {
  * @return           bool   true on success, false on failure
  */
 public function setImages($images) {
-   if (is_[$images)] {
+   if (is_[$images]) {
      $this->images_ = $images;
      return true;
    }

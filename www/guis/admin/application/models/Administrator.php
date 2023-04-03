@@ -12,25 +12,25 @@ class Default_Model_Administrator
 {
 	protected $_id;
 	protected $_username;
-	protected $_values = array(
+	protected $_values = [
       'username' => '',
 	  'domains' => '',
 	  'password' => '',
-    );
+	];
 	protected $_domains = [];
-	protected $_rights = array(
+	protected $_rights = [
 	  'can_configure' => 0,
 	  'can_manage_domains' => 0,
 	  'can_manage_users' => 0,
 	  'can_view_stats' => 0,
 	  'allow_subdomains' => 0
-	);
+	];
 	
-	protected $_roles = array(
-	  array('name' => 'administrator', 'rights' => ['all_domains', 'can_configure', 'can_manage_domains', 'can_manage_users')],
-	  array('name' => 'manager', 'rights' => ['can_manage_domains', 'can_manage_users')],
-	  array('name' => 'hotline', 'rights' => ['can_manage_users')]
-	);
+	protected $_roles = [
+	  ['name' => 'administrator', 'rights' => ['all_domains', 'can_configure', 'can_manage_domains', 'can_manage_users']],
+	  ['name' => 'manager', 'rights' => ['can_manage_domains', 'can_manage_users']],
+	  ['name' => 'hotline', 'rights' => ['can_manage_users']]
+	];
 	
 	protected $_mapper;
 	
@@ -112,7 +112,7 @@ class Default_Model_Administrator
 	}
 	
 	public function canManageDomain($domain) {
-		if (in_['*', $this->_domains)] {
+		if (in_['*', $this->_domains]) {
 			return 1;
 		}
 		foreach ($this->_domains as $d) {
@@ -153,7 +153,7 @@ class Default_Model_Administrator
 	  foreach ($this->_roles as $role) {
 	  	 if ($role['name'] == $r) {
 	  	 	foreach ($this->getRights() as $right) {
-	  	 		if (in_[$right, $role['rights'])] {
+	  	 		if (in_[$right, $role['rights']]) {
 	  	 			$this->setRight($right, 1);
 	  	 		} else {
 	  	 			$this->setRight($right, 0);

@@ -13,10 +13,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 	
     protected function _initAutoload()
     {
-        $autoloader = new Zend_Application_Module_Autoloader(array(
+        $autoloader = new Zend_Application_Module_Autoloader([
             'namespace' => 'Default_',
             'basePath'  => dirname(__FILE__),
-        ));
+	]);
         return $autoloader;
     }
     
@@ -32,24 +32,24 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
     	require_once('MailCleaner/Config.php');
     	$mcconfig = MailCleaner_Config::getInstance();
     	
-    	$writeConfigDb = new Zend_Db_Adapter_Pdo_Mysql(array(
+    	$writeConfigDb = new Zend_Db_Adapter_Pdo_Mysql([
     	                      'host'        => 'localhost',
                               'unix_socket' => $mcconfig->getOption('VARDIR')."/run/mysql_master/mysqld.sock",
                               'username'    => 'mailcleaner',
                               'password'    => $mcconfig->getOption('MYMAILCLEANERPWD'),
                               'dbname'      => 'mc_config'
-                             ));
+	]);
                              
         Zend_Registry::set('writedb', $writeConfigDb);
         
  
-        $spoolDb = new Zend_Db_Adapter_Pdo_Mysql(array(
+        $spoolDb = new Zend_Db_Adapter_Pdo_Mysql([
     	                      'host'        => 'localhost',
                               'unix_socket' => $mcconfig->getOption('VARDIR')."/run/mysql_master/mysqld.sock",
                               'username'    => 'mailcleaner',
                               'password'    => $mcconfig->getOption('MYMAILCLEANERPWD'),
                               'dbname'      => 'mc_spool'
-                             ));
+	]);
                              
         Zend_Registry::set('spooldb', $spoolDb);
 
@@ -112,7 +112,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
        
     	// set users language
     	if (!empty($_GET['lang'])) {
-            if (in_array($_GET['lang'], ['en', 'fr', 'de', 'es', 'it'))] {
+            if (in_array($_GET['lang'], ['en', 'fr', 'de', 'es', 'it'])) {
                 $lang = $_GET['lang'];
             } else {
                 $lang = 'en';

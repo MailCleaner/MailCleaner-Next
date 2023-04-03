@@ -166,7 +166,7 @@ class Default_Model_RRDGraphic
 		return $this->getMapper()->fetchAll($params);
 	}
 	
-	public function getFamilies($params = [)] {
+	public function getFamilies($params = []) {
 		$families = [];
 		$list = $this->fetchAll($params);
 		foreach ($list as $g) {

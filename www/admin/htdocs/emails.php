@@ -32,7 +32,7 @@ global $admin_;
 $remote_search_ = true;
 
 // check authorizations
-$admin_->checkPermissions(['can_manage_users')];
+$admin_->checkPermissions(['can_manage_users']);
   
 // create email object and edition form
 $selected_address = new Email();
@@ -147,10 +147,10 @@ if ($antispam_->getPref('enable_blacklists') && ( $domain->getPref('enable_black
 }
 
 // prepare options 
-$delivery_types = array($lang_->print_txt('TAGMODE') => '1', $lang_->print_txt('QUARANTINEMODE') => '2', $lang_->print_txt('DROPMODE') => '3');
-$frequencies = array($lang_->print_txt('DAILY') => 1, $lang_->print_txt('WEEKLY') => 2,  $lang_->print_txt('MONTHLY') => 3, $lang_->print_txt('NONE') => 4);
+$delivery_types = [$lang_->print_txt('TAGMODE') => '1', $lang_->print_txt('QUARANTINEMODE') => '2', $lang_->print_txt('DROPMODE') => '3'];
+$frequencies = [$lang_->print_txt('DAILY') => 1, $lang_->print_txt('WEEKLY') => 2,  $lang_->print_txt('MONTHLY') => 3, $lang_->print_txt('NONE') => 4];
 // prepare replacements
-$replace = array(
+$replace = [
         "__LANG__" => $lang_->getLanguage(),
         "__DOC_EMAILLISTTITLE__" => $documentor->help_button('EMAILLISTTITLE'),
         "__DOC_EMAILSETTINGS__" => $documentor->help_button('EMAILSETTINGS'),
@@ -159,7 +159,7 @@ $replace = array(
         "__LINK_DOSEARCH__" => "javascript:window.document.forms['search'].submit();",
         "__FORM_BEGIN_EMAILSEARCH__" => $sform->open().$sform->hidden('selected', '').$sform->hidden('user','').$sform->hidden('page', $email_list->getPage()),
         "__FORM_CLOSE_EMAILSEARCH__" => $sform->close(),
-        "__FORM_ESEARCHLOCALPART__" => $sform->inputjs('localpart', 20, $search_localpart, ''), //'return setEntered(event);'),
+        "__FORM_ESEARCHLOCALPART__" => $sform->inputjs('localpart', 20, $search_localpart, ''),
         "__FORM_ESEARCHDOMAINPART__" => $sform->select('domainpart',$sysconf_->getFilteredDomains(), $search_domainpart,''),
         "__EMAIL__" => $search_Address,
         "__SETTINGSTARGETENTERED__" => "javascript:window.document.forms['search'].submit();",
@@ -189,7 +189,7 @@ $replace = array(
         "__LINK_EDITWHITELIST__" => "wwlist.php?t=1&a=".$selected_address->getPref('address'),
         "__LINK_EDITWARNLIST__" => "wwlist.php?t=2&a=".$selected_address->getPref('address'),
         "__LINK_EDITBLACKLIST__" => "wwlist.php?t=3&a=".$selected_address->getPref('address')
-);
+];
 
 // output page
 $template->output($replace);

@@ -15,7 +15,7 @@ class WWEntry extends PrefHandler {
   * datas of the entry
   * @var array
   */
- private $datas_ = array(
+ private $datas_ = [
                       'id'         => '',
                       'sender'         => '',
                       'recipient'       => '',
@@ -23,7 +23,7 @@ class WWEntry extends PrefHandler {
                       'expiracy'         => '',
                       'status'          => 0,
                       'comments'       => '',
-                      );
+ ];
          
 /**
  * test if the entry should be edited
@@ -99,7 +99,7 @@ public function getElementTemplate($template, $selected, $n) {
     $t = str_replace('__FORM_CLOSE_EDIT__', $this->edit_formular_->close(), $t);
    	 // edition display
     $t = str_replace('__SENDER__', $this->edit_formular_->input('sender', 30, $this->getPref('sender'), ''), $t);
-    $active_inactive = array($lang_->print_txt('ACTIVE') => '1', $lang_->print_txt('INNACTIVE') => '0');
+    $active_inactive = [$lang_->print_txt('ACTIVE') => '1', $lang_->print_txt('INNACTIVE') => '0'];
     $t = str_replace('__STATUS__', $this->edit_formular_->select('status', $active_inactive , $this->getPref('status'), ';'), $t);
     $t= str_replace('__COMMENT__', $this->edit_formular_->input('comments', 35, $this->getPref('comments'), ''), $t);
     $t= str_replace('__SUBMIT_EDIT_LINK__', "window.document.forms['".$this->edit_formular_->getName()."'].submit()", $t);

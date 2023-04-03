@@ -11,13 +11,13 @@
 class Default_Model_Antispam_PreRBLs
 {
     protected $_id;
-    protected $_values = array(
+    protected $_values = [
         'spamhits' => 1,
         'highspamhits' => 1,
         'lists' => '',
         'avoidgoodspf' => 0,
         'avoidhosts' => ''
-      );
+    ];
 	
 	protected $_mapper;
 	

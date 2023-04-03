@@ -25,7 +25,7 @@ global $sysconf_;
 global $admin_;
 
 // check authorizations
-$admin_->checkPermissions(['can_configure')];
+$admin_->checkPermissions(['can_configure']);
 
 // create and load dangerous content objects
 $dangerous_ = new DangerousContent();
@@ -53,13 +53,26 @@ $template_ = new Template('config_dangerous.tmpl');
 $documentor = new Documentor();
 
 // set options and field values
-$allow_disarm_block = array($lang_->print_txt('ALLOW') => 'yes', $lang_->print_txt('DISARM') => 'disarm', $lang_->print_txt('BLOCK') => 'no');
-$allow_disarm = array($lang_->print_txt('ALLOW') => 'yes', $lang_->print_txt('DISARM') => 'disarm');
-$allow_block = array($lang_->print_txt('ALLOW') => 'yes', $lang_->print_txt('BLOCK') => 'no');
-$neg_allow_block = array($lang_->print_txt('ALLOW') => 'no', $lang_->print_txt('BLOCK') => 'yes');
+$allow_disarm_block = [
+	$lang_->print_txt('ALLOW') => 'yes',
+	$lang_->print_txt('DISARM') => 'disarm',
+	$lang_->print_txt('BLOCK') => 'no'
+];
+$allow_disarm = [
+	$lang_->print_txt('ALLOW') => 'yes',
+       	$lang_->print_txt('DISARM') => 'disarm'
+];
+$allow_block = [
+	$lang_->print_txt('ALLOW') => 'yes',
+       	$lang_->print_txt('BLOCK') => 'no'
+];
+$neg_allow_block = [
+	$lang_->print_txt('ALLOW') => 'no',
+	$lang_->print_txt('BLOCK') => 'yes'
+];
 
 // prepare replacements
-$replace = array(
+$replace = [
         '__DOC_DANGEROUSTITLE__' => $documentor->help_button('DANGEROUSTITLE'),
         '__DOC_DANGEROUSHTMLCHECKS__' => $documentor->help_button('DANGEROUSHTMLCHECKS'),
         '__DOC_DANGEROUSFORMATCHECKS__' => $documentor->help_button('DANGEROUSFORMATCHECKS'),
@@ -86,7 +99,7 @@ $replace = array(
         "__FORM_INPUTUNENCRYPTEDMESSAGES__" => $dform->select('block_unencrypt', $neg_allow_block, $dangerous_->getPref('block_unencrypt'), ';'),
         "__LINK_FILENAMECHECKS__" => "config_filename.php",
         "__LINK_FILETYPECHECKS__" => "config_filetype.php"
-);
+];
 
 // output page
 $template_->output($replace);

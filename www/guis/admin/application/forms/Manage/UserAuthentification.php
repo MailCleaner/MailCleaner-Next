@@ -32,9 +32,10 @@ class Default_Form_Manage_UserAuthentification extends Zend_Form
 		$t = Zend_Registry::get('translate');
 
 		$this->setAttrib('id', 'user_form');
-		$panellist = new Zend_Form_Element_Select('userpanel', array(
+		$panellist = new Zend_Form_Element_Select('userpanel', [
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+		]);
 		## TODO: add specific validator
 		$panellist->addValidator(new Zend_Validate_Alnum());
 
@@ -58,42 +59,47 @@ class Default_Form_Manage_UserAuthentification extends Zend_Form
 		}
 		$this->addElement($domain);
 
-		$realname = new  Zend_Form_Element_Text('realname', array(
+		$realname = new  Zend_Form_Element_Text('realname', [
             'label'   => $t->_('Real name')." :",
 		    'required' => false,
-		    'filters'    => ['StringTrim'))];
+		    'filters'    => ['StringTrim']
+		]);
 		$realname->setValue($this->_local->getParam('realname'));
 		$this->addElement($realname);
 	  
 		if ($this->_user->getDomainObject()->isFetcherLocal()) {
-			$address = new  Zend_Form_Element_Text('email', array(
+			$address = new  Zend_Form_Element_Text('email', [
             'label'   => $t->_('Email address')." :",
 		    'required' => true,
-		    'filters'    => ['StringToLower', 'StringTrim'))];
+		    'filters'    => ['StringToLower', 'StringTrim']
+			]);
 			$address->setValue($this->_local->getParam('email'));
 			$this->addElement($address);
 		}
 	  
-		$password = new  Zend_Form_Element_Password('password', array(
+		$password = new  Zend_Form_Element_Password('password', [
 	        'label'    => $t->_('Password')." :",
 	        'renderPassword' => true,
-		    'required' => false));
+		'required' => false
+		]);
 		if ($this->_local->getParam('password') != '') {
 			$password->setValue('_keeppassword1_');
 		}
 		$this->addElement($password);
 	  
-		$confirm = new  Zend_Form_Element_Password('confirm', array(
+		$confirm = new  Zend_Form_Element_Password('confirm', [
 	        'label'    => $t->_('Confirm')." :",
 	        'renderPassword' => true,
-		    'required' => false));
+		'required' => false
+		]);
 		if ($this->_local->getParam('password') != '') {
 			$confirm->setValue('_keeppassword2_');
 		}
 		$this->addElement($confirm);
 
-		$submit = new Zend_Form_Element_Submit('submit', array(
-		     'label'    => $t->_('Submit')));
+		$submit = new Zend_Form_Element_Submit('submit', [
+			'label'    => $t->_('Submit')
+		]);
 		$this->addElement($submit);
 	}
 

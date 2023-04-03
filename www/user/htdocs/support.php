@@ -35,7 +35,7 @@ includeSupport($lang_->getLanguage());
 
 $template_ = new Template('support.tmpl');
 
-$replace = array(
+$replace = [
     '__INCLUDE_JS__' => '',
     '__BEGIN_SUPPORT_FORM__' => "<form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">",
     '__CLOSE_SUPPORT_FORM__' => "<input type=\"hidden\" name=\"send\" value=\"1\"></form>",
@@ -48,7 +48,7 @@ $replace = array(
     '__SUBMIT_BUTTON__' => "<input type=\"submit\" name=\"Submit\" value=\"".$lang_->print_txt('SEND')."\">",
     '__RESET_BUTTON__' => "<input type=\"reset\" name=\"reset\" value=\"".$lang_->print_txt('CLEAR')."\">",
     '__MESSAGE__' => $res
-);
+];
 
 $template_->output($replace);
    

@@ -30,9 +30,10 @@ class Default_Form_Manage_UserActions extends Zend_Form
 		$t = Zend_Registry::get('translate');
 
 		$this->setAttrib('id', 'user_form');
-	    $panellist = new Zend_Form_Element_Select('userpanel', array(
+	    $panellist = new Zend_Form_Element_Select('userpanel', [
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	    ]);
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         
@@ -56,10 +57,11 @@ class Default_Form_Manage_UserActions extends Zend_Form
 		}
 		$this->addElement($domain);
 		
-		$addresses = new Zend_Form_Element_Select('addresses', array(
+		$addresses = new Zend_Form_Element_Select('addresses', [
 	        'label'    => $t->_('Address')." :",
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+		]);
         
         foreach ($this->_user->getAddresses() as $address => $ismain) {
         	$addresses->addMultiOption($address, $address);
@@ -67,21 +69,22 @@ class Default_Form_Manage_UserActions extends Zend_Form
         $addresses->setValue($this->_user->getPref('addresses'));
         $this->addElement($addresses);
         
-		$submit = new Zend_Form_Element_Submit('submit', array(
-		     'label'    => $t->_('> go to preferences')));
+		$submit = new Zend_Form_Element_Submit('submit', [
+			'label'    => $t->_('> go to preferences')
+		]);
 		$this->addElement($submit);	
 	}
 	
 	public function setParams($request, $user) {
 		$email = new Default_Model_Email();
 		$email->find($request->getParam('addresses'));
-		$params = array(
+		$params = [
 		   'email' => $request->getParam('addresses'),
 		   'address' => $request->getParam('addresses'),
 		   'search' => $email->getLocalPart(),
 		   'domain' => $email->getDomainObject()->getParam('name'),
 		   'type' => 'email'
-		);
+		];
 		Zend_Controller_Action_HelperBroker::getStaticHelper('Redirector')->gotoSimple('editemail', null, null, $params);
 		foreach (['') as $pref] {
             if ($request->getParam($pref)) {

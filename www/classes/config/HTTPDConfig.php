@@ -15,7 +15,7 @@ class HTTPDConfig extends PrefHandler {
    * httpd settings
    * @var array
    */
-  private $pref_ = array(
+  private $pref_ = [
      'use_ssl' => 'true',
      'serveradmin' => 'postmaster@localhost',
      'servername' => 'localhost',
@@ -27,7 +27,7 @@ class HTTPDConfig extends PrefHandler {
      'http_port' => 80,
      'https_port' => 443,
      'certificate_file' => 'default.pem'
-   );
+   ];
 
 /**
  * constructor

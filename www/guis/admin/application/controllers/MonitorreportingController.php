@@ -40,8 +40,8 @@ class MonitorreportingController extends Zend_Controller_Action
 	    $fromdateO = Zend_Date::now();
         $fromdateO->sub('4', Zend_Date::DAY, Zend_Registry::get('Zend_Locale')->getLanguage());
         
-        $todate = Zend_Locale_Format::getDate($todateO, array('date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()));      
-        $fromdate = Zend_Locale_Format::getDate($fromdateO, array('date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()));
+        $todate = Zend_Locale_Format::getDate($todateO, ['date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()]);
+        $fromdate = Zend_Locale_Format::getDate($fromdateO, ['date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()]);
        
         foreach ( ['fd' => 'day', 'fm' => 'month', 'fy' => 'year') as $tk => $tv] {
         	if  (!isset($params[$tk]) || !$params[$tk]) {
@@ -116,7 +116,7 @@ class MonitorreportingController extends Zend_Controller_Action
 		$request = $this->getRequest();
 		$form    = new Default_Form_Reporting($this->getSearchParams());
 		$form->setAction(Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'monitorreporting'));
-		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'monitorreporting', NULL, [)];
+		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'monitorreporting', NULL, []);
 
 		$view->form = $form;
     }
@@ -126,7 +126,7 @@ class MonitorreportingController extends Zend_Controller_Action
 		$view=$layout->getView();
 		$layout->disableLayout();
 		$view->addScriptPath(Zend_Registry::get('ajax_script_path'));
-		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'monitorreporting', NULL, [)];
+		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'monitorreporting', NULL, []);
 		 
 		$request = $this->getRequest();
 		 

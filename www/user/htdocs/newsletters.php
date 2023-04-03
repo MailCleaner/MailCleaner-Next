@@ -90,7 +90,7 @@ function send_SOAP_request($host, $request, $params, $allowed_response) {
         return False;
     } else {
         $res = $soaper->queryParam($request, $params);
-        if (! in_[$res, $allowed_response)] {
+        if (! in_[$res, $allowed_response]) {
             return False;
         }
         return True;
@@ -179,10 +179,10 @@ if ($is_released && $is_sender_body_added_to_wl && $is_sender_added_to_wl) {
 
 // Parse the template
 $template_ = new Template('newsletters.tmpl');
-$replace = array(
+$replace = [
     '__LANG_FORCEMESSAGE__' => $lang_->print_txt($message_head),
     '__MESSAGE__' => $lang_->print_txt($message),
-);
+];
 
 // display page
 $template_->output($replace);

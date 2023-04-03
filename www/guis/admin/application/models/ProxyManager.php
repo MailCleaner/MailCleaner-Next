@@ -42,7 +42,7 @@ class Default_Model_ProxyManager
 	
     public function save()
     {
-    	return Default_Model_Localhost::sendSoapRequest('Config_saveMCConfigOption', array('HTTPPROXY' => $this->getHttpProxyString(), 'SMTPPROXY' => $this->getSMTPProxy()));
+    	return Default_Model_Localhost::sendSoapRequest('Config_saveMCConfigOption', ['HTTPPROXY' => $this->getHttpProxyString(), 'SMTPPROXY' => $this->getSMTPProxy()]);
     }
     	
 }

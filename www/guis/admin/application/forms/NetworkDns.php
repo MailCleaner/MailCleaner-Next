@@ -24,10 +24,11 @@ class Default_Form_NetworkDns extends Zend_Form
 		$t = Zend_Registry::get('translate');
                 $restrictions = Zend_Registry::get('restrictions');
 
-		$search = new  Zend_Form_Element_Text('domainsearch', array(
+		$search = new  Zend_Form_Element_Text('domainsearch', [
 		    'label'    => $t->_('DomainSearch'). " :",
 		    'required' => false,
-		    'filters'    => ['StringTrim'))];
+		    'filters'    => ['StringTrim']
+		]);
 	    ## TODO: add specific validator
 	    $search->setValue($this->_dns->getDomainSearch());
 	    require_once('Validate/DomainName.php');
@@ -37,11 +38,12 @@ class Default_Form_NetworkDns extends Zend_Form
             }
 		$this->addElement($search);
 		
-		$primary = new  Zend_Form_Element_Text('primarydns', array(
+		$primary = new  Zend_Form_Element_Text('primarydns', [
 		    'label'    => $t->_('Primary DNS server'). " :",
                     'title'    => $t->_("We recommend to use the local DNS (or the master's one if you use the cluster version) as primary DNS"),
 		    'required' => false,
-		    'filters'    => ['StringTrim'))];
+		    'filters'    => ['StringTrim']
+		]);
 	    ## TODO: add specific validator
 	    $primary->setValue($this->_dns->getNameServer(1));
 	    $primary->addValidator(new Zend_Validate_Ip());
@@ -50,10 +52,11 @@ class Default_Form_NetworkDns extends Zend_Form
             }
 		$this->addElement($primary);
 		
-		$secondary = new  Zend_Form_Element_Text('secondarydns', array(
+		$secondary = new  Zend_Form_Element_Text('secondarydns', [
 		    'label'    => $t->_('Secondary DNS server'). " :",
 		    'required' => false,
-		    'filters'    => ['StringTrim'))];
+		    'filters'    => ['StringTrim']
+		]);
 	    ## TODO: add specific validator
 	    $secondary->setValue($this->_dns->getNameServer(2));
 	    $secondary->addValidator(new Zend_Validate_Ip());
@@ -62,10 +65,11 @@ class Default_Form_NetworkDns extends Zend_Form
             }
 		$this->addElement($secondary);
 		
-		$tertiary = new  Zend_Form_Element_Text('tertiarydns', array(
+		$tertiary = new  Zend_Form_Element_Text('tertiarydns', [
 		    'label'    => $t->_('Tertiary DNS server'). " :",
 		    'required' => false,
-		    'filters'    => ['StringTrim'))];
+		    'filters'    => ['StringTrim']
+		]);
 	    ## TODO: add specific validator
 	    $tertiary->setValue($this->_dns->getNameServer(3));
 	    $tertiary->addValidator(new Zend_Validate_Ip());
@@ -74,11 +78,12 @@ class Default_Form_NetworkDns extends Zend_Form
             }
 		$this->addElement($tertiary);
 		
-		$heloname = new  Zend_Form_Element_Text('heloname', array(
+		$heloname = new  Zend_Form_Element_Text('heloname', [
 				    'label'    => $t->_('Force HELO / EHLO identity with'). " :",
 				    'required' => false,
 				    'size' => 40,
-				    'filters'    => ['StringTrim'))];
+				    'filters'    => ['StringTrim']
+		]);
 		
 		$heloname->setValue($this->_dns->getHeloName());
 		$heloname->addValidator(new Zend_Validate_Hostname(
@@ -89,8 +94,9 @@ class Default_Form_NetworkDns extends Zend_Form
 		}
 		$this->addElement($heloname);
 		
-		$submit = new Zend_Form_Element_Submit('dnssubmit', array(
-		     'label'    => $t->_('Submit')));
+		$submit = new Zend_Form_Element_Submit('dnssubmit', [
+			'label'    => $t->_('Submit')
+		]);
             if ($restrictions->isRestricted('NetworkDns', 'dnssubmit')) { 
                 $submit->setAttrib('disabled', 'disabled');
             }

@@ -109,7 +109,7 @@
         }
         $filter .= "))";
         $ret = [];
-        $r = @ldap_search($this->connection_, $settings->getSetting('basedn'), $filter, array($settings->getSetting('useratt')), 0, 1000);
+        $r = @ldap_search($this->connection_, $settings->getSetting('basedn'), $filter, [$settings->getSetting('useratt')], 0, 1000);
         if ($r) {
           $entry = ldap_first_entry($this->connection_, $r);
           while( $entry ) {
@@ -136,7 +136,7 @@
     }
     
     public function searchEmails($l, $d) {
-      $ignore_email = array('/FederatedEmail\.[-a-z0-9]{20,}/');
+      $ignore_email = ['/FederatedEmail\.[-a-z0-9]{20,}/'];
       $settings = $d->getConnectorSettings();
       if (! $this->connect($settings)) {
         return $this->getAddresses();

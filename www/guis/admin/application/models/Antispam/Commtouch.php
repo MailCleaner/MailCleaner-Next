@@ -11,10 +11,10 @@
 class Default_Model_Antispam_Commtouch
 {
     protected $_id;
-    protected $_values = array(
+    protected $_values = [
         'ctasdLicense' => '',
         'ctipdLicense' => '',
-      );
+    ];
 	
 	protected $_mapper;
 	

@@ -38,7 +38,7 @@ class MonitorstatusController extends Zend_Controller_Action
 
 		$view->slaves = $slaves;
 
-		$view->pieLink = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('todaypie', 'monitorstatus', NULL, [)];
+		$view->pieLink = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('todaypie', 'monitorstatus', NULL, []);
 		$view->columns = $this->_columns;
 		$config = new MailCleaner_Config();
 		$view->quarantinedir = $config->getOption('VARDIR')."/spam";
@@ -77,7 +77,7 @@ class MonitorstatusController extends Zend_Controller_Action
                 $usecache = 1;
                 $graph_params = [];
                 if ($request->getparam('gs') && is_numeric($request->getparam('gs'))) {
-                   $graph_params['size'] = array($request->getparam('gs'), $request->getparam('gs'));
+                   $graph_params['size'] = [$request->getparam('gs'), $request->getparam('gs')];
                 }
                 if ($request->getparam('gr') && is_numeric($request->getparam('gr'))) {
                    $graph_params['radius'] = $request->getparam('gr');
@@ -103,7 +103,7 @@ class MonitorstatusController extends Zend_Controller_Action
 			$slave = new Default_Model_Slave();
 			$slave->find($slaveid);
 
-			$res = $slave->sendSoapRequest('Service_silentStopStart', array('service' => $process, 'action' => $request->getParam('a'), 'soap_timeout' => 100));
+			$res = $slave->sendSoapRequest('Service_silentStopStart', ['service' => $process, 'action' => $request->getParam('a'), 'soap_timeout' => 100]);
 			#var_dump($res);
 			#sleep(3);
 
@@ -264,8 +264,8 @@ class MonitorstatusController extends Zend_Controller_Action
     	}
     	$slave = new Default_Model_Slave();
     	$slave->find($slaveid);
-    	$view->pieLink = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('todaypie', 'monitorstatus', NULL, [)];
-		$view->graphBaseLink = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('graph', 'monitorreporting', NULL, [)];
+    	$view->pieLink = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('todaypie', 'monitorstatus', NULL, []);
+		$view->graphBaseLink = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('graph', 'monitorreporting', NULL, []);
     	$view->slave = $slave;
 		$view->columns = $this->_columns;
 		$config = new MailCleaner_Config();
@@ -274,16 +274,20 @@ class MonitorstatusController extends Zend_Controller_Action
 
     	$reporting = new Default_Model_ReportingStats();
     	$salt = uniqid();
-		$view->salt = $salt;
+	$view->salt = $salt;
 		
-		$morecontent = array(
-                 'messages' => array('type' => ['global', 'sessions', 'accepted', 'refused', 'relayed'], 'selected_type' => 'global',
-                                     'mode' => ['count', 'frequency'), 'selected_mode' => 'count'],
-                 'load'     => array('type' => ['load', 'cpu'), 'selected_type' => 'load'],
-                 'disk'     => array('type' => ['disks', 'io', 'network'), 'selected_type' => 'disks'],
-                 'memory'   => array('type' => ['memory'), 'selected_type' => 'memory'],
-                 'spools'   => array('type' => ['spools'), 'selected_type' => 'spools']
-        );
+	$morecontent = [
+		'messages' => [
+			'type' => ['global', 'sessions', 'accepted', 'refused', 'relayed'],
+			'selected_type' => 'global',
+			'mode' => ['count', 'frequency'],
+			'selected_mode' => 'count'
+		],
+                'load'     => ['type' => ['load', 'cpu'], 'selected_type' => 'load'],
+                'disk'     => ['type' => ['disks', 'io', 'network'], 'selected_type' => 'disks'],
+                'memory'   => ['type' => ['memory'], 'selected_type' => 'memory'],
+                'spools'   => ['type' => ['spools'], 'selected_type' => 'spools']
+	];
         $available_periods = ['hour', 'day', 'week', 'month', 'year'];
         $view->periods = $available_periods;
         foreach ($morecontent as $cname => $c) {
@@ -299,7 +303,7 @@ class MonitorstatusController extends Zend_Controller_Action
         	if (preg_match('/^([a-z0-9]+)_([a-z0-9]+)/', $type, $matches)) {
                $s_col = $matches[1];
                $s_type = $matches[2];
-               if (isset($morecontent[$s_col]) && in_[$s_type, $morecontent[$s_col]['type'])]  {
+               if (isset($morecontent[$s_col]) && in_[$s_type, $morecontent[$s_col]['type']])  {
                	  $morecontent[$s_col]['selected_type'] = $s_type;
                }     		
         	}
@@ -311,7 +315,7 @@ class MonitorstatusController extends Zend_Controller_Action
         	if (preg_match('/^([a-z0-9]+)_([a-z0-9]+)/', $mode, $matches)) {
                $s_col = $matches[1];
                $s_mode = $matches[2];
-               if (isset($morecontent[$s_col]) && in_[$s_mode, $morecontent[$s_col]['mode'])]  {
+               if (isset($morecontent[$s_col]) && in_[$s_mode, $morecontent[$s_col]['mode']])  {
                	  $morecontent[$s_col]['selected_mode'] = $s_mode;
                }     		
         	}
@@ -323,7 +327,7 @@ class MonitorstatusController extends Zend_Controller_Action
         	if (preg_match('/^([a-z0-9]+)_([a-z0-9]+)/', $period, $matches)) {
                $s_col = $matches[1];
                $s_period = $matches[2];
-               if (isset($morecontent[$s_col]) && in_[$s_period, $available_periods)]  {
+               if (isset($morecontent[$s_col]) && in_[$s_period, $available_periods])  {
                	  $morecontent[$s_col]['selected_period'] = $s_period;
                }     		
         	}
@@ -352,7 +356,7 @@ class MonitorstatusController extends Zend_Controller_Action
     	$graphfinder = new Default_Model_RRDGraphic();
     	$graphs = [];
     	foreach ($this->_columns as $gc) {
-    		$graphs[$gc] = $graphfinder->fetchAll(['family' => $gc)];
+    		$graphs[$gc] = $graphfinder->fetchAll(['family' => $gc]);
     	}
     	$view->graphs = $graphs;
     	

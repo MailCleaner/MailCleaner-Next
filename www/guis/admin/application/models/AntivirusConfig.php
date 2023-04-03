@@ -11,7 +11,7 @@
 class Default_Model_AntivirusConfig
 {
     protected $_id;
-    protected $_values = array(
+    protected $_values = [
         'silent' => 'yes',
         'scanner_timeout' => 300,
         'file_timeout' => 20,
@@ -26,7 +26,7 @@ class Default_Model_AntivirusConfig
         'send_notices' => 'no',
         'notices_to' => '',
         'scanners' => ''
-     );
+    ];
 	
 	protected $_mapper;
 	

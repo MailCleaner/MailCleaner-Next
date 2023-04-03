@@ -20,18 +20,18 @@ abstract class PreFilter extends PrefHandler {
      * prefilter properties
      * @var array
      */
-	private $pref_ = array(
-                      'name' => '',
-		              'active' => 0,
-                      'position' => 0,
-                      'neg_decisive' => 0,
-                      'pos_decisive' => 0,
-                      'header' => '',
-                      'timeOut' => 10,
-                      'maxSize' => 500000,
-                      'putSpamHeader' => 1,
-                      'putHamHeader' => 0, 
-	                 );
+    private $pref_ = [
+        'name' => '',
+        'active' => 0,
+        'position' => 0,
+        'neg_decisive' => 0,
+        'pos_decisive' => 0,
+        'header' => '',
+        'timeOut' => 10,
+        'maxSize' => 500000,
+        'putSpamHeader' => 1,
+        'putHamHeader' => 0, 
+    ];
                      
     protected $where_clause_ = "";
 

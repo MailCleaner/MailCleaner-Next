@@ -8,7 +8,7 @@
  * Web interface localized texts
  */
 
-return array(
+return [
   'login' => 'Log in',
   'Username' => 'Username',
   'Password' => 'Password',
@@ -431,4 +431,4 @@ return array(
   
   ### newsl
   'Show newsletters only' => 'Show newsletters only',    
-);
+];

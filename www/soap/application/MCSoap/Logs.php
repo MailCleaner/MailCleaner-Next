@@ -201,8 +201,20 @@ class MCSoap_Logs
 		} else {
 			$line = `head -2 $file`;
 		}
-		$months = array('Jan' => '01', 'Feb' => '02', 'Mar' => '03', 'Apr' => '04', 'May' => '05', 'Jun' => '06', 'Jul' => '07',
-                'Aug' => '08', 'Sep' => '09', 'Oct' => '10', 'Nov' => '11', 'Dec' => '12');
+		$months = [
+			'Jan' => '01',
+			'Feb' => '02',
+			'Mar' => '03',
+			'Apr' => '04',
+			'May' => '05',
+			'Jun' => '06',
+			'Jul' => '07',
+			'Aug' => '08',
+			'Sep' => '09',
+			'Oct' => '10',
+			'Nov' => '11',
+			'Dec' => '12'
+		];
 
 		## Exim
 		if (preg_match('/^(\d\d\d\d)\-(\d\d)\-(\d\d)/', $line, $matches)) {
@@ -279,12 +291,12 @@ class MCSoap_Logs
 		|| define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
 
 		// Ensure library/ is on include_path
-		set_include_path(implode(PATH_SEPARATOR, array(
+		set_include_path(implode(PATH_SEPARATOR, [
 		realpath(APPLICATION_PATH . '/../application/'),
 		realpath(APPLICATION_PATH . '/../../guis/admin/application/models'),
 		realpath(APPLICATION_PATH . '/../../guis/admin/application/library'),
 		get_include_path(),
-		)));
+		]));
 
 		ini_set('error_reporting', E_ALL);
 		ini_set('display_errors', 'on');
@@ -340,13 +352,13 @@ class MCSoap_Logs
 	 * @return array
 	 */
 	static public function Logs_FindLogFiles($params) {
-		$res = array('files' => [)];
+		$res = ['files' => []];
 		if (!isset($params['files']) || !isset($params['date'])) {
 			$res['error'] = 'Missing parameters';
 			return $res;
 		}
 		foreach ($params['files'] as $f) {
-			$filename = MCSoap_Logs::Logs_FindLogFile(['basefile' => $f, 'date' => $params['date'])];
+			$filename = MCSoap_Logs::Logs_FindLogFile(['basefile' => $f, 'date' => $params['date']]);
 			$file = ['file' => '', 'size' => 0];
 			if ($filename) {
 				$file['file'] = $filename;
@@ -384,12 +396,12 @@ class MCSoap_Logs
 		|| define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'production'));
 
 		// Ensure library/ is on include_path
-		set_include_path(implode(PATH_SEPARATOR, array(
+		set_include_path(implode(PATH_SEPARATOR, [
 		realpath(APPLICATION_PATH . '/../application/'),
 		realpath(APPLICATION_PATH . '/../../guis/admin/application/models'),
 		realpath(APPLICATION_PATH . '/../../guis/admin/application/library'),
 		get_include_path(),
-		)));
+		]));
 
 		ini_set('error_reporting', E_ALL);
 		ini_set('display_errors', 'on');
@@ -622,7 +634,7 @@ class MCSoap_Logs
                        if (preg_match('/^'.$params['msgid'].'\|(.*)/', $buffer, $matches)) {
                            $inmsg = 1;
                            $res['full_log'] .= $matches[1]."\n";
-                           if (!is_[$levels[$level])] {
+                           if (!is_[$levels[$level]]) {
                                $levels[$level] = [];
                            }
                            array_push($levels[$level], $matches[1]);
@@ -637,12 +649,12 @@ class MCSoap_Logs
                    }
                }
            }
-           if (is_[$levels[0])] { $res['log_stage1'] = $levels[0]; }
-           if (is_[$levels[1])] { $res['log_stage2'] = $levels[1]; }
-           if (is_[$levels[2])] { $res['log_engine'] = $levels[2]; }
-           if (is_[$levels[3])] { $res['log_stage4'] = $levels[3]; }
-           if (is_[$levels[4])] { $res['log_spamhandler'] = $levels[4]; }
-           if (is_[$levels[5])] { $res['log_finalstage4'] = $levels[5]; }
+           if (is_[$levels[0]]) { $res['log_stage1'] = $levels[0]; }
+           if (is_[$levels[1]]) { $res['log_stage2'] = $levels[1]; }
+           if (is_[$levels[2]]) { $res['log_engine'] = $levels[2]; }
+           if (is_[$levels[3]]) { $res['log_stage4'] = $levels[3]; }
+           if (is_[$levels[4]]) { $res['log_spamhandler'] = $levels[4]; }
+           if (is_[$levels[5]]) { $res['log_finalstage4'] = $levels[5]; }
 
            return $res;
         }

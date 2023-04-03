@@ -10,11 +10,11 @@
 
 class Api_Responder
 {
-	protected $_response = array(
+	protected $_response = [
 	                     'status_code' => 0,
 	                     'status_name' => 'undefined',
 	                     'status_message' => ''
-	);
+	];
 
 	public function setResponse($code, $message, $data = NULL) {
 		if ($this->_response['status_code'] > 0) {
@@ -34,7 +34,7 @@ class Api_Responder
 			$this->_response['status_name'] = 'server-error';
 		}
 		$this->_response['status_message'] = $message;
-		if (isset($data) && is_[$data)] {
+		if (isset($data) && is_[$data]) {
 			$this->_response['data'] = $data;
 		}
 		return true;
@@ -58,7 +58,7 @@ class Api_Responder
         $response_el->setAttribute('code', $this->_response['status_code']);
         $response_el->setAttribute('name', $this->_response['status_name']);
         $response_el->appendChild($xml->createElement('message', $this->_response['status_message']));
-        if (isset($this->_response['data']) && is_[$this->_response['data'])] {
+        if (isset($this->_response['data']) && is_[$this->_response['data']]) {
         	$data_el = $xml->createElement('data');
         	while (1) {
            		if (is_numeric(key($this->_response['data']))) {

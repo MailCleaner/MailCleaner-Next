@@ -11,10 +11,10 @@
 class Default_Form_Domain_UserAuthentication_Sql
 {
 	protected $_domain;
-	protected $_settings = array(
+	protected $_settings = [
                         "sqlusername" => '',
                         "sqlpassword" => ''
-     );
+	];
      
 	public function __construct($domain)
 	{
@@ -29,38 +29,41 @@ class Default_Form_Domain_UserAuthentication_Sql
 		$t = Zend_Registry::get('translate');
 		
 		require_once('Validate/SMTPHostList.php');
-		$server = new  Zend_Form_Element_Text('authserver', array(
+		$server = new  Zend_Form_Element_Text('authserver', [
 	        'label'    => $t->_('Authentication server')." :",
 		    'required' => false,
-		    'filters'    => ['StringToLower', 'StringTrim'))];
+		    'filters'    => ['StringToLower', 'StringTrim']
+		]);
 	    $server->setValue($this->_domain->getPref('auth_server'));
         $server->addValidator(new Validate_SMTPHostList());
 	    $form->addElement($server);
 	    
 	    $this->_settings = $this->getParams();
 	    
-	    $username = new  Zend_Form_Element_Text('sqlusername', array(
+	    $username = new  Zend_Form_Element_Text('sqlusername', [
 	        'label'    => $t->_('Username')." :",
 		    'required' => false,
-		    'filters'    => ['StringTrim'))];
+		    'filters'    => ['StringTrim']
+	    ]);
 	    $username->setValue($this->_settings['sqlusername']);
 	    $form->addElement($username);
 	    
-		$password = new  Zend_Form_Element_Password('sqlpassword', array(
+		$password = new  Zend_Form_Element_Password('sqlpassword', [
 	        'label'    => $t->_('Password')." :",
 		    'required' => false,
 	        'renderPassword' => true,
-		    'filters'    => ['StringTrim'))];
+		'filters'    => ['StringTrim']
+		]);
 	    $password->setValue($this->_settings['sqlpassword']);
 	    $form->addElement($password);
 	}
 	
 	public function setParams($request, $domain) {
-	   $array = array(
+	   $array = [
           'auth_server' => $request->getParam('authserver'),
           'sqlusername' => $request->getParam('sqlusername'),
           'sqlpassword' => $request->getParam('sqlpassword')
-       );
+	   ];
        $this->setParamsFromArray($array, $domain);
  	}
 

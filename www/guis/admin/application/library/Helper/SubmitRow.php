@@ -30,7 +30,7 @@ class MailCleaner_View_Helper_SubmitRow extends Zend_View_Helper_Abstract
 	 * field_addclass: string
 	 */
 	
-	public function SubmitRow($element, $params = [)]
+	public function SubmitRow($element, $params = [])
 	{
 		$t = Zend_Registry::get('translate');
 		

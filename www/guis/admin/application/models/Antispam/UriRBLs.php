@@ -11,13 +11,13 @@
 class Default_Model_Antispam_UriRBLs
 {
     protected $_id;
-    protected $_values = array(
+    protected $_values = [
         'listedemailtobespam' => 1,
         'listeduristobespam' => 1,
         'rbls' => '',
 	'resolve_shorteners' => 1,
         'avoidhosts' => ''
-      );
+    ];
 	
 	protected $_mapper;
 	

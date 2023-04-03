@@ -65,7 +65,7 @@ if ($viewrules) {
 $template_->setCondition('FIRSTOPEN', $firstopen);
 
 // prepare replacements
-$replace = array(
+$replace = [
    '__MSG_ID__' => $spam->getData('exim_id'),
    '__TO__' => addslashes($spam->getCleanData('to')),
    '__FROM__' => urlencode($spam->getCleanData('sender')),
@@ -86,7 +86,7 @@ $replace = array(
    '__NEWS__' => $spam->getData('is_newsletter'),
    '__PARTS__' => getMIMEParts(),
    '__STORESLAVE__' => $spam->getData('store_slave')
-);
+];
 
 $replace = $spam->setReplacements($template_, $replace);
 //display page

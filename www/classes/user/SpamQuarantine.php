@@ -31,7 +31,7 @@ class SpamQuarantine extends Quarantine {
    * filter criteria
    * @var  array
    */
-  protected  $filters_ = array(
+  protected  $filters_ = [
                       'to_local'      => '',
                       'to_domain'     => '',
                       'from'          => '',
@@ -45,13 +45,13 @@ class SpamQuarantine extends Quarantine {
                       'msg_per_page'  => DEFAULT_MSGS,
                       'order'         => ['date', 'desc'],
                       'page'          => 1
-                    );
+  ];
                   
   /**
    * allowed orders with corresponding column names
    * @var array
    */
-  protected $ordered_fields_ = array(
+  protected $ordered_fields_ = [
                      'date'       => 'date_in',
                      'time'       => 'time_in',
                      'globalscore'=> 'M_globalscore',
@@ -59,9 +59,9 @@ class SpamQuarantine extends Quarantine {
                      'from'       => 'sender',
                      'subject'    => 'M_subject',
                      'forced'     => 'forced'
-                    );
+  ];
                     
-  protected $order_tags_ = array(
+  protected $order_tags_ = [
       'date' => 'ODATE',
       'time' => 'OTIME',
       'globalscore'=> 'OSCORE',
@@ -69,9 +69,9 @@ class SpamQuarantine extends Quarantine {
       'from'       => 'OSENDER',
       'subject'    => 'OSUBJECT',
       'forced'     => 'OFORCED'
-  );
+  ];
                     
-   private $stats_ = array(
+   private $stats_ = [
                'msgs'  => 0,
                'spams' => 0,
                'pspams' => 0,
@@ -82,7 +82,7 @@ class SpamQuarantine extends Quarantine {
                'pvirus' => 0,
                'clean' => 0,
                'pclean' => 0
-    );
+   ];
  
 /**
  * check if user/admin as correct authorization
@@ -105,7 +105,7 @@ private function isAllowed() {
      }
    // if admin, then admin must have right to manage users and to manage this domain
    } else {
-     if ( (! $admin_->checkPermissions(['can_manage_users'))] || (! $admin_->canManageDomain($this->getFilter('to_domain')))) {
+     if ( (! $admin_->checkPermissions(['can_manage_users'])) || (! $admin_->canManageDomain($this->getFilter('to_domain')))) {
         $log_->log('-- admin not allowed to access quarantine', PEAR_LOG_WARNING); 
         return false;
      }

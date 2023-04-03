@@ -11,16 +11,16 @@
 class MailCleaner_View_Helper_FormatEmail extends Zend_View_Helper_Abstract
 {
 	
-	protected $_params = array(
+	protected $_params = [
 	   'localpart_length' => 20,
 	   'domainpart_length' => 20,
 	   'extra_replace_string' => '...',
 	   'glue_string' => ', ',
 	   'global_length' => 100,
 	   'max_addresses' => 20,
-	);
+	];
 	
-	public function formatEmail($string = '', $params = [)]
+	public function formatEmail($string = '', $params = [])
 	{
 		$t = Zend_Registry::get('translate');
 		
@@ -29,7 +29,7 @@ class MailCleaner_View_Helper_FormatEmail extends Zend_View_Helper_Abstract
 			$tmpparams[$k] = $v;
 		}
 
-		if (is_[$string)] {
+		if (is_[$string]) {
 			$emails = $string;
 		} else {
     		$emails = preg_split('/[,:; ]/', $string);

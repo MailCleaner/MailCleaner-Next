@@ -31,17 +31,20 @@
     </div>
     <div id="resultpanel">
 
-<?php echo $this->partial('ajax/domain/search.phtml', array(
-                         'domains' => $this->domains,
-                         'domainscount' => $this->domainscount,
-                         'page' => $this->page,
-                         'lastpage' => $this->lastpage,
-                         'images_path' => $this->images_path,
-                         'sname' => $this->sname,
-                         'name' => $this->name,
-                         'searchurl' => $this->searchurl,
-                         't' => $this->t,
-)); ?>
+<?php echo $this->partial(
+	'ajax/domain/search.phtml', 
+	[
+        	'domains' => $this->domains,
+        	'domainscount' => $this->domainscount,
+        	'page' => $this->page,
+        	'lastpage' => $this->lastpage,
+        	'images_path' => $this->images_path,
+        	'sname' => $this->sname,
+        	'name' => $this->name,
+        	'searchurl' => $this->searchurl,
+        	't' => $this->t,
+	]
+); ?>
    
     </div>
   </div>
@@ -51,12 +54,12 @@
       <form method="<?php echo $this->form->getMethod() ?>" action="<?php echo $this->form->getAction()?>" id="<?php echo $this->form->getId()?>">
    
         <h1 class="adddomaincontentpaneltitle">
-        <span><?php echo $this->t->_('Domain name')?> : </span><?php echo $this->InputRow($this->form->getElement('domainname'),['nobox'=>true,'field_only'=>true)];?><?php echo $this->InputRow($this->form->getElement('mdomainname'),['nobox'=>true,'field_only'=>true)];?> <a href="javascript:goMultipleDomains()">+</a>
-        <?php if ($user->getUserType() != 'administrator' && $user->getRight('allow_subdomains')) {?><?php echo $this->InputRow($this->form->getElement('topdomains'),['nobox'=>true,'field_only'=>true)]; ?><?php }?>
+        <span><?php echo $this->t->_('Domain name')?> : </span><?php echo $this->InputRow($this->form->getElement('domainname'),['nobox'=>true,'field_only'=>true]);?><?php echo $this->InputRow($this->form->getElement('mdomainname'),['nobox'=>true,'field_only'=>true]);?> <a href="javascript:goMultipleDomains()">+</a>
+        <?php if ($user->getUserType() != 'administrator' && $user->getRight('allow_subdomains')) {?><?php echo $this->InputRow($this->form->getElement('topdomains'),['nobox'=>true,'field_only'=>true]); ?><?php }?>
         </h1>
 
         <div id="domainformcontent" class="adddomainformcontent">
-             <?php echo $this->partial('forms/domainaddForm.phtml', ['form' => $this->form,'t' => $this->t, 'message' => $this->message, 'domain' => $this->domain)]; ?>
+             <?php echo $this->partial('forms/domainaddForm.phtml', ['form' => $this->form,'t' => $this->t, 'message' => $this->message, 'domain' => $this->domain]); ?>
          </div>
       </form>
     </div>

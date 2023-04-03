@@ -28,9 +28,10 @@ class Default_Form_DomainTemplates extends Zend_Form
 		$t = Zend_Registry::get('translate');
 
 		$this->setAttrib('id', 'domain_form');
-	    $panellist = new Zend_Form_Element_Select('domainpanel', array(
+	    $panellist = new Zend_Form_Element_Select('domainpanel', [
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	    ]);
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         
@@ -46,20 +47,22 @@ class Default_Form_DomainTemplates extends Zend_Form
 		$name = new Zend_Form_Element_Hidden('name');
 		$name->setValue($this->_domain->getParam('name'));
 		$this->addElement($name);
-	    $domainname = new  Zend_Form_Element_Text('domainname', array(
+	    $domainname = new  Zend_Form_Element_Text('domainname', [
             'label'   => $t->_('Domain name')." :",
 		    'required' => false,
-		    'filters'    => ['StringToLower', 'StringTrim'))];
+		    'filters'    => ['StringToLower', 'StringTrim']
+	    ]);
 	    $domainname->setValue($this->_domain->getParam('name'));
 	    require_once('Validate/DomainName.php');
         $domainname->addValidator(new Validate_DomainName());
 	    $this->addElement($domainname);	
 	    		
-		$webtemplate = new Zend_Form_Element_Select('web_template', array(
+		$webtemplate = new Zend_Form_Element_Select('web_template', [
             'required'   => false,
 		    'label'      => $t->_('Web user GUI')." : ",
                     'title' => $t->_("Template name for the user's web interface"),
-            'filters'    => ['StringTrim'))];
+		    'filters'    => ['StringTrim']
+		]);
         
         foreach ($this->_domain->getWebTemplates() as $template) {
         	$webtemplate->addMultiOption($template, $template);
@@ -67,11 +70,12 @@ class Default_Form_DomainTemplates extends Zend_Form
         $webtemplate->setValue($this->_domain->getPref('web_template'));
         $this->addElement($webtemplate);
         
-        $sumtemplate = new Zend_Form_Element_Select('summary_template', array(
+        $sumtemplate = new Zend_Form_Element_Select('summary_template', [
             'required'   => false,
 		    'label'      => $t->_('Quarantine summary')." : ",
                     'title' => $t->_("Template name for the emails quarantine"),
-            'filters'    => ['StringTrim'))];
+		    'filters'    => ['StringTrim']
+	]);
         
         foreach ($this->_domain->getSummaryTemplates() as $template) {
         	$sumtemplate->addMultiOption($template, $template);
@@ -80,11 +84,12 @@ class Default_Form_DomainTemplates extends Zend_Form
         $this->addElement($sumtemplate);
         
         
-        $reptemplate = new Zend_Form_Element_Select('report_template', array(
+        $reptemplate = new Zend_Form_Element_Select('report_template', [
             'required'   => false,
             'label'      => $t->_('Content protection reports')." : ",
             'title' => $t->_("Template name for content protection's reports"),
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	]);
 
         foreach ($this->_domain->getReportTemplates() as $template) {
                 $reptemplate->addMultiOption($template, $template);
@@ -93,8 +98,9 @@ class Default_Form_DomainTemplates extends Zend_Form
         $this->addElement($reptemplate);
 
 
-                $submit = new Zend_Form_Element_Submit('submit', array(
-                     'label'    => $t->_('Submit')));
+                $submit = new Zend_Form_Element_Submit('submit', [
+			'label'    => $t->_('Submit')
+		]);
                 $this->addElement($submit);
         }
 

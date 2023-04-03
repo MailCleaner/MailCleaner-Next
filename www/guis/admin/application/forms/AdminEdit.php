@@ -29,8 +29,9 @@ class Default_Form_AdminEdit extends ZendX_JQuery_Form
 	           
 		$this->setAttrib('id', 'admin_edit');
 		        
-		$newusername = new  Zend_Form_Element_Text('newusername', array(
-		    'required' => false));
+		$newusername = new  Zend_Form_Element_Text('newusername', [
+			'required' => false
+		]);
 		require_once('Validate/AdminName.php');
 		$newusername->addValidator(new Validate_AdminName());
 	    $this->addElement($newusername);
@@ -39,28 +40,31 @@ class Default_Form_AdminEdit extends ZendX_JQuery_Form
 		$username->setValue($this->_admin->getParam('username'));
 		$this->addElement($username);
 		
-	    $password = new  Zend_Form_Element_Password('password', array(
+	    $password = new  Zend_Form_Element_Password('password', [
 	        'label'    => $t->_('Password')." :",
 	        'renderPassword' => true,
-		    'required' => true));
+		'required' => true
+	    ]);
 	    if ($this->_admin->getParam('password') != '') {
 	        $password->setValue('_keeppassword1_');
 	    }
 	    $this->addElement($password);
 	    
-	    $confirm = new  Zend_Form_Element_Password('confirm', array(
+	    $confirm = new  Zend_Form_Element_Password('confirm', [
 	        'label'    => $t->_('Confirm')." :",
 	        'renderPassword' => true,
-		    'required' => true));
+		'required' => true
+	    ]);
 	    if ($this->_admin->getParam('password') != '') {
 	        $confirm->setValue('_keeppassword2_');
 	    }
 	    $this->addElement($confirm);
 	    
-	    $roleselect = new Zend_Form_Element_Select('role', array(
-            'label'      => $t->_('Role')." :",
-            'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    $roleselect = new Zend_Form_Element_Select('role', [
+            	'label'      => $t->_('Role')." :",
+            	'required'   => false,
+	    	'filters'    => ['StringTrim']
+	    ]);
         
         foreach ($this->_admin->getRoles() as $r) {
         	$roleselect->addMultiOption($r['name'], $t->_($r['name']));
@@ -69,28 +73,30 @@ class Default_Form_AdminEdit extends ZendX_JQuery_Form
         $this->addElement($roleselect);
         
         require_once('Validate/DomainList.php');
-        $domains = new Zend_Form_Element_Textarea('domains', array(
+        $domains = new Zend_Form_Element_Textarea('domains', [
 		      'label'    =>  $t->_('Manage Domains')." :",
 		      'required'   => false,
 		      'rows' => 5,
 		      'cols' => 40,
-		      'filters'    => ['StringToLower', 'StringTrim'))];
+		      'filters'    => ['StringToLower', 'StringTrim']
+	]);
 	    $domains->addValidator(new Validate_DomainList());
 		$domains->setValue( implode("\n", $this->_admin->getDomainsArray() ));
 		$this->addElement($domains);
         
-		$allowsubdomains = new Zend_Form_Element_Checkbox('allow_subdomains', array(
+		$allowsubdomains = new Zend_Form_Element_Checkbox('allow_subdomains', [
 			        'label'   => $t->_('Allow access to subdomains'). " :",
 		            'uncheckedValue' => "0",
 			        'checkedValue' => "1"
-		));
+		]);
 		if ( $this->_admin->getRight('allow_subdomains')) {
 			$allowsubdomains->setChecked(true);
 		}
 		$this->addElement($allowsubdomains);
 		
-		$submit = new Zend_Form_Element_Submit('submit', array(
-		     'label'    => $t->_('Submit')));
+		$submit = new Zend_Form_Element_Submit('submit', [
+			'label'    => $t->_('Submit')
+		]);
 		$this->addElement($submit);
 		
 	}

@@ -29,13 +29,15 @@ class Default_Form_Reporting extends ZendX_JQuery_Form
 	           
 		$this->setAttrib('id', 'filter_form');
 		
-		$search = new  Zend_Form_Element_Text('search', array(
-		    'required' => false));
+		$search = new  Zend_Form_Element_Text('search', [
+			'required' => false
+		]);
 	    $search->setValue($this->_params['search']);
 	    $this->addElement($search);
 	    
-	    $domainField = new  Zend_Form_Element_Select('domain', array(
-		    'required' => false));
+	    $domainField = new  Zend_Form_Element_Select('domain', [
+		    'required' => false
+	    ]);
 	    $domain = new Default_Model_Domain();
 	    $domains = $domain->fetchAllName();
 	    $user = Zend_Registry::get('user');
@@ -49,8 +51,9 @@ class Default_Form_Reporting extends ZendX_JQuery_Form
 	    $this->addElement($domainField);
 	    	    
 	    $months = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
-	    $fd = new Zend_Form_Element_Select('fd', array(
-		    'required' => true));
+	    $fd = new Zend_Form_Element_Select('fd', [
+		    'required' => true
+	    ]);
 	    for ($d = 1; $d <= 31; $d++) {
 	        $fd->addMultiOption($d, $d);
 	    }
@@ -59,8 +62,9 @@ class Default_Form_Reporting extends ZendX_JQuery_Form
 	    }
 	    $this->addElement($fd);
 	    
-	    $fm = new Zend_Form_Element_Select('fm', array(
-		    'required' => true));
+	    $fm = new Zend_Form_Element_Select('fm', [
+		    'required' => true
+	    ]);
 	    $i = 1;
 	    foreach ($months as $m) {
 	    	$fm->addMultiOption($i++, $t->_($m));
@@ -70,8 +74,9 @@ class Default_Form_Reporting extends ZendX_JQuery_Form
 	    }
 	    $this->addElement($fm);
 	    
-	    $td = new Zend_Form_Element_Select('td', array(
-		    'required' => true));
+	    $td = new Zend_Form_Element_Select('td', [
+		    'required' => true
+	    ]);
 	    for ($d = 1; $d <= 31; $d++) {
 	        $td->addMultiOption($d, $d);
 	    }
@@ -79,8 +84,9 @@ class Default_Form_Reporting extends ZendX_JQuery_Form
             $td->setValue($this->_params['td']);
 	    }
 	    $this->addElement($td);
-	    $tm = new Zend_Form_Element_Select('tm', array(
-		    'required' => true));
+	    $tm = new Zend_Form_Element_Select('tm', [
+		    'required' => true
+	    ]);
 	    $i = 1;
 	    foreach ($months as $m) {
 	    	$tm->addMultiOption($i++, $t->_($m));
@@ -90,16 +96,18 @@ class Default_Form_Reporting extends ZendX_JQuery_Form
 	    }
 	    $this->addElement($tm);
 	    
-	    $sorts = array(
+	    $sorts = [
 	                 'msgs' => 'number of messages received', 
 	                 'spams' => 'number of spams received', 
 	                 'spamspercent' => 'percent of spam received', 
 	                 'viruses' => 'number of viruses received', 
 	                 'users' => 'number of users',
-	                 'what' => 'item name');
-	    $sort = new Zend_Form_Element_Select('sort', array(
+			 'what' => 'item name'
+	    ];
+	    $sort = new Zend_Form_Element_Select('sort', [
 	        'label' => $t->_('Sort by')." : ",
-	        'required' => false));
+		'required' => false
+	    ]);
 	    foreach ($sorts as $sortkey => $sortname) {
 	    	$sort->addMultiOption($sortkey, $t->_($sortname));
 	    }
@@ -109,9 +117,10 @@ class Default_Form_Reporting extends ZendX_JQuery_Form
 	    $this->addElement($sort);
 	    
 	    $tops = [3, 10, 20, 100, 1000, 10000];
-	    $top = new Zend_Form_Element_Select('top', array(
+	    $top = new Zend_Form_Element_Select('top', [
 	        'label' => $t->_('Top items shown')." : ",
-	        'required' => false));
+		'required' => false
+	    ]);
 	    foreach ($tops as $topv) {
 	    	$top->addMultiOption($topv, $topv);
 	    }
@@ -120,9 +129,10 @@ class Default_Form_Reporting extends ZendX_JQuery_Form
 	    }
 	    $this->addElement($top);
 	    
-	    $submit = new Zend_Form_Element_Submit('submit', array(
+	    $submit = new Zend_Form_Element_Submit('submit', [
 		     'label'    => $t->_('Refresh'),
-	         'onclick' => 'javascript:resubmit=1;launchSearch();return false;'));
+		     'onclick' => 'javascript:resubmit=1;launchSearch();return false;'
+	    ]);
 		$this->addElement($submit);
 	}
 

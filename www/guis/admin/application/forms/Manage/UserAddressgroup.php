@@ -37,9 +37,10 @@ class Default_Form_Manage_UserAddressgroup extends Default_Form_ElementList
 		$t = Zend_Registry::get('translate');
 
 		$this->setAttrib('id', 'user_form');
-	    $panellist = new Zend_Form_Element_Select('userpanel', array(
+	    $panellist = new Zend_Form_Element_Select('userpanel', [
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	    ]);
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         
@@ -67,8 +68,9 @@ class Default_Form_Manage_UserAddressgroup extends Default_Form_ElementList
 		$this->getElement('disable')->setLabel($t->_('Activate pending request'));
 		$this->getElement('remove')->setLabel($t->_('Remove address from group'));
 		
-		$submit = new Zend_Form_Element_Submit('submit', array(
-		     'label'    => $t->_('Submit')));
+		$submit = new Zend_Form_Element_Submit('submit', [
+			'label'    => $t->_('Submit')
+		]);
 		$this->addElement($submit);	
 		
 	}

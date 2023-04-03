@@ -20,15 +20,15 @@ class Scanner extends PrefHandler {
      * scanner properties
      * @var array
      */
-	private $pref_ = array(
+	private $pref_ = [
                       'name' => '',
-		              'comm_name' => '',
-		              'active' => 0,
-		              'path' => '/usr/local',
-		              'installed' => 0,
-		              'version' => '',
-		              'sig_version' => ''
-	                 );
+	              'comm_name' => '',
+                      'active' => 0,
+                      'path' => '/usr/local',
+		      'installed' => 0,
+		      'version' => '',
+		      'sig_version' => ''
+	];
 
 
 /**

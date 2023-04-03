@@ -33,14 +33,14 @@ $firstpage = 'quarantine.php';
 #  $firstpage = 'configuration.php?t=int';
 #}
 
-$replace = array(
+$replace = [
         "__LANG__" => $lang_->getLanguage(),
         "__NAVIGATION_PAGE__" => 'navigation.php?m=q',
         "__QUARANTINE_PAGE__" => 'quarantine.php',
         "__PARAMETERS_PAGE__" => 'parameters.php',
         "__SUPPORT_PAGE__" => 'support.php',
         "__FIRST_PAGE__" => $firstpage
-);
+];
 
 // display page
 $template_->output($replace);

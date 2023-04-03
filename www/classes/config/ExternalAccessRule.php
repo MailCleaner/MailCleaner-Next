@@ -16,30 +16,30 @@
  */
 class ExternalAccessRule extends PrefHandler {
 
-    /**
-     * rule properties
-     */
-	private $pref_ = array(
-                        'id' => 0,
-		                'service' => '',
-		                'port' => '',
-		                'protocol' => '',
-		                'allowed_ip' => '',
-		                'auth' => ''
-	                 );
+  /**
+   * rule properties
+   */
+  private $pref_ = [
+    'id' => 0,
+    'service' => '',
+    'port' => '',
+    'protocol' => '',
+    'allowed_ip' => '',
+    'auth' => ''
+  ];
                      
-   /**
-    * list of possible services with default properties
-    * @var array
-    */
-   static public $available_services_ = array(
-                                    'web'    => ['80|443', 'TCP'],
-                                    'mysql'  => ['3306:3307', 'TCP'],
-                                    'snmp'   => ['161', 'UDP'],
-                                    'ssh'    => ['22', 'TCP'],
-                                    'mail'   => ['25', 'TCP'],
-                                    'soap'   => ['5132', 'TCP']
-                                 );
+  /**
+   * list of possible services with default properties
+   * @var array
+   */
+  static public $available_services_ = [
+    'web'    => ['80|443', 'TCP'],
+    'mysql'  => ['3306:3307', 'TCP'],
+    'snmp'   => ['161', 'UDP'],
+    'ssh'    => ['22', 'TCP'],
+    'mail'   => ['25', 'TCP'],
+    'soap'   => ['5132', 'TCP']
+  ];
 
 /**
  * constructor

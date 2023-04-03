@@ -11,7 +11,7 @@
  * defines the services available, with file dumpers and stopper/starter
  * @var array
  */
-$services_ = array(
+$services_ = [
   'MTA1' => ['restartfile' => "exim_stage1.rn", 'starter' => "S_exim_stage1.sh", 'stopper' => "H_exim_stage1.sh", 'restarter' => "R_exim_stage1.sh"],
   'MTA2' => ['restartfile' => "exim_stage2.rn", 'starter' => "S_exim_stage2.sh", 'stopper' => "H_exim_stage2.sh", 'restarter' => "R_exim_stage2.sh"],
   'MTA4' => ['restartfile' => "exim_stage4.rn", 'starter' => "S_exim_stage4.sh", 'stopper' => "H_exim_stage4.sh", 'restarter' => "R_exim_stage4.sh"],
@@ -28,7 +28,7 @@ $services_ = array(
   'SPAMCLAMD' => ['restartfile' => "clamspamd.rn", 'starter' => "S_clamspamd.sh", 'stopper' => "H_clamspamd", 'restarter' => "R_clamspamd.sh"],
   'SPAMHANDLER' => ['restartfile' => "spamhandler.rn", 'starter' => "S_spamhandler.sh", 'stopper' => "H_spamhandler", 'restarter' => "R_spamhandler.sh"],
   'FIREWALL' => ['restartfile' => "firewall.rn", 'starter' => "S_firewall.sh", 'stopper' => "H_firewall.sh" ,'restarter' => "R_firewall.sh"],
-);
+];
          
 /**
  * return the status of each critical process (running/stopped)

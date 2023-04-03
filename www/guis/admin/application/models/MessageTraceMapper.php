@@ -43,7 +43,11 @@ class Default_Model_MessageTraceMapper
 	}
 	
 	public function getStatusFetchAll($params) {
-		$res = array('finished' => 0, 'count' => 0, 'data' => [)];
+		$res = [
+			'finished' => 0,
+			'count' => 0,
+			'data' => []
+		];
 	    $slave = new Default_Model_Slave();
         $slaves = $slave->fetchAll();
         

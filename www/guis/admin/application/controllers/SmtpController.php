@@ -25,12 +25,12 @@ class SmtpController extends Zend_Controller_Action
     	
     	$this->config_menu = new Zend_Navigation();
     	
-    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'SMTP checks', 'id' => 'smtpchecks', 'action' => 'smtpchecks', 'controller' => 'smtp'))];
-        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Connection control', 'id' => 'connectioncontrol', 'action' => 'connectioncontrol', 'controller' => 'smtp'))];
-        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Resources control', 'id' => 'resourcescontrol', 'action' => 'resourcescontrol', 'controller' => 'smtp'))];
-        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'TLS/SSL', 'id' => 'tls', 'action' => 'tls', 'controller' => 'smtp'))];
-        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Greylisting', 'id' => 'greylisting', 'action' => 'greylisting', 'controller' => 'smtp'))];
-        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'DKIM', 'id' => 'dkim', 'action' => 'dkim', 'controller' => 'smtp'))];
+    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'SMTP checks', 'id' => 'smtpchecks', 'action' => 'smtpchecks', 'controller' => 'smtp']));
+        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Connection control', 'id' => 'connectioncontrol', 'action' => 'connectioncontrol', 'controller' => 'smtp']));
+        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Resources control', 'id' => 'resourcescontrol', 'action' => 'resourcescontrol', 'controller' => 'smtp']));
+        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'TLS/SSL', 'id' => 'tls', 'action' => 'tls', 'controller' => 'smtp']));
+        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Greylisting', 'id' => 'greylisting', 'action' => 'greylisting', 'controller' => 'smtp']));
+        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'DKIM', 'id' => 'dkim', 'action' => 'dkim', 'controller' => 'smtp']));
         $view->config_menu = $this->config_menu;
         
         $view->headScript()->appendFile($view->scripts_path.'/baseconfig.js', 'text/javascript');
@@ -66,7 +66,7 @@ class SmtpController extends Zend_Controller_Action
             	  $mta->save();
             	  $message = 'OK data saved';
             	  $slaves = new Default_Model_Slave();
-            	  $slaves->sendSoapToAll('Service_setServiceToRestart', ['exim_stage1')];
+            	  $slaves->sendSoapToAll('Service_setServiceToRestart', ['exim_stage1']);
             	} catch (Exception $e) {
             	  $message = 'NOK error saving data ('.$e->getMessage().')';
             	}
@@ -102,7 +102,7 @@ class SmtpController extends Zend_Controller_Action
             	  $mta->save();
             	  $message = 'OK data saved';
             	  $slaves = new Default_Model_Slave();
-            	  $slaves->sendSoapToAll('Service_setServiceToRestart', ['exim_stage1')];
+            	  $slaves->sendSoapToAll('Service_setServiceToRestart', ['exim_stage1']);
             	} catch (Exception $e) {
             	  $message = 'NOK error saving data ('.$e->getMessage().')';
             	}
@@ -160,7 +160,7 @@ class SmtpController extends Zend_Controller_Action
     	          }
             	  $message = 'OK data saved';
             	  $slaves = new Default_Model_Slave();
-            	  $slaves->sendSoapToAll('Service_setServiceToRestart', ['exim_stage1','exim_stage4')];
+            	  $slaves->sendSoapToAll('Service_setServiceToRestart', ['exim_stage1','exim_stage4']);
             	} catch (Exception $e) {
             	  $message = 'NOK error saving data ('.$e->getMessage().')';
             	}
@@ -219,7 +219,7 @@ class SmtpController extends Zend_Controller_Action
                 	  if ($mta->getParam($rtype.'limit_enable') > 0) {
         		          $view->rate_display_class[$rtype] = 'none';
             	          $slaves = new Default_Model_Slave();
-            	          $slaves->sendSoapToAll('Service_setServiceToRestart', ['exim_stage1','exim_stage4')];
+            	          $slaves->sendSoapToAll('Service_setServiceToRestart', ['exim_stage1','exim_stage4']);
     	              } else {
     	             	  $view->rate_display_class[$rtype] = 'hidden';
     	              }
@@ -266,7 +266,7 @@ class SmtpController extends Zend_Controller_Action
             	  $greylist->save();
             	  $message = 'OK data saved';
             	  $slaves = new Default_Model_Slave();
-            	  $slaves->sendSoapToAll('Service_setServiceToRestart', ['greylistd')];
+            	  $slaves->sendSoapToAll('Service_setServiceToRestart', ['greylistd']);
             	} catch (Exception $e) {
             	  $message = 'NOK error saving data ('.$e->getMessage().')';
             	}
@@ -302,7 +302,7 @@ class SmtpController extends Zend_Controller_Action
                   $mta->save();
                   $message = 'OK data saved';
             	  $slaves = new Default_Model_Slave();
-            	  $slaves->sendSoapToAll('Service_setServiceToRestart', ['exim_stage1','exim_stage4')];
+            	  $slaves->sendSoapToAll('Service_setServiceToRestart', ['exim_stage1','exim_stage4']);
                 } catch (Exception $e) {
                   $message = 'NOK error saving data ('.$e->getMessage().')';
                 }

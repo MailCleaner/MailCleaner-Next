@@ -146,8 +146,8 @@ if (is_numeric($per_page) && $per_page > 0) {
   $wwlist->setNbElementsPerPage($per_page);
 }
 
-$active_inactive = array($lang_->print_txt('ACTIVE') => '1', $lang_->print_txt('INNACTIVE') => '0');
-$replace = array(
+$active_inactive = [$lang_->print_txt('ACTIVE') => '1', $lang_->print_txt('INNACTIVE') => '0'];
+$replace = [
   "__WWENTRYLISTDRAW__" => $wwlist->getList($template, null),
   "__DELETE_STATUS__" => $deleted_msg,
   "__ADD_STATUS__" => $addstatus,
@@ -170,8 +170,7 @@ $replace = array(
   "__EDIT_BASELINK__" => $_SERVER['PHP_SELF']."?a=".$address."&t=".$type_get,
   "__FORM_BEGIN_SEARCH__" => $sform->open().$sform->hidden('page', $wwlist->getPage()).$sform->hidden('t', $type).$sform->hidden('a', $address),
   "__FORM_CLOSE_SEARCH__" => $sform->close(),
-  
-);
+];
 
 $template_->output($replace);
 

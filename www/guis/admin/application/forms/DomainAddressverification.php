@@ -31,9 +31,10 @@ class Default_Form_DomainAddressverification extends Zend_Form
 		$t = Zend_Registry::get('translate');
 
 		$this->setAttrib('id', 'domain_form');
-	    $panellist = new Zend_Form_Element_Select('domainpanel', array(
+	    $panellist = new Zend_Form_Element_Select('domainpanel', [
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	    ]);
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         
@@ -50,10 +51,11 @@ class Default_Form_DomainAddressverification extends Zend_Form
 		$name->setValue($this->_domain->getParam('name'));
 		$this->addElement($name);
 		
-	    $domainname = new  Zend_Form_Element_Text('domainname', array(
+	    $domainname = new  Zend_Form_Element_Text('domainname', [
             'label'   => $t->_('Domain name')." :",
 		    'required' => false,
-		    'filters'    => ['StringToLower', 'StringTrim'))];
+		    'filters'    => ['StringToLower', 'StringTrim']
+	    ]);
 	    $domainname->setValue($this->_domain->getParam('name'));
 	    require_once('Validate/DomainName.php');
         $domainname->addValidator(new Validate_DomainName());
@@ -66,12 +68,13 @@ class Default_Form_DomainAddressverification extends Zend_Form
 			$connectorform->addForm($this);
 		}
 		
-		$connectorlist = new Zend_Form_Element_Select('connector', array(
+		$connectorlist = new Zend_Form_Element_Select('connector', [
 		    'label'      => $t->_('Callout connector')." : ",
                     'title' => $t->_("choose type of callout"),
             'required'   => true,
 		    'onchange'   => 'javascript:changeConnector();',
-            'filters'    => ['StringTrim'))];
+		    'filters'    => ['StringTrim']
+		]);
         
         foreach ($this->_connectors as $connector) {
         	$connectorlist->addMultiOption($connector, $t->_($connector));
@@ -79,13 +82,15 @@ class Default_Form_DomainAddressverification extends Zend_Form
         $connectorlist->setValue($this->_domain->getCalloutConnector());
         $this->addElement($connectorlist);
         
-		$test = new Zend_Form_Element_Button('testcallout', array(
+		$test = new Zend_Form_Element_Button('testcallout', [
 		     'label'    => $t->_('Test configuration'),
-             'onclick' => 'javascript:stopreloadtest=0;testCallout(\''.$this->_domain->getParam('name').'\', 1);'));
+		     'onclick' => 'javascript:stopreloadtest=0;testCallout(\''.$this->_domain->getParam('name').'\', 1);'
+		]);;
 		$this->addElement($test);
 		
-		$submit = new Zend_Form_Element_Submit('submit', array(
-		     'label'    => $t->_('Submit')));
+		$submit = new Zend_Form_Element_Submit('submit', [
+			'label'    => $t->_('Submit')
+		]);
 		$this->addElement($submit);	
 		
 	}

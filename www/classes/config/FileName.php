@@ -19,13 +19,13 @@ class FileName extends PrefHandler {
     /**
      * file name properties
      */
-	private $pref_ = array(
+    private $pref_ = [
         'id' =>0,
-		'status' => 'deny',
-		'rule' => '',
-		'name' => '',
-		'description' => ''
-	  );
+	'status' => 'deny',
+        'rule' => '',
+        'name' => '',
+        'description' => ''
+    ];
 
 /**
  * constructor

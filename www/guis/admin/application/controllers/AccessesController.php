@@ -39,9 +39,10 @@ class AccessesController extends Zend_Controller_Action
         if ($sname == $view->defaultsearchstring) {
             $sname = '';
         }
-    	$admins = $admin->fetchAllName(array(
+    	$admins = $admin->fetchAllName([
     	                                  'order' => 'username ASC',
-    	                                  'username' => $sname));
+					  'username' => $sname
+	]);
     	$view->adminscount = count($admins);
     	$nbelperpage = 12;
     	$view->lastpage = ceil($view->adminscount / $nbelperpage);
@@ -102,9 +103,10 @@ class AccessesController extends Zend_Controller_Action
         		$message = 'OK data saved';
         		## find page of added element
         		$admin = new Default_Model_Administrator();
-                $all = $admin->fetchAllName(array(
+                $all = $admin->fetchAllName([
                                           'order' => 'username ASC',
-                                          'username' => $request->getParam('sname')));
+					  'username' => $request->getParam('sname')
+		]);
                 $pos = 1;
                 foreach ($all as $d) {
                    if ($d->getParam('username') == $view->admin->getParam('username')) {
@@ -121,9 +123,10 @@ class AccessesController extends Zend_Controller_Action
                 	$page = 1;
                 }
                 $redirector = $this->_helper->getHelper('Redirector');
-                $redirector->gotoSimple('edit', 'accesses', null, array(
+                $redirector->gotoSimple('edit', 'accesses', null, [
                                                    'username' => $view->admin->getParam('username'),
-                                                   'page' => $page ));
+						   'page' => $page 
+		]);
               } catch (Exception $e) {
             	  $message = 'NOK error saving data ('.$e->getMessage().')';
               }

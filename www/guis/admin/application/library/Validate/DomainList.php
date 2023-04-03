@@ -13,16 +13,16 @@ class Validate_DomainList extends Zend_Validate_Abstract
     const MSG_DOMAINLIST = 'invalidDomainllist';
     const MSG_BADDOMAIN = 'invalidDomain';
 
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::MSG_DOMAINLIST => "'%value%' is not a valid domain list",
         self::MSG_BADDOMAIN => "'%dom%' is not a valid domain"
-    );
+    ];
 
     public $domain = '';
     
-    protected $_messageVariables = array(
+    protected $_messageVariables = [
         'dom' => 'domain'
-    );
+    ];
     
     public function isValid($value)
     {

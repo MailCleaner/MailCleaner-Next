@@ -54,7 +54,7 @@ class Default_Model_SystemConfMapper
             unset($data['id']);
             $res = $this->getDbTable()->insert($data);
         } else {
-            $res = $this->getDbTable()->update($data, ['id = ?' => $id)];
+            $res = $this->getDbTable()->update($data, ['id = ?' => $id]);
         }
         return $res;
     }

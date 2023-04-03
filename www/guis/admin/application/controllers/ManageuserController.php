@@ -74,16 +74,18 @@ class ManageuserController extends Zend_Controller_Action
 		if ($view->type == 'email') {
 			$view->elementdatafield = 'address';
 			$email = new Default_Model_Email();
-			$elements = $email->fetchAllName(array(
+			$elements = $email->fetchAllName([
     	                                  'order' => 'address ASC',
     	                                  'address' => $view->search,
-    	                                  'domain' => $view->domain));
+					  'domain' => $view->domain
+			]);
 		} else {
 			$user = new Default_Model_User();
-			$elements = $user->fetchAllName(array(
+			$elements = $user->fetchAllName([
     	                                  'order' => 'username ASC',
     	                                  'username' => $view->search,
-    	                                  'domain' => $view->domain));
+					  'domain' => $view->domain
+			]);
 		}
 			
 		require_once('Tools/SearchPagination.php');
@@ -166,9 +168,10 @@ class ManageuserController extends Zend_Controller_Action
 		$view->form = $panelform;
 		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('edituser', 'manageuser', NULL, $params);
 			
-		$view->removeurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('removeuser', 'manageuser', NULL,
-		array('domain' => $user->getDomainObject()->getParam('name'),
-    	                                'user' => $username));
+		$view->removeurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('removeuser', 'manageuser', NULL, [
+			'domain' => $user->getDomainObject()->getParam('name'),
+			'user' => $username
+		]);
 			
 		$view->removeurl .= '/search/'.$view->search.'/page/'.$view->page;
 

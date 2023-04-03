@@ -24,7 +24,7 @@ class PreferencesController extends Zend_Controller_Action
     
                 $row = $table->fetchRow($table->select()->where('id = ?', $userId));
     
-                return $this->_helper->json(array('preferences' => $row->toArray()));
+                return $this->_helper->json(['preferences' => $row->toArray()]);
             }
         }
     } 
@@ -58,7 +58,7 @@ class PreferencesController extends Zend_Controller_Action
                     
                     $row->save();
                     
-                    return $this->_helper->json(array('preferences' => $row->toArray()));
+                    return $this->_helper->json(['preferences' => $row->toArray()]);
                 }
             }
         }        

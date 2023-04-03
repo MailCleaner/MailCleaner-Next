@@ -30,108 +30,111 @@ class Default_Form_SmtpChecks extends ZendX_JQuery_Form
 	           
 		$this->setAttrib('id', 'smtpchecks_form');
 	    
-	    $senderverify = new Zend_Form_Element_Checkbox('verify_sender', array(
+	    $senderverify = new Zend_Form_Element_Checkbox('verify_sender', [
 	        'label'   => $t->_('Verify sender domain'). " :",
             'uncheckedValue' => "0",
 	        'checkedValue' => "1"
-	              ));
+	    ]);
 	    if ($this->_mta->getParam('verify_sender')) {
             $senderverify->setChecked(true);
 	    }
 	    $this->addElement($senderverify);
 	    
-	    $forcesync = new Zend_Form_Element_Checkbox('smtp_enforce_sync', array(
+	    $forcesync = new Zend_Form_Element_Checkbox('smtp_enforce_sync', [
 	        'label'   => $t->_('Force SMTP protocol synchronization'). " :",
 		'title' => $t->_('Rejects any email sent by the remote MTA without waiting the 220 SMTP response first'),
             'uncheckedValue' => "0",
 	        'checkedValue' => "1"
-	              ));
+	    ]);
 	    if ($this->_mta->getParam('smtp_enforce_sync') && $this->_mta->getParam('smtp_enforce_sync') != 'false') {
             $forcesync->setChecked(true);
 	    }
 	    $this->addElement($forcesync);
 	    
-	    $allowmxtoip = new Zend_Form_Element_Checkbox('allow_mx_to_ip', array(
+	    $allowmxtoip = new Zend_Form_Element_Checkbox('allow_mx_to_ip', [
             'label'   => $t->_('Allow hosts with MX that point to IP addresses'). " :",
             'uncheckedValue' => "0",
             'checkedValue' => "1"
-                  ));
+	    ]);
         if ($this->_mta->getParam('allow_mx_to_ip') && $this->_mta->getParam('allow_mx_to_ip') != 'false') {
             $allowmxtoip->setChecked(true);
         }
         $this->addElement($allowmxtoip);
         
-        $reject_bad_spf = new Zend_Form_Element_Checkbox('reject_bad_spf', array(
+        $reject_bad_spf = new Zend_Form_Element_Checkbox('reject_bad_spf', [
             'label'   => $t->_('Reject wrong SPF (fail result)'). " :",
             'title' => $t->_("Rejects mails not satisfying the domain's SPF"),
             'uncheckedValue' => "0",
             'checkedValue' => "1"
-                  ));
+	]);
         if ($this->_mta->getParam('reject_bad_spf') && $this->_mta->getParam('reject_bad_spf') != 'false') {
             $reject_bad_spf->setChecked(true);
         }
         $this->addElement($reject_bad_spf);
         
-        $reject_bad_rdns = new Zend_Form_Element_Checkbox('reject_bad_rdns', array(
+        $reject_bad_rdns = new Zend_Form_Element_Checkbox('reject_bad_rdns', [
                     'label'   => $t->_('Reject invalid reverse DNS'). " :",
                     'uncheckedValue' => "0",
                     'checkedValue' => "1"
-        ));
+	]);
         if ($this->_mta->getParam('reject_bad_rdns') && $this->_mta->getParam('reject_bad_rdns') != 'false') {
         	$reject_bad_rdns->setChecked(true);
         }
         $this->addElement($reject_bad_rdns);
 
-        $dmarc_follow_reject_policy = new Zend_Form_Element_Checkbox('dmarc_follow_reject_policy', array(
+        $dmarc_follow_reject_policy = new Zend_Form_Element_Checkbox('dmarc_follow_reject_policy', [
             'label'   => $t->_('Honor DMARC reject policy'). " :",
             'uncheckedValue' => "0",
             'checkedValue' => "1"
-                  ));
+	]);
         if ($this->_mta->getParam('dmarc_follow_reject_policy') && $this->_mta->getParam('dmarc_follow_reject_policy') != 'false') {
             $dmarc_follow_reject_policy->setChecked(true);
         }
         $this->addElement($dmarc_follow_reject_policy);
 
-        $dmarc_enable_reports = new Zend_Form_Element_Checkbox('dmarc_enable_reports', array(
+        $dmarc_enable_reports = new Zend_Form_Element_Checkbox('dmarc_enable_reports', [
             'label'   => $t->_('Enable reporting to DMARC domains'). " :",
             'uncheckedValue' => "0",
             'checkedValue' => "1"
-                  ));
+	]);
         if ($this->_mta->getParam('dmarc_enable_reports') && $this->_mta->getParam('dmarc_enable_reports') != 'false') {
             $dmarc_enable_reports->setChecked(true);
         }
         $this->addElement($dmarc_enable_reports);
 
         
-	    $callouttimeout = new  Zend_Form_Element_Text('callout_timeout', array(
+	    $callouttimeout = new  Zend_Form_Element_Text('callout_timeout', [
 	        'label'    => $t->_('Recipient verification timeout')." :",
 		    'required' => false,
 		    'size' => 2,
 	        'class' => 'fieldrighted',
-		    'filters'    => ['Alnum', 'StringTrim'))];
+		'filters'    => ['Alnum', 'StringTrim']
+	    ]);
 	    $callouttimeout->setValue($this->_mta->getParam('callout_timeout'));
         $callouttimeout->addValidator(new Zend_Validate_Int());
 	    $this->addElement($callouttimeout);
 	    
-	    $rbltimeout = new  Zend_Form_Element_Text('rbls_timeout', array(
+	    $rbltimeout = new  Zend_Form_Element_Text('rbls_timeout', [
 	        'label'    => $t->_('RBL checks timeout')." :",
 		      'title'  => $t->_('this timeout will apply to ALL RBL checks throughout MailCleaner'),
 		    'required' => true,
 		    'size' => 2,
 	        'class' => 'fieldrighted',
-		    'filters'    => ['Alnum', 'StringTrim'))];
+		'filters'    => ['Alnum', 'StringTrim']
+	    ]);
 	    $rbltimeout->setValue($this->_mta->getParam('rbls_timeout'));
         $rbltimeout->addValidator(new Zend_Validate_Int());
 	    $this->addElement($rbltimeout);
 	    
 	    require_once('Validate/SMTPHostList.php');
-		$rblignore = new Zend_Form_Element_Textarea('rbls_ignore_hosts', array(
+		$rblignore = new Zend_Form_Element_Textarea('rbls_ignore_hosts', [
 		      'label'    =>  $t->_('Don\'t check these hosts')." :",
 		      'title'  => $t->_('Bypass RBLs results for these IPs'),
 		      'required'   => false,
 		      'rows' => 5,
 		      'cols' => 30,
-		      'filters'    => ['StringToLower', 'StringTrim'))];
+		      'filters'    => ['StringToLower', 'StringTrim']
+		]);
 	    $rblignore->addValidator(new Validate_SMTPHostList());
 		$rblignore->setValue($this->_mta->getParam('rbls_ignore_hosts'));
 		$this->addElement($rblignore);
@@ -139,13 +142,14 @@ class Default_Form_SmtpChecks extends ZendX_JQuery_Form
 
 
 	    require_once('Validate/SMTPHostList.php');
-		$spf_dmarc_ignore = new Zend_Form_Element_Textarea('spf_dmarc_ignore_hosts', array(
+		$spf_dmarc_ignore = new Zend_Form_Element_Textarea('spf_dmarc_ignore_hosts', [
 		      'label'    =>  $t->_('Don\'t check these hosts for SPF or DMARC')." :",
 		      'title'  => $t->_('Bypass RBLs results for these IPs for SPF and DMARC'),
 		      'required'   => false,
 		      'rows' => 5,
 		      'cols' => 30,
-		      'filters'    => ['StringToLower', 'StringTrim'))];
+		      'filters'    => ['StringToLower', 'StringTrim']
+		]);
 	    $spf_dmarc_ignore->addValidator(new Validate_SMTPHostList());
 		$spf_dmarc_ignore->setValue($this->_mta->getParam('spf_dmarc_ignore_hosts'));
 		$this->addElement($spf_dmarc_ignore);
@@ -156,11 +160,11 @@ class Default_Form_SmtpChecks extends ZendX_JQuery_Form
 		$rbllist = new Default_Model_DnsLists();
 		$rbllist->load();
 		foreach ($rbllist->getRBLs('IPRBL') as $rbl) {
-			$userbl = new Zend_Form_Element_Checkbox('use_rbl_'.$rbl['name'], array(
+			$userbl = new Zend_Form_Element_Checkbox('use_rbl_'.$rbl['name'], [
 			         'label' => $rbl['dnsname'],
                      'uncheckedValue' => "0",
 	                 'checkedValue' => "1"
-	              ));
+			]);
 	        if ($this->_mta->useRBL($rbl['name'])) {
                $userbl->setChecked(true);
 	        }
@@ -168,79 +172,81 @@ class Default_Form_SmtpChecks extends ZendX_JQuery_Form
 	        $this->_rbl_checks[] = $userbl;
 		}
 		
-		$outgoingvirusscan = new Zend_Form_Element_Checkbox('outgoing_virus_scan', array(
+		$outgoingvirusscan = new Zend_Form_Element_Checkbox('outgoing_virus_scan', [
             'label'   => $t->_('Scan relayed (outgoing) messages for viruses'). " :",
             'title' => $t->_("Enable / disable the virus check for outgoing messages"),
             'uncheckedValue' => "0",
             'checkedValue' => "1"
-                  ));
+		]);
         if ($this->_mta->getParam('outgoing_virus_scan')) {
             $outgoingvirusscan->setChecked(true);
         }
         $this->addElement($outgoingvirusscan);
         
-        $maskrelayedip = new Zend_Form_Element_Checkbox('mask_relayed_ip', array(
+        $maskrelayedip = new Zend_Form_Element_Checkbox('mask_relayed_ip', [
             'label'   => $t->_('Mask IP address of relayed host on port 587'). " :",
             'uncheckedValue' => "0",
             'checkedValue' => "1"
-                  ));
+	]);
         if ($this->_mta->getParam('mask_relayed_ip')) {
             $maskrelayedip->setChecked(true);
         }
         $this->addElement($maskrelayedip);
         
-        $block25auth = new Zend_Form_Element_Checkbox('block_25_auth', array(
+        $block25auth = new Zend_Form_Element_Checkbox('block_25_auth', [
             'label'   => $t->_('Block authenticated relaying on port 25'). " :",
             'uncheckedValue' => "0",
             'checkedValue' => "1"
-                  ));
+	]);
         if ($this->_mta->getParam('block_25_auth')) {
             $block25auth->setChecked(true);
         }
         $this->addElement($block25auth);
         
-        $masquerade_outgoing_helo = new Zend_Form_Element_Checkbox('masquerade_outgoing_helo', array(
+        $masquerade_outgoing_helo = new Zend_Form_Element_Checkbox('masquerade_outgoing_helo', [
                     'label'   => $t->_('Masquerade relayed HELO with sender domain'). " :",
                     'uncheckedValue' => "0",
                     'checkedValue' => "1"
-        ));
+	]);
         if ($this->_mta->getParam('masquerade_outgoing_helo')) {
         	$masquerade_outgoing_helo->setChecked(true);
         }
         $this->addElement($masquerade_outgoing_helo);
 
-        $log_subject = new Zend_Form_Element_Checkbox('log_subject', array(
+        $log_subject = new Zend_Form_Element_Checkbox('log_subject', [
                     'label'   => $t->_('Include mails subjects in the logs'). " :",
                     'uncheckedValue' => "0",
                     'checkedValue' => "1"
-        ));
+	]);
         if ($this->_mta->getParam('log_subject')) {
                 $log_subject->setChecked(true);
         }
         $this->addElement($log_subject);
 
-        $log_attachments = new Zend_Form_Element_Checkbox('log_attachments', array(
+        $log_attachments = new Zend_Form_Element_Checkbox('log_attachments', [
                     'label'   => $t->_('Include attachment names in the logs'). " :",
                     'uncheckedValue' => "0",
                     'checkedValue' => "1"
-        ));
+	]);
         if ($this->_mta->getParam('log_attachments')) {
                 $log_attachments->setChecked(true);
         }
         $this->addElement($log_attachments);
 
-	$long_lines = new Zend_Form_Element_Select('long_lines', array(
+	$long_lines = new Zend_Form_Element_Select('long_lines', [
                     'label'      => $t->_('What to do with invalid long lines')." :",
                     'required'   => true,
-                    'filters'    => ['StringTrim'))];
+		    'filters'    => ['StringTrim']
+	]);
         $long_lines->addMultiOption('ignore', $t->_("Ignore errors; relay invalid SMTP"));
         $long_lines->addMultiOption('fix', $t->_("Fold long lines; makes SMTP valid, but could break DKIM signing"));
         $long_lines->addMultiOption('reject', $t->_("Reject invalid long lines"));
 	$long_lines->setValue($this->getLongLines());
         $this->addElement($long_lines);
 		
-		$submit = new Zend_Form_Element_Submit('submit', array(
-		     'label'    => $t->_('Submit')));
+		$submit = new Zend_Form_Element_Submit('submit', [
+			'label'    => $t->_('Submit')
+		]);
 		$this->addElement($submit);
 		
 	}

@@ -29,8 +29,8 @@ class ManagecontentquarantineController extends Zend_Controller_Action
 	    $fromdateO = Zend_Date::now();
         $fromdateO->sub('1', Zend_Date::DAY, Zend_Registry::get('Zend_Locale')->getLanguage());
         
-        $todate = Zend_Locale_Format::getDate($todateO, array('date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()));      
-        $fromdate = Zend_Locale_Format::getDate($fromdateO, array('date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()));
+        $todate = Zend_Locale_Format::getDate($todateO, ['date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()]);      
+        $fromdate = Zend_Locale_Format::getDate($fromdateO, ['date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()]);
        
         
         foreach ( ['fd' => 'day', 'fm' => 'month') as $tk => $tv] {
@@ -75,7 +75,7 @@ class ManagecontentquarantineController extends Zend_Controller_Action
 		$request = $this->getRequest();
 		$form    = new Default_Form_ContentQuarantine($this->getSearchParams());
 		$form->setAction(Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managecontentquarantine'));
-		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managecontentquarantine', NULL, [)];
+		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managecontentquarantine', NULL, []);
 
 		$view->form = $form;
     }
@@ -85,7 +85,7 @@ class ManagecontentquarantineController extends Zend_Controller_Action
 		$view=$layout->getView();
 		$layout->disableLayout();
 		$view->addScriptPath(Zend_Registry::get('ajax_script_path'));
-		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managecontentquarantine', NULL, [)];
+		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managecontentquarantine', NULL, []);
 		 
 		$request = $this->getRequest();
 		 
@@ -104,14 +104,14 @@ class ManagecontentquarantineController extends Zend_Controller_Action
 		$page = 0;
 		$elements = [];
 		 
-		$columns = array(
+		$columns = [
     	  'caction' => ['label' => 'Action'],
     	  'date' => ['label' => 'Date', 'label2' => 'date', 'order' => 'desc'],
     	  'to' => ['label' => 'Recipient', 'label2' => 'recipient', 'order' => 'desc'],
     	  'from' => ['label' => 'Sender', 'label2' => 'sender', 'order' => 'desc'],
     	  'subject' => ['label' => 'Subject', 'label2' => 'subject', 'order' => 'desc'],
     	  'content' => ['label' => 'Content']
-		);
+		];
 		if ($request->getParam('sort') && preg_match('/(\S+)_(asc|desc)/', $request->getParam('sort'), $matches)) {
 			$order = $request->getParam('sort');
 			$orderfield = $matches[1];
@@ -151,7 +151,7 @@ class ManagecontentquarantineController extends Zend_Controller_Action
 		$view=$layout->getView();
 		$layout->disableLayout();
 		$view->addScriptPath(Zend_Registry::get('ajax_script_path'));
-		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managecontentquarantine', NULL, [)];
+		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managecontentquarantine', NULL, []);
 		 
 		$view->headLink()->appendStylesheet($view->css_path.'/popup.css');
 
@@ -177,7 +177,7 @@ class ManagecontentquarantineController extends Zend_Controller_Action
 		
 		$slave = new Default_Model_Slave();
 		$slave->find($s);
-		$res = $slave->sendSoapRequest('Content_release', ['id' => $id, 'soap_timeout' => 40)];
+		$res = $slave->sendSoapRequest('Content_release', ['id' => $id, 'soap_timeout' => 40]);
 		if ($res['status'] == 1) {
             	        $view->release_status = $t->_('Message released');
 		} else {
@@ -191,7 +191,7 @@ class ManagecontentquarantineController extends Zend_Controller_Action
 		$view=$layout->getView();
 		$layout->disableLayout();
 		$view->addScriptPath(Zend_Registry::get('ajax_script_path'));
-		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managecontentquarantine', NULL, [)];
+		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managecontentquarantine', NULL, []);
 		$view->headLink()->appendStylesheet($view->css_path.'/messageview.css');
 		$view->headScript()->appendFile($view->scripts_path.'/messageview.js', 'text/javascript');
 				
@@ -216,7 +216,7 @@ class ManagecontentquarantineController extends Zend_Controller_Action
 		
 		$slave = new Default_Model_Slave();
 		$slave->find($s);
-		$res = $slave->sendSoapRequest('Content_find', ['id' => $id)];
+		$res = $slave->sendSoapRequest('Content_find', ['id' => $id]);
 		if (! isset($res['error'])) {
 			## fill fields
 			$msg = new Default_Model_QuarantinedContent();

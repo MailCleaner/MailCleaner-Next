@@ -35,7 +35,7 @@ class Api_Model_SoapInterface
 	 * @param array   $params
 	 * @return array
 	 */
-	public function domainAdd($domain_name, $params = [)] {
+	public function domainAdd($domain_name, $params = []) {
 		$this->testAuth($params);
 		$api = new Api_Model_DomainAPI();
 		$api->add($domain_name, $params);
@@ -48,7 +48,7 @@ class Api_Model_SoapInterface
      * @param array   $params
      * @return array
      */
-    public function domainEdit($domain_name, $params = [)] {
+    public function domainEdit($domain_name, $params = []) {
         $this->testAuth($params);
         $api = new Api_Model_DomainAPI();
         $api->edit($domain_name, $params);
@@ -61,7 +61,7 @@ class Api_Model_SoapInterface
      * @param string  $domain_name
      * @return array
      */
-    public function domainExists($domain_name, $params = [)] {
+    public function domainExists($domain_name, $params = []) {
         $this->testAuth($params);
         $api = new Api_Model_DomainAPI();
         $api->exists($domain_name);
@@ -73,7 +73,7 @@ class Api_Model_SoapInterface
      * @param string  $domain_name
      * @return array
      */
-    public function domainRemove($domain_name, $params = [)] {
+    public function domainRemove($domain_name, $params = []) {
         $this->testAuth($params);
         $api = new Api_Model_DomainAPI();
         $api->remove($domain_name);
@@ -135,7 +135,7 @@ class Api_Model_SoapInterface
 	* @param array  $params
 	* @return array
 	*/
-	public function userExists($params = [)] {
+	public function userExists($params = []) {
 		$this->testAuth($params);
 		$api = new Api_Model_UserAPI();
 		$api->exists($params);
@@ -148,7 +148,7 @@ class Api_Model_SoapInterface
 	* @param array  $params
 	* @return array
 	*/
-	public function userAdd($params = [)] {
+	public function userAdd($params = []) {
 		$this->testAuth($params);
 		$api = new Api_Model_UserAPI();
 		$api->add($params);
@@ -161,7 +161,7 @@ class Api_Model_SoapInterface
 	* @param array  $params
 	* @return array
 	*/
-	public function userEdit($params = [)] {
+	public function userEdit($params = []) {
 		$this->testAuth($params);
 		$api = new Api_Model_UserAPI();
 		$api->edit($params);
@@ -174,7 +174,7 @@ class Api_Model_SoapInterface
 	* @param array  $params
 	* @return array
 	*/
-	public function userDelete($params = [)] {
+	public function userDelete($params = []) {
 		$this->testAuth($params);
 		$api = new Api_Model_UserAPI();
 		$api->delete($params);
@@ -187,7 +187,7 @@ class Api_Model_SoapInterface
 	* @param array  $params
 	* @return array
 	*/
-	public function userList($params = [)] {
+	public function userList($params = []) {
 		$this->testAuth($params);
 		$api = new Api_Model_UserAPI();
 		$api->userList($params);
@@ -200,7 +200,7 @@ class Api_Model_SoapInterface
 	* @param array  $params
 	* @return array
 	*/
-	public function userShow($params = [)] {
+	public function userShow($params = []) {
 		$this->testAuth($params);
 		$api = new Api_Model_UserAPI();
 		$api->show($params);
@@ -218,7 +218,7 @@ class Api_Model_SoapInterface
 	 * @param array  $params
 	 * @return array
 	 */
-	public function addressExists($params = [)] {
+	public function addressExists($params = []) {
 		$this->testAuth($params);
 		$api = new Api_Model_AddressAPI();
 		$api->exists($params);
@@ -231,7 +231,7 @@ class Api_Model_SoapInterface
 	* @param array  $params
 	* @return array
 	*/
-	public function addressAdd($params = [)] {
+	public function addressAdd($params = []) {
 		$this->testAuth($params);
 		$api = new Api_Model_AddressAPI();
 		$api->add($params);
@@ -244,7 +244,7 @@ class Api_Model_SoapInterface
 	* @param array  $params
 	* @return array
 	*/
-	public function addressEdit($params = [)] {
+	public function addressEdit($params = []) {
 		$this->testAuth($params);
 		$api = new Api_Model_AddressAPI();
 		$api->edit($params);
@@ -257,7 +257,7 @@ class Api_Model_SoapInterface
 	* @param array  $params
 	* @return array
 	*/
-	public function addressDelete($params = [)] {
+	public function addressDelete($params = []) {
 		$this->testAuth($params);
 		$api = new Api_Model_AddressAPI();
 		$api->delete($params);
@@ -270,7 +270,7 @@ class Api_Model_SoapInterface
 	* @param array  $params
 	* @return array
 	*/
-	public function addressList($params = [)] {
+	public function addressList($params = []) {
 		$this->testAuth($params);
 		$api = new Api_Model_AddressAPI();
         $api->addressList($params);

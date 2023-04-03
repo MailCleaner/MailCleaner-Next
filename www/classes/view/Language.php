@@ -126,12 +126,12 @@ class Language
 		}
 
                 if ($ISENTERPRISE) {
-                        if (array_key_exists($ll, $currLangs) && in_[$ll, $ee_languages)] {
+                        if (array_key_exists($ll, $currLangs) && in_[$ll, $ee_languages]) {
                                 $this->available_languages_[$ll] = $language_codes[$currLangs[$ll]];
                                 $this->inversed_languages_[$language_codes[$currLangs[$ll]]] = $ll;
                                 break;
                         } else {
-                                if (preg_match("/^${ll}/", $l_code) == 1 && in_[$ll, $ee_languages)] {
+                                if (preg_match("/^${ll}/", $l_code) == 1 && in_[$ll, $ee_languages]) {
                                         $this->available_languages_[$ll] = $l_title;
                                         $this->inversed_languages_[$l_title] = $ll;
                                         break;

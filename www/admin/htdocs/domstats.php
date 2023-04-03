@@ -29,7 +29,7 @@ global $lang_;
 // not allowed if we are not a master
 if ($sysconf_->ismaster_ < 1) { exit; }
 // check authorizations
-$admin_->checkPermissions(['can_view_stats')];
+$admin_->checkPermissions(['can_view_stats']);
 
 $gcounts = ['msgs' => 0, 'spams' => 0, 'viruses' => 0, 'users' => 0];
 
@@ -69,7 +69,7 @@ if (isset($posted['domain']) && isset($posted['start']) && isset($posted['stop']
 $template_ = new Template('domstats.tmpl');
 
 // prepare replacements
-$replace = array(
+$replace = [
         "__FORM_BEGIN_SEARCH__" => $form_->open(),
         "__FORM_CLOSE_SEARCH__" => $form_->close(),
         "__FORM_INPUTDOMAIN__" => $form_->select('domain', $sysconf_->getFilteredDomains(), $posted['domain'], ';'),
@@ -83,7 +83,7 @@ $replace = array(
         "__HASGREYLIST__" => hasPref('greylist'),
         "__HASCALLOUT__" => hasPref('callout'),
         "__SERVER_SELF__" => $_SERVER['PHP_SELF']
-);
+];
 
 // output page
 $template_->output($replace);

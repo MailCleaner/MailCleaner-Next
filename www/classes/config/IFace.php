@@ -16,14 +16,14 @@ class Iface
   /**
    * interface settings
    */
-  private $props_ = array( 
-                       'if' => "",
-                       'ip' => "0.0.0.0",
-                       'netmask' => "255.255.255.0",
-                       'gateway' => "0.0.0.0",
-                       'netbase' => '0.0.0.0',
-                       'broadcast' => '0.0.0.0'     
-                 );
+  private $props_ = [ 
+    'if' => "",
+    'ip' => "0.0.0.0",
+    'netmask' => "255.255.255.0",
+    'gateway' => "0.0.0.0",
+    'netbase' => '0.0.0.0',
+    'broadcast' => '0.0.0.0'     
+  ];
 
   /**
    * constructor

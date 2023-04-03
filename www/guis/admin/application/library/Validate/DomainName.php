@@ -12,9 +12,9 @@ class Validate_DomainName extends Zend_Validate_Abstract
 {
     const MSG_DOMAINNAME = 'invalidDomainName';
 
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::MSG_DOMAINNAME => "'%value%' is not a valid domain name"
-    );
+    ];
 
     public function isValid($value)
     {

@@ -42,7 +42,7 @@ class Statistics {
    * gathered statistics
    * @var  array
    */
-  private $stats_ = array(
+  private $stats_ = [
                'msgs'  => 0,
                'spams' => 0,
                'pspams' => 0,
@@ -53,7 +53,7 @@ class Statistics {
                'pvirus' => 0,
                'clean' => 0,
                'pclean' => 0
-   );
+  ];
    
    private $graph_id_;
    private $date_type_ = 'date';
@@ -90,7 +90,7 @@ public function load($object, $startdate, $stopdate) {
      $stats = $slave->getStats($this->object_, $this->startdate_, $this->stopdate_);
      if (!is_null($stats)) {
        if (!isset($this->stats_['msgs'])) {
-         $this->stats_ = array(
+         $this->stats_ = [
 		'msgs' => 0,
 		'spams' => 0,
 		'bytes' => 0,
@@ -101,7 +101,7 @@ public function load($object, $startdate, $stopdate) {
 		'pvirus' => 0.0,
 		'pclean' => 0.0,
 		'pcontent' => 0.0
-         );
+	 ];
        }
        $this->stats_['msgs'] += $stats->msg;
        $this->stats_['spams'] += $stats->spam;
@@ -225,7 +225,7 @@ public function getStatInTemplate($template, $tpl_name) {
   
   $startd = Statistics::getAnyDateAsArray($this->startdate_);
   $stopd = Statistics::getAnyDateAsArray($this->stopdate_);
-  $date_string = $lang_->print_txt_mparam('FROMDATETODATE', [$startd['day'], $startd['month'], $startd['year'], $stopd['day'], $stopd['month'], $stopd['year'])];
+  $date_string = $lang_->print_txt_mparam('FROMDATETODATE', [$startd['day'], $startd['month'], $startd['year'], $stopd['day'], $stopd['month'], $stopd['year']]);
   if ($this->date_type_ == 'period') {
   	$date_string = abs($this->startdate_)." ".$lang_->print_txt('LASTDAYS');
   }

@@ -18,9 +18,7 @@ require_once('view/Template.php');
 $template_ = new Template('blank.tmpl');
 
 // prepare replacements
-$replace = array(
-    '__LANG__' => $lang_->getLanguage()
-);
+$replace = [ '__LANG__' => $lang_->getLanguage() ];
 
 // output page
 $template_->output($replace);

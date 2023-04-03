@@ -12,9 +12,9 @@ class Validate_PKICertificate extends Zend_Validate_Abstract
 {
     const MSG_CERTIFICATE = 'invalidCertificate';
 
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::MSG_CERTIFICATE => "Not a valid certificate"
-    );
+    ];
 
     public function isValid($value)
     {

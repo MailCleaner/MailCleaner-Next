@@ -23,7 +23,7 @@
    * Specialized settings array with default values
    * @var array
    */
-   protected $spec_settings_ = array(
+   protected $spec_settings_ = [
                               'usessl' => false,
                               'database_type' => 'mysql',
                               'database' => 'mc_config',
@@ -35,15 +35,15 @@
                               'domain_field' => 'domain',
                               'email_field' => 'email',
                               'crypt_type' => 'crypt'
-                             );
+                             ];
                              
    /**
     * fields type
     * @var array
     */
-   protected $spec_settings_type_ = array(
+   protected $spec_settings_type_ = [
                               'usessl' => ['checkbox', 'true'],
-                              'database_type' => array('select', ['mysql' => 'mysql')],
+                              'database_type' => 'select', ['mysql' => 'mysql']],
                               'database' => ['text', 20],
                               'table' => ['text', 20],
                               'user' => ['text', 20],
@@ -52,8 +52,8 @@
                               'password_field' => ['text', 20],
                               'domain_field' => ['text', 20],
                               'email_field' => ['text', 20],
-                              'crypt_type' => array('select', ['crypt' => 'crypt')]
-                               );                          
+                              'crypt_type' => ['select', ['crypt' => 'crypt']]
+   ];                          
                              
    public function __construct($type) {
       parent::__construct($type);

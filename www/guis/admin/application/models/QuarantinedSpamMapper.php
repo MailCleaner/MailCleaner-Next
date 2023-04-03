@@ -114,18 +114,18 @@ class Default_Model_QuarantinedSpamMapper
 		if (isset($params['td']) && isset($params['td']) && isset($params['tm']) && isset($params['tm']) 
 		  && isset($params['fd']) && isset($params['fd']) && isset($params['fm']) && isset($params['fm'])
 		   ) {
-                        $fromdate = new Zend_Date(['year' => $params['fy'], 'month' => $params['fm'], 'day' => $params['fd'])];
-                        $todate = new Zend_Date(['year' => $params['ty'], 'month' => $params['tm'], 'day' => $params['td'])];
+                        $fromdate = new Zend_Date(['year' => $params['fy'], 'month' => $params['fm'], 'day' => $params['fd']]);
+                        $todate = new Zend_Date(['year' => $params['ty'], 'month' => $params['tm'], 'day' => $params['td']]);
                         $today = new Zend_Date();
                         if ($todate < $fromdate) {
-                        	$fromdate = new Zend_Date(['year' => $params['fy']-1, 'month' => $params['fm'], 'day' => $params['fd'])];
+                        	$fromdate = new Zend_Date(['year' => $params['fy']-1, 'month' => $params['fm'], 'day' => $params['fd']]);
                         }
                         if ($todate > $today) {
                         	    $todate = $today;
-                                // bug: $todate = new Zend_Date(['year' => $params['ty']-1, 'month' => $params['tm'], 'day' => $params['td'])];
+                                // bug: $todate = new Zend_Date(['year' => $params['ty']-1, 'month' => $params['tm'], 'day' => $params['td']]);
                         }
                         if ($fromdate > $today) {
-                                $fromdate = new Zend_Date(['year' => $params['fy']-1, 'month' => $params['fm'], 'day' => $params['fd'])];
+                                $fromdate = new Zend_Date(['year' => $params['fy']-1, 'month' => $params['fm'], 'day' => $params['fd']]);
                         } 
                         $sysconf = new Default_Model_SystemConf;
                         $sysconf->load();
@@ -203,13 +203,13 @@ class Default_Model_QuarantinedSpamMapper
 		}
 
 		## possible orders
-		$orders = array(
+		$orders = [
             'date' => 'date_in, time_in', 
             'to' => 'to_user, to_domain', 
             'from' => 'sender', 
             'subject' => 'M_Subject', 
             'globalscore' => 'M_globalscore'
-            );
+		];
         if ($this->_table != '' && $this->_table != 'spam') {
 			$orders['date'] = 'date_in';
 			$orders['to'] = 'to_user';

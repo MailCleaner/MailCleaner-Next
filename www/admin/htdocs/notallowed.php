@@ -23,9 +23,9 @@ global $lang_;
 $template_ = new Template('notallowed.tmpl');
 
 // prepare replacements
-$replace = array(
-        "__LANG__" => $lang_->getLanguage()
-);
+$replace = [
+	"__LANG__" => $lang_->getLanguage()
+];
 
 // output page
 $template_->output($replace);

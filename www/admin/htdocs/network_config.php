@@ -25,7 +25,7 @@ global $lang_;
 global $admin_;
 
 // check authorizations
-$admin_->checkPermissions(['can_configure')];
+$admin_->checkPermissions(['can_configure']);
 
 // load network interfaces settings
 $netconf = new NetworkConfig();
@@ -61,9 +61,9 @@ if ($httpd->getPref('use_ssl')) {
 $template_ = new Template('network_config1.tmpl');
 
 // prepare replacements
-$replace = array(
+$replace = [
         "__REDIRCHANGED_URL__" => "<a href=\"".$base_uri.$netconf->getInterface($interface)->getProperty('ip')."/admin/\" target=\"_parent\">".$base_uri.$netconf->getInterface($interface)->getProperty('ip')."/admin/</a>",
-);
+];
 // output page
 $template_->output($replace);
 
@@ -80,10 +80,10 @@ flush();
 $template_ = new Template('network_config2.tmpl');
 unset($replace);
 // prepare replacements
-$replace = array(
+$replace = [
         "__APPLYCHANGES__" => apply($netconf),
         "__REDIRNOTCHANGED_URL__" => "<a href=\"/admin/config_base.php\" target=\"_self\">".$lang_->print_txt('CONFIGURATION')."</a>"
-);
+];
 // output page
 $template_->output($replace);
 

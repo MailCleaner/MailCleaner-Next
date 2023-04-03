@@ -11,12 +11,12 @@
 class Default_Model_FeatureRestriction
 {
 	protected $_id;
-	protected $_values = array(
+	protected $_values = [
       'section' => '',
 	  'feature' => '',
 	  'target_level' => '',
 	  'restricted' => 0
-    );
+	];
 	protected $_restrictions = null;
 	protected $_mapper;
 	

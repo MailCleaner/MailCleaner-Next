@@ -20,7 +20,7 @@ class Spamc extends PreFilter {
      * prefilter properties
      * @var array
      */
-	private $specpref_ = array(
+	private $specpref_ = [
                         'use_bayes' => 1,
                         'bayes_autolearn' => 0,
                         'use_rbls' => 1,
@@ -42,7 +42,7 @@ class Spamc extends PreFilter {
                         'spf_timeout' => 5,
                         'use_dkim' => 1,
                         'dkim_timeout' => 5
-	                 );
+	];
 
 public function subload() {}
 
@@ -55,7 +55,7 @@ public function getSpecificTMPL() {
 }
 
 public function getSpeciticReplace($template, $form) {
-  $ret = array(
+  $ret = [
          "__FORM_INPUTUSEBAYES__" => $form->checkbox('use_bayes', 1, $this->getPref('use_bayes'), '', 1),
          "__FORM_INPUTUSEAUTOLEARN__" => $form->checkbox('bayes_autolearn', 1, $this->getPref('bayes_autolearn'), '', 1),
          "__FORM_INPUTUSEFUZZYOCR__" => $form->checkbox('use_fuzzyocr', 1, $this->getPref('use_fuzzyocr'), '', 1),
@@ -79,9 +79,7 @@ public function getSpeciticReplace($template, $form) {
          "__FORM_INPUTDKIMTIMEOUT__" => $form->input('dkim_timeout', 4, $this->getPref('dkim_timeout')),
          
          "__FORM_INPUTSARBLS__" => $form->input('sa_rbls', 40, $this->getPref('sa_rbls')),
-         
-         
-        );
+  ];
   
   return $ret;
 }

@@ -67,7 +67,7 @@ class Default_Model_DomainPrefMapper
             $res = $this->getDbTable()->insert($data);
             $conf->setId($res);
         } else {
-            $res = $this->getDbTable()->update($data, ['id = ?' => $id)];
+            $res = $this->getDbTable()->update($data, ['id = ?' => $id]);
         }
         return $res;
     }

@@ -26,7 +26,7 @@ global $sysconf_;
 global $admin_;
 
 // check authorizations
-$admin_->checkPermissions(['can_configure')];
+$admin_->checkPermissions(['can_configure']);
 
 // get ldap settings
 //@todo clean up this ! maybe use a LDAPSettings object
@@ -120,10 +120,10 @@ $template_ = new Template('config_smtp.tmpl');
 $documentor = new Documentor();
 
 // prepare options
-$stages = array('pre-filtering (incoming)' => 1, 'post-filtering (outgoing)' => 4);
+$stages = ['pre-filtering (incoming)' => 1, 'post-filtering (outgoing)' => 4];
 
 // prepare replacements
-$replace = array(
+$replace = [
         '__DOC_SMTPACCESS__' => $documentor->help_button('SMTPACCESS'),
         '__DOC_SMTPLDAPCALLOUT__' => $documentor->help_button('SMTPLDAPCALLOUT'),
         "__DOC_GREYLISTCONFIG__" => $documentor->help_button('GREYLISTCONFIG'),
@@ -169,7 +169,7 @@ $replace = array(
         "__FORM_INPUTMAXRCPT__" => $adform->input('max_rcpt', 5, htmlentities($mta->getPref('max_rcpt'))),
         "__FORM_INPUTENABLESYSLOG__" => $adform->checkbox('use_syslog', '1', htmlentities($mta->getPref('use_syslog')), '', 1),
         "__ADVANCED_SAVE_STATUS__" => $admsg,
-);
+];
 
 // output page
 $template_->output($replace);

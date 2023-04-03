@@ -82,7 +82,7 @@ function getLogPage($posted) {
         return "";
     }
     
-    $query = http_build_query(['sid' => $sid, 'l' => $log, 'd' => $date)];
+    $query = http_build_query(['sid' => $sid, 'l' => $log, 'd' => $date]);
      if ($host == '127.0.0.1' || $host == 'localhost') {
         return "logs.php?".$query;
     } else {

@@ -79,7 +79,7 @@ class Default_Model_PendingAliasMapper
             }
             $res = $this->getDbTable()->insert($data);
         } else {
-            $res = $this->getDbTable()->update($data, ['id = ?' => $id)];
+            $res = $this->getDbTable()->update($data, ['id = ?' => $id]);
         }
         return $res;
     }

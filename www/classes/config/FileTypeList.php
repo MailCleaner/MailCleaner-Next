@@ -225,7 +225,7 @@ private function drawField($field, $f, $id, $size) {
  */
 private function drawStatus($f, $id) {
   global $lang_;
-  $allow_reject = array($lang_->print_txt('ALLOW') => 'allow', $lang_->print_txt('DENY') => 'deny');
+  $allow_reject = [$lang_->print_txt('ALLOW') => 'allow', $lang_->print_txt('DENY') => 'deny'];
   if ($this->getSelected() == $id) {
     return $f->select('status', $allow_reject, $this->getFileType($id)->getPref('status'), ';');
   }

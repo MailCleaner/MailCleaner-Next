@@ -80,7 +80,10 @@ class Default_Model_Slave
             }
             return $result;
         } catch (Exception $e) {
-            return array('error' => 'Unexpected answer or timeout from '.$this->getHostname(), 'message' => $e->getMessage());
+		return [
+			'error' => 'Unexpected answer or timeout from '.$this->getHostname(),
+			'message' => $e->getMessage()
+		];
         }
     }
 
@@ -103,7 +106,7 @@ class Default_Model_Slave
     		if (!is_[$status] && !preg_match('/^OK/', $status)) {
     			$message = "NOK (slave ".$slave->getId().") got : ".$status;
     		}
-    		if (is_[$status)] {
+    		if (is_[$status]) {
     			$message = $status;
     		}
     	}
@@ -197,7 +200,10 @@ class Default_Model_Slave
             $result = $client->$service($params, $limit);
             return $result;
         } catch (Exception $e) {
-            return array('error' => 'Unexpected answer or timeout from '.$this->getHostname(), 'message' => $e->getMessage());
+		return [
+			'error' => 'Unexpected answer or timeout from '.$this->getHostname(),
+			'message' => $e->getMessage()
+		];
         }
 
     }
@@ -213,7 +219,7 @@ class Default_Model_Slave
     }
     
     public function getInformationalMessages() {
-    	$values = $this->sendSoapRequest('Status_getInformationalMessages', [)];
+    	$values = $this->sendSoapRequest('Status_getInformationalMessages', []);
         if (isset($values['error']) && $values['error'] != '') {
             $msg = new Default_Model_InformationalMessage_Unresponsive($this->getHostname());
             return [$msg];
@@ -223,7 +229,7 @@ class Default_Model_Slave
     
     public function getTodayStats($what = null) {
     	$ret = [];
-    	$datares = $this->sendSoapRequest('Status_getTodayStats', [)];
+    	$datares = $this->sendSoapRequest('Status_getTodayStats', []);
         if (!isset($datares['data'])) {         
         	return $ret;
         }
@@ -238,10 +244,12 @@ class Default_Model_Slave
     	$retries = 5;
     	$ret = [];
     	
-    	if (!isset($what['stats']) ||!is_[$what['stats'])] {
-    		$what['stats'] = array('cleans' => 'globalCleanCount',
-    		                       'spams'=>  'globalSpamCount', 
-    		                       'dangerous' => 'globalVirusCount+globalNameCount+globalOtherCount');
+    	if (!isset($what['stats']) ||!is_[$what['stats']]) {
+		$what['stats'] = [
+			'cleans' => 'globalCleanCount',
+    		        'spams'=>  'globalSpamCount', 
+			'dangerous' => 'globalVirusCount+globalNameCount+globalOtherCount'
+		];
     	}
     	
     	if (!$this->_mib_loaded) {
@@ -255,9 +263,9 @@ class Default_Model_Slave
     	$snmpdconfig->find(1);
     	
     	$domainIndexes = [''];
-        if (isset($what['domain']) && !is_[$what['domain'])] {
+        if (isset($what['domain']) && !is_[$what['domain']]) {
     		$domainIndexes = preg_split('/[,:;]/', $what['domain']);
-    	} elseif (isset($what['domain']) && is_[$what['domain'])] {
+    	} elseif (isset($what['domain']) && is_[$what['domain']]) {
     		$domainIndexes = $what['domain'];
     	}
     	foreach ($what['stats'] as $text => $stat) {
@@ -303,75 +311,87 @@ class Default_Model_Slave
 
     public function getTodayGlobalPie() {
     	$what = [];
-    	$what['stats'] = array('cleans' => 'globalCleanCount',
-    		                   'spams'=>  'globalRefusedCount+globalSpamCount', 
-    		                   'dangerous' => 'globalVirusCount+globalNameCount+globalOtherCount',
-    	                       'outgoing' => 'globalRelayedCount');
+	$what['stats'] = [
+		'cleans' => 'globalCleanCount',
+    		'spams'=>  'globalRefusedCount+globalSpamCount', 
+    		'dangerous' => 'globalVirusCount+globalNameCount+globalOtherCount',
+		'outgoing' => 'globalRelayedCount'
+	];
     	$ret = $this->getTodaySNMPStats($what);
     	$stats = new Default_Model_ReportingStats();
-    	$stats->createPieChart(0,$ret,['render'=>true, 'label_orientation'=>'vertical')];
+    	$stats->createPieChart(0,$ret,['render'=>true, 'label_orientation'=>'vertical']);
     }
     
     public function getTodaySessionsPie() {
     	$what = [];
-    	$what['stats'] = array('accepted' => 'globalMsgCount',
-    		                   'refused'=>  'globalRefusedCount', 
-    		                   'delayed' => 'globalDelayedCount',
-    	                       'relayed' => 'globalRelayedCount');
+	$what['stats'] = [
+		'accepted' => 'globalMsgCount',
+    		'refused'=>  'globalRefusedCount', 
+    		'delayed' => 'globalDelayedCount',
+		'relayed' => 'globalRelayedCount'
+	];
     	$ret = $this->getTodaySNMPStats($what);
     	$stats = new Default_Model_ReportingStats();
-    	$stats->createPieChart(0,$ret,['render'=>true, 'label_orientation'=>'vertical')];
+    	$stats->createPieChart(0,$ret,['render'=>true, 'label_orientation'=>'vertical']);
     }
     
     public function getTodayAcceptedPie() {
     	$what = [];
-    	$what['stats'] = array('cleans' => 'globalCleanCount',
-    		                   'spams'=>  'globalSpamCount', 
-    		                   'dangerous' => 'globalVirusCount+globalNameCount+globalOtherCount');
+	$what['stats'] = [
+		'cleans' => 'globalCleanCount',
+    		'spams'=>  'globalSpamCount', 
+		'dangerous' => 'globalVirusCount+globalNameCount+globalOtherCount'
+	];
     	$ret = $this->getTodaySNMPStats($what);
     	$stats = new Default_Model_ReportingStats();
-    	$stats->createPieChart(0,$ret,['render'=>true, 'label_orientation'=>'vertical')];
+    	$stats->createPieChart(0,$ret,['render'=>true, 'label_orientation'=>'vertical']);
     }
     
     public function getTodayRefusedPie() {
     	$what = [];
-    	$what['stats'] = array('rbl' => 'globalRefusedRBLCount+globalRefusedBackscatterCount',
-    		                   'blacklists'=>  'globalRefusedHostCount+globalRefusedBadSenderCount', 
-    		                   'relay' => 'globalRefusedRelayCount',
-    	                       'bad signature' => 'globalRefusedBATVCount+globalRefusedBadSPFCount+globalRefusedBadRDNSCount',
-    	                       'callout' => 'globalRefusedCalloutCount',
-    	                       'syntax' => 'globalRefusedLocalpartCount');
+	$what['stats'] = [
+		'rbl' => 'globalRefusedRBLCount+globalRefusedBackscatterCount',
+    		'blacklists'=>  'globalRefusedHostCount+globalRefusedBadSenderCount', 
+    		'relay' => 'globalRefusedRelayCount',
+    	        'bad signature' => 'globalRefusedBATVCount+globalRefusedBadSPFCount+globalRefusedBadRDNSCount',
+    	        'callout' => 'globalRefusedCalloutCount',
+		'syntax' => 'globalRefusedLocalpartCount'
+	];
     	$ret = $this->getTodaySNMPStats($what);
     	$stats = new Default_Model_ReportingStats();
-    	$stats->createPieChart(0,$ret,['render'=>true, 'label_orientation'=>'vertical')];
+    	$stats->createPieChart(0,$ret,['render'=>true, 'label_orientation'=>'vertical']);
     }
     
     public function getTodayDelayedPie() {
     	$what = [];
-    	$what['stats'] = array('greylisted' => 'globalDelayedGreylistCount',
-    		                   'rate limited'=>  'globalDelayedRatelimitCount');
+	$what['stats'] = [
+		'greylisted' => 'globalDelayedGreylistCount',
+		'rate limited'=>  'globalDelayedRatelimitCount'
+	];
     	$ret = $this->getTodaySNMPStats($what);
     	$stats = new Default_Model_ReportingStats();
-    	$stats->createPieChart(0,$ret,['render'=>true, 'label_orientation'=>'vertical')];
+    	$stats->createPieChart(0,$ret,['render'=>true, 'label_orientation'=>'vertical']);
     }
     
     public function getTodayRelayedPie() {
     	$what = [];
-    	$what['stats'] = array('by hosts' => 'globalRelayedHostCount',
-    		                   'authentified'=>  'globalRelayedAuthenticatedCount', 
-    		                   'refused' => 'globalRelayedRefusedCount',
-    	                       'virus' => 'globalRelayedVirusCount');
+	$what['stats'] = [
+		'by hosts' => 'globalRelayedHostCount',
+    		'authentified'=>  'globalRelayedAuthenticatedCount', 
+    		'refused' => 'globalRelayedRefusedCount',
+		'virus' => 'globalRelayedVirusCount'
+	];
     	$ret = $this->getTodaySNMPStats($what);
     	$stats = new Default_Model_ReportingStats();
-    	$stats->createPieChart(0,$ret,['render'=>true, 'label_orientation'=>'vertical')];
+    	$stats->createPieChart(0,$ret,['render'=>true, 'label_orientation'=>'vertical']);
     }
     
     public function getTodayStatsPie($data = null, $params = null) {
     	$this->getTodaySNMPStats();
     	
     	ini_set('display_errors', 1);
-    	if (!$data || is_[$data)] {
-            $datares = $this->sendSoapRequest('Status_getTodayStats', [)];
+    	if (!$data || is_[$data]) {
+            $datares = $this->sendSoapRequest('Status_getTodayStats', []);
             if (!isset($datares['data'])) {       	
                 header("HTTP/1.0 404 Not Found");
                 echo "No data found";
@@ -379,12 +399,16 @@ class Default_Model_Slave
             }
             $data = $datares['data'];
     	}
-    	$fdata = array('cleans'=> (int)$data['cleans'], 'spams'=>(int)$data['spams'],'dangerous'=>$data['viruses']+$data['contents']);
+	$fdata = [
+		'cleans'=> (int)$data['cleans'],
+		'spams'=>(int)$data['spams'],
+		'dangerous'=>$data['viruses']+$data['contents']
+	];
     	$stats = new Default_Model_ReportingStats();
-    	$stats->createPieChart(0,$fdata,['render'=>true, 'label_orientation'=>'vertical')];
+    	$stats->createPieChart(0,$fdata,['render'=>true, 'label_orientation'=>'vertical']);
     }
     
-    public function getSpool($spoolid = 1, $params = [)] {
+    public function getSpool($spoolid = 1, $params = []) {
        $params['spoolid'] = $spoolid;
        $params['soap_timeout'] = 20;
        $values = $this->sendSoapRequest('Status_getSpool', $params);

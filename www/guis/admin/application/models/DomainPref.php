@@ -11,7 +11,7 @@
 class Default_Model_DomainPref
 {
     protected $_id;
-    protected $_values = array(
+    protected $_values = [
         'auth_param' => '',
         'systemsender' => '',
         'falseneg_to' => '',
@@ -63,7 +63,7 @@ class Default_Model_DomainPref
         
         ### newsl
         'allow_newsletters' => '0',
-    );
+    ];
 	
 	protected $_mapper;
 	

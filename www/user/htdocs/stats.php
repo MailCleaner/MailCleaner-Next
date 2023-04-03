@@ -81,7 +81,7 @@ $addresses = $user_->getAddressesForSelect();
 if (count($addresses) > 1) {
   $addresses[$lang_->print_txt('ALL')] = 'ALL';
 }
-$periods = array(
+$periods = [
   '1' => 1,
   '3' => 3,
   '7' => 7,
@@ -90,7 +90,7 @@ $periods = array(
   '90' => 90,
   '180' => 180,
   '365' => 365
-);
+];
 $days = [];
 for ($i=1; $i < 32; $i++ ) {
   $days[$i] = $i;
@@ -109,7 +109,7 @@ $stopd = Statistics::getAnyDateAsArray($stopdate);
 if (!isset($posted['datetype'])) {
     $posted['datetype'] = '';
 }
-$replace = array(
+$replace = [
     "__PRINT_USERNAME__" => $user_->getName(),
     "__LINK_LOGOUT__" => '/logout.php',
     '__BEGIN_FILTER_FORM__' => $form->open(),
@@ -130,7 +130,7 @@ $replace = array(
     '__REFRESH_BUTTON__' => $form->submit('submit', $lang_->print_txt('REFRESH'), ''),
     '__DISPLAY_STATSLIST__' => displayStatsList(),
     '__DISPLAY_GLOBALSTAT__' => displayGlobalStats()
-);
+];
 
 // display page
 $template_->output($replace);

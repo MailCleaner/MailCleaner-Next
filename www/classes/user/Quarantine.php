@@ -17,12 +17,12 @@ class Quarantine {
    * filter criteria
    * @var  array
    */
-  protected  $filters_ = array(
+  protected  $filters_ = [
                           'to_local'      => '',
                           'to_domain'     => '',
                           'msg_per_page' => 20,
                           'page'         => 1,
-                          );
+  ];
                   
   /**
    * allowed orders with corresponding column names

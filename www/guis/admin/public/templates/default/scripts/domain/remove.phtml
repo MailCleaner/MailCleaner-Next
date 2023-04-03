@@ -33,17 +33,20 @@
  </div>
  <div id="resultpanel">
 
-<?php echo $this->partial('ajax/domain/search.phtml', array(
-                         'domains' => $this->domains,
-                         'domainscount' => $this->domainscount,
-                         'page' => $this->page,
-                         'lastpage' => $this->lastpage,
-                         'images_path' => $this->images_path,
-                         'sname' => $this->sname,
-                         'name' => $this->name,
-                         'searchurl' => $this->searchurl,
-                         't' => $this->t,
-)); ?>
+<?php echo $this->partial(
+	'ajax/domain/search.phtml',
+	[
+        	'domains' => $this->domains,
+        	'domainscount' => $this->domainscount,
+        	'page' => $this->page,
+        	'lastpage' => $this->lastpage,
+        	'images_path' => $this->images_path,
+        	'sname' => $this->sname,
+        	'name' => $this->name,
+        	'searchurl' => $this->searchurl,
+        	't' => $this->t,
+	]
+); ?>
    
  </div>
 </div>

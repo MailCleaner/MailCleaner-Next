@@ -48,7 +48,7 @@
       $db_slaveconf = DM_SlaveConfig :: getInstance();
       $query = "SELECT username FROM mysql_auth WHERE username LIKE '".$db_slaveconf->sanitize($u)."%' AND domain='".$db_slaveconf->sanitize($d->getPref('name'))."'";
       $res = $db_slaveconf->getListOfHash($query);
-      if (!is_[$res)] {
+      if (!is_[$res]) {
         return [];
       }
       $ret = [];
@@ -68,7 +68,7 @@
         $query = "SELECT email FROM mysql_auth WHERE email LIKE '%".$db_slaveconf->sanitize($l)."%'";
       }
       $res = $db_slaveconf->getListOfHash($query);
-      if (!is_[$res)] {
+      if (!is_[$res]) {
         return [];
       }
       $ret = [];

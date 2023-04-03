@@ -11,12 +11,12 @@
 class Default_Model_GreylistConfig
 {
     protected $_id;
-    protected $_values = array(
+    protected $_values = [
        'retry_min' => 0,
        'retry_max' => 0,
        'expire' => 0,
        'avoid_domains' => ''
-     );
+    ];
 	
 	protected $_mapper;
 	

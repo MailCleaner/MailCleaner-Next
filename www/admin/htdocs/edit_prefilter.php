@@ -28,7 +28,7 @@ global $admin_;
 $message = "";
 
 // check authorizations
-$admin_->checkPermissions(['can_configure')];
+$admin_->checkPermissions(['can_configure']);
 
 $pfid = 0;
 if (isset($_GET['pf']) && $_GET['pf'] != "" && is_numeric($_GET['pf'])) {
@@ -71,7 +71,7 @@ $documentor = new Documentor();
 $template_->addTMPLFile('SPECIFIC', $pf->getSpecificTMPL());
 
 // prepare replacements
-$replace = array(
+$replace = [
         "__LANG__" => $lang_->getLanguage(),
         "__NAME__" => $pf->getPref('name'),
         "__CONFIG_SAVE_STATUS__" => $message,
@@ -83,7 +83,7 @@ $replace = array(
         "__FORM_INPUTPUTSPAMHEADER__" => $cform->checkbox('putSpamHeader', 1, $pf->getPref('putSpamHeader'), '', 1),
         "__FORM_INPUTPUTHAMHEADER__" => $cform->checkbox('putHamHeader', 1, $pf->getPref('putHamHeader'), '', 1),
         "__ADD_SPECIFIC__" => ""
-);
+];
 
 $spec = $pf->getSpeciticReplace($template_, $cform);
 foreach ($spec as $key => $value) {

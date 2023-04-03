@@ -66,7 +66,7 @@ $controller->processInput();
 // create view
 $template_ = new Template($topics[$topic][1]);
 
-$replace = array(
+$replace = [
     "__PRINT_USERNAME__" => $user_->getName(),
     "__LINK_LOGOUT__" => '/logout.php',
     
@@ -74,7 +74,7 @@ $replace = array(
     "__THISTOPIC__" => $topic,
     "__TOPIC_TITLE__" => $lang_->print_txt($topics[$topic][0]."TITLE"),
     '__SELECTOR_LANG__' => $lang_->html_select(),
-);
+];
 
 require_once ('helpers/DataManager.php');
 $file_conf = DataManager :: getFileConfig($sysconf_ :: $CONFIGFILE_);

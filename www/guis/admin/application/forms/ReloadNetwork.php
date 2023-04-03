@@ -18,9 +18,10 @@ class Default_Form_ReloadNetwork extends Zend_Form
 		$t = Zend_Registry::get('translate');
 		$this->setAttrib('id', 'reloadnetworkform');
 		
-		$submit = new Zend_Form_Element_Submit('submit', array(
+		$submit = new Zend_Form_Element_Submit('submit', [
 		     'label'    => $t->_('Reload network now'),
-		     'id'       => 'reloadnetbutton'));
+		     'id'       => 'reloadnetbutton'
+		]);
 		$this->addElement($submit);
                 $restrictions = Zend_Registry::get('restrictions');
                 if ($restrictions->isRestricted('NetworkInterface', 'reloadnetnow')) {

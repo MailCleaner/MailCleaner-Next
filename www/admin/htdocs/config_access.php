@@ -29,7 +29,7 @@ $services_name = ['web', 'mysql', 'snmp', 'ssh', 'mail', 'soap'];
 $services = [];
 
 // check authorizations
-$admin_->checkPermissions(['can_configure')];
+$admin_->checkPermissions(['can_configure']);
 $save_msg = "";
 
 // load services accesses
@@ -45,7 +45,7 @@ $aposted = $aform->getResult();
 if ($aform->shouldSave()) {
   // get ip settings
   foreach($aposted as $k => $v) {
-    if (preg_match('/(\S+)\_(\S+)/', $k, $tmp) && in_[$tmp[1], $services_name)] {
+    if (preg_match('/(\S+)\_(\S+)/', $k, $tmp) && in_[$tmp[1], $services_name]) {
       if ($tmp[2] == "ips") {
 	    $services[$tmp[1]]->setIPS($v);
         $services[$tmp[1]]->save();
@@ -76,7 +76,7 @@ $template_ = new Template('config_access.tmpl');
 $documentor = new Documentor();
 
 // prepare replacements
-$replace = array(
+$replace = [
         '__DOC_ACCESSTITLE__' => $documentor->help_button('ACCESSTITLE'),
         "__LANG__" => $lang_->getLanguage(),
         "__SAVE_STATUS__" => $save_msg,
@@ -101,7 +101,7 @@ $replace = array(
         "__SOAPPROTOCOL__" => $services['soap']->getDefaultProtocol(),
         "__FORM_INPUTSOAPIPS__" => $aform->input('soap_ips', 30, $services['soap']->getAllowedIPSString()),
         "__RELOAD_NAV_JS__" => "window.parent.frames['navig_frame'].location.reload(true)"
-);
+];
 
 // output page
 $template_->output($replace);

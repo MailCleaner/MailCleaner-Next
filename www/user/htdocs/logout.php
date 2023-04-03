@@ -55,12 +55,12 @@ if ($is_enterprise) {
 }
 
 // prepare replacements
-$replace = array(
+$replace = [
     "__BASE_URL__" => $_SERVER['SERVER_NAME'],
     "__BEENLOGGEDOUT__" => $lang_->print_txt_param('BEENLOGGEDOUT', $http_sheme."://".$_SERVER['SERVER_NAME'].$port),
     "__MCLINK__" => $mclink,
     "__MCLINKLABEL__" => $mclinklabel,
-);
+];
 //display page
 $template_->output($replace);
 

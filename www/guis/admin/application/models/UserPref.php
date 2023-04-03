@@ -11,7 +11,7 @@
 class Default_Model_UserPref
 {
     protected $_id;
-    protected $_values = array(
+    protected $_values = [
         'language' => 'en',
         'gui_default_address' => '',
         'gui_displayed_spams' => 20,
@@ -30,7 +30,7 @@ class Default_Model_UserPref
         'copyto_mail' => '',
         'bypass_filtering' => 0,
         'allow_newsletters' => '0',
-    );
+    ];
 	
 	protected $_mapper;
 	

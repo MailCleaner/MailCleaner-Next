@@ -21,9 +21,9 @@ $doc = new Documentor();
 $template = new Template('help.tmpl');
  
 // prepare replacements 
-$replace = array(
-        '__DOC_TEXT__' => $template->processText($doc->getHelpText($_GET['s']), [)]
-);
+$replace = [
+        '__DOC_TEXT__' => $template->processText($doc->getHelpText($_GET['s']), [])
+];
 
 // output page
 $template->output($replace);

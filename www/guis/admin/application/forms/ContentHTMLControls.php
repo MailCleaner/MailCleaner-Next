@@ -12,13 +12,13 @@ class Default_Form_ContentHTMLControls extends ZendX_JQuery_Form
 {
 	protected $_dangerouscontent;
 	protected $_antispam;
-	protected $_fields = array(
+	protected $_fields = [
 		   'allow_iframe' => ['text' => 'IFrame objects', 'silent' => 'silent_iframe'],
 		   'allow_form' => ['text' => 'Forms', 'silent' => 'silent_form'],
 		   'allow_script' => ['text' => 'Scripts', 'silent' => 'silent_script'],
 		   'allow_codebase' => ['text' => 'Codebase objects', 'silent' => 'silent_codebase'],
 		   'allow_webbugs' => ['text' => 'Web Bugs', 'silent' => 'silent_webbugs'],
-		);
+	];
 	
 	public function __construct($dc,$as) {
 		$this->_dangerouscontent = $dc;
@@ -38,29 +38,30 @@ class Default_Form_ContentHTMLControls extends ZendX_JQuery_Form
 		
 		$this->setAttrib('id', 'contenthtmlcontrols_form');
 	    
-		$allowoptions = array('yes' => $t->_('allow'), 'no' => $t->_('block'));
-		$blockoptions = array('no' => $t->_('allow'), 'yes' => $t->_('block'));
-		$disarmoptions = array('yes' => $t->_('allow'), 'no' => $t->_('block'), 'disarm' => $t->_('disarm'));
+		$allowoptions = ['yes' => $t->_('allow'), 'no' => $t->_('block')];
+		$blockoptions = ['no' => $t->_('allow'), 'yes' => $t->_('block')];
+		$disarmoptions = ['yes' => $t->_('allow'), 'no' => $t->_('block'), 'disarm' => $t->_('disarm')];
 		
 		foreach ($this->_fields as $mf => $f) {
 			
-		  $ff = new Zend_Form_Element_Select($mf, array(
+		  $ff = new Zend_Form_Element_Select($mf, [
                'label'      => $t->_($f['text'])." :",
                'title' => $t->_("Choose action to perform when this item is detected inside an HTML document"),
                'required'   => true,
-               'filters'    => ['StringTrim'))];
+	       'filters'    => ['StringTrim']
+		  ];
         
           foreach ($disarmoptions as $lk => $lv) {
              $ff->addMultiOption($lk, $lv);
           }
           $ff->setValue($this->_dangerouscontent->getParam($mf));
           $this->addElement($ff);
-          $sff = new Zend_Form_Element_Checkbox($f['silent'], array(
+          $sff = new Zend_Form_Element_Checkbox($f['silent'], [
 	           'label'   => $t->_('silently'),
                    'title' => $t->_("Enable/Disable warnings"),
                'uncheckedValue' => "0",
 	           'checkedValue' => "1"
-	       ));
+	  ]);
 	       if ($this->_dangerouscontent->getParam($f['silent']) == 'yes') {
 	       	$sff->setChecked(true);
 	       }
@@ -68,19 +69,21 @@ class Default_Form_ContentHTMLControls extends ZendX_JQuery_Form
 		}
         
 		require_once('Validate/IpList.php');
-		$trustednet = new Zend_Form_Element_Textarea('html_wl_ips', array(
+		$trustednet = new Zend_Form_Element_Textarea('html_wl_ips', [
 		      'label'    =>  $t->_('Trusted IPs/Networks')." :",
                       'title' => $t->_("These IP/ranges are whitelist for the HTML controls"),
 		      'required'   => false,
 		      'rows' => 5,
 		      'cols' => 30,
-		      'filters'    => ['StringToLower', 'StringTrim'))];
+		      'filters'    => ['StringToLower', 'StringTrim']
+		]);
 	    $trustednet->addValidator(new Validate_IpList());
 		$trustednet->setValue($this->_antispam->getParam('html_wl_ips'));
 		$this->addElement($trustednet);
 	    
-		$submit = new Zend_Form_Element_Submit('submit', array(
-		     'label'    => $t->_('Submit')));
+		$submit = new Zend_Form_Element_Submit('submit', [
+			'label'    => $t->_('Submit')
+		]);
 		$this->addElement($submit);
 		
 	}

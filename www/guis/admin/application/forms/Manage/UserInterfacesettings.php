@@ -30,9 +30,10 @@ class Default_Form_Manage_UserInterfacesettings extends Zend_Form
 		$t = Zend_Registry::get('translate');
 
 		$this->setAttrib('id', 'user_form');
-	    $panellist = new Zend_Form_Element_Select('userpanel', array(
+	    $panellist = new Zend_Form_Element_Select('userpanel', [
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	    ]);
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         
@@ -56,10 +57,11 @@ class Default_Form_Manage_UserInterfacesettings extends Zend_Form
 		}
 		$this->addElement($domain);
 		
-		$language = new Zend_Form_Element_Select('language', array(
+		$language = new Zend_Form_Element_Select('language', [
 		    'label'      => $t->_('Language')." : ",
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+		]);
 	    ## TODO: add specific validator
         
 	    $config = MailCleaner_Config::getInstance();
@@ -69,8 +71,9 @@ class Default_Form_Manage_UserInterfacesettings extends Zend_Form
         $language->setValue($this->_user->getPref('language'));
         $this->addElement($language);
 		
-		$submit = new Zend_Form_Element_Submit('submit', array(
-		     'label'    => $t->_('Submit')));
+		$submit = new Zend_Form_Element_Submit('submit', [
+			'label'    => $t->_('Submit')
+		]);
 		$this->addElement($submit);	
 	}
 	

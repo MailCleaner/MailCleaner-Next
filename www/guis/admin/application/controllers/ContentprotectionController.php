@@ -25,12 +25,12 @@ class ContentprotectionController extends Zend_Controller_Action
     	
     	$this->config_menu = new Zend_Navigation();
     	
-    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Global settings', 'id' => 'globalsettings', 'action' => 'globalsettings', 'controller' => 'contentprotection'))];
-        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Anti-virus', 'id' => 'antivirus', 'action' => 'antivirus', 'controller' => 'contentprotection'))];
-        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'HTML controls', 'id' => 'htmlcontrols', 'action' => 'htmlcontrols', 'controller' => 'contentprotection'))];
-        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Message format controls', 'id' => 'messageformat', 'action' => 'messageformat', 'controller' => 'contentprotection'))];
-        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Attachment name', 'id' => 'filename', 'action' => 'filename', 'controller' => 'contentprotection'))];
-        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Attachment type', 'id' => 'filetype', 'action' => 'filetype', 'controller' => 'contentprotection'))];
+    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Global settings', 'id' => 'globalsettings', 'action' => 'globalsettings', 'controller' => 'contentprotection']));
+        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Anti-virus', 'id' => 'antivirus', 'action' => 'antivirus', 'controller' => 'contentprotection']));
+        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'HTML controls', 'id' => 'htmlcontrols', 'action' => 'htmlcontrols', 'controller' => 'contentprotection']));
+        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Message format controls', 'id' => 'messageformat', 'action' => 'messageformat', 'controller' => 'contentprotection']));
+        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Attachment name', 'id' => 'filename', 'action' => 'filename', 'controller' => 'contentprotection']));
+        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Attachment type', 'id' => 'filetype', 'action' => 'filetype', 'controller' => 'contentprotection']));
         $view->config_menu = $this->config_menu;
         
         $view->headScript()->appendFile($view->scripts_path.'/baseconfig.js', 'text/javascript');

@@ -33,9 +33,9 @@ $quarantine->setSettings($posted);
 
 // create view
 $template_ = new Template('summary.tmpl');
-$replace = array(
+$replace = [
   '__MESSAGE__' => $quarantine->doSendSummary()
-);
+];
 
 // display page
 $template_->output($replace);

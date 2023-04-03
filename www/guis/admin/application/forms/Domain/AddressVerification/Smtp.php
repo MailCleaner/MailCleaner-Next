@@ -25,17 +25,18 @@ class Default_Form_Domain_AddressVerification_Smtp
 		$t = Zend_Registry::get('translate');
 		
 		require_once('Validate/SMTPHostList.php');
-		$alternateserver = new  Zend_Form_Element_Text('alternate', array(
+		$alternateserver = new  Zend_Form_Element_Text('alternate', [
 	        'label'    => $t->_('Use alternate server')." :",
 		    'required' => false,
-		    'filters'    => ['StringToLower', 'StringTrim'))];
+		    'filters'    => ['StringToLower', 'StringTrim']
+		]);
 	    $alternateserver->setValue($this->_domain->getParam('altcallout'));
         $alternateserver->addValidator(new Validate_SMTPHostList());
 	    $form->addElement($alternateserver);
 	}
 	
 	public function setParams($request, $domain) {
-	   $this->setParamsFromArray(array('callout_server' => $request->getParam('alternate')), $domain);
+	   $this->setParamsFromArray(['callout_server' => $request->getParam('alternate')], $domain);
 	}
 	
 	public function setParamsFromArray($array, $domain) {
@@ -49,7 +50,7 @@ class Default_Form_Domain_AddressVerification_Smtp
 	}
 
 	public function getParams() {
-		return array('callout_server' => $this->_domain->getParam('altcallout'));
+		return ['callout_server' => $this->_domain->getParam('altcallout')];
 	}
 	
 	public function getParamsString($params) {

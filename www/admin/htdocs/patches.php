@@ -73,7 +73,7 @@ $sysconf = SystemConfig::getInstance();
 $nblines = $template_->getDefaultValue('LOG_LINES');
 
 // prepare replacements
-$replace = array(
+$replace = [
     '__LANG__' => $lang_->getLanguage(),
     '__ERROR__' => $lang_->print_txt($error),
     '__MESSAGE__' => $lang_->print_txt($message),
@@ -83,8 +83,8 @@ $replace = array(
     '__BEGIN_VIEW_FORM__' => $pform->open(),
     '__CLOSE_VIEW_FORM__' => $pform->close(),
     '__VIEW_PATCHES_LOG__' => viewPatchLog($nblines),
-    '__LASTPATCH__' => $soaper->query('getLastPatch', [)]
-);
+    '__LASTPATCH__' => $soaper->query('getLastPatch', [])
+];
 
 // output page
 $template_->output($replace);

@@ -15,15 +15,15 @@ class Validate_EmailAddressField extends Zend_Validate_Abstract
     
     public $host;
 
-    protected $_messageVariables = array(
+    protected $_messageVariables = [
         'text' => 'text',
         'address' => 'address'
-    );
+    ];
     
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::MSG_BADTEXTPART => "'%text%' is not a valid informational text",
         self::MSG_BADADDRESS => "'%address%' is not a valid email address"
-    );
+    ];
 
     public function isValid($value)
     {

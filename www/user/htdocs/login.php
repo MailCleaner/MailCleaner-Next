@@ -65,7 +65,7 @@ if ($is_enterprise) {
 }
 
 $template_->setCondition('DOMAINCHOOSER', $login_->hasDomainChooser());
-$replace = array(
+$replace = [
         "__PRINT_STATUS__" => $lang_->print_txt($login_status),
         "__PRINT_LOGININFO__" => $lang_->print_txt($login_reminder),
 	    "__BEGIN_LOGIN_FORM__" => "<form method=\"post\" id=\"login\" action=\"".htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'utf-8')."\"><div><input type=\"hidden\" name=\"lang\" value=\"".$lang_->getLanguage()."\" /></div>\n",
@@ -79,7 +79,7 @@ $replace = array(
 	    "__MCLINK__" => $mclink,
 	    "__MCLINKLABEL__" => $mclinklabel,
 	    "__USERNAME__" => $username
-       );
+];
 
 // display page
 $template_->output($replace);

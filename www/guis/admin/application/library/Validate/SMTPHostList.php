@@ -15,14 +15,14 @@ class Validate_SMTPHostList extends Zend_Validate_Abstract
     
     public $host;
 
-    protected $_messageVariables = array(
+    protected $_messageVariables = [
         'host' => 'host'
-    );
+    ];
     
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::MSG_SMTPHOSTLIST => "'%value%' is not a valid host list",
         self::MSG_SMTPBADHOST => "'%host%' is not a valid host"
-    );
+    ];
 
     public function isValid($value)
     {

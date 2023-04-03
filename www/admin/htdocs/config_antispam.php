@@ -26,7 +26,7 @@ global $sysconf_;
 global $admin_;
 
 // check authorizations
-$admin_->checkPermissions(['can_configure')];
+$admin_->checkPermissions(['can_configure']);
 
 // create and load antispam configuration handler
 $antispam_ = new AntiSpam();
@@ -97,7 +97,7 @@ $documentor = new Documentor();
 
 $template_->setCondition('CANADD', 1);
 // prepare replacements
-$replace = array(
+$replace = [
         '__DOC_ANTISPAMTITLE__' => $documentor->help_button('ANTISPAMSETTINGS'),
         '__DOC_ANTISPAMMODULES__' => $documentor->help_button('ANTISPAMMODULES'),
         "__LANG__" => $lang_->getLanguage(),
@@ -123,7 +123,7 @@ $replace = array(
         "__FORM_CLOSE_MODULES__" => $mform->close(),
         "__MODULESSAVE_STATUS__" => $msave_msg,
         "__MODULESLIST_DRAW__" => $moduleslist_->getList($template_, $mform),
-);
+];
 
 // output page
 $template_->output($replace);

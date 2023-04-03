@@ -11,10 +11,10 @@
 class Default_Model_SnmpdConfig
 {
     protected $_id;
-    protected $_values = array(
+    protected $_values = [
          'community' => '',
          'allowed_ip' => '',
-     );
+    ];
 	
 	protected $_mapper;
 	

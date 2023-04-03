@@ -18,7 +18,7 @@ defined('APPLICATION_ENV')
     
 
 // Ensure library/ is on include_path
-set_include_path(implode(PATH_SEPARATOR, array(
+set_include_path(implode(PATH_SEPARATOR, [
     realpath(APPLICATION_PATH . '/../application'),
     realpath(APPLICATION_PATH . '/../application/api'),
     realpath(APPLICATION_PATH . '/../application/api/models'),
@@ -26,7 +26,7 @@ set_include_path(implode(PATH_SEPARATOR, array(
     realpath(APPLICATION_PATH . '/../../guis/admin/application/models'),
     realpath(APPLICATION_PATH . '/../../guis/admin/application/library'),
     get_include_path(),
-)));
+]));
 
 ini_set('error_reporting', E_ALL);
 

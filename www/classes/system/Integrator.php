@@ -16,7 +16,7 @@ class Integrator extends PrefHandler
    * integrator information
    * @var array
    */
-  private $infos_ = array(   
+  private $infos_ = [   
                         'Name_T' => "",
                         'Surname_T' => "",
                         'Phone_T' => "",
@@ -24,7 +24,7 @@ class Integrator extends PrefHandler
                         'Company' => "",
                         'SiteInternet' => "",
                         'Phone' => ""
-                        );
+  ];
                         
  /**
   * constructor
@@ -34,7 +34,7 @@ class Integrator extends PrefHandler
     $sysconf = SystemConfig::getInstance();
 
     $values = @file($sysconf->VARDIR_."/spool/mailcleaner/integrator.txt");
-    if (!$values || ! is_[$values)] {
+    if (!$values || ! is_[$values]) {
       return;
     }
     $matches = [];

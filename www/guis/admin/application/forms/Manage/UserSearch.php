@@ -23,22 +23,25 @@ class Default_Form_Manage_UserSearch extends Zend_Form
 			
 		$t = Zend_Registry::get('translate');
 			
-		$searchtypeField = new  Zend_Form_Element_Select('type', array(
+		$searchtypeField = new  Zend_Form_Element_Select('type', [
 	        'label'    => $t->_('Search by')." :",
-		    'required' => false));
+		'required' => false
+		]);
 		$searchtypeField->addMultiOption('user', $t->_('user'));
 		$searchtypeField->addMultiOption('email', $t->_('email address'));
 	    $searchtypeField->setValue($this->_params['type']);
 	    $this->addElement($searchtypeField);
 
-	    $username = new  Zend_Form_Element_Text('search', array(
+	    $username = new  Zend_Form_Element_Text('search', [
 	        'label'    => $t->_('Username')." :",
-		    'required' => false));
+		'required' => false
+	    ]);
 	    $username->setValue($this->_params['search']);
 	    $this->addElement($username);
 	    
-	    $domainField = new  Zend_Form_Element_Select('domain', array(
-		    'required' => false));
+	    $domainField = new  Zend_Form_Element_Select('domain', [
+		    'required' => false
+	    ]);
 	    $domain = new Default_Model_Domain();
 	    $domains = $domain->fetchAllName();
 	    $domainField->addMultiOption('', $t->_('select...'));
@@ -48,9 +51,10 @@ class Default_Form_Manage_UserSearch extends Zend_Form
 	    $domainField->setValue($this->_params['domain']);
 	    $this->addElement($domainField);
 	    
-	    $submit = new Zend_Form_Element_Submit('submit', array(
+	    $submit = new Zend_Form_Element_Submit('submit', [
 		     'label'    => $t->_('Edit or add >>'),
-	         'class' => 'useraddsubmit' ));
+		     'class' => 'useraddsubmit'
+	    ]);
 		$this->addElement($submit);
 	}
 

@@ -25,7 +25,7 @@ class Plugin_TemplatePath extends Zend_Controller_Plugin_Abstract
         $view->images_path = $view->template_dir.'/images';
     	$view->headLink()->appendStylesheet($view->css_path.'/global.css');
     	
-    	$view->statusUrl = $view->url(['action'=> 'quickstatus', 'controller' => 'status')];
+    	$view->statusUrl = $view->url(['action'=> 'quickstatus', 'controller' => 'status']);
         
         $view->addHelperPath('ZendX/JQuery/View/Helper/', 'ZendX_JQuery_View_Helper');
         $view->jQuery()->enable();
@@ -36,7 +36,10 @@ class Plugin_TemplatePath extends Zend_Controller_Plugin_Abstract
         $view->headScript()->appendFile($view->scripts_path.'/navigation.js', 'text/javascript'); 
         $view->headScript()->appendFile($view->scripts_path.'/quickstatus.js', 'text/javascript');
         
-        $view->thisurl = $view->url(array('action' => $request->getActionName(), 'controller' => $request->getControllerName()));
+	$view->thisurl = $view->url([
+		'action' => $request->getActionName(),
+		'controller' => $request->getControllerName()
+	]);
         $view->indexurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('', 'index');
         
         $view->baseurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('', '');

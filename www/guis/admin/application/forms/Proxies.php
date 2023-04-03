@@ -30,22 +30,25 @@ class Default_Form_Proxies extends ZendX_JQuery_Form
 		$this->setAttrib('id', 'proxies_form');
         
 		require_once('Validate/HostList.php');
-        $http = new  Zend_Form_Element_Text('httpproxy', array(
+        $http = new  Zend_Form_Element_Text('httpproxy', [
             'label' => $t->_('HTTP proxy'). " :",
-		    'required' => false));
+	    'required' => false
+	]);
 	    $http->setValue($this->_proxymanager->getHttpProxy());
 	    $http->addValidator(new Validate_HostList());
 	    $this->addElement($http);
 	   
-	    $smtp = new  Zend_Form_Element_Text('smtpproxy', array(
+	    $smtp = new  Zend_Form_Element_Text('smtpproxy', [
 	        'label' => $t->_('SMTP proxy'). " :",
-		    'required' => false));
+		'required' => false
+	    ]);
 	    $smtp->setValue($this->_proxymanager->getSmtpProxy());
 	    $smtp->addValidator(new Validate_HostList());
 	    $this->addElement($smtp);
 	   
-		$submit = new Zend_Form_Element_Submit('submit', array(
-		     'label'    => $t->_('Submit')));
+		$submit = new Zend_Form_Element_Submit('submit', [
+			'label'    => $t->_('Submit')
+		]);
 		$this->addElement($submit);
 		
 	}

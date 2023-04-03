@@ -19,13 +19,13 @@ class FileType extends PrefHandler {
     /**
      * file name properties
      */
-    private $pref_ = array(
+    private $pref_ = [
         'id' =>0,
         'status' => 'deny',
         'type' => '',
         'name' => '',
         'description' => ''
-      );
+    ];
 
 /**
  * constructor

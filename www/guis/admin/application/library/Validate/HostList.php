@@ -13,16 +13,16 @@ class Validate_HostList extends Zend_Validate_Abstract
     const MSG_HOSTLIST = 'invalidHostlist';
     const MSG_BADHOST = 'invalidHost';
 
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::MSG_HOSTLIST => "'%value%' is not a valid host list",
         self::MSG_BADHOST => "'%host%' is not a valid host"
-    );
+    ];
     
     public $host;
     
-    protected $_messageVariables = array(
+    protected $_messageVariables = [
         'host' => 'host'
-    );
+    ];
 
     public function isValid($value)
     {

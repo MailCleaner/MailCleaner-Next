@@ -126,7 +126,7 @@ class UserController extends Zend_Controller_Action
     	$auth = Zend_Auth::getInstance();
     	$auth->clearIdentity();
     	$t = Zend_Registry::get('translate');
-    	$this->_helper->getHelper('Redirector')->gotoSimple('login', 'user', null, ['message' => 'loggedOut')];
+    	$this->_helper->getHelper('Redirector')->gotoSimple('login', 'user', null, ['message' => 'loggedOut']);
     }
 
     protected function setupSearchFields($request, $view) {

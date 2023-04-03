@@ -24,11 +24,11 @@ global $admin_;
 $template_ = new Template('top.tmpl');
 
 // prepare replacements
-$replace = array(
+$replace = [
         "__LANG__" => $lang_->getLanguage(),
         "__USERNAME__" => $admin_->getPref('username'),
         "__LINK_LOGOUT__" => "/admin/logout.php"
-);
+];
 
 // output page
 $template_->output($replace);

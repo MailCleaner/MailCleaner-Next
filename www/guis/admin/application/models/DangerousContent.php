@@ -11,7 +11,7 @@
 class Default_Model_DangerousContent
 {
     protected $_id;
-    protected $_values = array(
+    protected $_values = [
        'block_encrypt' => 'no',
        'block_unencrypt' => 'no',
        'allow_passwd_archives' => 'no',
@@ -27,7 +27,7 @@ class Default_Model_DangerousContent
        'silent_webbugs' => 'no',
        'allow_codebase' => 'no',
        'silent_codebase' => 'no'
-     );
+    ];
 	
 	protected $_mapper;
 	

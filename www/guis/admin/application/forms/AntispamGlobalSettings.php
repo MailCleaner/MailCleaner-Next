@@ -37,71 +37,73 @@ class Default_Form_AntispamGlobalSettings extends ZendX_JQuery_Form
 	
 	public function init()
 	{
-		$t = Zend_Registry::get('translate');
-		$layout = Zend_Layout::getMvcInstance();
-    	$view=$layout->getView();
+	    $t = Zend_Registry::get('translate');
+	    $layout = Zend_Layout::getMvcInstance();
+    	    $view=$layout->getView();
     	
-		$this->setMethod('post');
+	    $this->setMethod('post');
 	           
-		$this->setAttrib('id', 'antispamglobalsettings_form');
+	    $this->setAttrib('id', 'antispamglobalsettings_form');
 
-         	$maxsize = new Zend_Form_Element_Text('global_max_size', array(
+            $maxsize = new Zend_Form_Element_Text('global_max_size', [
 		    'label'    => $t->_('Global max scan size (KB)'). " :",
 		    'required' => false,
-		    'filters'    => ['StringTrim'))];
-        	$maxsize->addValidator(new Zend_Validate_Int());
-	    	$maxsize->setValue($this->_antispam->getParam('global_max_size'));
-		$this->addElement($maxsize);
+		    'filters'    => ['StringTrim']
+	    ]);
+            $maxsize->addValidator(new Zend_Validate_Int());
+	    $maxsize->setValue($this->_antispam->getParam('global_max_size'));
+	    $this->addElement($maxsize);
 		
-		require_once('Validate/HostList.php');
-		$trustednet = new Zend_Form_Element_Textarea('trusted_ips', array(
-		      'label'    =>  $t->_('Trusted IPs/Networks')." :",
-                      'title' => $t->_("These IP/ranges are whitelist for the antispam part"),
-		      'required'   => false,
-		      'rows' => 5,
-		      'cols' => 30,
-		      'filters'    => ['StringToLower', 'StringTrim'))];
-	        $trustednet->addValidator(new Validate_HostList());
-		$trustednet->setValue($this->_antispam->getParam('trusted_ips'));
-		$this->addElement($trustednet);
+	    require_once('Validate/HostList.php');
+	    $trustednet = new Zend_Form_Element_Textarea('trusted_ips', [
+	        'label'    =>  $t->_('Trusted IPs/Networks')." :",
+                'title' => $t->_("These IP/ranges are whitelist for the antispam part"),
+	        'required'   => false,
+	        'rows' => 5,
+	        'cols' => 30,
+	        'filters'    => ['StringToLower', 'StringTrim']
+	    ]);
+	    $trustednet->addValidator(new Validate_HostList());
+	    $trustednet->setValue($this->_antispam->getParam('trusted_ips'));
+	    $this->addElement($trustednet);
 		
-		$enablewhitelists = new Zend_Form_Element_Checkbox('enable_whitelists', array(
+	    $enablewhitelists = new Zend_Form_Element_Checkbox('enable_whitelists', [
 	        'label'   => $t->_('Enable access to whitelists'). " :",
                 'title' => $t->_("Activate globally that whitelist behavior is becoming available, after global whitelist also become availableActivate globally that whitelist behavior is becoming available, after global whitelist also become available"),
-            'uncheckedValue' => "0",
+            	'uncheckedValue' => "0",
 	        'checkedValue' => "1"
-	              ));
-               $enableblacklists = new Zend_Form_Element_Checkbox('enable_blacklists', array(
-                 'label'   => $t->_('Enable access to blacklists'). " :",
+	    ]);
+            $enableblacklists = new Zend_Form_Element_Checkbox('enable_blacklists', [
+                'label'   => $t->_('Enable access to blacklists'). " :",
                 'title' => $t->_("Activate globally that blacklist behavior is becoming available, after global blacklist also become availableActivate globally that blacklist behavior is becoming available, after global blacklist also become available"),
-             'uncheckedValue' => "0",
-                 'checkedValue' => "1"
-                       ));
+             	'uncheckedValue' => "0",
+                'checkedValue' => "1"
+	    ]);
 
 	    if ($this->_antispam->getParam('enable_whitelists')) {
-            $enablewhitelists->setChecked(true);
-            $this->_whitelistenabled = 1;
+            	$enablewhitelists->setChecked(true);
+            	$this->_whitelistenabled = 1;
 	    }
 	    $this->addElement($enablewhitelists);
 	    
-	    $enablewarnlists = new Zend_Form_Element_Checkbox('enable_warnlists', array(
+	    $enablewarnlists = new Zend_Form_Element_Checkbox('enable_warnlists', [
 	        'label'   => $t->_('Enable access to warnlists'). " :",
                 'title' => $t->_("Activate globally that warnlist behavior is becoming available, after global warnlist also become availableActivate globally that warnlist behavior is becoming available, after global warnlist also become available"),
-            'uncheckedValue' => "0",
+                'uncheckedValue' => "0",
 	        'checkedValue' => "1"
-	              ));
+	    ]);
 	    if ($this->_antispam->getParam('enable_warnlists')) {
-            $enablewarnlists->setChecked(true);
-            $this->_warnlistenabled = 1;
+                $enablewarnlists->setChecked(true);
+                $this->_warnlistenabled = 1;
 	    }
 	    $this->addElement($enablewarnlists);
 	    
-	    $tagmodbypasswhitelist = new Zend_Form_Element_Checkbox('tag_mode_bypass_whitelist', array(
-            'label'   => $t->_('Ignore whitelist in tag mode'). " :",
-            'title' => $t->_("since tag mode get all messages delivered, one may want to ignore the whitelist in this case"),
-            'uncheckedValue' => "0",
-            'checkedValue' => "1"
-                  ));
+	    $tagmodbypasswhitelist = new Zend_Form_Element_Checkbox('tag_mode_bypass_whitelist', [
+                'label'   => $t->_('Ignore whitelist in tag mode'). " :",
+                'title' => $t->_("since tag mode get all messages delivered, one may want to ignore the whitelist in this case"),
+                'uncheckedValue' => "0",
+                'checkedValue' => "1"
+	    ]);
 	if ($this->_antispam->getParam('enable_blacklists')) {
             $enableblacklists->setChecked(true);
             $this->_blacklistenabled = 1;
@@ -116,12 +118,12 @@ class Default_Form_AntispamGlobalSettings extends ZendX_JQuery_Form
 
 
 
-            $whitelistbothfrom = new Zend_Form_Element_Checkbox('whitelist_both_from', array(
+        $whitelistbothfrom = new Zend_Form_Element_Checkbox('whitelist_both_from', [
             'label'   => $t->_('Apply whitelist on Body-From too'). " :",
             'title' => $t->_("By default whitelists are checked versus SMTP-From. Activating this feature will use whitelist versus Body-From as well. If unsure please leave this option unchecked."),
             'uncheckedValue' => "0",
             'checkedValue' => "1"
-                  ));
+	]);
 
         if ($this->_antispam->getParam('whitelist_both_from')) {
             $whitelistbothfrom->setChecked(true);
@@ -132,28 +134,29 @@ class Default_Form_AntispamGlobalSettings extends ZendX_JQuery_Form
 
 	    
 	     
-		$submit = new Zend_Form_Element_Submit('submit', array(
-		     'label'    => $t->_('Submit')));
+		$submit = new Zend_Form_Element_Submit('submit', [
+			'label'    => $t->_('Submit')
+		]);
 		$this->addElement($submit);
 		
 		$this->_whitelistform = new Default_Form_ElementList($this->_whitelist, 'Default_Model_WWElement', 'whitelist_');
 		$this->_whitelistform->init();
-		$this->_whitelistform->setAddedValues(['recipient' => '', 'type' => 'white')];
+		$this->_whitelistform->setAddedValues(['recipient' => '', 'type' => 'white']);
 		$this->_whitelistform->addFields($this);
 	
     		$this->_warnlistform = new Default_Form_ElementList($this->_warnlist, 'Default_Model_WWElement', 'warnlist_');
 		$this->_warnlistform->init();
-		$this->_warnlistform->setAddedValues(['recipient' => '', 'type' => 'warn')];
+		$this->_warnlistform->setAddedValues(['recipient' => '', 'type' => 'warn']);
 		$this->_warnlistform->addFields($this);
 
 		$this->_blacklistform = new Default_Form_ElementList($this->_blacklist, 'Default_Model_WWElement', 'blacklist_');
                 $this->_blacklistform->init();
-                $this->_blacklistform->setAddedValues(['recipient' => '', 'type' => 'black')];
+                $this->_blacklistform->setAddedValues(['recipient' => '', 'type' => 'black']);
                 $this->_blacklistform->addFields($this);
 		
 		$this->_newslistform = new Default_Form_ElementList($this->_newslist, 'Default_Model_WWElement', 'newslist_');
 		$this->_newslistform->init();
-		$this->_newslistform->setAddedValues(['recipient' => '', 'type' => 'wnews')];
+		$this->_newslistform->setAddedValues(['recipient' => '', 'type' => 'wnews']);
 		$this->_newslistform->addFields($this);
 	}
 	

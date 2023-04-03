@@ -13,7 +13,7 @@ class Default_Model_NetworkInterface
 	protected $_ifname;
 	protected $_params;
 	
-	protected $_ipv4_params = array(
+	protected $_ipv4_params = [
 	    'mode' => 'disabled',
 	    'address' => '0.0.0.0',
 	    'network' => '',
@@ -26,9 +26,9 @@ class Default_Model_NetworkInterface
 	    'post-up' => ['echo 1 > /proc/sys/net/ipv6/conf/all/disable_ipv6'],
 	    'auto_address' => '',
 	    'virtual_addresses' => []
-	);
+	];
 	
-	protected $_ipv6_params = array (
+	protected $_ipv6_params = [
 	    'mode' => 'disabled',
 	    'address' => '',
 	    'netmask' => '',
@@ -36,7 +36,7 @@ class Default_Model_NetworkInterface
 	    'pre-up' => [],
 	    'post-up' => [],
 	    'auto_address' => ''
-	);
+	];
 	protected $_current_class = '';
 	
 	protected $_mapper;
@@ -58,7 +58,7 @@ class Default_Model_NetworkInterface
 			    array_push($type_array['post-up'], $value);
 			}
 		} elseif ($param == 'virtual_addresses') {
-			if (is_[$value)] {
+			if (is_[$value]) {
 				$type_array[$param] = $value;
 			} else {
 				$type_array[$param] = preg_split("/[\s;:,]+/", $value);
@@ -69,7 +69,7 @@ class Default_Model_NetworkInterface
 	}
 	
 	public function addIPv4VirtualAddress($address) {
-		if (!in_[$address, $this->_ipv4_params['virtual_addresses'])] {
+		if (!in_[$address, $this->_ipv4_params['virtual_addresses']]) {
     		array_push($this->_ipv4_params['virtual_addresses'], $address);
 		}
 	}

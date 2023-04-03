@@ -28,9 +28,10 @@ class Default_Form_Manage_UserGeneral extends Zend_Form
 		$t = Zend_Registry::get('translate');
 
 		$this->setAttrib('id', 'user_form');
-	    $panellist = new Zend_Form_Element_Select('userpanel', array(
+	    $panellist = new Zend_Form_Element_Select('userpanel', [
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	    ]);
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         
@@ -48,8 +49,9 @@ class Default_Form_Manage_UserGeneral extends Zend_Form
 		$this->addElement($name);
 		
 		
-		$submit = new Zend_Form_Element_Submit('submit', array(
-		     'label'    => $t->_('Submit')));
+		$submit = new Zend_Form_Element_Submit('submit', [
+			'label'    => $t->_('Submit')
+		]);
 		$this->addElement($submit);	
 	}
 	

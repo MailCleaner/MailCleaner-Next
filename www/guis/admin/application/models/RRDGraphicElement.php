@@ -12,7 +12,7 @@ class Default_Model_RRDGraphicElement
 {
 	protected $_id;
 
-	protected $_values = array(
+	protected $_values = [
 	   'name' => '',
 	   'type' => '',
 	   'function' => '',
@@ -25,7 +25,7 @@ class Default_Model_RRDGraphicElement
 	   'draw_factor' => '*1',
 	   'draw_format' => '8.0lf',
 	   'draw_unit' => ''
-    );
+	];
     
     protected $_graphic;
 	protected $_mapper;

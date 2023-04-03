@@ -24,19 +24,19 @@ class GeneralsettingsController extends Zend_Controller_Action
     	
     	$this->config_menu = new Zend_Navigation();
     	
-    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Defaults', 'id' => 'defaults', 'action' => 'defaults', 'controller' => 'generalsettings'))];
-        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Company', 'id' => 'company', 'action' => 'company', 'controller' => 'generalsettings'))];
+    	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Defaults', 'id' => 'defaults', 'action' => 'defaults', 'controller' => 'generalsettings']));
+        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Company', 'id' => 'company', 'action' => 'company', 'controller' => 'generalsettings']));
 
 	// Autoconfiguration is available only for EE edition
         $sysconf = MailCleaner_Config::getInstance();
         if ($sysconf->getOption('REGISTERED') == 1) {
-		$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Auto-configuration', 'id' => 'autoconfiguration', 'action' => 'autoconfiguration', 'controller' => 'generalsettings'))];
+		$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Auto-configuration', 'id' => 'autoconfiguration', 'action' => 'autoconfiguration', 'controller' => 'generalsettings']));
         }
 
-        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Quarantines', 'id' => 'quarantines', 'action' => 'quarantines', 'controller' => 'generalsettings'))];
-        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Periodic tasks', 'id' => 'tasks', 'action' => 'tasks', 'controller' => 'generalsettings'))];
-        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Logging', 'id' => 'logging', 'action' => 'logging', 'controller' => 'generalsettings'))];
-        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Archiving', 'id' => 'archiving', 'action' => 'archiving', 'controller' => 'generalsettings'))];
+        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Quarantines', 'id' => 'quarantines', 'action' => 'quarantines', 'controller' => 'generalsettings']));
+        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Periodic tasks', 'id' => 'tasks', 'action' => 'tasks', 'controller' => 'generalsettings']));
+        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Logging', 'id' => 'logging', 'action' => 'logging', 'controller' => 'generalsettings']));
+        $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Archiving', 'id' => 'archiving', 'action' => 'archiving', 'controller' => 'generalsettings']));
         $view->config_menu = $this->config_menu;
         
         $view->headScript()->appendFile($view->scripts_path.'/baseconfig.js', 'text/javascript');
@@ -262,8 +262,8 @@ class GeneralsettingsController extends Zend_Controller_Action
                     try {
                 	    $defaults->save();
                 	    $slaves = new Default_Model_Slave();
-                	    $slaves->sendSoapToAll('Service_setServiceToRestart', ['exim_stage1', 'exim_stage4', 'mailscanner')];
-                	    $message = $slaves->sendSoapToAll('Services_restartSyslog', [)];
+                	    $slaves->sendSoapToAll('Service_setServiceToRestart', ['exim_stage1', 'exim_stage4', 'mailscanner']);
+                	    $message = $slaves->sendSoapToAll('Services_restartSyslog', []);
                         if (preg_match('/^OK/', $message)) {
                         	$message = "OK data saved, services may need to be restarted";
                         }
@@ -304,7 +304,7 @@ class GeneralsettingsController extends Zend_Controller_Action
                 	$form->setParams($request, $defaults);
     			    $defaults->save();
     				$slaves = new Default_Model_Slave();
-    				$message = $slaves->sendSoapToAll('Service_setServiceToRestart', ['exim_stage1', 'exim_stage4')];
+    				$message = $slaves->sendSoapToAll('Service_setServiceToRestart', ['exim_stage1', 'exim_stage4']);
     				if (preg_match('/^OK/', $message)) {
     				    $message = "OK data saved";
     				}

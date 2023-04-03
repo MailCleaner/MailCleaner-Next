@@ -11,8 +11,9 @@
 class Default_Form_Domain_UserAuthentication_Imap
 {
 	protected $_domain;
-	protected $_settings = array(
-                        "use_ssl" => false);
+	protected $_settings = [
+		"use_ssl" => false
+	];
 	
 	public function __construct($domain)
 	{
@@ -27,21 +28,22 @@ class Default_Form_Domain_UserAuthentication_Imap
 		$t = Zend_Registry::get('translate');
 		
 		require_once('Validate/SMTPHostList.php');
-		$server = new  Zend_Form_Element_Text('authserver', array(
+		$server = new  Zend_Form_Element_Text('authserver', [
 	        'label'    => $t->_('Authentication server')." :",
 		    'required' => false,
-		    'filters'    => ['StringToLower', 'StringTrim'))];
+		    'filters'    => ['StringToLower', 'StringTrim']
+		]);
 	    $server->setValue($this->_domain->getPref('auth_server'));
         $server->addValidator(new Validate_SMTPHostList());
 	    $form->addElement($server);
 	    
 	    $this->_settings = $this->getParams();
 	    
-	    $imapusesslcheck = new Zend_Form_Element_Checkbox('imapusessl', array(
+	    $imapusesslcheck = new Zend_Form_Element_Checkbox('imapusessl', [
 	        'label'   => $t->_('Use SSL'). " :",
             'uncheckedValue' => "0",
 	        'checkedValue' => "1"
-	              ));
+	    ]);
 	              
 	    if ($this->_settings['use_ssl']) {
             $imapusesslcheck->setChecked(true);
@@ -51,10 +53,10 @@ class Default_Form_Domain_UserAuthentication_Imap
 	}
 	
 	public function setParams($request, $domain) {
-	   $array = array(
+	   $array = [
 	      'auth_server' => $request->getParam('authserver'),
 	      'use_ssl' => $request->getParam('imapusessl')
-	   );
+	   ];
 	   $this->setParamsFromArray($array, $domain);
 	}
 	
@@ -80,7 +82,7 @@ class Default_Form_Domain_UserAuthentication_Imap
     }
     
     public function getParamsString($params) {
-       $str = implode(':', [$params['use_ssl'])];
+       $str = implode(':', [$params['use_ssl']]);
        return $str;
     }
 	

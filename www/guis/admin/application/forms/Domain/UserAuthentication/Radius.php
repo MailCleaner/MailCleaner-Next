@@ -11,10 +11,10 @@
 class Default_Form_Domain_UserAuthentication_Radius
 {
 	protected $_domain;
-    protected $_settings = array(
+    protected $_settings = [
                         "radiussecret" => '',
                         "radiusauthtype" => 'PAP'
-     );
+    ];
 	
 	public function __construct($domain)
 	{
@@ -29,28 +29,31 @@ class Default_Form_Domain_UserAuthentication_Radius
 		$t = Zend_Registry::get('translate');
 		
 		require_once('Validate/SMTPHostList.php');
-		$server = new  Zend_Form_Element_Text('authserver', array(
+		$server = new  Zend_Form_Element_Text('authserver', [
 	        'label'    => $t->_('Authentication server')." :",
 		    'required' => false,
-		    'filters'    => ['StringToLower', 'StringTrim'))];
+		    'filters'    => ['StringToLower', 'StringTrim']
+		]);
 	    $server->setValue($this->_domain->getPref('auth_server'));
         $server->addValidator(new Validate_SMTPHostList());
 	    $form->addElement($server);
 	    
 	    $this->_settings = $this->getParams();
 	    
-		$secret = new  Zend_Form_Element_Password('radiussecret', array(
+		$secret = new  Zend_Form_Element_Password('radiussecret', [
 	        'label'    => $t->_('Secret')." :",
 		    'required' => false,
 	        'renderPassword' => true,
-		    'filters'    => ['StringTrim'))];
+		'filters'    => ['StringTrim']
+		]);
 	    $secret->setValue($this->_settings['radiussecret']);
 	    $form->addElement($secret);
 	    
-	    $auth_type = new Zend_Form_Element_Select('radiusauthtype', array(
+	    $auth_type = new Zend_Form_Element_Select('radiusauthtype', [
             'label'      => $t->_('Authentication type')." :",
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	    ]);
         
         foreach (['PAP', 'CHAP_MD5', 'MSCHAPv1', 'MSCHAPv2') as $value] {
         	$auth_type->addMultiOption($value, $value);
@@ -60,11 +63,11 @@ class Default_Form_Domain_UserAuthentication_Radius
 	}
 	
 	public function setParams($request, $domain) {
-       $array = array(
+       $array = [
           'auth_server' => $request->getParam('authserver'),
           'radiussecret' => $request->getParam('radiussecret'),
           'radiusauthtype' => $request->getParam('radiusauthtype')
-       );
+       ];
        $this->setParamsFromArray($array, $domain);
   	}
 	

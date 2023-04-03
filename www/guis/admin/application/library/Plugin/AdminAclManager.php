@@ -12,9 +12,10 @@
   { 
   	
   	private $_defaultRole = 'guest';
-  	private $_authController = array('controller' => 'user', 
-                                     'action'     => 'login'); 
-  	
+	private $_authController = [
+		'controller' => 'user', 
+		'action'     => 'login'
+	];
   	
   	public function __construct(Zend_Auth $auth) 
     { 
@@ -58,7 +59,7 @@
         $sysconf = MailCleaner_Config::getInstance();
  
         $this->acl->deny();
-        $this->acl->allow('guest', 'user', ['login', 'logout')];
+        $this->acl->allow('guest', 'user', ['login', 'logout']);
         $this->acl->allow('administrator', 'baseconfiguration');
         $this->acl->allow('hotline', 'index');
 

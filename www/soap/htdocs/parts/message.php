@@ -25,7 +25,7 @@ function forceContent($sid, $path) {
     }
     return "NOTAUTHENTICATED";
   }
-  if (!$admin_->hasPerm(['can_manage_users'))] {
+  if (!$admin_->hasPerm(['can_manage_users'])) {
      return "NOTALLOWED";
   }
 
@@ -214,7 +214,7 @@ function getMIMEPart($id, $dest, $part) {
   $structure = Mail_mimeDecode::decode($params);
   $types = extractParts($structure, $part);
   $soap_ret = new SoapText();
-  $soap_ret->text = array(utf8_encode($types));
+  $soap_ret->text = [utf8_encode($types)];
   return $soap_ret;
 }
 
@@ -305,7 +305,7 @@ function getReasons($id, $dest, $lang) {
  $res = "";
  exec($cmd, $res);
  $ret = [];
- if (!is_[$res)] {
+ if (!is_[$res]) {
     return $res;
  }
  $soap_ret = new SoapReasons();

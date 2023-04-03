@@ -30,15 +30,15 @@ class User extends PrefHandler {
      * User information
      * @var array
      */
-    private $infos_ = array(
+    private $infos_ = [
                             'username' => '',
                             'domain' => '',
-                           );
+    ];
     /**
      * User preferences
      * @var array
      */
-	private	$pref_ = array(
+	private	$pref_ = [
                        'language'   => 'en',
                        'gui_displayed_spams' => '20',
                        'gui_displayed_days' => '7',
@@ -49,18 +49,18 @@ class User extends PrefHandler {
                        'summary_to' => '',
                        'summary_type' => 'NOTSET',
                        'allow_newsletters' => '',
-        	          );	
+	];	
                       
     /**
      * User local datas
      * @var array
      */
-     private $datas_ = array(
+     private $datas_ = [
                        'username' => '',
                        'password' => 'notchanged',
                        'email' => '',
                        'realname' => ''
-                      );
+     ];
     /**
      * User's main address
      * @var string
@@ -132,7 +132,7 @@ class User extends PrefHandler {
   	$query = "SELECT alias FROM pending_alias WHERE user=".$this->getID();
     $db_slaveconf = DM_SlaveConfig :: getInstance();
     $res = $db_slaveconf->getList($query);
-    if (is_[$res)] {
+    if (is_[$res]) {
       foreach($res as $add) {
         $list[$add] = 1;
       }
@@ -244,7 +244,7 @@ private function addRegisteredAddresses() {
   $query .= "AND u.domain='".$db_slaveconf->sanitize($this->getPref('domain'))."' AND e.user=u.id";
 
   $res = $db_slaveconf->getListOfHash($query);
-  if (is_[$res)] {
+  if (is_[$res]) {
     foreach($res as $add_record) {
       $this->addAddress($add_record['address']);
       if ($add_record['is_main']) {

@@ -29,55 +29,33 @@ class Default_Form_Registration extends ZendX_JQuery_Form
 	           
 		$this->setAttrib('id', 'registration_form');
         
-       /* $first = new  Zend_Form_Element_Text('firstpart', array(
-            'label' => $t->_('Registration number'). " :",
-            'class' => 'serialpartfield',
-		    'required' => false));
-	    $first->setValue($this->_registrationmgr->getSerialPart(1));
-	    $first->addValidator(new Zend_Validate_Alnum());
-	    $this->addElement($first);
-	   
-	    $second = new  Zend_Form_Element_Text('secondpart', array(
-            'label' => $t->_('Registration number'). " :",
-            'class' => 'serialpartfield',
-		    'required' => false));
-	    $second->setValue($this->_registrationmgr->getSerialPart(2));
-	    $second->addValidator(new Zend_Validate_Alnum());
-	    $this->addElement($second);
-	    
-	    $third = new  Zend_Form_Element_Text('thirdpart', array(
-            'label' => $t->_('Registration number'). " :",
-            'class' => 'serialpartfield',
-		    'required' => false));
-	    $third->setValue($this->_registrationmgr->getSerialPart(3));
-	    $third->addValidator(new Zend_Validate_Alnum());
-	    $this->addElement($third);
-	*/
-
             $sysconf = MailCleaner_Config::getInstance();
 
-            $clientid = new  Zend_Form_Element_Text('clientid', array(
+            $clientid = new  Zend_Form_Element_Text('clientid', [
             'label' => $t->_('Client ID'). " :",
-                    'required' => true));
+	    'required' => true
+	    ]);
             $clientid->setValue($sysconf->getOption('CLIENTID'));
             $clientid->addValidator(new Zend_Validate_Alnum());
             $this->addElement($clientid);
 
-            $resellerid = new  Zend_Form_Element_Text('resellerid', array(
+            $resellerid = new  Zend_Form_Element_Text('resellerid', [
             'label' => $t->_('Reseller ID'). " :",
-                    'required' => true));
+	    'required' => true
+	    ]);
             $resellerid->setValue($sysconf->getOption('RESELLERID'));
             $resellerid->addValidator(new Zend_Validate_Alnum());
             $this->addElement($resellerid);
 
-            $resellerpwd = new  Zend_Form_Element_Password('resellerpwd', array(
+            $resellerpwd = new  Zend_Form_Element_Password('resellerpwd', [
             'label' => $t->_('Reseller password'). " :",
-                    'required' => false));
-            #$resellerpwd->addValidator(new Zend_Validate_Alnum());
+	    'required' => false
+	    ]);
             $this->addElement($resellerpwd);
    
-		$submit = new Zend_Form_Element_Submit('register', array(
-		     'label'    => $t->_('Register')));
+		$submit = new Zend_Form_Element_Submit('register', [
+			'label'    => $t->_('Register')
+		]);
 		$this->addElement($submit);
 		
 	}

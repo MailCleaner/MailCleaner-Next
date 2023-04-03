@@ -22,10 +22,10 @@ global $lang_;
 // create view
 $template_ = new Template('logout.tmpl');
 // prepare replacements
-$replace = array(
+$replace = [
 	"__ADMIN_BASE_URL__" => $_SERVER['SERVER_NAME']."/admin/",
 	"__USER_BASE_URL__" => $_SERVER['SERVER_NAME']
-);
+];
 
 // output page
 $template_->output($replace);

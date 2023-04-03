@@ -6,7 +6,7 @@
  * @copyright 2009, Olivier Diserens
  */
 ?>
-<?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t)]; ?>
+<?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t]); ?>
 <?php
    $connector = $this->domain->getAuthConnector();
    if ($this->request->isPost() && $this->request->getParam('connector') && $this->form->getMessages()) {
@@ -14,12 +14,12 @@
    }
 ?>
 <fieldset>
-      <?php echo $this->InputRow($this->form->getElement('panel'),['field_only'=>true,'nobox'=>true)];?>
-      <?php echo $this->InputRow($this->form->getElement('name'),['field_only'=>true,'nobox'=>true)];?>
+      <?php echo $this->InputRow($this->form->getElement('panel'),['field_only'=>true,'nobox'=>true]);?>
+      <?php echo $this->InputRow($this->form->getElement('name'),['field_only'=>true,'nobox'=>true]);?>
       <table class="ftable">
           <?php echo $this->InputRow($this->form->getElement('connector'));?>
           <tr id="connectorform">
-          <?php echo $this->partial('forms/domain/userauthentication/'.strtolower($connector).'Form.phtml', ['form' => $this->form,'t' => $this->t, 'message' => $this->message, 'domain' => $this->domain, 'images_path' => $this->images_path)]; ?>
+          <?php echo $this->partial('forms/domain/userauthentication/'.strtolower($connector).'Form.phtml', ['form' => $this->form,'t' => $this->t, 'message' => $this->message, 'domain' => $this->domain, 'images_path' => $this->images_path]); ?>
            </tr>
            
           <tr>

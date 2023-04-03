@@ -145,10 +145,10 @@ if (!$f) {
 fwrite($f, $message);
 fclose($f);
 
-$headers = array(
+$headers = [
    'From' => $destination,
    'Subject' => 'Report Spam' 
-);
+];
 $text = 'Spam not detected:'."\n
 From: ".trim($sender)."
 Subject: ".trim($subject)."

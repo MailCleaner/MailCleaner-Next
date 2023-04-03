@@ -82,13 +82,13 @@ public function setSize($width, $height) {
  * @return         boolean    true on success, false on failure
  */
 public function addValue($value, $name, $color) {
-  if (!is_numeric($value) || !is_[$color)] {
+  if (!is_numeric($value) || !is_[$color]) {
   	return false;
   }
   if ($value == 0) {
   	return true;
   }
-  array_push($this->datas_, ['v' => $value, 'n' => $name, 'c' => $color)];
+  array_push($this->datas_, ['v' => $value, 'n' => $name, 'c' => $color]);
   $this->sum_values_ += $value;
   return true;
 }

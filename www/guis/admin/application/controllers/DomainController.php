@@ -37,9 +37,10 @@ class DomainController extends Zend_Controller_Action
   	    if ($sname == $view->defaultsearchstring) {
   	    	$sname = '';
   	    }
-    	$domains = $domain->fetchAllName(array(
+    	$domains = $domain->fetchAllName([
     	                                  'order' => 'name ASC',
-    	                                  'name' => $sname));
+					  'name' => $sname
+	]);
     	$view->domainscount = count($domains);
     	$nbelperpage = 12;
     	$view->lastpage = ceil($view->domainscount / $nbelperpage);
@@ -157,8 +158,6 @@ class DomainController extends Zend_Controller_Action
     	$view->panel = $panel;
     	$view->form = $panelform;
 
-       #$view->searchdomainurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->url(['controller' => 'domain', 'action' => 'search', 'sname' => $view->sname)];
-
     	$message = '';
         $user = Zend_Registry::get('user');
         if ($this->getRequest()->isPost()) {
@@ -206,8 +205,12 @@ class DomainController extends Zend_Controller_Action
     
     public function globalAction() {
     	$redirector = $this->_helper->getHelper('Redirector');
-            	  $redirector->gotoSimple('edit', 'domain', null, array(
-            	                                   'name' => '__global__' ));
+	$redirector->gotoSimple(
+		'edit',
+		'domain',
+		null,
+		['name' => '__global__']
+	);
     }
     public function addAction() {
         $layout = Zend_Layout::getMvcInstance();
@@ -294,16 +297,17 @@ class DomainController extends Zend_Controller_Action
             	  }
             	  $page = floor($pos / $view->nbelperpage) + 1; 
             	  $redirector = $this->_helper->getHelper('Redirector');
-            	  $redirector->gotoSimple('edit', 'domain', null, array(
+            	  $redirector->gotoSimple('edit', 'domain', null, [
             	                                   'name' => $view->domain->getParam('name'),
-            	                                   'page' => $page ));
+						   'page' => $page
+		  ]);
             	} catch (Exception $e) {
             	  $message = 'NOK error saving data ('.$e->getMessage().')';
             	}
             } else {
                if ($this->getRequest()->getParam('domainname') == '') {
                	  $message = 'NOK enterdomainname';
-               	  $panelform->addErrorMessage(['domainname' => 'toto')];
+               	  $panelform->addErrorMessage(['domainname' => 'toto']);
                }
                if (count($panelform->getMessages()) > 0) {
         	     $this->view->errors = $panelform->getMessages();
@@ -408,7 +412,7 @@ class DomainController extends Zend_Controller_Action
         }
         if ($request->getParam('remove') == 'all') {
         	try {
-        		$view->domain->setAliases([)];
+        		$view->domain->setAliases([]);
         		$view->domain->saveAliases();
                 $view->domain->delete();
         	    $this->_helper->getHelper('FlashMessenger')->addMessage('OK Domain and aliases removed');
@@ -443,7 +447,7 @@ class DomainController extends Zend_Controller_Action
         $domain_name = $request->getParam('name');
     
         $slave = new Default_Model_Slave();
-        $slave->sendSoapToAll('Service_clearSMTPAutCache', ['domain' => $domain_name)];
+        $slave->sendSoapToAll('Service_clearSMTPAutCache', ['domain' => $domain_name]);
         $view->message = 'OK';
     }
 }

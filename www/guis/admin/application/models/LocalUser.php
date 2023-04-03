@@ -12,13 +12,13 @@ class Default_Model_LocalUser
 {
 	protected $_id;
 
-	protected $_values = array(
+	protected $_values = [
       'username' => '',
 	  'domain' => '',
 	  'password' => '',
 	  'email' => '',
 	  'realname' => ''
-    );
+	];
 	protected $_mapper;
 	protected $_domain;
 	

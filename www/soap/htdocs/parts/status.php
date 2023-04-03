@@ -18,7 +18,7 @@ function getStatus($sid, $params) {
   if (!isset($admin_) || ! $admin_ instanceof Administrator) {
     return "NOTAUTHENTICATED ($admin_)";
   }
-  if (!$admin_->hasPerm(['can_view_stats'))] {
+  if (!$admin_->hasPerm(['can_view_stats'])) {
     return "NOTALLOWED";
   }
 
@@ -127,7 +127,7 @@ function getTodaysCounts($sid, $spec) {
     }
     return "NOTAUTHENTICATED";
   }
-  if (!$admin_->hasPerm(['can_view_stats'))] {
+  if (!$admin_->hasPerm(['can_view_stats'])) {
     return "NOTALLOWED";
   }
   $sysconf_ = SystemConfig::getInstance();

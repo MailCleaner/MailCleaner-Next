@@ -134,7 +134,7 @@ class Api_Model_AddressAPI
 			if (isset($params['search'])) {
 				$search = $params['search'];
 			}
-			$emails = $email->fetchAllName(['domain' => $params['domain'], 'address' => $search)];
+			$emails = $email->fetchAllName(['domain' => $params['domain'], 'address' => $search]);
 			foreach ($emails as $em) {
 				$list[] = $em->getParam('address');
 			}
@@ -258,7 +258,7 @@ class Api_Model_AddressAPI
         }
 	}
 	
-	private function getParams($email, $params = [)] {
+	private function getParams($email, $params = []) {
 		$data = [];
 		$data['address'] = $email->getParam('address');
 		$data['domain'] = $email->getDomain();

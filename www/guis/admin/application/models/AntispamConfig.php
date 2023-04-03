@@ -11,7 +11,7 @@
 class Default_Model_AntispamConfig
 {
     protected $_id;
-    protected $_values = array(
+    protected $_values = [
        'global_max_size' => '',
        'trusted_ips' => '',
        'html_wl_ips' => '',
@@ -40,7 +40,7 @@ class Default_Model_AntispamConfig
        'use_dkim' => 1,
        'dkim_timeout' => 5,
        'dmarc_follow_quarantine_policy' => 1,
-     );
+    ];
 	
 	protected $_mapper;
 	

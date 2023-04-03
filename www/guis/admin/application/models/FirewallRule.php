@@ -11,13 +11,13 @@
 class Default_Model_FirewallRule
 {
     protected $_id;
-    protected $_values = array(
+    protected $_values = [
         'service' => '',
         'port' => '',
         'protocol' => 'TCP',
         'allowed_ip' => '',
         'auth' => '',
-     );
+    ];
 	
 	protected $_mapper;
 	

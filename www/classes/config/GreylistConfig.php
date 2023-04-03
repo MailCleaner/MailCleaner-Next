@@ -21,12 +21,12 @@ class GreylistConfig extends PrefHandler
    * antispam settings
    * @var array
    */
-  private $pref_ = array(
-	                   'retry_min' => 120,
-	                   'retry_max' => 28800,
-	                   'expire' => 5184000,
-                       'avoid_domains' => 'df'
-                     );
+  private $pref_ = [
+    'retry_min' => 120,
+    'retry_max' => 28800,
+    'expire' => 5184000,
+    'avoid_domains' => 'df'
+  ];
 
 /**
  * constructor

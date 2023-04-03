@@ -11,16 +11,17 @@
 class MailCleaner_View_Helper_FormatPeriod extends Zend_View_Helper_Abstract
 {
 	
-	protected $_params = array(
-	   'periods' => array ('s' => ['second', 'seconds'],
-                         'm' => ['minute', 'minutes'],
-                         'h' => ['hour', 'hours'],
-                         'd' => ['day', 'days'],
-                         'w' => ['week', 'weeks')]
+	protected $_params = [
+		'periods' => [
+			's' => ['second', 'seconds'],
+                        'm' => ['minute', 'minutes'],
+                        'h' => ['hour', 'hours'],
+                        'd' => ['day', 'days'],
+			'w' => ['week', 'weeks']
+		]
+	];
 	
-	);
-	
-	public function formatPeriod($period = '', $params = [)]
+	public function formatPeriod($period = '', $params = [])
 	{
 		$t = Zend_Registry::get('translate');
 		

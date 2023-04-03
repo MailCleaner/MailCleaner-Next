@@ -11,13 +11,13 @@
 class Default_Model_AntivirusScanner
 {
     protected $_id;
-    protected $_values = array(
+    protected $_values = [
         'name' => '',
         'comm_name' => '',
         'active' => 0,
         'path' => '',
         'installed' => 0,
-     );
+    ];
 	
 	protected $_mapper;
 	

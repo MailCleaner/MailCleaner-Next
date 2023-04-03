@@ -33,16 +33,17 @@ class Default_Form_Autoconfiguration extends ZendX_JQuery_Form
 	        $config = new MailCleaner_Config();
 		$autoconf_enabled = file_exists($config->getOption('VARDIR').$this->MC_AUTOCONF_TAG_FILE);
 
-        	$autoconf = new  Zend_Form_Element_Checkbox('autoconfiguration', array(
+        	$autoconf = new  Zend_Form_Element_Checkbox('autoconfiguration', [
             		'label' => "Enable auto-configuration :",
-		    	'required' => false));
+			'required' => false
+		]);
 	   	$autoconf->setValue($autoconf_enabled);
 		$this->addElement($autoconf);
 	   
-		$submit = new Zend_Form_Element_Submit('submit', array(
-		     'label'    => $t->_('Submit')));
+		$submit = new Zend_Form_Element_Submit('submit', [
+			'label'    => $t->_('Submit')
+		]);
 		$this->addElement($submit);
-		
 	}
 
 }

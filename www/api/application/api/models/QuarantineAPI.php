@@ -30,8 +30,10 @@ class Api_Model_QuarantineAPI
       return false;
     }
 
-    set_include_path(implode(PATH_SEPARATOR, array(
-    realpath(APPLICATION_PATH . '/../../../../classes'), get_include_path(),)));
+    set_include_path(implode(PATH_SEPARATOR, [
+	realpath(APPLICATION_PATH . '/../../../../classes'),
+	get_include_path()
+    ]));
     require_once('user/Spam.php');
 
     $spam = new Spam();

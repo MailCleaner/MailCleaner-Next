@@ -70,7 +70,7 @@ if ($antispam_->getPref('enable_blacklists') && ($sel_add->getPref('has_blacklis
   $template_->setCondition('SEEBLACKLISTEDIT', true);
 }
 // prepare replacements
-$replace = array(
+$replace = [
             '__INCLUDE_JS__' =>
 "<script type=\"text/javascript\" language=\"javascript\">
     function fn_changeemail() {
@@ -108,7 +108,7 @@ $replace = array(
             "__LINK_EDITWHITELIST__" => "uwwlist.php?t=1&a=".$sel_add->getPref('address'),
             "__LINK_EDITWARNLIST__" => "uwwlist.php?t=2&a=".$sel_add->getPref('address'),
 	    "__LINK_EDITBLACKLIST__" => "uwwlist.php?t=3&a=".$sel_add->getPref('address')
-            );
+];
 
 //display page
 $template_->output($replace);

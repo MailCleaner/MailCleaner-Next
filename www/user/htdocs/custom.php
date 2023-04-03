@@ -26,11 +26,11 @@ $template = $_GET['t'];
 $template_ = new Template("custom_$template.tmpl");
 
 // prepare replacements
-$replace = array(
+$replace = [
 	"__LANG__" => $lang_->getLanguage(),
 	"__PRINT_USERNAME__" => $user_->getPref('username'),
 	"__PRINT_MAINADDRESS__" => $user_->getMainAddress()
-);
+];
 // display page
 $template_->output($replace);
 ?>

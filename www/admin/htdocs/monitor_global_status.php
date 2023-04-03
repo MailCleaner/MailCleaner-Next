@@ -24,7 +24,7 @@ global $sysconf_;
 global $admin_;
 
 // check authorizations
-$admin_->checkPermissions(['can_view_stats')];
+$admin_->checkPermissions(['can_view_stats']);
 
 // create the view objects
 $template_ = new Template('monitor_global_status.tmpl');
@@ -32,8 +32,8 @@ $documentor = new Documentor();
 
 // prepare template replacements
 $nb_msgs_choice = ['2' => 2, '5' => 5, '10' => 10, '20' => 20, '50' => 50, '100' => 100];
-$replace = array(
-	    '__DOC_MONGLOBALHOSTID__' => $documentor->help_button('MONGLOBALHOSTID'),
+$replace = [
+	'__DOC_MONGLOBALHOSTID__' => $documentor->help_button('MONGLOBALHOSTID'),
         '__DOC_MONGLOBALHOST__' => $documentor->help_button('MONGLOBALHOST'),
         '__DOC_MONGLOBALPROCESSES__' => $documentor->help_button('MONGLOBALPROCESSES'),
         '__DOC_MONGLOBALSPOOLS__' => $documentor->help_button('MONGLOBALSPOOLS'),
@@ -43,9 +43,9 @@ $replace = array(
         '__DOC_MONGLOBALLASTPATCH__' => $documentor->help_button('MONGLOBALLASTPATCH'),
         '__DOC_MONGLOBALTODAYSCOUNTS__' => $documentor->help_button('MONGLOBALTODAYSCOUNTS'),
         '__LANG__' => $lang_->getLanguage(),
-	    '__HOSTLIST__' => drawHostList($template_),
-	    "__RELOAD_NAV_JS__" => "window.parent.frames['navig_frame'].location.reload(true)",
-       );
+	'__HOSTLIST__' => drawHostList($template_),
+	'__RELOAD_NAV_JS__' => "window.parent.frames['navig_frame'].location.reload(true)",
+];
 
 // output page
 $template_->output($replace);

@@ -160,7 +160,7 @@ class SoapStats {
   }
 }
 
-$SoapClassMap = array( 
+$SoapClassMap = [ 
                     "reasons" => "SoapReasons",
                     "messagelines" => "SoapText",
                     "servicestatus" => "SoapServiceStatus",
@@ -170,6 +170,6 @@ $SoapClassMap = array(
                     "diskusage" => "SoapDiskUsage",
                     "memusage" => "SoapMemoryUsage",
                     "stats" => "SoapStats"
-                    );
+];
 
 ?>

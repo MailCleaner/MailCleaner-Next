@@ -24,7 +24,7 @@ global $sysconf_;
 global $admin_;
 
 // check authorizations
-$admin_->checkPermissions(['can_configure')];
+$admin_->checkPermissions(['can_configure']);
 
 $save_msg = "";
 // create mail form
@@ -64,7 +64,7 @@ for ($i = 1; $i < 32; $i++) {
 }
 
 // prepare replacements
-$replace = array(
+$replace = [
         '__DOC_DEFAULTSTITLE__' => $documentor->help_button('DEFAULTSTITLE'),
         '__DOC_DEFAULTSDOMAINS__' => $documentor->help_button('DEFAULTSDOMAINS'),
         '__DOC_DEFAULTSADDRESSES__' => $documentor->help_button('DEFAULTSADDRESSES'),
@@ -85,7 +85,7 @@ $replace = array(
         "__FORM_INPUTMONTHDAYS__" => $dform->select('cron_monthday', $monthdays, $sysconf_->getPref('cron_monthday'), ';'),
         "__FORM_INPUTSYSHOST__" => $dform->input('syslog_host', 25, htmlentities($sysconf_->getPref('syslog_host'))),
         "__FORM_INPUTWANTCHOOSER__" => $dform->checkbox('want_domainchooser', 1, $sysconf_->getPref('want_domainchooser'), '', 1)
-);
+];
 
 // output page
 $template_->output($replace);

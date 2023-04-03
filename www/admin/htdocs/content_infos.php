@@ -39,7 +39,7 @@ $images['OTHER'] = $template_->getDefaultValue('OTHER_IMG');
 $images['SPAM'] = $template_->getDefaultValue('SPAM_IMG');
 
 //prepare replacements
-$replace = array(
+$replace = [
         '__MESSAGE__' => $message,
         '__MSG_ID__' => $content->getCleanData('id'),
         '__TO__' => $content->getCleanData('to_address'),
@@ -52,7 +52,7 @@ $replace = array(
         '__SCORE__' => $content->getCleanData('sascore'),
         '__SAREPORT__' => $content->getCleanData('spamreport'),
         '__HEADERS__' => format_headers($content->getCleanData('headers'))
-);
+];
 
 //output page
 $template_->output($replace);

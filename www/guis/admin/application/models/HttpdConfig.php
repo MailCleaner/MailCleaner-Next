@@ -11,7 +11,7 @@
 class Default_Model_HttpdConfig
 {
     protected $_id;
-    protected $_values = array(
+    protected $_values = [
          'servername' => '',
          'use_ssl' => 'true',
          'http_port' => 80,
@@ -19,7 +19,7 @@ class Default_Model_HttpdConfig
          'tls_certificate_data' => '',
          'tls_certificate_key' => '',
          'tls_certificate_chain' => '',
-     );
+    ];
 	
 	protected $_mapper;
 	

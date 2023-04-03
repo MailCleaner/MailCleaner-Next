@@ -11,10 +11,10 @@
 class Default_Model_Antispam_MessageSniffer
 {
     protected $_id;
-    protected $_values = array(
+    protected $_values = [
         'licenseid' => '',
         'authentication' => '',
-      );
+    ];
 	
 	protected $_mapper;
 	

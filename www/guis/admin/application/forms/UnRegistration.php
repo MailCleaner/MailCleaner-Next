@@ -31,17 +31,19 @@ class Default_Form_UnRegistration extends ZendX_JQuery_Form
 		$required = $this->_currentLicense == "1" ? true : false;
 
 		 // Only EE version has to confirm by rsp
-		$rsp = new  Zend_Form_Element_Password('rsp', array(
+		$rsp = new  Zend_Form_Element_Password('rsp', [
             	    'label' => $t->_('Reseller password'). " :",
-                    'required' => $required));
+		    'required' => $required
+		]);
             	$rsp->setValue('');
             	$rsp->addValidator(new Zend_Validate_Alnum());
             	$this->addElement($rsp);
 		
 		$this->setAttrib('id', 'unregister_form');
 
-	        $submit = new Zend_Form_Element_Submit('unregister', array(
-		     'label'    => $t->_('Unregister')));
+	        $submit = new Zend_Form_Element_Submit('unregister', [
+			'label'    => $t->_('Unregister')
+		]);
 	    	$this->addElement($submit);
 	}
 

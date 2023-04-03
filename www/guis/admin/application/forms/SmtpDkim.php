@@ -31,38 +31,42 @@ class Default_Form_SmtpDkim extends ZendX_JQuery_Form
 	           
 		$this->setAttrib('id', 'dkim_form');
 	    
-	    $domain = new  Zend_Form_Element_Text('dkim_default_domain', array(
+	    $domain = new  Zend_Form_Element_Text('dkim_default_domain', [
 	        'label' => 'Default DKIM domain'." :",
             'required' => false,
             'size' => 30,
-            'filters'    => ['StringToLower','StringTrim'))];
+	    'filters'    => ['StringToLower','StringTrim']
+	    ]);
         $domain->setValue($this->_mta->getParam('dkim_default_domain'));
         require_once('Validate/DomainName.php');
         $domain->addValidator(new Validate_DomainName());
         $this->addElement($domain);
         
-        $selector = new  Zend_Form_Element_Text('dkim_default_selector', array(
+        $selector = new  Zend_Form_Element_Text('dkim_default_selector', [
             'label' => 'Default DKIM selector'." :",
             'required' => false,
             'size' => 30,
-            'filters'    => ['StringToLower','StringTrim'))];
+	    'filters'    => ['StringToLower','StringTrim']
+	]);
         $selector->setValue($this->_mta->getParam('dkim_default_selector'));
         $this->addElement($selector);
         
-        $pkey = new Zend_Form_Element_Textarea('dkim_default_pkey', array(
+        $pkey = new Zend_Form_Element_Textarea('dkim_default_pkey', [
               'label'    =>  $t->_('Default private key')." :",
               'required'   => false,
               'class' => 'pki_privatekey',
               'rows' => 7,
-              'cols' => 50));
+	      'cols' => 50
+	]);
         $pkey->setValue($this->_mta->getParam('dkim_default_pkey'));      
         require_once('Validate/PKIPrivateKey.php');
         $pkey->addValidator(new Validate_PKIPrivateKey());
         
         $this->addElement($pkey);
         
-		$submit = new Zend_Form_Element_Submit('submit', array(
-		     'label'    => $t->_('Submit')));
+		$submit = new Zend_Form_Element_Submit('submit', [
+			'label'    => $t->_('Submit')
+		]);
 		$this->addElement($submit);
 
         $this->setDKIMValues();

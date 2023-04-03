@@ -26,13 +26,13 @@ class Slave extends PrefHandler
      * slave configuration settings
      * @var array
      */
-	private $pref_ = array(
+	private $pref_ = [
                       'id' => 0,
 		              'hostname' => '',
 		              'port' => '',
 		              'password' => '',
 		              'ssh_pub_key' => ''
-	               );
+	];
                    
      /**
       * soap connector to the slave
@@ -149,7 +149,7 @@ public function getProcessesStatus() {
   if (!$this->connect()) {
     return null;
   }
-  $values = $this->soaper_->query('getProcessesStatus', [)];
+  $values = $this->soaper_->query('getProcessesStatus', []);
   if (isset($values->enc_value)) {
     return $values->enc_value;
   }
@@ -167,7 +167,7 @@ public function dumpConfiguration($config, $params) {
     return false;
   }
 
-  $value = $this->soaper_->queryParam('dumpConfiguration', [$config, $params)];
+  $value = $this->soaper_->queryParam('dumpConfiguration', [$config, $params]);
   $return = $value;
   if (isset($value->enc_value)) {
     $return = $value->enc_value;
@@ -188,7 +188,7 @@ public function setProcessToBeRestarted($process) {
     return false;
   }
   
-  $value = $this->soaper_->queryParam('setRestartStatus', [$process, 1)];
+  $value = $this->soaper_->queryParam('setRestartStatus', [$process, 1]);
   $status = $value;
   if (isset($value->enc_value)) {
     $status = $value->enc_value;
@@ -215,7 +215,7 @@ public function showProcesses($t, $colors, $nr, $rh, $rw) {
   if (! is_object($status) ) {
     return $this->getLastSoapError();
   }
-  $processes = array(
+  $processes = [
                     'MTA1' => $status->mtaincoming,
                     'MTA2' => $status->mtafiltering,
                     'MTA4' => $status->mtaoutgoing,
@@ -227,7 +227,7 @@ public function showProcesses($t, $colors, $nr, $rh, $rw) {
                     'GREYLISTD' => $status->greylistd,
                     'CRON' => $status->cron,
                     'FIREWALL' => $status->firewall
-                 );
+  ];
   $res = "";
   foreach ($processes as $tag => $soapvalue) {
     $template = str_replace("__STATUS__", $this->draw_status($soapvalue, $colors), $t);
@@ -240,11 +240,11 @@ public function showProcesses($t, $colors, $nr, $rh, $rw) {
       #$template = preg_replace("/__IF_RESTART__(.*)__ENDIF_RESTART__/", "", $template);
     }
     $template = preg_replace("/__(END)?IF_(STOP|START|RESTART)__/", "", $template);
-    $query = http_build_query(array('h' => $this->getPref('id'), 'd' => $tag, 'a' => 'stop'));
+    $query = http_build_query(['h' => $this->getPref('id'), 'd' => $tag, 'a' => 'stop']);
     $template = str_replace("__LINK_STOP__", "javascript:open_popup('daemon_stopstart.php?".$query."',$rw,$rh);", $template);
-    $query = http_build_query(array('h' => $this->getPref('id'), 'd' => $tag, 'a' => 'start'));
+    $query = http_build_query(['h' => $this->getPref('id'), 'd' => $tag, 'a' => 'start']);
     $template = str_replace("__LINK_START__", "javascript:open_popup('daemon_stopstart.php?".$query."',$rw,$rh);", $template);
-    $query = http_build_query(array('h' => $this->getPref('id'), 'd' => $tag, 'a' => 'restart'));
+    $query = http_build_query(['h' => $this->getPref('id'), 'd' => $tag, 'a' => 'restart']);
     $template = str_replace("__LINK_RESTART__", "javascript:open_popup('daemon_stopstart.php?".$query."',$rw,$rh);", $template);
     $res .= $template;
   }
@@ -312,7 +312,7 @@ public function getSpoolsCount() {
   if (!$this->connect()) {
     return null;
   }
-  $values = $this->soaper_->query('getSpools', [)];
+  $values = $this->soaper_->query('getSpools', []);
   if (isset($values->enc_value)) {
     return $values->enc_value;
   }
@@ -333,15 +333,15 @@ public function showSpools($t, $rh, $rw) {
   if (!is_object($status)) {
     return $this->getLastSoapError();
   }
-  $spools = array(
+  $spools = [
               'MTA1' => $status->incoming,
               'MTA2' => $status->filtering,
               'MTA4' => $status->outgoing
-           );
+  ];
   foreach ($spools as $tag => $soapvalue) {
     $tmpl = str_replace("__SPOOL__", $soapvalue, $t);
     $tmpl = str_replace("__NAME__", $lang_->print_txt($tag), $tmpl);
-    $query = http_build_query(array('h' => $this->getPref('id'), 's' => $tag));
+    $query = http_build_query(['h' => $this->getPref('id'), 's' => $tag]);
     $tmpl = str_replace("__LINK__", "javascript:open_popup('view_spool.php?".$query."',$rw,$rh);", $tmpl);
     $ret .= $tmpl;
   }
@@ -356,7 +356,7 @@ public function getLoads() {
   if (!$this->connect()) {
     return null;
   }
-  $values = $this->soaper_->query('getLoad', [)];
+  $values = $this->soaper_->query('getLoad', []);
   if (isset($values->enc_value)) {
     return $values->enc_value;
   }
@@ -374,11 +374,11 @@ public function showLoad($t) {
   if (!is_object($status)) {
     return $this->getLastSoapError();
   }
-  $loads = array(
+  $loads = [
                   'AVG5MIN'  => $status->avg5,
                   'AVG10MIN' => $status->avg10,
                   'AVG15MIN' => $status->avg15
-               );
+  ];
   foreach ($loads as $tag => $soapvalue) {
     $tmpl = str_replace('__VALUE__', $soapvalue, $t);
     $ret .= str_replace('__NAME__', $lang_->print_txt($tag), $tmpl);
@@ -394,7 +394,7 @@ private function getDiskUsage() {
   if (!$this->connect()) {
     return null;
   }
-  $values = $this->soaper_->query('getDiskUsage', [)];
+  $values = $this->soaper_->query('getDiskUsage', []);
   if (isset($values->enc_value)) {
     return $values->enc_value;
   }
@@ -413,10 +413,10 @@ public function showDiskUsage($t) {
   if (!is_object($status)) {
     return $this->getLastSoapError();
   }
-  $disks = array(
+  $disks = [
             'SYSTEMPART' => $status->root,
             'DATASPART' => $status->var
-          );
+  ];
   foreach ($disks as $tag => $soapvalue) {
     $tmpl = str_replace('__VALUE__', $soapvalue, $t);
     $ret .= str_replace('__NAME__', $lang_->print_txt($tag), $tmpl);
@@ -432,7 +432,7 @@ private function getMemoryUsage() {
   if (!$this->connect()) {
     return null;
   }
-  $values = $this->soaper_->query('getMemUsage', [)];
+  $values = $this->soaper_->query('getMemUsage', []);
   if (isset($values->enc_value)) {
     return $values->enc_value;
   }
@@ -452,12 +452,12 @@ public function showMemUsage($t, $colors) {
     return $this->getLastSoapError();
   }
   
-  $mems = array(
+  $mems = [
              'TOTALMEMORY' => $status->total,
              'FREEMEMORY' => $status->free,
              'TOTALSWAP' => $status->swaptotal,
              'FREESWAP' => $status->swapfree
-          );
+  ];
   foreach ($mems as $tag => $soapvalue) {
     $tmpl = str_replace('__VALUE__', $this->format_size($soapvalue), $t);
     $ret .= str_replace('__NAME__', $lang_->print_txt($tag), $tmpl);
@@ -474,7 +474,7 @@ public function getLastPatch() {
   if (!$this->connect()) {
     return null;
   }
-  return $this->soaper_->query('getLastPatch', [)];
+  return $this->soaper_->query('getLastPatch', []);
 }
 
 /**
@@ -485,7 +485,7 @@ public function getTodaysCounts() {
   if (!$this->connect()) {
     return null;
   }
-  $values = $this->soaper_->query('getTodaysCounts', [)];
+  $values = $this->soaper_->query('getTodaysCounts', []);
   if (isset($values->enc_value)) {
   	return $values->enc_value;
   }
@@ -504,7 +504,7 @@ public function getStats($what, $start, $stop) {
     return null;
   }
   
-  $values = $this->soaper_->queryParam('getStats', [$what, $start, $stop)];
+  $values = $this->soaper_->queryParam('getStats', [$what, $start, $stop]);
   if (isset($values->enc_value)) {
     return $values->enc_value;
   }
@@ -524,12 +524,12 @@ public function showTodaysCounts($t, $colors) {
   if (!is_object($status)) {
     return $this->getLastSoapError();
   }     
-  $types = array(
+  $types = [
                   'MESSAGES' => $status->msg,
                   'SPAMS' => $status->spam,
                   'VIRUSES' => $status->virus,
                   'CONTENT' => $status->content
-               );       
+  ];       
   foreach ($types as $tag => $soapvalue) {
     $tmpl =   str_replace('__VALUE__', "<font color=\"".$colors[$tag]."\">".$soapvalue."</font>", $t);
     $ret .=   str_replace('__NAME__', "<font color=\"".$colors[$tag]."\">".$lang_->print_txt($tag)."</font>", $tmpl);

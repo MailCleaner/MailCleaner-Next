@@ -23,16 +23,12 @@
    * Specialized settings array with default values
    * @var array
    */
-   protected $spec_settings_ = array(
-                              'usessl' => false
-                             );
+   protected $spec_settings_ = ['usessl' => false];
    /**
     * fields type
     * @var array
     */
-   protected $spec_settings_type_ = array(
-                               'usessl' => ['checkbox', '1']
-                               );
+   protected $spec_settings_type_ = ['usessl' => ['checkbox', '1']];
     
  }
 ?>

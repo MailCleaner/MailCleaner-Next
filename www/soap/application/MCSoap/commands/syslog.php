@@ -6,11 +6,11 @@
  * @copyright 2009, Olivier Diserens
  */
 
-    $logexprs = array(
+    $logexprs = [
         'Logging service restarted' => 'DONE TASK syslog',
         'done.' => 'Starting Exim stage 4: started.',
         'Restarting MTA...' => 'Stopping Exim stage 1:',
         'Restarting syslog...' => 'Stopping enhanced syslogd:',
         ' done.' => 'Starting enhanced syslogd: rsyslogd.'
-    );
+    ];
 ?>

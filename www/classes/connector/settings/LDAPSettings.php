@@ -23,27 +23,27 @@
    * Specialized settings array with default values
    * @var array
    */
-   protected $spec_settings_ = array(
+   protected $spec_settings_ = [
                               'basedn' => '',
                               'useratt'   => '',
                               'binduser' => '',
                               'bindpassword' => '',
                               'usessl' => false,
                               'version' => 2
-                             );
+                             ];
              
    /**
     * fields type
     * @var array
     */
-   protected $spec_settings_type_ = array(
+   protected $spec_settings_type_ = [
                               'basedn' => ['text', 30],
                               'useratt'   => ['text', 20],
                               'binduser' => ['text', 20],
                               'bindpassword' => ['password', 20],
                               'usessl' => ['checkbox', 'true'],
-                              'version' => array('select', ['2' => '2', '3' => '3')]
-                              );
+                              'version' => ['select', ['2' => '2', '3' => '3']]
+   ];
                   
    public function __construct($type) {
       parent::__construct($type);

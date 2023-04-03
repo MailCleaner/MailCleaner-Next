@@ -11,7 +11,7 @@
 class Default_Model_AntispamModule
 {
     protected $_id;
-    protected $_values = array(
+    protected $_values = [
        'name' => '',
        'active' => 1,
        'position' => 0,
@@ -24,7 +24,7 @@ class Default_Model_AntispamModule
        'putHamHeader' => 0,
        'putSpamHeader' => 0,
        'visible' => 1
-     );
+    ];
 	
 	protected $_mapper;
 	protected $_original_position;

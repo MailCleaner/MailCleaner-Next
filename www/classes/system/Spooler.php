@@ -16,11 +16,11 @@ class Spooler {
    * the different spools available
    * @var array
    */
-   private $spool_availables_ = array(
+   private $spool_availables_ = [
                     'MTA1' => 1,
                     'MTA2' => 2,
                     'MTA4' => 4
-                    );
+   ];
                 
    /**
     * the spool actually being processed
@@ -74,7 +74,7 @@ public function getCount() {
  */
 public function draw($template, $images, $sid) {
   // fields to search and display
-  $fields = array('to' => [), 'time' => '', 'size' => '', 'id' => '', 'from' => '', 'status' => ''];
+  $fields = ['to' => [], 'time' => '', 'size' => '', 'id' => '', 'from' => '', 'status' => ''];
   // exim command to list queue
   $cmd = "/usr/sbin/exim -C ".$this->conf_file_." -bp";
   $list  = popen($cmd, "r");
@@ -194,10 +194,10 @@ public function forceOne($id) {
  * @return   string  queue run status
  */
 public function queueRunStatus() {
-  $searches = array(
+  $searches = [
                  "ALREADYFORCINGONE" => "exim -C ".$this->conf_file_." -M",
                  "ALREADYRUNNING" => "exim -C ".$this->conf_file_." -qff"
-                 );
+  ];
   foreach ($searches as $msg => $search) {
     $cmd = "pgrep -f '".$search."'";
     $res = `$cmd`;

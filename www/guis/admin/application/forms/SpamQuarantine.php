@@ -30,13 +30,15 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
 		$this->setAttrib('id', 'filter_form');
 		
 		
-		$search = new  Zend_Form_Element_Text('search', array(
-		    'required' => false));
+		$search = new  Zend_Form_Element_Text('search', [
+			'required' => false
+		]);
 	    $search->setValue($this->_params['search']);
 	    $this->addElement($search);
 	    
-	    $domainField = new  Zend_Form_Element_Select('domain', array(
-		    'required' => false));
+	    $domainField = new  Zend_Form_Element_Select('domain', [
+		    'required' => false
+	    ]);
 	    $domain = new Default_Model_Domain();
 	    $domains = $domain->fetchAllName();
 	    $domainField->addMultiOption('', $t->_('select...'));
@@ -46,22 +48,25 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
 	    $domainField->setValue($this->_params['domain']);
 	    $this->addElement($domainField);
 	    
-	    $sender = new  Zend_Form_Element_Text('sender', array(
+	    $sender = new  Zend_Form_Element_Text('sender', [
 	        'label' => $t->_('Sender')." : ",
-		    'required' => false));
+		'required' => false
+	    ]);
 	    $sender->setValue($this->_params['sender']);
 	    $sender->addValidator('Zend_Validate_EmailAddress');
 	    $this->addElement($sender);
 	    
-	    $subject = new  Zend_Form_Element_Text('subject', array(
+	    $subject = new  Zend_Form_Element_Text('subject', [
             'label' => $t->_('Subject')." : ",
-		    'required' => false));
+	    'required' => false
+	    ]);
 	    $subject->setValue($this->_params['subject']);
 	    $this->addElement($subject);
 	    
 	    $months = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
-	    $fd = new Zend_Form_Element_Select('fd', array(
-		    'required' => true));
+	    $fd = new Zend_Form_Element_Select('fd', [
+		    'required' => true
+	    ]);
 	    for ($d = 1; $d <= 31; $d++) {
 	        $fd->addMultiOption($d, $d);
 	    }
@@ -70,8 +75,9 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
 	    }
 	    $this->addElement($fd);
 	    
-	    $fm = new Zend_Form_Element_Select('fm', array(
-		    'required' => true));
+	    $fm = new Zend_Form_Element_Select('fm', [
+		    'required' => true
+	    ]);
 	    $i = 1;
 	    foreach ($months as $m) {
 	    	$fm->addMultiOption($i++, $t->_($m));
@@ -81,8 +87,9 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
 	    }
 	    $this->addElement($fm);
 	    
-	    $td = new Zend_Form_Element_Select('td', array(
-		    'required' => true));
+	    $td = new Zend_Form_Element_Select('td', [
+		    'required' => true
+	    ]);
 	    for ($d = 1; $d <= 31; $d++) {
 	        $td->addMultiOption($d, $d);
 	    }
@@ -90,8 +97,9 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
             $td->setValue($this->_params['td']);
 	    }
 	    $this->addElement($td);
-	    $tm = new Zend_Form_Element_Select('tm', array(
-		    'required' => true));
+	    $tm = new Zend_Form_Element_Select('tm', [
+		    'required' => true
+	    ]);
 	    $i = 1;
 	    foreach ($months as $m) {
 	    	$tm->addMultiOption($i++, $t->_($m));
@@ -102,21 +110,21 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
 	    $this->addElement($tm);
 	    
 	   
-	    $forced = new Zend_Form_Element_Checkbox('forced', array(
+	    $forced = new Zend_Form_Element_Checkbox('forced', [
 	        'label'   => $t->_('Hide user-released messages'),
             'uncheckedValue' => "0",
 	        'checkedValue' => "1"
-	              ));
+	    ]);
 	    if (isset($this->_params['forced']) && $this->_params['forced']) {
             $forced->setChecked(true);
 	    }
 	    $this->addElement($forced);
 
-            $hidedup = new Zend_Form_Element_Checkbox('hidedup', array(
+            $hidedup = new Zend_Form_Element_Checkbox('hidedup', [
                 'label'   => $t->_('Show multi-recipient messages only once '),
                 'uncheckedValue' => "0",
                 'checkedValue' => "1"
-                      ));
+	    ]);
             if (isset($this->_params['hidedup']) && $this->_params['hidedup']) {
                  $hidedup->setChecked(true);
             }
@@ -124,9 +132,10 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
 	    
 	    
 	    $mpps = [5, 10, 20, 50, 100];
-	    $mpp = new Zend_Form_Element_Select('mpp', array(
+	    $mpp = new Zend_Form_Element_Select('mpp', [
 	        'label' => $t->_('Number of lines displayed').' : ',
-		    'required' => true));
+		'required' => true
+	    ]);
 	    
 	    foreach ($mpps as $m) {
 	    	$mpp->addMultiOption($m, $m);
@@ -137,18 +146,18 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
 	    }
 	    $this->addElement($mpp);
 	    
-	    $showSpamOnly = new Zend_Form_Element_Checkbox('showSpamOnly', array(
+	    $showSpamOnly = new Zend_Form_Element_Checkbox('showSpamOnly', [
 	        'label'   => $t->_('Show spam only'),
 	        'uncheckedValue' => "0",
 	        'checkedValue' => "1"
-	    ));
+	    ]);
             
             ### newsl
-	    $showNewslettersOnly = new Zend_Form_Element_Checkbox('showNewslettersOnly', array(
+	    $showNewslettersOnly = new Zend_Form_Element_Checkbox('showNewslettersOnly', [
 	        'label'   => $t->_('Show newsletters only'),
 	        'uncheckedValue' => "0",
 	        'checkedValue' => "1"
-	    ));
+	    ]);
             
 	    if (!empty($this->_params['showSpamOnly'])) {
 	        $showSpamOnly->setChecked(true);
@@ -160,9 +169,10 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
 	    $this->addElement($showSpamOnly);	    
 	    $this->addElement($showNewslettersOnly);	    
 	    
-	    $submit = new Zend_Form_Element_Submit('submit', array(
+	    $submit = new Zend_Form_Element_Submit('submit', [
 		     'label'    => $t->_('Refresh'),
-	         'onclick' => 'javascript:launchSearch();return false;'));
+		     'onclick' => 'javascript:launchSearch();return false;'
+	    ]);
 		$this->addElement($submit);
 	}
 

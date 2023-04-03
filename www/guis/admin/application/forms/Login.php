@@ -16,54 +16,54 @@ class Default_Form_Login extends Zend_Form
 			
 		$t = Zend_Registry::get('translate');
 			
-		$usernameField = $this->createElement( 'text', 'username', array(
+		$usernameField = $this->createElement( 'text', 'username', [
             'label'      => $t->_('Username')." :",
             'required'   => true,
             'filters'    => ['StringTrim'],
-		));
+		]);
 #		$usernameField->addValidator(new Zend_Validate_Alnum());
 
-		$usernameField->setDecorators(array(
+		$usernameField->setDecorators([
                               'ViewHelper',
                               'Errors',
-		                      array(['data' => 'HtmlTag'], ['tag' => 'td', 'class' => 'element')],
-		                      array('Label', ['tag' => 'td')],
-		                      array(['row' => 'HtmlTag'], ['tag' => 'tr')],
-		                 ));
+		                      [['data' => 'HtmlTag'], ['tag' => 'td', 'class' => 'element']],
+		                      ['Label', ['tag' => 'td']],
+		                      [['row' => 'HtmlTag'], ['tag' => 'tr']]
+		]);
         $usernameField->removeDecorator('Errors');
 		$this->addElement($usernameField);
 
-		$passwordField = $this->createElement('password', 'password', array(
+		$passwordField = $this->createElement('password', 'password', [
              'label'      => $t->_('Password')." :",
              'required'   => true,
              'filters'    => ['StringTrim'],
-             'validators' => array(array('validator' => 'StringLength', 'options' => [0, 100))],
+             'validators' => [['validator' => 'StringLength', 'options' => [0, 100]]],
              'allowEmpty' => true,
-		));
-		$passwordField->setDecorators(array(
+		]);
+		$passwordField->setDecorators([
                               'ViewHelper',
                               'Errors',
-		                      array(['data' => 'HtmlTag'], ['tag' => 'td', 'class' => 'element')],
-		                      array('Label', ['tag' => 'td')],
-		                      array(['row' => 'HtmlTag'], ['tag' => 'tr')],
-		                 ));
+		                      [['data' => 'HtmlTag'], ['tag' => 'td', 'class' => 'element']],
+		                      ['Label', ['tag' => 'td']],
+		                      [['row' => 'HtmlTag'], ['tag' => 'tr']],
+		]);
         $passwordField->removeDecorator('Errors');
 		$this->addElement($passwordField);
 
-		$loginButton = $this->createElement('submit', 'submit', ['label'      => 'login')];
-		$loginButton->setDecorators(array(
-               'ViewHelper',
-               array(['data' => 'HtmlTag'], ['tag' => 'td', 'class' => 'element')],
-               array(['label' => 'HtmlTag'], ['tag' => 'td', 'placement' => 'prepend')],
-               array(['row' => 'HtmlTag'], ['tag' => 'tr')],
-           ));
+		$loginButton = $this->createElement('submit', 'submit', ['label'      => 'login']);
+		$loginButton->setDecorators([
+               			'ViewHelper',
+               			[['data' => 'HtmlTag'], ['tag' => 'td', 'class' => 'element']],
+               			[['label' => 'HtmlTag'], ['tag' => 'td', 'placement' => 'prepend']],
+               			[['row' => 'HtmlTag'], ['tag' => 'tr']],
+		]);
 		$this->addElement($loginButton);
 		
-		$this->setDecorators(array(
+		$this->setDecorators([
                'FormElements',
-               array('HtmlTag', ['tag' => 'table')],
+               ['HtmlTag', ['tag' => 'table']],
                'Form',
-           ));
+	       ]);
 
 	}
 

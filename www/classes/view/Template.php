@@ -39,7 +39,7 @@ class Template {
    * @var array
    * @todo set as private !
    */
-  private $ifs = array (); 
+  private $ifs = []; 
  
   /**
    * conditions
@@ -129,7 +129,7 @@ public function __construct($tmpl) {
   // fetch the template language file to override language texts
   $template_lang = $sysconf_->SRCDIR_."/www/".$mode."/htdocs/templates/".$this->model_."/lang/".$lang_->getLanguage()."/texts.php";
   if (file_exists($template_lang)) {
-    $txt = array ();
+    $txt = [];
     include ($template_lang);
     foreach ($txt as $t => $str) {
       $lang_->setTextValue($t, $str);
@@ -179,7 +179,7 @@ public function output($replace) {
   // loop through template file
   foreach ($this->content_ as $line) {
 
-    $matches = array ();
+    $matches = [];
 
     // process line
     $this->processLine($line, $replace);
@@ -213,7 +213,7 @@ private function processLine($line, $replace) {
 
   $line = rtrim($line);
 
-  $matches = array ();
+  $matches = [];
   // ignore comments
   if (preg_match('/^\#/', $line, $matches)) {
     return;

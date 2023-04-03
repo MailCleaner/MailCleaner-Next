@@ -65,9 +65,9 @@ if (isset($_REQUEST['lang'])) {
 // get the view objects
 $template_model = 'reset_password.tmpl';
 $template_ = new Template($template_model);
-$replace = array(
+$replace = [
   '__MESSAGE__' => $lang_->print_txt($message)
-);
+];
 // output result page
 $template_->output($replace);
 ?>

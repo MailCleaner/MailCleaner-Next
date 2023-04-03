@@ -12,9 +12,9 @@ class Validate_MessageID extends Zend_Validate_Abstract
 {
     const MSG_MESSAGEID = 'invalidMessageID';
 
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::MSG_MESSAGEID => "'%value%' is not a valid message ID"
-    );
+    ];
 
     public function isValid($value)
     {

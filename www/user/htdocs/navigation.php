@@ -36,7 +36,7 @@ if (isset($_GET['m'])) {
 // create view
 $template_ = new Template('navigation.tmpl');
 
-$replace = array(
+$replace = [
             "__LANG__" => $lang_->getLanguage(),
             "__C_LINK__" => '</a>',
             "__O_LINK_PARAMETERS__" => '<a href="parameters.php" target="main_frame" onClick="doButton(\'p\');">',
@@ -56,7 +56,7 @@ $replace = array(
                                    }
                                  </script>",
             "__PRINT_USERNAME__" => $user_->getName()
-);
+];
 
 // display page
 $template_->output($replace);

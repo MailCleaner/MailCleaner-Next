@@ -41,30 +41,30 @@ $documentor = new Documentor();
 // prepare the select fields information
 $hosts = $sysconf_->getSlavesName();
 $hosts[$lang_->print_txt('ALL')] = 'all';
-$stats_ = array (
+$stats_ = [
     $lang_->print_txt('SPAMSMESSAGES') => 'messages',
     $lang_->print_txt('SPAMSPERCENTS') => 'pmessages',
     $lang_->print_txt('SPOOLSDESC') => 'spools',
-	$lang_->print_txt('CPU') => 'cpu',
+    $lang_->print_txt('CPU') => 'cpu',
     $lang_->print_txt('LOAD') => 'load',
     $lang_->print_txt('MEMORY') => 'memory',
     $lang_->print_txt('NET') => 'network',
     $lang_->print_txt('DISK') => 'disk',
-	$lang_->print_txt('ALL') => 'all',
-);
+    $lang_->print_txt('ALL') => 'all',
+];
 if (!isset($posted['stats'])) {
   $posted['stats'] = 'all';
 }
-$times_ = array (
+$times_ = [
 	$lang_->print_txt('DAY') => 'day',
 	$lang_->print_txt('WEEK') => 'week',
 	$lang_->print_txt('MONTH') => 'month',
 	$lang_->print_txt('YEAR') => 'year',
 	$lang_->print_txt('ALL') => 'all',
-);
+];
 
 // and output the page
-$replace = array(
+$replace = [
     '__DOC_STATSTITLE__' => $documentor->help_button('STATSTITLE'),
     '__LANG__' => $lang_->getLanguage(),
     '__ERROR__' => $lang_->print_txt($error),
@@ -76,8 +76,7 @@ $replace = array(
     "__PERIODLIST__" => $form->select('times', $times_, $posted['times'], ''),
     "__REFRESH_BUTTON__" => $form->submit('submit', $lang_->print_txt('REFRESH'), ''),
     "__HOSTLIST_DRAW__" => drawHosts($template_, $posted),
-
-);
+];
 
 $template_->output($replace);
 

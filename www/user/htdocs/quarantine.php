@@ -74,18 +74,29 @@ $pie_stats = new Pie();
 $pie_stats->setFilename('/stats/'.$pie_id.".png");
 $pie_stats->setSize(100, 50);
 
-$pie_stats->addValue($quarantine->getStat('spams'), 'spams', [0x66, 0x33, 0xFF)];
-$pie_stats->addValue($quarantine->getStat('virus')+$quarantine->getStat('content'), 'dangerous', [0xEB, 0x97, 0x48)];
-$pie_stats->addValue($quarantine->getStat('clean'), 'clean', [0x54, 0xEB, 0x48)];
+$pie_stats->addValue($quarantine->getStat('spams'), 'spams', [0x66, 0x33, 0xFF]);
+$pie_stats->addValue($quarantine->getStat('virus')+$quarantine->getStat('content'), 'dangerous', [0xEB, 0x97, 0x48]);
+$pie_stats->addValue($quarantine->getStat('clean'), 'clean', [0x54, 0xEB, 0x48]);
 
 $pie_stats->generate();
 
 // prepare replacements   
 $nb_msgs_choice = ['2' => 2, '5' => 5, '10' => 10, '20' => 20, '50' => 50, '100' => 100];
 $user_addresses_ = $user_->getAddressesForSelect();
-$get_query = http_build_query(array('a' => $quarantine->getSearchAddress(), 'days' => $quarantine->getFilter('days'), 'mask_forced' => $quarantine->getFilter('mask_forced'), 'is_newsletter' => 1 ));
+$get_query = http_build_query([
+	'a' => $quarantine->getSearchAddress(),
+	'days' => $quarantine->getFilter('days'),
+	'mask_forced' => $quarantine->getFilter('mask_forced'),
+	'is_newsletter' => 1
+]);
 
-$displayed_infos = $lang_->print_txt_mparam('DISPLAYEDINFOS', array($quarantine->getFilter('days'), 'configuration.php?t=quar'));
+$displayed_infos = $lang_->print_txt_mparam(
+	'DISPLAYEDINFOS',
+	[
+		$quarantine->getFilter('days'),
+		'configuration.php?t=quar'
+	]
+);
 if (!isset($address)) {
     $address = '';
 }
@@ -108,11 +119,11 @@ if ($is_enterprise) {
         $curl = curl_init();
 	curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 3);
 	curl_setopt($curl, CURLOPT_TIMEOUT, 3); //timeout in seconds
-        curl_setopt_array($curl, array(
+        curl_setopt_array($curl, [
                 CURLOPT_RETURNTRANSFER => 1,
                 CURLOPT_URL => $url_to_get,
                 CURLOPT_FAILONERROR => true
-        ));
+	]);
         $result = curl_exec($curl);
         if ($result === false) {
                 curl_close($curl);
@@ -122,11 +133,11 @@ if ($is_enterprise) {
                 $curl = curl_init();
 		curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 3);
 		curl_setopt($curl, CURLOPT_TIMEOUT, 3); //timeout in seconds
-                curl_setopt_array($curl, array(
+                curl_setopt_array($curl, [
                         CURLOPT_RETURNTRANSFER => 1,
                         CURLOPT_URL => $url_to_get,
                         CURLOPT_FAILONERROR => true
-                ));
+		]);
                 $result2 = curl_exec($curl);
                 curl_close($curl);
                 if ($result2 === false) {
@@ -164,7 +175,7 @@ if (file_exists($file_to_get)) {
 $msgtodisplay = isset($content) && !empty($content) ? true : false;
 $template_->setCondition('MSGTODISPLAY', $msgtodisplay);
 
-$replace = array(
+$replace = [
     '__MSGTODISPLAY__' => $msgtodisplay,
     '__INFOBOX_USER__' => $content,
     '__INCLUDE_JS_SCRIPTS__' => $quarantine->getJavascripts($form->getName()),
@@ -188,7 +199,7 @@ $replace = array(
     '__SEARCHFROM_FIELD__' => $form->input('from', 18, $quarantine->getFilter('from')),
     '__SEARCHSUBJECT_FIELD__' => $form->input('subject', 18, $quarantine->getFilter('subject')),
 	'__ACTUAL_PAGE__' => $quarantine->getFilter('page'),
-    '__CURRENT_PAGE__' => $lang_->print_txt_mparam('CURRENTPAGE', array($quarantine->getFilter('page'), $quarantine->getNBPages())),
+    '__CURRENT_PAGE__' => $lang_->print_txt_mparam('CURRENTPAGE', [$quarantine->getFilter('page'), $quarantine->getNBPages()]),
 	'__TOTAL_PAGES__' => $quarantine->getNBPages(),
 	'__PREVIOUS_PAGE__' => $quarantine->getPreviousPageLink(),
 	'__PAGE_SEP__' => $quarantine->getPagesSeparator($sep),
@@ -223,7 +234,7 @@ $replace = array(
     "__GROUPQUARANTINES__" => $form->checkbox('group_quarantines', '1', $quarantine->getFilter('group_quarantines'), 'javascript=groupAddresses();', 1),
     "__SPAMONLY__" => $form->checkbox('spam_only', '1', (!$quarantine->getFilter('newsl_only') && $quarantine->getFilter('spam_only')), 'javascript=showSpamOnly();', 1),
     "__NEWSLONLY__" => $form->checkbox('newsl_only', '1', (!$quarantine->getFilter('spam_only') && $quarantine->getFilter('newsl_only')), 'javascript=showNewslOnly();', 1),
-);
+];
 
 // display page
 $template_->output($replace);

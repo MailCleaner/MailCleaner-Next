@@ -30,7 +30,7 @@ class StatusController extends Zend_Controller_Action
         foreach ($slaves as $s) {
            foreach (['hardware', 'spools', 'load') as $what] {
            	  $status = $s->getStatus($what);
-           	  if (is_[$status)] {
+           	  if (is_[$status]) {
            	  	$var = $what."_status";
            	  	$view->$var = $status['message'];
            	  }

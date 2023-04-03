@@ -34,43 +34,45 @@ class Default_Form_ElementList extends ZendX_JQuery_Form
     	}
 		$this->setMethod('post');
 		
-		$remove = new Zend_Form_Element_Submit($this->_prefix.'remove', array(
+		$remove = new Zend_Form_Element_Submit($this->_prefix.'remove', [
 		     'label'    => $t->_('Remove selected elements'),
                      'title' => $t->_("Remove the selected items from the list"),
-			));
+		]);
 		$this->addElement($remove);
 		
-		$disable = new Zend_Form_Element_Submit($this->_prefix.'disable', array(
+		$disable = new Zend_Form_Element_Submit($this->_prefix.'disable', [
 		     'label'    => $t->_('Enable/Disable selected elements'),
                      'title' => $t->_("Switch the state of the selected items from Enable to Disable or from Disable to Enable"),
-			));
+		]);
 		$this->addElement($disable);
 		
-		$addelement = new  Zend_Form_Element_Text($this->_prefix.'addelement', array(
+		$addelement = new  Zend_Form_Element_Text($this->_prefix.'addelement', [
 		    'required' => false,
 		    'class' => 'addelementfield',
-		    'filters'    => ['StringTrim'))];
+		    'filters'    => ['StringTrim']
+		]);
 	    $this->addElement($addelement);
 	    
-	    $addcomment = new  Zend_Form_Element_Text($this->_prefix.'addcomment', array(
+	    $addcomment = new  Zend_Form_Element_Text($this->_prefix.'addcomment', [
 		    'required' => false,
 	        'class' => 'addcommentfield',
-		    'filters'    => ['StringTrim'))];
+		'filters'    => ['StringTrim']
+	    ]);
 	    $this->addElement($addcomment);
 	    	    
-		$add = new Zend_Form_Element_Submit($this->_prefix.'add', array(
+		$add = new Zend_Form_Element_Submit($this->_prefix.'add', [
 		     'label'    => $t->_('< Add element'),
                      'title' => $t->_("Add the element in the Address field to the desired list"),
-			));
+		]);
 		$this->addElement($add);
 	}
 	
 	protected function addCheck($element) {
-		$check = new Zend_Form_Element_Checkbox($this->_prefix.'list_select_'.$element->getId(), array(
+		$check = new Zend_Form_Element_Checkbox($this->_prefix.'list_select_'.$element->getId(), [
                'uncheckedValue' => "0",
 	           'checkedValue' => "1",
 		       'class' => 'unchecked'
-	    ));
+		]);
         $this->addElement($check);;
 	}
 	

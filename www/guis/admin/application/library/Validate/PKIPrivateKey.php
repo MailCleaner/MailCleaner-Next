@@ -12,9 +12,9 @@ class Validate_PKIPrivateKey extends Zend_Validate_Abstract
 {
     const MSG_PRIVATEKEY = 'invalidPrivateKey';
 
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::MSG_PRIVATEKEY => "Not a valid private key"
-    );
+    ];
 
     public function isValid($value)
     {

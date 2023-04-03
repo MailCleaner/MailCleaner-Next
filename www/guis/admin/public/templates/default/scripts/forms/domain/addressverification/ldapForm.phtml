@@ -11,6 +11,11 @@
 <?php foreach (['ldapserver', 'basedn', 'binddn', 'bindpass', 'usessl') as $f] {?>
 <?php echo $this->InputRow($this->form->getElement($f));?>
 <?php }?>
-<?php echo $this->InputRow($this->form->getElement('group'),array('post_field_text'=>$this->t->_('(leave empty to ignore)')));?>
+<?php echo $this->InputRow(
+	$this->form->getElement('group'),
+	[
+		'post_field_text' => $this->t->_('(leave empty to ignore)')
+	]
+);?>
 </table>
 </td>

@@ -36,18 +36,20 @@ class Default_Form_ChangeHostId extends ZendX_JQuery_Form
 		if ($config->getOption('REGISTERED') == "1")
 			$attribs = ['disabled' => 'disabled'];
 
-		$host_id = new  Zend_Form_Element_Text('host_id', array(
+		$host_id = new  Zend_Form_Element_Text('host_id', [
             		'label' => $t->_('Host ID'). " :",
-                	'required' => true));
+			'required' => true
+		]);
             	$host_id->setValue($hid);
             	$host_id->addValidator(new Zend_Validate_Digits());
             	$this->addElement($host_id);
 		
 		$this->setAttrib('id', 'changehostid_form');
 
-	        $submit = new Zend_Form_Element_Submit('changehostid', array(
+	        $submit = new Zend_Form_Element_Submit('changehostid', [
 		     'label'    => $t->_('Submit'),
-		     'attribs'    => $attribs));
+		     'attribs'    => $attribs
+		]);
 	    	$this->addElement($submit);
 	}
 

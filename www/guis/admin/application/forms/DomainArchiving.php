@@ -39,9 +39,10 @@ class Default_Form_DomainArchiving extends Zend_Form
                 $restrictions = Zend_Registry::get('restrictions');
 
 		$this->setAttrib('id', 'domain_form');
-	    $panellist = new Zend_Form_Element_Select('domainpanel', array(
+	    $panellist = new Zend_Form_Element_Select('domainpanel', [
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	    ]);;
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         
@@ -58,23 +59,24 @@ class Default_Form_DomainArchiving extends Zend_Form
 		$name->setValue($this->_domain->getParam('name'));
 		$this->addElement($name);
         
-		$archive_mail = new Zend_Form_Element_Checkbox('archive_mail', array(
+		$archive_mail = new Zend_Form_Element_Checkbox('archive_mail', [
 		            'label'   => $t->_('Archive messages (whole domain)'). " :",
 		            'uncheckedValue' => "0",
 		            'checkedValue' => "1"
-		));
+		]);
 		
 		if ($this->_domain->getPref('archive_mail')) {
 			$archive_mail->setChecked(true);
 		}
 		$this->addElement($archive_mail);
 		
-		$copyto_mail = new  Zend_Form_Element_Text('copyto_mail', array(
+		$copyto_mail = new  Zend_Form_Element_Text('copyto_mail', [
 		            'label'    => $t->_('Send a copy of all messages to')." :",
                             'title' => $t->_("Concerns only regular and released mails"),
 		            'required' => false,
 		            'size' => 40,
-		            'filters'    => ['StringTrim'))];
+			    'filters'    => ['StringTrim']
+		]);
 		$copyto_mail->setValue($this->_domain->getPref('copyto_mail'));
         $copyto_mail->addValidator(new Zend_Validate_EmailAddress(Zend_Validate_Hostname::ALLOW_LOCAL));
 		$this->addElement($copyto_mail);
@@ -83,8 +85,9 @@ class Default_Form_DomainArchiving extends Zend_Form
                 }
 		
 		
- 	   $submit = new Zend_Form_Element_Submit('submit', array(
-		     'label'    => $t->_('Submit')));
+ 	   $submit = new Zend_Form_Element_Submit('submit', [
+		   'label'    => $t->_('Submit')
+	   ]);
 	   $this->addElement($submit);	
 	  
  	}

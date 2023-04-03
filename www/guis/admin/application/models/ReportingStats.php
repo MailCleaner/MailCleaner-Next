@@ -245,7 +245,7 @@ class Default_Model_ReportingStats
         return ($va > $vb) ? -1 : +1;
     }
     
-    public function createPieChart($id = null, $data = null, $params = [)] {
+    public function createPieChart($id = null, $data = null, $params = []) {
         include("pChart/class/pData.class.php"); 
         include("pChart/class/pDraw.class.php"); 
         include("pChart/class/pPie.class.php"); 
@@ -264,7 +264,11 @@ class Default_Model_ReportingStats
             }
         } else {
         	$vdata = [$data['cleans'], $data['spams'], $data['viruses']+$data['contents']];
-        	$vwhats = array($t->_('clean'), $t->_('spam'), $t->_('dangerous'));
+		$vwhats = [
+			$t->_('clean'),
+			$t->_('spam'),
+			$t->_('dangerous')
+		]
         }
         
         $size = [190, 190];
@@ -283,13 +287,13 @@ class Default_Model_ReportingStats
         $label_bg = ['R'=>240,'G'=>240,'B'=>240,'A'=>255];
         $label_size = ['S' => -50, 'M' => 5, 'O' => LEGEND_HORIZONTAL];
       
-        if (isset($params['size']) && is_[$params['size'])] {
+        if (isset($params['size']) && is_[$params['size']]) {
                 $size = $params['size'];
         }
         $picture = new pImage($size[0],$size[1],$DataSet);
         // 2D settings
         if (!isset($params['style']) || $params['style'] != '3D') {
-        	$picture->setShadow(TRUE,["X"=>2,"Y"=>2,"R"=>150,"G"=>150,"B"=>150,"Alpha"=>100)];
+        	$picture->setShadow(TRUE,["X"=>2,"Y"=>2,"R"=>150,"G"=>150,"B"=>150,"Alpha"=>100]);
         
 
             if (isset($params['label_orientation']) && $params['label_orientation'] == 'vertical') {
@@ -321,7 +325,7 @@ class Default_Model_ReportingStats
                 $position = [135, 80];
             }
         }
-        if (isset($params['position']) && is_[$params['position'])] {
+        if (isset($params['position']) && is_[$params['position']]) {
             $position = $params['position'];
         }
         if (isset($params['radius']) && is_numeric($params['radius'])) {
@@ -330,7 +334,10 @@ class Default_Model_ReportingStats
         // now final sanity checks
         if (($radius*2) > min($size[0], $size[1])) {
             $radius = floor(min($size[0], $size[1])/2)-3;
-            $position = array(floor($size[0]/2), floor($size[1]/2));
+	    $position = [
+		    floor($size[0]/2),
+		    floor($size[1]/2)
+	    ];
         }
         if ($radius > min($position[0], $position[1])) {
             $position = [$radius,$radius];
@@ -353,7 +360,13 @@ class Default_Model_ReportingStats
         	$slice++;
         }
 
-        $picture->setFontProperties(array("FontName"=>$config->getOption('SRCDIR')."/www/guis/admin/application/library/pChart/fonts/pf_arma_five.ttf","FontSize"=>6,"R"=>80,"G"=>80,"B"=>80)); 
+	$picture->setFontProperties([
+		"FontName"=>$config->getOption('SRCDIR')."/www/guis/admin/application/library/pChart/fonts/pf_arma_five.ttf",
+		"FontSize"=>6,
+		"R"=>80,
+		"G"=>80,
+		"B"=>80)
+	];
         
         $nonnull = false;
         foreach ($vdata as $d) {
@@ -365,33 +378,51 @@ class Default_Model_ReportingStats
         if ($nonnull) {
         	if (!isset($params['style']) || $params['style'] != '3D') {
                 $chart->draw2DPie(
-                           $position[0],$position[1],
-                           array(
+                           $position[0],$position[1],[
                                  "Radius" => $radius,
                                  "Border"=>$border['E'],"BorderR"=>$border['R'],"BorderG"=>$border['G'],"BorderB"=>$border['B'],
                                  "DrawLabels"=>FALSE,"WriteValues"=>$value['T'],"ValuePosition"=>$value['P'],
-                                 "ValueR"=>$value['R'],"ValueG"=>$value['G'],"ValueB"=>$value['B']));
+				 "ValueR"=>$value['R'],"ValueG"=>$value['G'],"ValueB"=>$value['B']
+			   ]);
         	} else {
         		$chart->draw3DPie(
-        		           $position[0],$position[1],
-        		           array(
+        		           $position[0],$position[1],[
         		                  "SliceHeight"=>10, 
-        		                  "DrawLabels"=>FALSE,"WriteValues"=>$value['T'],"ValuePosition"=>$value['P'],
-        		                  "ValueR"=>$value['R'],"ValueG"=>$value['G'],"ValueB"=>$value['B']));
+					  "DrawLabels"=>FALSE,
+					  "WriteValues"=>$value['T'],
+					  "ValuePosition"=>$value['P'],
+        		                  "ValueR"=>$value['R'],
+					  "ValueG"=>$value['G'],
+					  "ValueB"=>$value['B']
+				   ]
+			);
         	}
         } else {
-             $picture->drawFilledCircle($position[0],$position[1],$radius,["R"=>230, "G"=>230, "B"=>230)];
+             $picture->drawFilledCircle($position[0],$position[1],$radius,["R"=>230, "G"=>230, "B"=>230]);
         }
         $picture->setShadow(FALSE);
-        $picture->setFontProperties(array("FontName"=>$config->getOption('SRCDIR')."/www/guis/admin/application/library/pChart/fonts/pf_arma_five.ttf","FontSize"=>6,"R"=>80,"G"=>80,"B"=>80)); 
+	$picture->setFontProperties([
+		"FontName"=>$config->getOption('SRCDIR')."/www/guis/admin/application/library/pChart/fonts/pf_arma_five.ttf",
+		"FontSize"=>6,
+		"R"=>80,
+		"G"=>80,
+		"B"=>80
+	]); 
         if (!isset($params['no_label'])) {
             $chart->drawPieLegend(
-                       $label_pos[0],$label_pos[1],
-                       array(
-                               "Style"=>LEGEND_ROUND,"Mode"=>$label_size['O'],
-                               "Surrounding"=>$label_size['S'],"Margin"=>$label_size['M'],
-                               'R'=>$label_bg['R'], 'G'=>$label_bg['G'], 'B'=>$label_bg['B'], 'Alpha'=>$label_bg['A'] 
-                       ));
+		    $label_pos[0],
+		    $label_pos[1],
+                    [
+			    "Style"=>LEGEND_ROUND,
+			    "Mode"=>$label_size['O'],
+                            "Surrounding"=>$label_size['S'],
+			    "Margin"=>$label_size['M'],
+			    'R'=>$label_bg['R'],
+			    'G'=>$label_bg['G'],
+			    'B'=>$label_bg['B'],
+			    'Alpha'=>$label_bg['A'] 
+		    ]
+	    );
         }
         
         if (isset($params['render']) && $params['render']) {
@@ -407,44 +438,56 @@ class Default_Model_ReportingStats
     }
     
     public function getTodayStatElements($type) {
-		$els = array(          'cleans' => 'globalCleanCount',
-    		                   'spams'=>  'globalSpamCount',
-    		                   'dangerous' => 'globalNameCount+globalOtherCount',
-    		                   'viruses'=>  'globalVirusCount');
+	    $els = [
+		    'cleans' => 'globalCleanCount',
+    		    'spams'=>  'globalSpamCount',
+    		    'dangerous' => 'globalNameCount+globalOtherCount',
+		    'viruses'=>  'globalVirusCount'
+	    ];
 		if (!isset($type)) {
 			return $els;
 		}
 		switch ($type) {
 			case 'refused':
-				$els = array(  'rbl' => 'globalRefusedRBLCount+globalRefusedBackscatterCount',
-    		                   'blacklists'=>  'globalRefusedHostCount+globalRefusedBlacklistedSenderCount', 
-    		                   'relay' => 'globalRefusedRelayCount',
-    		                   'policies' => 'globalRefusedSpoofingCount+globalRefusedBATVCount+globalRefusedBadSPFCount+globalRefusedUnauthenticatedCount+globalRefusedUnencryptedCount+globalRefusedBadRDNSCount',
-    	                       'callout' => 'globalRefusedCalloutCount',
-    	                       'syntax' => 'globalRefusedLocalpartCount+globalRefusedBadSenderCount+globalRefusedBadSenderCount');
+				$els = [
+					'rbl' => 'globalRefusedRBLCount+globalRefusedBackscatterCount',
+    		                   	'blacklists'=>  'globalRefusedHostCount+globalRefusedBlacklistedSenderCount', 
+    		                   	'relay' => 'globalRefusedRelayCount',
+    		                   	'policies' => 'globalRefusedSpoofingCount+globalRefusedBATVCount+globalRefusedBadSPFCount+globalRefusedUnauthenticatedCount+globalRefusedUnencryptedCount+globalRefusedBadRDNSCount',
+    	                       		'callout' => 'globalRefusedCalloutCount',
+					'syntax' => 'globalRefusedLocalpartCount+globalRefusedBadSenderCount+globalRefusedBadSenderCount'
+				];
 				break;
 			case 'global':
-				$els = array(  'cleans' => 'globalCleanCount',
-    		                   'spams'=>  'globalRefusedCount+globalSpamCount',
-    		                   'dangerous' => 'globalNameCount+globalOtherCount',
-    		                   'viruses'=>  'globalVirusCount', 
-    	                       'outgoing' => 'globalRelayedCount');
+				$els = [
+				      	'cleans' => 'globalCleanCount',
+    		                   	'spams'=>  'globalRefusedCount+globalSpamCount',
+    		                   	'dangerous' => 'globalNameCount+globalOtherCount',
+    		                   	'viruses'=>  'globalVirusCount', 
+					'outgoing' => 'globalRelayedCount'
+				];
 				break;
 			case 'delayed':
-				$els = array(  'greylisted' => 'globalDelayedGreylistCount',
-    		                   'rate limited'=>  'globalDelayedRatelimitCount');
+				$els = [
+					'greylisted' => 'globalDelayedGreylistCount',
+					'rate limited'=>  'globalDelayedRatelimitCount'
+				];
 				break;
 			case 'relayed':
-				$els = array(  'by hosts' => 'globalRelayedHostCount',
-    		                   'authentified'=>  'globalRelayedAuthenticatedCount', 
-    		                   'refused' => 'globalRelayedRefusedCount',
-    	                       'viruses' => 'globalRelayedVirusCount');
+				$els = [
+					'by hosts' => 'globalRelayedHostCount',
+    		                   	'authentified'=>  'globalRelayedAuthenticatedCount', 
+    		                   	'refused' => 'globalRelayedRefusedCount',
+					'viruses' => 'globalRelayedVirusCount'
+				];
 				break;
 			case 'sessions':
-				$els = array(  'accepted' => 'globalAcceptedCount',
-    		                   'refused'=>  'globalRefusedCount', 
-    		                   'delayed' => 'globalDelayedCount',
-    	                       'relayed' => 'globalRelayedCount');
+				$els = [
+					'accepted' => 'globalAcceptedCount',
+    		                   	'refused'=>  'globalRefusedCount', 
+    		                   	'delayed' => 'globalDelayedCount',
+					'relayed' => 'globalRelayedCount'
+				];
 				break;
 		}
 		return $els;
@@ -488,7 +531,7 @@ class Default_Model_ReportingStats
 		return $total;
 	}
 	
-	public function getTodayPie($what, $slaveid, $usecache, $type = 'global', $graph_params = [)] {
+	public function getTodayPie($what, $slaveid, $usecache, $type = 'global', $graph_params = []) {
 		
     	$total = null;
     	$cachefile = $this->_statscachefile.".".$type;

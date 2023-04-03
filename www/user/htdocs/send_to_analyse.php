@@ -40,7 +40,7 @@ if (isset($_GET['doit'])) {
   if ($ret != "OK") {
     $res = $ret;
   } else {
-    $res = $soaper->queryParam('sendToAnalyse', [$_GET['id'], $_GET['a'])];
+    $res = $soaper->queryParam('sendToAnalyse', [$_GET['id'], $_GET['a']]);
   }
   $askfirst = false;
   $message = $lang_->print_txt($res);
@@ -61,7 +61,7 @@ if ($askfirst) {
 }
 
 // prepare replacements
-$replace = array(
+$replace = [
   '__INCLUDE_JS__' => "<script type=\"text/javascript\" charset=\"utf-8\">
                         function confirmation() {
                           window.location.href=\"".$_SERVER['PHP_SELF']."?".preg_replace('/&/', ';', $_SERVER['QUERY_STRING']."&doit=1")."\";
@@ -70,7 +70,7 @@ $replace = array(
   '__MESSAGE__' => $message,
   '__CONFIRM_BUTTON__' => confirm_button($askfirst),
   '__CANCELCLOSE__' => $cancelclose
-);
+];
 // display page
 $template_->output($replace);
 

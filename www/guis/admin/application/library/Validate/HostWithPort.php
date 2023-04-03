@@ -13,16 +13,16 @@ class Validate_HostWithPort extends Zend_Validate_Abstract
     const MSG_BADHOST = 'invalidHost';
     const MSG_BADPORT = 'invalidPort';
 
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::MSG_BADHOST => "'%host%' is not a valid host",
         self::MSG_BADPORT => "'%host%' is not a valid port number",
-    );
+    ];
     
     public $host;
     
-    protected $_messageVariables = array(
+    protected $_messageVariables = [
         'host' => 'host'
-    );
+    ];
 
     public function isValid($value)
     {

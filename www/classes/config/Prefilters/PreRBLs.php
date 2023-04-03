@@ -20,11 +20,11 @@ class PreRBLs extends PreFilter {
      * prefilter properties
      * @var array
      */
-	private $specpref_ = array(
-                        'spamhits' => 2,
-                        'highspamhits' => 2,
-                        'lists' => ""
-	                 );
+    private $specpref_ = [
+        'spamhits' => 2,
+        'highspamhits' => 2,
+        'lists' => ""
+    ];
                      
     private $dnslists_ = [];
     private $form_;
@@ -70,10 +70,10 @@ public function getSpeciticReplace($template, $form) {
   for ($i = 0; $i <= count($this->dnslists_); $i++) {
   	$countlist[$i] = $i;
   }
-  $ret = array(
+  $ret = [
          "__FORM_HITSTOBESPAM__" => $form->select('spamhits', $countlist, $this->getPref('spamhits'), ';'),
          "__DNSLIST_LIST__" => $tlist
-        );
+  ];
   
   return $ret;
 }

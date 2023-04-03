@@ -30,8 +30,9 @@ class Default_Form_Logs extends ZendX_JQuery_Form
 		$this->setAttrib('id', 'filter_form');
 	    	    
 	    $months = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
-	    $fd = new Zend_Form_Element_Select('fd', array(
-		    'required' => true));
+	    $fd = new Zend_Form_Element_Select('fd', [
+		    'required' => true
+	    ]);
 	    for ($d = 1; $d <= 31; $d++) {
 	        $fd->addMultiOption($d, $d);
 	    }
@@ -40,8 +41,9 @@ class Default_Form_Logs extends ZendX_JQuery_Form
 	    }
 	    $this->addElement($fd);
 	    
-	    $fm = new Zend_Form_Element_Select('fm', array(
-		    'required' => true));
+	    $fm = new Zend_Form_Element_Select('fm', [
+		    'required' => true
+	    ]);
 	    $i = 1;
 	    foreach ($months as $m) {
 	    	$fm->addMultiOption($i++, $t->_($m));
@@ -51,9 +53,10 @@ class Default_Form_Logs extends ZendX_JQuery_Form
 	    }
 	    $this->addElement($fm);	    
 	    
-	    $submit = new Zend_Form_Element_Submit('submit', array(
+	    $submit = new Zend_Form_Element_Submit('submit', [
 		     'label'    => $t->_('Refresh'),
-	         'onclick' => 'javascript:resubmit=1;launchSearch();return false;'));
+		     'onclick' => 'javascript:resubmit=1;launchSearch();return false;'
+	    ]);
 		$this->addElement($submit);
 	}
 

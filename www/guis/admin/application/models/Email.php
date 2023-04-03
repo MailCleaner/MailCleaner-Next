@@ -12,7 +12,7 @@ class Default_Model_Email
 {
 	protected $_id;
 
-	protected $_values = array(
+	protected $_values = [
       'address' => '',
 	  'user' => 0,
 	  'pref' => 0,
@@ -23,8 +23,15 @@ class Default_Model_Email
 	protected $_domain;
 	protected $_domainobject;
 	
-	protected $_configpanels = array(0 => 'addresssettings', 1 => 'warnlist', 
-                                     2 => 'whitelist', 3 => 'archiving', 4 => 'actions', 5 => 'blacklist', 6 => 'newslist');
+	protected $_configpanels = [
+		0 => 'addresssettings',
+		1 => 'warnlist', 
+		2 => 'whitelist',
+		3 => 'archiving',
+		4 => 'actions',
+		5 => 'blacklist',
+		6 => 'newslist'
+	];
                                      
 	public function setParam($param, $value) {
 		if (array_key_exists($param, $this->_values)) {
@@ -209,8 +216,11 @@ class Default_Model_Email
         if ($this->isNew()) {
             if ($this->getDomainObject()->getCalloutConnector() == 'local') {
                 $slave = new Default_Model_Slave();
-				$soapparams = array('what' => 'domains', 'domain' => $this->getDomain());
-				$res = $slave->sendSoapToAll('Service_silentDump', $soapparams);
+		$soapparams = [
+			'what' => 'domains',
+			'domain' => $this->getDomain()
+		];
+		$res = $slave->sendSoapToAll('Service_silentDump', $soapparams);
             }
         }
         return true;
@@ -230,7 +240,9 @@ class Default_Model_Email
     	$ret = $this->getMapper()->delete($this);
         if ($this->getDomainObject()->getCalloutConnector() == 'local') {
             $slave = new Default_Model_Slave();
-			$soapparams = array('what' => 'domains', 'domain' => $this->getDomain());
+	    $soapparams = ['what' => 'domains',
+		    'domain' => $this->getDomain()
+	    ];
             $res = $slave->sendSoapToAll('Service_silentDump', $soapparams);
         }
         return $ret; 

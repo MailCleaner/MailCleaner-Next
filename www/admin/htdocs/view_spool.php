@@ -38,7 +38,7 @@ if (!isset($_GET['h']) || !is_numeric($_GET['h'])) {
   }
 
   // redirect to the correct host
-  $query = http_build_query(['s' => $spool, 'sid' => $sid)];
+  $query = http_build_query(['s' => $spool, 'sid' => $sid]);
   if ($host == '127.0.0.1' || $host == 'localhost') {
    header("Location: spool.php?".$query);
   } else {

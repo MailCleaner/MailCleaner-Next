@@ -28,9 +28,10 @@ class Default_Form_DomainDelivery extends Zend_Form
 		$t = Zend_Registry::get('translate');
 
 		$this->setAttrib('id', 'domain_form');
-	    $panellist = new Zend_Form_Element_Select('domainpanel', array(
+	    $panellist = new Zend_Form_Element_Select('domainpanel', [
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	    ]);
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         
@@ -47,41 +48,45 @@ class Default_Form_DomainDelivery extends Zend_Form
 		$name->setValue($this->_domain->getParam('name'));
 		$this->addElement($name);
 		
-		$domainname = new  Zend_Form_Element_Text('domainname', array(
+		$domainname = new  Zend_Form_Element_Text('domainname', [
             'label'   => $t->_('Domain name')." :",
 		    'required' => false,
-		    'filters'    => ['StringToLower', 'StringTrim'))];
+		    'filters'    => ['StringToLower', 'StringTrim']
+		]);
 	    $domainname->setValue($this->_domain->getParam('name'));
 	    require_once('Validate/DomainName.php');
         $domainname->addValidator(new Validate_DomainName());
 	    $this->addElement($domainname);	
         
 		require_once('Validate/SMTPHostList.php');
-		$servers = new Zend_Form_Element_Textarea('servers', array(
+		$servers = new Zend_Form_Element_Textarea('servers', [
 		      'label'    =>  $t->_('Destination servers')." :",
                       'title' => $t->_("Name or IP address of the server which will handle the mails once the have been cleaned"),
 		      'required'   => false,
 		      'rows' => 5,
 		      'cols' => 30,
-		      'filters'    => ['StringToLower', 'StringTrim'))];
+		      'filters'    => ['StringToLower', 'StringTrim']
+		]);
 	    $servers->addValidator(new Validate_SMTPHostList());
 		$servers->setValue($this->_domain->getDestinationFieldString());
 		$this->addElement($servers);
 		
-		$port = new  Zend_Form_Element_Text('port', array(
+		$port = new  Zend_Form_Element_Text('port', [
 	        'label'    => $t->_('Destination port')." :",
 		    'required' => false,
 		    'size' => 4,
-		    'filters'    => ['Alnum', 'StringTrim'))];
+		    'filters'    => ['Alnum', 'StringTrim']
+		]);
 	    $port->setValue($this->_domain->getDestinationPort());
         $port->addValidator(new Zend_Validate_Int());
 	    $this->addElement($port);
 		
-	    $multiple = new Zend_Form_Element_Select('multipleaction', array(
+	    $multiple = new Zend_Form_Element_Select('multipleaction', [
             'label'      => $t->_('Use multiple servers as')." :",
             'title' => $t->_("Choose method to deliver mails to destination server"),
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	    ]);
         
         foreach ($this->_domain->getDestinationActionOptions() as $key => $value) {
         	$multiple->addMultiOption($key, $t->_($key));
@@ -93,25 +98,27 @@ class Default_Form_DomainDelivery extends Zend_Form
         #$multiple->setValue('');
         $this->addElement($multiple);
         
-        $usemx = new Zend_Form_Element_Checkbox('usemx', array(
+        $usemx = new Zend_Form_Element_Checkbox('usemx', [
 	    'label'   => $t->_('Use MX resolution'). " :",
             'title' => $t->_("If destination servers have MX record in internal"),
             'uncheckedValue' => "0",
 	    'checkedValue' => "1"
-	));
+	]);
 	if ($this->_domain->getDestinationUseMX()) {
             $usemx->setChecked(true);
 	}
 	$this->addElement($usemx);
         
-        $test = new Zend_Form_Element_Button('testdestinationSMTP', array(
+        $test = new Zend_Form_Element_Button('testdestinationSMTP', [
 		     'label'    => $t->_('Test destinations'),
-             'onclick' => 'javascript:stopreloadtest=0;testDestinationSMTP(\''.$this->_domain->getParam('name').'\', 1);'));
+		     'onclick' => 'javascript:stopreloadtest=0;testDestinationSMTP(\''.$this->_domain->getParam('name').'\', 1);'
+	]);
 		$this->addElement($test);
 		
 		
-		$submit = new Zend_Form_Element_Submit('submit', array(
-		     'label'    => $t->_('Submit')));
+		$submit = new Zend_Form_Element_Submit('submit', [
+			'label'    => $t->_('Submit')
+		]);
 		$this->addElement($submit);	
 		
 	}

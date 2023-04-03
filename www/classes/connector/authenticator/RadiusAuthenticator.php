@@ -26,13 +26,13 @@ class RadiusAuthenticator extends AuthManager {
             return false;
         }
        
-       $ser = array(  array($settings->getSetting('server'), $settings->getSetting('port'), $settings->getSetting('secret')) );
+       $ser = [  [$settings->getSetting('server'), $settings->getSetting('port'), $settings->getSetting('secret')] ];
        
-       $funct = array ("LoginDialog", "loginFunction");
-       $params = array (
+       $funct = ["LoginDialog", "loginFunction"];
+       $params = [
                         "servers" => $ser,
                         "authtype" => $settings->getSetting('authtype')
-                      );
+       ];
       $this->auth_ = new Auth('RADIUS', $params, $funct);
       if ($this->auth_ instanceof Auth) {
         $this->setUpAuth();

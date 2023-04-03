@@ -25,10 +25,11 @@ class Default_Form_Domain_UserAuthentication_Tequila
 		$t = Zend_Registry::get('translate');
 		
 		require_once('Validate/SMTPHostList.php');
-		$server = new  Zend_Form_Element_Text('ldapserver', array(
+		$server = new  Zend_Form_Element_Text('ldapserver', [
 	        'label'    => $t->_('Authentication server')." :",
 		    'required' => false,
-		    'filters'    => ['StringToLower', 'StringTrim'))];
+		    'filters'    => ['StringToLower', 'StringTrim']
+		]);
 	    $server->setValue($this->_domain->getPref('auth_server'));
         $server->addValidator(new Validate_SMTPHostList());
 	    $form->addElement($server);

@@ -28,9 +28,10 @@ class Default_Form_DomainPreferences extends Zend_Form
 		$t = Zend_Registry::get('translate');
 
 		$this->setAttrib('id', 'domain_form');
-	    $panellist = new Zend_Form_Element_Select('domainpanel', array(
+	    $panellist = new Zend_Form_Element_Select('domainpanel', [
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	    ]);
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
 
@@ -46,19 +47,21 @@ class Default_Form_DomainPreferences extends Zend_Form
 		$name = new Zend_Form_Element_Hidden('name');
 		$name->setValue($this->_domain->getParam('name'));
 		$this->addElement($name);
-	    $domainname = new  Zend_Form_Element_Text('domainname', array(
+	    $domainname = new  Zend_Form_Element_Text('domainname', [
             'label'   => $t->_('Domain name')." :",
 		    'required' => false,
-		    'filters'    => ['StringToLower', 'StringTrim'))];
+		    'filters'    => ['StringToLower', 'StringTrim']
+	    ]);
 	    $domainname->setValue($this->_domain->getParam('name'));
 	    require_once('Validate/DomainName.php');
         $domainname->addValidator(new Validate_DomainName());
 	    $this->addElement($domainname);			
 		
-		$language = new Zend_Form_Element_Select('language', array(
+		$language = new Zend_Form_Element_Select('language', [
 		    'label'      => $t->_('Language')." : ",
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+		]);
 	    ## TODO: add specific validator
         
 	    $config = MailCleaner_Config::getInstance();
@@ -68,12 +71,12 @@ class Default_Form_DomainPreferences extends Zend_Form
         $language->setValue($this->_domain->getPref('language'));
         $this->addElement($language);
 
-        $groupquarantines = new Zend_Form_Element_Checkbox('gui_group_quarantines', array(
+        $groupquarantines = new Zend_Form_Element_Checkbox('gui_group_quarantines', [
             'label'   => $t->_('Group user\'s quarantines'). " :",
             'title' => $t->_("If a user has many mail addresses, all his quarantines will be grouped"),
             'uncheckedValue' => "0",
             'checkedValue' => "1" 
-                  )); 
+	]); 
     
         if ($this->_domain->getPref('gui_group_quarantines')) {
             $groupquarantines->setChecked(true);
@@ -81,11 +84,12 @@ class Default_Form_DomainPreferences extends Zend_Form
         $this->addElement($groupquarantines);
         
         
-        $action = new Zend_Form_Element_Select('delivery_type', array(
+        $action = new Zend_Form_Element_Select('delivery_type', [
             'label'     => $t->_('Action on spams')." : ",
             'title' => $t->_("Quarantine sends the detected messages in the user's quarantine / Tag delivers the email in a classical way but adds a tag in the subject of the email / Drop drops the concerned emails"),
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	]);
 	    ## TODO: add specific validator
 	    $action->addValidator(new Zend_Validate_Alnum());
         
@@ -95,39 +99,44 @@ class Default_Form_DomainPreferences extends Zend_Form
         $action->setValue($this->_domain->getPref('delivery_type'));
         $this->addElement($action);
         
-        $spamtag = new  Zend_Form_Element_Text('spam_tag', array(
+        $spamtag = new  Zend_Form_Element_Text('spam_tag', [
             'label'   => $t->_('Subject spam tag')." :",
             'title' => $t->_("Tag added in the beginning of the subject of a spam if you are in tag mode"),
-		    'required' => false,));
+	    'required' => false,
+	]);
 	    $spamtag->setValue($this->_domain->getPref('spam_tag'));
 	    $this->addElement($spamtag);
 	    
-	    $contenttag = new  Zend_Form_Element_Text('content_subject', array(
+	    $contenttag = new  Zend_Form_Element_Text('content_subject', [
             'label'   => $t->_('Subject dangerous content tag')." :",
             'title' => $t->_("Tag added in the beginning of the subject of a email with dangerous content if you are in tag mode"),
-		    'required' => false,));
+	    'required' => false,
+	    ]);
 	    $contenttag->setValue($this->_domain->getPref('content_subject'));
 	    $this->addElement($contenttag);
 	    
-	    $filetag = new  Zend_Form_Element_Text('file_subject', array(
+	    $filetag = new  Zend_Form_Element_Text('file_subject', [
             'label'   => $t->_('Subject dangerous file tag')." :",
             'title' => $t->_("Tag added in the beginning of the subject of a email containing a dangerous file if you are in tag mode"),
-		    'required' => false,));
+	    'required' => false,
+	    ]);
 	    $filetag->setValue($this->_domain->getPref('file_subject'));
 	    $this->addElement($filetag);
 	    
-	    $virustag = new  Zend_Form_Element_Text('virus_subject', array(
+	    $virustag = new  Zend_Form_Element_Text('virus_subject', [
             'label'   => $t->_('Subject virus tag')." :",
             'title' => $t->_("Tag added in the beginning of the subject of a email containing a virus if you are in tag mode"),
-		    'required' => false,));
+	    'required' => false
+	    ]);
 	    $virustag->setValue($this->_domain->getPref('virus_subject'));
 	    $this->addElement($virustag);
         
-	    $frequency = new Zend_Form_Element_Select('summaryfrequency', array(
+	    $frequency = new Zend_Form_Element_Select('summaryfrequency', [
             'label'     => $t->_('Summary frequency')." : ",
             'title' => $t->_("Choose the spam summaries send frequency"),
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	    ]);
 	    ## TODO: add specific validator
         
         foreach ($this->_domain->getSummaryFrequencies() as $key => $value) {
@@ -136,11 +145,12 @@ class Default_Form_DomainPreferences extends Zend_Form
         $frequency->setValue($this->_domain->getSummaryFrequency());
         $this->addElement($frequency);
         
-        $sumtype = new Zend_Form_Element_Select('summary_type', array(
+        $sumtype = new Zend_Form_Element_Select('summary_type', [
             'label'     => $t->_('Summary type')." : ",
             'title' => $t->_("Choose the spam summaries type"),
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	]);
 	    ## TODO: add specific validator
         
         foreach ($this->_domain->getSummaryTypes() as $key => $value) {
@@ -149,17 +159,19 @@ class Default_Form_DomainPreferences extends Zend_Form
         $sumtype->setValue($this->_domain->getPref('summary_type'));
         $this->addElement($sumtype);
 
-        $summaryto = new  Zend_Form_Element_Text('summary_to', array(
+        $summaryto = new  Zend_Form_Element_Text('summary_to', [
                 'label'    => $t->_('Default summary recipient')." :",
                 'title' => $t->_("Define a unique recipient for this domain"),
                 'required' => false,
-                'filters'    => ['StringToLower', 'StringTrim'))];
+		'filters'    => ['StringToLower', 'StringTrim']
+	]);
         $summaryto->setValue($this->_domain->getPref('summary_to'));
         $summaryto->addValidator(new Zend_Validate_EmailAddress(Zend_Validate_Hostname::ALLOW_LOCAL));
         $this->addElement($summaryto);
         
-		$submit = new Zend_Form_Element_Submit('submit', array(
-		     'label'    => $t->_('Submit')));
+		$submit = new Zend_Form_Element_Submit('submit', [
+			'label'    => $t->_('Submit')
+		]);
 		$this->addElement($submit);
 	}
 	

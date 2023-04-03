@@ -15,14 +15,14 @@ class Validate_EmailHeader extends Zend_Validate_Abstract
 
     public $email = '';
     
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::MSG_EMAILHEADER => "'%value%' is not a valid email header",
         self::MSG_BADEMAIL => "'%email%' is not a valid email address"
-    );
+    ];
     
-    protected $_messageVariables = array(
+    protected $_messageVariables = [
         'email' => 'email'
-    );
+    ];
 
     public function isValid($value)
     {

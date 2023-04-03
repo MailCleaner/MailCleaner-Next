@@ -29,25 +29,27 @@ class Default_Model_SMTPDestinationServer {
 		}
 		
 		if (PEAR::isError($e = $smtp->connect())) {
-		   return array('status' => 'NOK', 'message' => $e->getMessage());
+			return [
+				'status' => 'NOK', 'message' => $e->getMessage()
+			];
 		}
-        ## looks like connect already send the helo...
-	#if (PEAR::isError($e = $smtp->helo($domain))) {
-        #   $smtp->disconnect();
-        #   return array('status' => 'NOK', 'message' => "Unable to send HELO message (".$e->getMessage().")");
-        #}
 	
-	#$from = 'postmaster@'.$domain;
         $from = '';
         if (PEAR::isError($e = $smtp->mailFrom($from))) {
            $smtp->disconnect();
-           return array('status' => 'NOK', 'message' => "Unable to set sender to <$from> (".$e->getMessage().")");
+	   return [
+		   'status' => 'NOK',
+		   'message' => "Unable to set sender to <$from> (".$e->getMessage().")"
+	   ];
         }
         
         $to  = 'postmaster@'.$domain;
 	    if (PEAR::isError($res = $smtp->rcptTo($to))) {
 	    	$smtp->disconnect();
-	    	return array('status' => 'NOK', 'message' => "Unable to set recipient &lt;$to&gt; (".$res->getCode()." - ".$res->getMessage().")");
+		return [
+			'status' => 'NOK',
+			'message' => "Unable to set recipient &lt;$to&gt; (".$res->getCode()." - ".$res->getMessage().")"
+		];
         }
         
         $response = $smtp->getResponse();
@@ -71,7 +73,10 @@ class Default_Model_SMTPDestinationServer {
 		}
 		
 		if (PEAR::isError($e = $smtp->connect())) {
-		   return array('status' => 'NOK', 'message' => $e->getMessage());
+			return [
+				'status' => 'NOK',
+				'message' => $e->getMessage()
+			];
 		}
 		
         if (PEAR::isError($smtp->mailFrom($address))) {

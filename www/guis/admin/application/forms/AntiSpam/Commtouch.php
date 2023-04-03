@@ -29,19 +29,21 @@ class Default_Form_AntiSpam_Commtouch extends Default_Form_AntiSpam_Default
 
                 $t = Zend_Registry::get('translate');
 
-                $ctasdLicense = new  Zend_Form_Element_Text('ctasdLicense', array(
+                $ctasdLicense = new  Zend_Form_Element_Text('ctasdLicense', [
                             'label'   => $t->_('Ctasd Licence')." :",
                             'required' => false,
                             'size' => 40,
-                            'filters'    => ['StringTrim'))];
+			    'filters'    => ['StringTrim']
+		]);
                 $ctasdLicense->setValue($as->getParam('ctasdLicense'));
                 $this->addElement($ctasdLicense);     
 
-                $ctipdLicense = new  Zend_Form_Element_Text('ctipdLicense', array(
+                $ctipdLicense = new  Zend_Form_Element_Text('ctipdLicense', [
                             'label'   => $t->_('Ctipd Licence')." :",
                             'required' => false,
                             'size' => 40,
-                            'filters'    => ['StringTrim'))];
+			    'filters'    => ['StringTrim']
+		]);
                 $ctipdLicense->setValue($as->getParam('ctipdLicense'));
                 $this->addElement($ctipdLicense);
 		

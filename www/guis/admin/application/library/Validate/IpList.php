@@ -13,16 +13,16 @@ class Validate_IpList extends Zend_Validate_Abstract
     const MSG_IPLIST = 'invalidIplist';
     const MSG_BADIP = 'invalidIp';
 
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::MSG_IPLIST => "'%value%' is not a valid IP address list",
         self::MSG_BADIP => "'%ip%' is not a valid IP address"
-    );
+    ];
     
     public $ip = '';
     
-    protected $_messageVariables = array(
+    protected $_messageVariables = [
         'ip' => 'ip'
-    );
+    ];
 
     public function isValid($value)
     {

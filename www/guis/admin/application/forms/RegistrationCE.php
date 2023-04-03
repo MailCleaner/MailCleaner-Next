@@ -36,68 +36,83 @@ class Default_Form_RegistrationCE extends ZendX_JQuery_Form
 	    $res = $db->getHash($query);
 
 
-            $first_name = new  Zend_Form_Element_Text('first_name', array(
+            $first_name = new  Zend_Form_Element_Text('first_name', [
 	            'label' => $t->_('First Name'). " :",
-                    'required' => true));
+		    'required' => true
+	    ]);
             $first_name->setValue($res['first_name']);
-	    $first_name->addValidator(new Zend_Validate_Regex(array('pattern' => '/^[a-z]{2,}[a-z\-\s]+$/i')));
-	    $first_name->setErrorMessages(array('regexInvalid' => 'Only accept alphabet, spaces and "-" characters.',
-                                                'regexNotMatch' => 'Only accept alphabet, spaces and "-" characters.',
-                                                'regexErrorous' => 'Only accept alphabet, spaces and "-" characters.'));
+	    $first_name->addValidator(new Zend_Validate_Regex([
+		    'pattern' => '/^[a-z]{2,}[a-z\-\s]+$/i'
+	    ]);
+	    $first_name->setErrorMessages([
+		    'regexInvalid' => 'Only accept alphabet, spaces and "-" characters.',
+                    'regexNotMatch' => 'Only accept alphabet, spaces and "-" characters.',
+		    'regexErrorous' => 'Only accept alphabet, spaces and "-" characters.'
+	    ]);
             $this->addElement($first_name);
 
-	    $last_name = new  Zend_Form_Element_Text('last_name', array(
+	    $last_name = new  Zend_Form_Element_Text('last_name', [
                     'label' => $t->_('Last Name'). " :",
-                    'required' => true));
+		    'required' => true
+	    ]);
             $last_name->setValue($res['last_name']);
-            $last_name->addValidator(new Zend_Validate_Regex(array('pattern' => '/^[a-z]{2,}[a-z\-\s]+$/i')));
-            $last_name->setErrorMessages(array('regexInvalid' => 'Only accept alphabet, spaces and "-" characters.',
-                                                'regexNotMatch' => 'Only accept alphabet, spaces and "-" characters.',
-                                                'regexErrorous' => 'Only accept alphabet, spaces and "-" characters.'));
+	    $last_name->addValidator(new Zend_Validate_Regex([
+		    'pattern' => '/^[a-z]{2,}[a-z\-\s]+$/i'
+	    ]);
+	    $last_name->setErrorMessages([
+		    'regexInvalid' => 'Only accept alphabet, spaces and "-" characters.',
+                    'regexNotMatch' => 'Only accept alphabet, spaces and "-" characters.',
+		    'regexErrorous' => 'Only accept alphabet, spaces and "-" characters.'
+	    ]);
             $this->addElement($last_name);
 
 
-	    $email = new  Zend_Form_Element_Text('email', array(
+	    $email = new  Zend_Form_Element_Text('email', [
                 'label'    => $t->_('Email address')." :",
                 'required' => false,
-                'filters'    => ['StringToLower', 'StringTrim'))];
+		'filters'    => ['StringToLower', 'StringTrim']
+	    ]);
             $email->setValue($res['email']);
             $email->addValidator(new Zend_Validate_EmailAddress(Zend_Validate_Hostname::ALLOW_LOCAL));
             $this->addElement($email);
 
-	    $company = new  Zend_Form_Element_Text('company_name', array(
+	    $company = new  Zend_Form_Element_Text('company_name', [
                     'label' => $t->_('Company'). " :",
-                    'required' => false));
+		    'required' => false
+	    ]);
             $company->setValue($res['company']);
             $this->addElement($company);
 
-	    $address = new  Zend_Form_Element_Text('address', array(
+	    $address = new  Zend_Form_Element_Text('address', [
                     'label' => $t->_('Address'). " :",
-                    'required' => false));
+		    'required' => false
+	    ]);
             $address->setValue($res['address']);
             $this->addElement($address);
 
-            $postal_code = new  Zend_Form_Element_Text('postal_code', array(
+            $postal_code = new  Zend_Form_Element_Text('postal_code', [
                     'label' => $t->_('Postal code'). " :",
-                    'required' => false));
+		    'required' => false
+	    ]);
             $postal_code->setValue($res['postal_code']);
             $postal_code->addValidator(new Zend_Validate_Alnum());
             $this->addElement($postal_code);
 
-            $city = new  Zend_Form_Element_Text('city', array(
+            $city = new  Zend_Form_Element_Text('city', [
                     'label' => $t->_('City'). " :",
-                    'required' => false));
+		    'required' => false
+	    ]);
             $city->setValue($res['city']);
             $this->addElement($city);
 
-            $country = new  Zend_Form_Element_Select('country', array(
+            $country = new  Zend_Form_Element_Select('country', [
                     'label' => $t->_('Country'). " :",
 		    'empty_option' => 'Please choose your country',
                     'required' => false,
 		    'filters'    => ['StringTrim'],
-	    ));
+	    ]);
 
-	   $countries = array( 
+	   $countries = [ 
 			"Afghanistan",
 			"Albania",
 			"Algeria",
@@ -297,6 +312,7 @@ class Default_Form_RegistrationCE extends ZendX_JQuery_Form
 			"Somalia",
 			"South Africa",
 			"South Georgia and the South Sandwich Islands",
+			"South Sudan",
 			"Spain",
 			"Sri Lanka",
 			"Sudan",
@@ -338,33 +354,37 @@ class Default_Form_RegistrationCE extends ZendX_JQuery_Form
 			"Yemen",
 			"Zambia",
 			"Zimbabwe"
-	    );
+	   ];
 
 	    for ($i = 0; $i < count($countries); $i++)
 		$country->addMultiOption($countries[$i], $countries[$i]);
             $country->setValue($res['country']);
             $this->addElement($country);
 
-            $accept_newsletters = new  Zend_Form_Element_Checkbox('accept_newsletters', array(
+            $accept_newsletters = new  Zend_Form_Element_Checkbox('accept_newsletters', [
                     'label' => $t->_('I accept to receive the general newsletters'). " :",
-                    'required' => true));
+		    'required' => true
+	    ]);
             $accept_newsletters->setValue($res['accept_newsletters'] || 1);
             $this->addElement($accept_newsletters);
 
-            $accept_releases = new  Zend_Form_Element_Checkbox('accept_releases', array(
+            $accept_releases = new  Zend_Form_Element_Checkbox('accept_releases', [
                     'label' => $t->_('I accept to receive information about releases'). " :",
-                    'required' => true));
+		    'required' => true
+	    ]);
             $accept_releases->setValue($res['accept_releases'] || 1);
             $this->addElement($accept_releases);
 
-            $accept_send_statistics = new  Zend_Form_Element_Checkbox('accept_send_statistics', array(
+            $accept_send_statistics = new  Zend_Form_Element_Checkbox('accept_send_statistics', [
                     'label' => $t->_('I accept to send anonymous statistics'). " :",
-                    'required' => true));
+		    'required' => true
+	    ]);
             $accept_send_statistics->setValue($res['accept_send_statistics'] || 1);
             $this->addElement($accept_send_statistics);
 
-            $submitce = new Zend_Form_Element_Submit('register_ce', array(
-		     'label'    => $t->_('Register')));
+            $submitce = new Zend_Form_Element_Submit('register_ce', [
+		    'label'    => $t->_('Register')
+	    ]);
 	    $this->addElement($submitce);
 	}
 

@@ -11,7 +11,7 @@
 class Default_Model_MtaConfig
 {
     protected $_id;
-    protected $_values = array(
+    protected $_values = [
        'verify_sender' => 1,
        'smtp_enforce_sync' => 'true',
        'allow_mx_to_ip' => 'false',
@@ -72,7 +72,7 @@ class Default_Model_MtaConfig
        'ciphers' => '',
        'allow_long' => 1,
        'folding' => 0,
-     );
+    ];
 	
 	protected $_mapper;
 	

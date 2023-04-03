@@ -28,34 +28,36 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
 	           
 		$this->setAttrib('id', 'antivirusglobalsettings_form');
 	     
-	    $maxattach = new  Zend_Form_Element_Text('max_attachments_per_message', array(
-            'label'   => $t->_('Maximum attachments per message')." :",
-            'title' => $t->_("A message having more attachments than this is not analyzed. The message is sent to quarantine or tagged"),
-		    'required' => false,
+	    $maxattach = new Zend_Form_Element_Text('max_attachments_per_message', [
+                'label'   => $t->_('Maximum attachments per message')." :",
+                'title' => $t->_("A message having more attachments than this is not analyzed. The message is sent to quarantine or tagged"),
+		'required' => false,
 	        'size' => 5,
 	        'class' => 'fieldrighted',
-		    'filters'    => ['StringToLower', 'StringTrim'))];
+		'filters'    => ['StringToLower', 'StringTrim']
+	    ]);
 	    $maxattach->setValue($this->_antivirus->getParam('max_attachments_per_message'));
-        $maxattach->addValidator(new Zend_Validate_Int());
+            $maxattach->addValidator(new Zend_Validate_Int());
 	    $this->addElement($maxattach);	
 	    
-	    $maxattachsize = new  Zend_Form_Element_Text('max_attach_size', array(
-            'label'   => $t->_('Maximum attachment size')." :",
-            'title' => $t->_("If an attachment weights more than this, he will not be analyzed and the message is either sent to quarantine or tagged"),
-		    'required' => false,
+	    $maxattachsize = new  Zend_Form_Element_Text('max_attach_size', [
+                'label' => $t->_('Maximum attachment size')." :",
+                'title' => $t->_("If an attachment weights more than this, he will not be analyzed and the message is either sent to quarantine or tagged"),
+		'required' => false,
 	        'size' => 10,
 	        'class' => 'fieldrighted',
-		    'filters'    => ['StringToLower', 'StringTrim'))];
+		'filters' => ['StringToLower', 'StringTrim']
+	    ])
 	    $maxattachsize->setValue($this->_antivirus->getParam('max_attach_size'));
-        $maxattachsize->addValidator(new Zend_Validate_Int());
+            $maxattachsize->addValidator(new Zend_Validate_Int());
 	    $this->addElement($maxattachsize);	
 	    
-	    $maxattachsizeenable = new Zend_Form_Element_Checkbox('max_attach_size_enable', array(
+	    $maxattachsizeenable = new Zend_Form_Element_Checkbox('max_attach_size_enable', [
 	        'label'   => $t->_('no maximum size'),
                 'title' => $t->_("MailScanner will check all attachments"),
-            'uncheckedValue' => "0",
+                'uncheckedValue' => "0",
 	        'checkedValue' => "1"
-	              ));
+	    ]);
 	    if ($this->_antivirus->getParam('max_attach_size') < 0 ) {
             $maxattachsizeenable->setChecked(true);
             $maxattachsize->setValue('');
@@ -63,23 +65,24 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
 	    }
 	    $this->addElement($maxattachsizeenable);
 	    
-	    $max_archive_depth = new  Zend_Form_Element_Text('max_archive_depth', array(
-            'label'   => $t->_('Content control maximum archive depth')." :",
-            'title' => $t->_("Depth of \"archives in archives\" which will be analyzed"),
-		    'required' => false,
+	    $max_archive_depth = new  Zend_Form_Element_Text('max_archive_depth', [
+                'label'   => $t->_('Content control maximum archive depth')." :",
+                'title' => $t->_("Depth of \"archives in archives\" which will be analyzed"),
+		'required' => false,
 	        'size' => 10,
 	        'class' => 'fieldrighted',
-		    'filters'    => ['StringToLower', 'StringTrim'))];
+		'filters'    => ['StringToLower', 'StringTrim']
+	    ]);
 	    $max_archive_depth->setValue($this->_antivirus->getParam('max_archive_depth'));
-        $max_archive_depth->addValidator(new Zend_Validate_Int());
+            $max_archive_depth->addValidator(new Zend_Validate_Int());
 	    $this->addElement($max_archive_depth);	
 	    
-	    $max_archive_depth_disable = new Zend_Form_Element_Checkbox('max_archive_depth_disable', array(
+	    $max_archive_depth_disable = new Zend_Form_Element_Checkbox('max_archive_depth_disable', [
 	        'label'   => $t->_('disable content controls in archives'),
                 'title' => $t->_("If checked, MailCleaner wont check the items inside archives / If unchecked the files in the archives will be analyzed with the same rules as files not in archives"),
-            'uncheckedValue' => "0",
+                'uncheckedValue' => "0",
 	        'checkedValue' => "1"
-	              ));
+	    ]);
 	    if ($this->_antivirus->getParam('max_archive_depth') == 0) {
             $max_archive_depth_disable->setChecked(true);
             $max_archive_depth->setValue('');
@@ -88,39 +91,40 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
 	    $this->addElement($max_archive_depth_disable);
 	    
         
-	    $expand_tnef = new Zend_Form_Element_Checkbox('expand_tnef', array(
+	    $expand_tnef = new Zend_Form_Element_Checkbox('expand_tnef', [
 	        'label'   => $t->_('Expand TNEF (winmail.dat) attachments')." :",
                 'title' => $t->_("Extract files from the TNEF attachment (TNEF is an archive like format). This is required to perform antivirus checks on the content"),
             'uncheckedValue' => "0",
 	        'checkedValue' => "1"
-	              ));
+	    ]);
 	    if ($this->_antivirus->getParam('expand_tnef') == 'yes') {
             $expand_tnef->setChecked(true);
 	    }
 	    $this->addElement($expand_tnef);
 	    
-	    $deliver_bad_tnef = new Zend_Form_Element_Checkbox('deliver_bad_tnef', array(
+	    $deliver_bad_tnef = new Zend_Form_Element_Checkbox('deliver_bad_tnef', [
 	        'label'   => $t->_('Still deliver bad TNEF attachments')." :",
                 'title' => $t->_("Delivers the TNEF attachments even if they are seen as corrupted by MailCleaner"),
-            'uncheckedValue' => "0",
+                'uncheckedValue' => "0",
 	        'checkedValue' => "1"
-	              ));
+	    ]);
 	    if ($this->_antivirus->getParam('deliver_bad_tnef') == 'yes') {
             $deliver_bad_tnef->setChecked(true);
 	    }
 	    $this->addElement($deliver_bad_tnef);
 	    
-	    $usetnefcontent = new Zend_Form_Element_Select('usetnefcontent', array(
-            'label'      => $t->_('Use decoded TNEF attachments')." :",
-            'title' => $t->_("Choose action to perform with the TNEF attachment s scontent"),
-            'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    $usetnefcontent = new Zend_Form_Element_Select('usetnefcontent', [
+                'label'      => $t->_('Use decoded TNEF attachments')." :",
+                'title' => $t->_("Choose action to perform with the TNEF attachment s scontent"),
+                'required'   => false,
+	        'filters'    => ['StringTrim']
+	    ]);
         
-	    $tnefactions = array(
+	    $tnefactions = [
 	      'no' => 'do nothing but checking content',
 	      'add' => 'add decoded content to message',
 	      'replace' => 'replace encoded content with decoded content'
-	    );
+	    ];
         foreach ($tnefactions as $lk => $lv) {
         	$usetnefcontent->addMultiOption($lk, $t->_($lv));
         }
@@ -132,32 +136,34 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
             $usetnefcontent->setAttrib('class', 'disabled');
         }
 	    
-        $send_notices = new Zend_Form_Element_Checkbox('send_notices', array(
+        $send_notices = new Zend_Form_Element_Checkbox('send_notices', [
 	        'label'   => $t->_('Sent notice to administrator')." :",
                 'title' => $t->_("If one of the rule above is met, the administrator will be warned"),
-            'uncheckedValue' => "0",
+                'uncheckedValue' => "0",
 	        'checkedValue' => "1"
-	              ));
+	]);
 	    if ($this->_antivirus->getParam('send_notices') == 'yes') {
             $send_notices->setChecked(true);
 	    }
 	    $this->addElement($send_notices);
 	    
-	    $notices_to = new  Zend_Form_Element_Text('notices_to', array(
-            'label'   => $t->_('Administrator address')." :",
-		    'required' => false,
-		    'filters'    => ['StringToLower', 'StringTrim'))];
+	    $notices_to = new  Zend_Form_Element_Text('notices_to', [
+            	'label'   => $t->_('Administrator address')." :",
+		'required' => false,
+		'filters'    => ['StringToLower', 'StringTrim']
+	    ]);
 	    $notices_to->setValue($this->_antivirus->getParam('notices_to'));
         $notices_to->addValidator(new Zend_Validate_EmailAddress(Zend_Validate_Hostname::ALLOW_DNS | Zend_Validate_Hostname::ALLOW_LOCAL));
 	    $this->addElement($notices_to);	
 	    
 	    if ($this->_antivirus->getParam('send_notices') != 'yes') {
-            $notices_to->setAttrib('class', 'disabled');
+            	$notices_to->setAttrib('class', 'disabled');
 	    }
 	    
 	    
-		$submit = new Zend_Form_Element_Submit('submit', array(
-		     'label'    => $t->_('Submit')));
+		$submit = new Zend_Form_Element_Submit('submit', [
+			'label'    => $t->_('Submit')
+		]);
 		$this->addElement($submit);
 		
 	}

@@ -199,7 +199,7 @@ public function remAlias($id, $alias) {
     $query = "SELECT a.user, u.username, u.id, u.domain FROM pending_alias a, user u WHERE a.id='$id' AND a.alias='$alias' AND a.user=u.id";
     $res = $db_slaveconf->getHash($query);
     
-    if (!is_[$res)] {
+    if (!is_[$res]) {
         return "<font color=\"red\">".$lang_->print_txt('ALIASNOTPENDING')."</font><br/><br/>";
     }
     

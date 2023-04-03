@@ -26,7 +26,7 @@ global $sysconf_;
 global $admin_;
 
 // first check authorization
-$admin_->checkPermissions(['can_configure')];
+$admin_->checkPermissions(['can_configure']);
 
 // get the request parameters
 $selected_admin = "";
@@ -104,7 +104,7 @@ if ($selected_admin != "" || $mode == 'a') {
 }
 
 // prepare replacements
-$replace = array(
+$replace = [
         '__DOC_ADMINTITLE__' => $documentor->help_button('ADMINTITLE'),
 	    '__DOC_ADMINACCESS__' => $documentor->help_button('ADMINACCESS'),
 	    '__DOC_ADMINAUTHORIZATIONS__' => $documentor->help_button('ADMINAUTHORIZATIONS'),
@@ -134,7 +134,7 @@ $replace = array(
         "__SAVE_STATUS__" => $asaved_msg,
         "__ADD_STATUS__" => $addsaved_msg,
         "__DELETE_STATUS__" => $deleted_msg
-);
+];
 
 // output page
 $template_->output($replace);

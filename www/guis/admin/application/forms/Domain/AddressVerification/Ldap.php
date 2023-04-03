@@ -25,51 +25,56 @@ class Default_Form_Domain_AddressVerification_Ldap
 	    $t = Zend_Registry::get('translate');
 		
 		require_once('Validate/SMTPHostList.php');
-		$server = new  Zend_Form_Element_Text('ldapserver', array(
+		$server = new  Zend_Form_Element_Text('ldapserver', [
 	        'label'    => $t->_('LDAP server')." :",
 		    'required' => false,
-		    'filters'    => ['StringToLower', 'StringTrim'))];
+		    'filters'    => ['StringToLower', 'StringTrim']
+		]);
 	    $server->setValue($this->_domain->getPref('ldapcalloutserver'));
         $server->addValidator(new Validate_SMTPHostList());
 	    $form->addElement($server);
 	    
         $ldapparams = $this->getParams();
 	    
-	    $basedn = new  Zend_Form_Element_Text('basedn', array(
+	    $basedn = new  Zend_Form_Element_Text('basedn', [
 	        'label'    => $t->_('Base DN')." :",
 		    'required' => false,
-		    'filters'    => ['StringTrim'))];
+		    'filters'    => ['StringTrim']
+	    ]);
 	    $basedn->setValue($ldapparams['basedn']);
 	    $form->addElement($basedn);
 	    
-	    $binddn = new  Zend_Form_Element_Text('binddn', array(
+	    $binddn = new  Zend_Form_Element_Text('binddn', [
 	        'label'    => $t->_('Bind user')." :",
 		    'required' => false,
-		    'filters'    => ['StringTrim'))];
+		    'filters'    => ['StringTrim']
+	    ]);
 	    $binddn->setValue($ldapparams['binddn']);
 	    $form->addElement($binddn);
 	    
-	    $bindpass = new  Zend_Form_Element_Password('bindpass', array(
+	    $bindpass = new  Zend_Form_Element_Password('bindpass', [
 	        'label'    => $t->_('Bind password')." :",
 		    'required' => false,
 	        'renderPassword' => true,
-		    'filters'    => ['StringTrim'))];
+		'filters'    => ['StringTrim']
+	    ]);
 	    $bindpass->setValue($ldapparams['bindpass']);
 	    $form->addElement($bindpass);
 
-        $group = new  Zend_Form_Element_Text('group', array(
+        $group = new  Zend_Form_Element_Text('group', [
 	        'label'    => $t->_('Only addresses in group')." :",
 		    'required' => false,
 	        'renderPassword' => true,
-		    'filters'    => ['StringTrim'))];
+		'filters'    => ['StringTrim']
+	]);
 	    $group->setValue($ldapparams['group']);
 	    $form->addElement($group);
 
-        $ldapusesslcheck = new Zend_Form_Element_Checkbox('usessl', array(
+        $ldapusesslcheck = new Zend_Form_Element_Checkbox('usessl', [
             'label'   => $t->_('Use SSL'). " :",
             'uncheckedValue' => "0",
             'checkedValue' => "1" 
-                  )); 
+	]); 
     
         if ($ldapparams['usessl']) {
             $ldapusesslcheck->setChecked(true);
@@ -78,14 +83,14 @@ class Default_Form_Domain_AddressVerification_Ldap
 	}
 	
 	public function setParams($request, $domain) {
-	    $params = array(
+	    $params = [
 	        'basedn' => $request->getParam('basedn'),
 	        'binddn' => $request->getParam('binddn'),
 	        'bindpass' => $request->getParam('bindpass'),
             'group' => $request->getParam('group'),
             'usessl' => $request->getParam('usessl'),
 	        'callout_server' =>  $request->getParam('ldapserver')
-	    );
+	    ];
 	    $this->setParamsFromArray($params, $domain);
 	}
 	
@@ -109,14 +114,14 @@ class Default_Form_Domain_AddressVerification_Ldap
           $ldapparams[$i] = preg_replace('/__C__/', ':', $ldapparams[$i]);
         }
         
-        return array(
+        return [
                'basedn' => $ldapparams[0],
                'binddn' => $ldapparams[1],
                'bindpass' => $ldapparams[2],
                'group' => $ldapparams[3],
                'usessl' => $ldapparams[4],
                'callout_server' => $this->_domain->getPref('ldapcalloutserver')
-        );
+	];
 	}
 	
 	public function getParamsString($params) {
@@ -139,7 +144,7 @@ class Default_Form_Domain_AddressVerification_Ldap
         if (isset($params['usessl']) && $params['usessl']) {
             $usessl = '1';
         }
-		return implode(':', [$basedn, $binddn, $bindpass, $group, $usessl)];
+		return implode(':', [$basedn, $binddn, $bindpass, $group, $usessl]);
 	}
 	
 }

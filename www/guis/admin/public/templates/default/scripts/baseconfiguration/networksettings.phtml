@@ -10,21 +10,21 @@
 <p class="contentheadicon"><img src="<?php echo $this->images_path?>/config_icon.png" alt="" />&nbsp;</p>
  <p class="contentheadtitle"><?php echo $this->t->_($this->selectedSubMenuLabel)?> : <?php echo $this->t->_($this->selectedConfigMenuLabel." Title")?></p>
  
- <?php echo $this->partial('layouts/configmenu.phtml', ['config_menu' => $this->config_menu)]; ?>
+ <?php echo $this->partial('layouts/configmenu.phtml', ['config_menu' => $this->config_menu]); ?>
  
  <div id="generalconfigcontent">
  <div id="interfaceconfigpanel" class="configpanel">
  <form method="<?php echo $this->form->getMethod() ?>" action="<?php echo $this->form->getAction()?>" id="<?php echo $this->form->getId()?>">
  
   <h1><span class="texth1">
-        <?php echo $this->InputRow($this->form->getElement('selectinterface'),['nobox'=>true)];?> 
+        <?php echo $this->InputRow($this->form->getElement('selectinterface'),['nobox'=>true]);?> 
       </span><span id="reloadallnetwork">
     <?php if (! Zend_Registry::get('restrictions')->isRestricted('NetworkInterface', 'relaodnetnow')) {?>
-    <a href="<?php echo $this->url(['action' => 'reloadnetwork', 'controller' => 'baseconfiguration')];?>"><?php echo $this->t->_('reload network')?></a>
+    <a href="<?php echo $this->url(['action' => 'reloadnetwork', 'controller' => 'baseconfiguration']);?>"><?php echo $this->t->_('reload network')?></a>
     <?php }?>
     </span></h1>
     <div id="interfaceformcontent">
-     <?php echo $this->partial('forms/networkinterfaceForm.phtml', ['form' => $this->form,'t' => $this->t, 'message' => $this->message, 'images_path' => $this->images_path)]; ?>
+     <?php echo $this->partial('forms/networkinterfaceForm.phtml', ['form' => $this->form,'t' => $this->t, 'message' => $this->message, 'images_path' => $this->images_path]); ?>
     </div>
  </form>
  </div>

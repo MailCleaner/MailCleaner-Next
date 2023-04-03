@@ -26,20 +26,20 @@ class AntiVirus extends PrefHandler {
    * antivirus settings
    * @var array
    */
-  private $pref_ = array(
-                    'scanner_timeout' => 300,
-	                'silent' => 'yes',
-	                'file_timeout' => 20,
-	                'expand_tnef' => 'yes',
-	                'deliver_bad_tnef' => 'yes',
-	                'tnef_timeout' => 120,
-	                'max_message_size' => 0,
-	                'max_attach_size' => -1,
-	                'max_archive_depth' => 0,
-	                'send_notices' => 'no',
-	                'notices_to' => 'root',
-                    'usetnefcontent' => 'no'
-                  );
+  private $pref_ = [
+    'scanner_timeout' => 300,
+    'silent' => 'yes',
+    'file_timeout' => 20,
+    'expand_tnef' => 'yes',
+    'deliver_bad_tnef' => 'yes',
+    'tnef_timeout' => 120,
+    'max_message_size' => 0,
+    'max_attach_size' => -1,
+    'max_archive_depth' => 0,
+    'send_notices' => 'no',
+    'notices_to' => 'root',
+    'usetnefcontent' => 'no'
+  ];
   
   /**
    * scanners list
@@ -61,7 +61,7 @@ public function __construct() {
  */
 private function addScanner($scanner) {
   if ($scanner instanceof Scanner) {
-    $this->scanners_[$scanner->getPref('name')] = $scanner;
+    $this->scanners_[$scanner->getPref('name']) = $scanner;
     return true;
   }
   return false;   

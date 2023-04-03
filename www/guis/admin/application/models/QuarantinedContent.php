@@ -10,7 +10,7 @@
 
 class Default_Model_QuarantinedContent
 {
-	protected $_values = array(
+	protected $_values = [
 	  'to_address' => '',
 	  'from_address' => '',
 	  'id' => '',
@@ -24,7 +24,7 @@ class Default_Model_QuarantinedContent
 	  'nameinfected' => 0,
 	  'report' => '',
 	  'size' => 0
-	);
+	];
 
 	protected $_mapper;
 
@@ -47,9 +47,9 @@ class Default_Model_QuarantinedContent
 
 	public function getCleanParam($param) {
 		$t = Zend_Registry::get('translate');
-		$split_fields = array(
-        'subject' => 80,
-		);
+		$split_fields = [
+        		'subject' => 80,
+		];
 		$data = $this->getParam($param);
 
 	    if (preg_match('/(\=\?[^?]{3,15}\?.\?[^?]+\?\=)/', $data, $matches)) {
@@ -201,7 +201,7 @@ class Default_Model_QuarantinedContent
             $line = htmlentities($line, ENT_COMPAT, 'UTF-8');
 			if (preg_match('/^([A-Z]\S+):(.*)/', $line, $matches)) {
 				if ($last_header != "" && $lh != "") {
-					array_push($res, [$last_header, $lh)];
+					array_push($res, [$last_header, $lh]);
 				}
 				$last_header=$matches[1];
 				$lh = $matches[2];
@@ -214,7 +214,7 @@ class Default_Model_QuarantinedContent
 			if (strlen($lh) > 72) {
 				$lh = substr($lh, 0, 72)."...";
 			}
-			#array_push($res, [$last_header, $lh."-")];
+			#array_push($res, [$last_header, $lh."-"]);
 		}
 		return $res;
 	}

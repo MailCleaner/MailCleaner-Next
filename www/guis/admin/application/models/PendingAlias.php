@@ -12,11 +12,11 @@ class Default_Model_PendingAlias
 {
 	protected $_id;
 
-	protected $_values = array(
+	protected $_values = [
       'date_in' => '',
 	  'alias' => '',
 	  'user' => 0,
-    );
+	];
     
 	protected $_mapper;
 	

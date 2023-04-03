@@ -15,14 +15,14 @@ global $SoapClassMap;
  */
 
 ini_set("soap.wsdl_cache_enabled", "0"); // disabling WSDL cache
-$server = new SoapServer("mailcleaner.wsdl", ['trace' => 1, 'exceptions' => 1, 'classmap' => $SoapClassMap)];
+$server = new SoapServer("mailcleaner.wsdl", ['trace' => 1, 'exceptions' => 1, 'classmap' => $SoapClassMap]);
 
 require_once('parts/authorization.php');
 require_once('parts/status.php');
 require_once('parts/message.php');
 require_once('parts/processes.php');
 
-$server->addFunction(array(
+$server->addFunction([
                         "forceContent",
                         "addToNewslist",
                         "addToWhitelist",
@@ -50,8 +50,8 @@ $server->addFunction(array(
                         "dumpConfiguration",
                         "processNeedsRestart",
                         "setRestartStatus",
-                        "getStats")
-                      );
+			"getStats"
+]);
 
 $server->handle();
 ?>

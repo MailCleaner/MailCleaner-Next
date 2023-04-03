@@ -29,9 +29,10 @@ class Default_Form_Manage_EmailActions extends Zend_Form
 		$t = Zend_Registry::get('translate');
 
 		$this->setAttrib('id', 'email_form');
-	    $panellist = new Zend_Form_Element_Select('emailpanel', array(
+	    $panellist = new Zend_Form_Element_Select('emailpanel', [
             'required'   => false,
-            'filters'    => ['StringTrim'))];
+	    'filters'    => ['StringTrim']
+	    ]);
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
         

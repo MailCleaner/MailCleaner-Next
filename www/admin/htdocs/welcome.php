@@ -26,7 +26,7 @@ $template_ = new Template('welcome.tmpl');
 $integrator = new Integrator();
 
 // prepare replacements
-$replace = array(
+$replace = [
         "__LANG__" => $lang_->getLanguage(),
         "__DATE__" => strftime("%d.%m.%Y %H:%M.%S"),
         "__HOSTID__" => $sysconf_->getPref('hostid'),
@@ -36,7 +36,7 @@ $replace = array(
         "__INT_TECHNAME__" => $integrator->getInfo('Surname_T')." ".$integrator->getInfo('Name_T'),
         "__INT_TECHMAIL__" => $integrator->getInfo('Mail_T'),
         "__INT_TECHPHONE__" => $integrator->getInfo('Phone_T')
-);
+];
 
 // output page
 $template_->output($replace);

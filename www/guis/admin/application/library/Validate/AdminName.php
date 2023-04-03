@@ -12,9 +12,9 @@ class Validate_AdminName extends Zend_Validate_Abstract
 {
     const MSG_ADMINNAME = 'invalidAdminName';
     
-    protected $_messageTemplates = array(
+    protected $_messageTemplates = [
         self::MSG_ADMINNAME => "'%value%' is not a valid user name"
-    );
+    ];
 
     public function isValid($value)
     {

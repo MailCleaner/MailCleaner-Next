@@ -26,7 +26,7 @@ class MTAConfig extends PrefHandler
    * exim instance settings
    * @var array
    */
-  private $pref_ = array(
+  private $pref_ = [
      'header_txt' => '',
      'accept_8bitmime' => 'true',
      'print_topbitchars' => 'true',
@@ -50,7 +50,7 @@ class MTAConfig extends PrefHandler
      'tls_certificate' => 'default',
      'use_syslog' => 0,
      'smtp_banner' => '$smtp_active_hostname ESMTP Exim $version_number $tod_full'
-   );
+  ];
 
 /**
  * constructor

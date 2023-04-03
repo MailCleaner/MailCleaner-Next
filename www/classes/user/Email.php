@@ -26,7 +26,7 @@ class Email extends PrefHandler {
   * Email preferences
   * @var array
   */
-  private $pref_ = array(
+  private $pref_ = [
 	                   'delivery_type'      =>  1,
 			           'spam_tag'           =>  '{Spam?}',
 			           'daily_summary'      =>  0,
@@ -46,16 +46,16 @@ class Email extends PrefHandler {
                        'gui_group_quarantines' => '0',
                        
                        'allow_newsletters' => ''
-	                  );
+  ];
    
   /**
    * Email datas and relations
    */                   
-   private $infos_ = array(
+   private $infos_ = [
                        'address' =>  '',
                        'user'    =>  '',
                        'is_main' =>  0
-                      );
+   ];
 
 /**
  * Email constructor
@@ -65,7 +65,7 @@ public function __construct() {
     $this->addPrefSet('email', 'e', $this->infos_);
     $this->addPrefSet('user_pref', 'p', $this->pref_);
     $this->setPrefSetRelation('p', 'e.pref');
-    $this->setIDField(['email' => 'address')];
+    $this->setIDField(['email' => 'address']);
 }
 
 /**
@@ -298,7 +298,7 @@ public function html_QuarBouncesCheckbox() {
 public function html_SumTypeSelect() {
     global $lang_;
 	$ret = "\n<select name=\"summary_type\" onChange=\";\">\n";
-    $types = array($lang_->print_txt('USEDEFAULT') => 'NOTSET', $lang_->print_txt('SUMMHTML') => 'html', $lang_->print_txt('SUMMTEXT') => 'text', $lang_->print_txt('SUMMDIGEST') => 'digest');
+    $types = [$lang_->print_txt('USEDEFAULT') => 'NOTSET', $lang_->print_txt('SUMMHTML') => 'html', $lang_->print_txt('SUMMTEXT') => 'text', $lang_->print_txt('SUMMDIGEST') => 'digest'];
     foreach ($types as $tag => $value) {
     	$ret .= "  <option value=\"$value\"";
         if ($this->getPref('summary_type') == $value) {

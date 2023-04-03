@@ -86,7 +86,9 @@ class Default_Model_DomainMapper
 
      public function getDistinctDomainsCount() {
         $res = 0;
-        $query = $this->getDbTable()->select()->from(['d' => 'domain'], array('dc' => 'count(distinct d.prefs)'))->where("name != '__global__'");
+	$query = $this->getDbTable()->select()->from(['d' => 'domain'], [
+		'dc' => 'count(distinct d.prefs)'
+	])->where("name != '__global__'");
         $row = $this->getDbTable()->fetchRow($query);
         if ($row && isset($row['dc'])) {
           return $row['dc'];
@@ -105,7 +107,7 @@ class Default_Model_DomainMapper
     		$query->order('name ASC');
     	}
     	
-    	if (isset($params['limit']) && is_[$params['limit'])] {
+    	if (isset($params['limit']) && is_[$params['limit']]) {
     		$query->limit($params['limit'][0], $params['limit'][1]);
     	}
     	
@@ -147,7 +149,7 @@ class Default_Model_DomainMapper
     		}
             $res = $this->getDbTable()->insert($data);
         } else {
-            $res = $this->getDbTable()->update($data, ['id = ?' => $id)];
+            $res = $this->getDbTable()->update($data, ['id = ?' => $id]);
         }
         
         ## check if default domain is empty. If yes, put me as default

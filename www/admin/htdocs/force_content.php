@@ -46,9 +46,7 @@ if ($res == "FORCED") {
 $template_ = new Template('force_content.tmpl');
 
 // prepare replacements
-$replace = array(
-  '__MESSAGE__' => $message
-);
+$replace = ['__MESSAGE__' => $message];
 
 // output page
 $template_->output($replace);

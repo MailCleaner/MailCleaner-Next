@@ -34,7 +34,7 @@ class Domain extends PrefHandler {
   * Domain configuration set with default values (will be stored in domain table)
   * @var array
   */
- private $pref_domain_ = array(
+ private $pref_domain_ = [
                       'id'                    => 0,
                       'name'                  => '',
                       'destination'           => '', 
@@ -43,13 +43,13 @@ class Domain extends PrefHandler {
                       'adcheck'               => 'false', 
                       'forward_by_mx'         => 'false',
                       'greylist'              => 'false',
-                     );
+ ];
   /**
    * Domain preferences set with default values (will be stored in domain_pref table)
    * it's id is references by the domain configuration (field prefs)
    * @var array
    */
-  private $pref_domain_prefs_ = array(
+  private $pref_domain_prefs_ = [
                       'delivery_type'         => 1, 
                       'viruswall'             => 1, 
                       'virus_subject'         => '{Virus?}', 
@@ -88,7 +88,7 @@ class Domain extends PrefHandler {
                       'falseneg_to'           => '',
                       'falsepos_to'           => '',
                       'supportemail'          => ''
-                    );
+  ];
 
   /**
    * Authentication connector object used by the domain

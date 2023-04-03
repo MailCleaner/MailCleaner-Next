@@ -91,7 +91,9 @@ class Default_Model_DnsSettings
         $written = file_put_contents($tmpfile, $txt);
     	if ($written || $txt == '') {
     	   $soapres = Default_Model_Localhost::sendSoapRequest('Config_saveDnsConfig', null);
-           $soapres = Default_Model_Localhost::sendSoapRequest('Config_saveMCConfigOption', array('HELONAME' => $this->getHeloName()));
+	   $soapres = Default_Model_Localhost::sendSoapRequest('Config_saveMCConfigOption', [
+		   'HELONAME' => $this->getHeloName()
+	   ]);
            return $soapres;
     	}
     	return 'NOK could not write config file';

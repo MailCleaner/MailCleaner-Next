@@ -53,7 +53,7 @@ class Default_Model_DangerousContentMapper
             unset($data['id']);
             $res = $this->getDbTable()->insert($data);
         } else {
-            $res = $this->getDbTable()->update($data, ['set_id = ?' => $id)];
+            $res = $this->getDbTable()->update($data, ['set_id = ?' => $id]);
         }
         return $res;
     }

@@ -24,7 +24,7 @@ global $sysconf_;
 global $admin_;
 
 //check authorizations
-$admin_->checkPermissions(['can_configure')];
+$admin_->checkPermissions(['can_configure']);
 
 $save_msg = "";
 // create and load file type list
@@ -60,10 +60,10 @@ if ($eform->shouldSave()) {
 // create view
 $template_ = new Template('filetype.tmpl');
 // prepare options
-$allow_deny = array($lang_->print_txt('ALLOW') => 'allow', $lang_->print_txt('DENY') => 'deny');
+$allow_deny = [$lang_->print_txt('ALLOW') => 'allow', $lang_->print_txt('DENY') => 'deny'];
 
 // prepare replacements
-$replace = array(
+$replace = [
         "__LANG__" => $lang_->getLanguage(),
         "__SAVE_STATUS__" => $save_msg,
         "__FILENAMELIST_DRAW__" => $list_->drawFiletypes($template_->getTemplate('EXTENTIONLIST'), $eform),
@@ -74,7 +74,7 @@ $replace = array(
         "__SUBMITNEW_LINK__" => "window.document.forms['".$eform->getName()."'].submit()",
         "__REMOVE_FULLLINK__" => $_SERVER['PHP_SELF']."?m=d&s=",
         "__RELOAD_NAV_JS__" => "opener.parent.frames['navig_frame'].location.reload(true)"
-);
+];
 
 // output page
 $template_->output($replace);

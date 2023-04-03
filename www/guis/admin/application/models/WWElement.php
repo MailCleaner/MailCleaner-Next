@@ -11,14 +11,14 @@
 class Default_Model_WWElement
 {
     protected $_id;
-    protected $_values = array(
-      'sender' => '',
-      'recipient'    => '',
-      'type' => 'warn',
-      'expiracy' => '',
-      'status' => 0,
-      'comments' => '',
-    );
+    protected $_values = [
+        'sender' => '',
+        'recipient'    => '',
+        'type' => 'warn',
+        'expiracy' => '',
+        'status' => 0,
+        'comments' => '',
+    ];
 
     protected $_mapper;
 

@@ -7,7 +7,7 @@
  */
 ?>
 <form method="<?php echo $this->form->getMethod() ?>" action="<?php echo $this->form->getAction()?>" id="<?php echo $this->form->getId()?>">
-<?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t)]; ?>
+<?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t]); ?>
  <fieldset id="localesettings">
        <table class="ftable">
           <?php echo $this->InputRow($this->form->getElement('httpproxy'));?>

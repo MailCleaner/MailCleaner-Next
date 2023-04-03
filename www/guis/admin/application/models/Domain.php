@@ -11,7 +11,7 @@
 class Default_Model_Domain
 {
 	protected $_id;
-	protected $_values = array(
+	protected $_values = [
       'name' => '',
       'active' => true,
       'destination'    => '',
@@ -24,14 +24,22 @@ class Default_Model_Domain
       'forward_by_mx' => 'false',
       'relay_smarthost' => 0,
       'destination_smarthost'    => '',
-	);
+	];
 	protected $_aliases = [];
 
-	protected $_configpanels = array('general', 'delivery',
-		'addressverification', 'preferences',
-		'authentication', 'filtering', 'advanced', 'spamcovercharge', 
-		'outgoing', 'archiving', 'templates'
-	);
+	protected $_configpanels = [
+		'general', 
+		'delivery',
+		'addressverification', 
+		'preferences',
+		'authentication', 
+		'filtering', 
+		'advanced', 
+		'spamcovercharge', 
+		'outgoing', 
+		'archiving', 
+		'templates'
+	];
 
 	protected $_prefs;
 	protected $_default_prefs;
@@ -215,7 +223,10 @@ class Default_Model_Domain
 
         $slave = new Default_Model_Slave();
         ## first dump all domain's preferences
-		$params = array('what' => 'domains', 'domain' => $this->getParam('name'));
+		$params = [
+			'what' => 'domains',
+			'domain' => $this->getParam('name')
+		];
 		$res = $slave->sendSoapToAll('Service_silentDump', $params);
 
         ## then save main domains list in case we're adding
@@ -286,7 +297,7 @@ class Default_Model_Domain
 	}
 
 	public function setAliases($aliases) {
-		if (![$aliases)] {
+		if (![$aliases]) {
 			return true;
 		}
 		$this->_aliases = [];
@@ -306,7 +317,7 @@ class Default_Model_Domain
 			if ($domain->getParam('name') && $domain->getParam('prefs') != $this->getParam('prefs')) {
 				throw new Exception("Domain already configured ($alias)");
 			}
-			if (! in_[$alias, $this->_aliases)] {
+			if (! in_[$alias, $this->_aliases]) {
 				$this->_aliases[] = $alias;
 			}
 		}
@@ -471,7 +482,7 @@ class Default_Model_Domain
 	public function setDestinationOption($option) {
                 foreach ($this->_destination_action_options as $key => $value) {
                    if ($value == $option || $key == $option) {
-                        if (!in_[$value, $this->_destination_options)] {
+                        if (!in_[$value, $this->_destination_options]) {
                             $this->_destination_options = [];
 			    $this->_destination_options[$value] = $value;
                         }
@@ -481,7 +492,7 @@ class Default_Model_Domain
 	public function setDestinationOption_smarthost($option) {
                 foreach ($this->_destination_action_options_smarthost as $key => $value) {
                    if ($value == $option || $key == $option) {
-                        if (!in_[$value, $this->_destination_options_smarthost)] {
+                        if (!in_[$value, $this->_destination_options_smarthost]) {
                             $this->_destination_options_smarthost = [];
 			    $this->_destination_options_smarthost[$value] = $value;
                         }
@@ -738,7 +749,10 @@ class Default_Model_Domain
 		$servers = $this->getDestinationServers();
 		if (count($servers) < 1 || (count($servers) == 1 && $servers[0]['host'] == ''))  {
 			$this->_destinationtest_finished = true;
-			return array('nodestinationset' => ['status' => 'NOK', 'message' => 'nodestinationset')];
+			return [
+				'nodestinationset' => 
+					['status' => 'NOK', 'message' => 'nodestinationset']
+			];
 		}
 
 		$file = sys_get_temp_dir()."/destinationSMTP.status";
@@ -809,17 +823,31 @@ class Default_Model_Domain
 	public function getCalloutTestStatus($reset) {
 		if ($this->getParam('callout') == 'false' && $this->getParam('adcheck') == 'false') {
 			$this->_callouttest_finished = true;
-			return array('nocalloutset' => ['status' => 'OK', 'message' => 'done.')];
+			return [
+				'nocalloutset' => [
+					'status' => 'OK', 'message' => 'done.'
+				]
+			];
 		}
 
 		$servers = $this->getDestinationServers();
 		if (count($servers) < 1 || (count($servers) == 1 && $servers[0]['host'] == ''))  {
 			$this->_callouttest_finished = true;
-			return array('nodestinationset' => ['status' => 'NOK', 'message' => 'nodestinationset')];
+			return [
+				'nodestinationset' => [
+					'status' => 'NOK',
+					'message' => 'nodestinationset'
+				]
+			];
 		}
-		$action = array(
-             'sendingtorandom' => array('address' => Default_Model_SMTPDestinationServer::getRandomString(20).'@'.$this->getParam('name'), 'expected' => 'NOK'), 
-             'sendingtopostmaster' => array('address' => 'postmaster@'.$this->getParam('name'), 'expected' => 'OK'));
+		$action = [
+			'sendingtorandom' => [
+				'address' => Default_Model_SMTPDestinationServer::getRandomString(20).'@'.$this->getParam('name'), 'expected' => 'NOK'
+			],
+			'sendingtopostmaster' => [
+				'address' => 'postmaster@'.$this->getParam('name'), 'expected' => 'OK'
+			]
+		];
 		$file = sys_get_temp_dir()."/callouttest.status";
 		if (file_exists($file) && $reset) {
 			unlink($file);
@@ -915,10 +943,10 @@ class Default_Model_Domain
 		}
 		## use old stuff !
 		unset($_SESSION['_authsession']);
-		set_include_path(implode(PATH_SEPARATOR, array(
+		set_include_path(implode(PATH_SEPARATOR, [
 		realpath(APPLICATION_PATH . '/../../../../classes'),
 		get_include_path(),
-		)));
+		]));
 		require_once('Log.php');
 		require_once('domain/Domain.php');
 		require_once('helpers/DM_SlaveConfig.php');
@@ -975,10 +1003,10 @@ class Default_Model_Domain
 		}
 		## use old stuff !
 		unset($_SESSION['_authsession']);
-		set_include_path(implode(PATH_SEPARATOR, array(
+		set_include_path(implode(PATH_SEPARATOR, [
 		realpath(APPLICATION_PATH . '/../../../../classes'),
 		get_include_path(),
-		)));
+		]));
 		require_once('Log.php');
 		require_once('connector/AddressFetcher.php');
 		require_once('helpers/DM_SlaveConfig.php');
@@ -1009,10 +1037,10 @@ class Default_Model_Domain
 		}
 		## use old stuff !
 		unset($_SESSION['_authsession']);
-		set_include_path(implode(PATH_SEPARATOR, array(
+		set_include_path(implode(PATH_SEPARATOR, [
 		realpath(APPLICATION_PATH . '/../../../../classes'),
 		get_include_path(),
-		)));
+		]));
 		require_once('Log.php');
 		require_once('connector/AddressFetcher.php');
 		require_once('helpers/DM_SlaveConfig.php');
@@ -1058,14 +1086,18 @@ class Default_Model_Domain
 		//TODO: test authentication
 
 		if ($this->getPref('auth_type') == 'none') {
-			return array('status' => 'OK', 'message' =>  'no authentication set.', 'addresses' => [], 'errors' => [)];
+			return [
+				'status' => 'OK',
+				'message' =>  'no authentication set.',
+				'addresses' => [], 'errors' => []
+			];
 		}
 		## use old stuff !
 		unset($_SESSION['_authsession']);
-		set_include_path(implode(PATH_SEPARATOR, array(
+		set_include_path(implode(PATH_SEPARATOR, [
 		realpath(APPLICATION_PATH . '/../../../../classes'),
 		get_include_path(),
-		)));
+		]));
 		require_once('Log.php');
 		require_once('domain/Domain.php');
 		require_once('helpers/DM_SlaveConfig.php');
@@ -1097,10 +1129,20 @@ class Default_Model_Domain
 			foreach ($addresses as $add => $ismain) {
 				$addlist[] = $add;
 			}
-			return array('status' => 'OK', 'message' =>  'passed', 'addresses' => $addlist, 'errors' => [)];
+			return [
+				'status' => 'OK',
+				'message' =>  'passed',
+				'addresses' => $addlist,
+				'errors' => []
+			];
 		}
 
-		return array('status' => 'NOK', 'message' =>  'failed.', 'addresses' => [], 'errors' => $auth_->getMessages());
+		return [
+			'status' => 'NOK',
+			'message' =>  'failed.',
+			'addresses' => [],
+			'errors' => $auth_->getMessages()
+		];
 	}
 	 
 	/*

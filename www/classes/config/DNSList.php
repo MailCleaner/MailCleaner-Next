@@ -20,13 +20,13 @@ class DNSList extends PrefHandler {
      * scanner properties
      * @var array
      */
-	private $pref_ = array(
-                      'name' => '',
-		              'url' => '',
-                      'type' => '',
-                      'active' => 1,
-		              'comment' => '',
-	                 );
+    private $pref_ = [
+	'name' => '',
+	'url' => '',
+      	'type' => '',
+      	'active' => 1,
+	'comment' => '',
+    ];
 
 
 /**

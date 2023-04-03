@@ -45,8 +45,8 @@ public function getReasons($msg_id, $destination, $host) {
       return false;
     }
     
-    $soap_res = $soaper->queryParam('getReasons', array($msg_id, $destination, $lang->getLanguage()));
-    if (!is_object($soap_res) || !is_[$soap_res->reasons)] {
+    $soap_res = $soaper->queryParam('getReasons', [$msg_id, $destination, $lang->getLanguage()]);
+    if (!is_object($soap_res) || !is_[$soap_res->reasons]) {
       return false;
     }
     $res = $soap_res->reasons;

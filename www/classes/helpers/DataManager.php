@@ -29,7 +29,7 @@ class DataManager {
    * default connection options
    * @param  array
    */
-  private $db_config = array(
+  private $db_config = [
                         'HOST' => 'localhost',
                         'PORT' => '3306',
                         'USER' => 'mailcleaner',
@@ -37,15 +37,15 @@ class DataManager {
                         'PASSWORD' => '',
                         'SOCKET' => '',
                         'DATABASE' => 'mc_config',
-                       );
+  ];
   /**
    * default base system configuration options
    * @param  array
    */
-  private $base_config = array(
+  private $base_config = [
                         'VARDIR' => '/var/mailcleaner',
                         'SRCDIR' => '/opt/mailcleaner'
-                       );
+  ];
                
   /**
    * maintain the last error encountered
@@ -128,8 +128,8 @@ class DataManager {
    * @return        array   array of configuration options and values
    */
   static public function getFileConfig($file) {
-    $val = array ();
-    $ret = array ();
+    $val = [];
+    $ret = [];
     
     $lines = file($file);
     if (!$lines) { return; }
@@ -155,10 +155,10 @@ class DataManager {
           $dsn = "mysqli://".$this->getOption('USER').":".$this->getOption('PASSWORD').
                 "@".$this->getOption('HOST').":".$this->getOption('PORT')."/".$this->getOption('DATABASE');
         }        
-        $options = array(
+        $options = [
                     'persistent' => true,
                     'debug' => 1
-                );
+	];
 
 
         $this->db_handle = DB::connect($dsn, $options);
@@ -286,7 +286,7 @@ class DataManager {
     if (is_string($value)) {
     	return $this->db_handle->escapeSimple($value);
     }
-    if (is_[$value)] {
+    if (is_[$value]) {
 	$value[0] = $this->db_handle->escapeSimple($value[0]);
     }
     return $value;
