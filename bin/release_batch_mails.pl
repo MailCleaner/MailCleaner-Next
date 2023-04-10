@@ -1,7 +1,7 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
-#   Copyright (C) 2019 John Mertz <john.mertz@mailcleaner.net>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -20,9 +20,20 @@
 #   This script can be used to release in batch emails that were put in
 #   quarantine
 
+use v5.36;
+use strict;
+use warnings;
+use utf8;
+
+if ($0 =~ m/(\S*)\/\S+.pl$/) {
+    my $path = $1."/../lib";
+    unshift (@INC, $path);
+}
+
 use Term::ReadKey;
 
-sub check_and_split {
+sub check_and_split
+{
     my $addr = shift;
     $addr = lc($addr);
     if ($addr =~ m/.\@/) {
@@ -40,7 +51,8 @@ sub check_and_split {
     }
 }
 
-sub check_date {
+sub check_date
+{
     my $date = shift;
     if ($date =~ m/[0-9]{4}-[0-9]{2}-[0-9]{2}/) {
         return $date;
@@ -49,7 +61,8 @@ sub check_date {
     }
 }
 
-sub usage {
+sub usage
+{
     my ($year,$month,$day) = split(/-/,`date +%Y-%m-%d`);
     chomp $day;
     my $today = sprintf("%04d-%02d-%02d",$year,$month,$day);

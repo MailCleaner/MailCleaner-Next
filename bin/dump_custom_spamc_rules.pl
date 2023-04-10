@@ -1,15 +1,37 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
+#
+#   Mailcleaner - SMTP Antivirus/Antispam Gateway
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+use v5.36;
 use strict;
-use File::Copy;
-use File::Path;
+use warnings;
+use utf8;
+
 if ($0 =~ m/(\S*)\/\S+.pl$/) {
-  my $path = $1."/../lib";
-  unshift (@INC, $path);
+    my $path = $1."/../lib";
+    unshift (@INC, $path);
 }
 
+use File::Copy;
+use File::Path;
 require DB;
-my $db = DB::connect('slave', 'mc_config');
 
+my $db = DB::connect('slave', 'mc_config');
 my $dbh;
 my %domains;
 my %senders;
@@ -17,7 +39,8 @@ my $rules_file = '/usr/mailcleaner/share/spamassassin/98_mc_custom.cf';
 my $rcpt_id = 0;
 my $sender_id = 0;
 
-sub set_current_rule {
+sub set_current_rule
+{
     my ($current_rule) = @_;
         my $current_rule_w = $current_rule;
         $current_rule_w =~ s/\s+/_/;
@@ -28,7 +51,8 @@ sub set_current_rule {
 }
 
 # rules to detect if the wanted rule did hit for those recipients (/senders)
-sub print_custom_rule {
+sub print_custom_rule
+{
     my ($current_rule, $current_rule_w, $current_sender, @current_rule_domains) = @_;
 
     my ($rule, $score) = split(' ', $current_rule);
@@ -53,7 +77,8 @@ sub print_custom_rule {
 }
 
 # Rules to identify domains
-sub print_recipient_rules {
+sub print_recipient_rules
+{
     my ($recipient) = @_;
 
     return if defined $domains{$recipient};
@@ -73,7 +98,8 @@ sub print_recipient_rules {
 }
 
 # Rules to identify senders
-sub print_sender_rules {
+sub print_sender_rules
+{
     my ($sender) = @_;
 
     return if ($sender eq '');

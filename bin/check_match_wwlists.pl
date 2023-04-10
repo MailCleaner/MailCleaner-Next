@@ -1,9 +1,30 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
+#
+#   Mailcleaner - SMTP Antivirus/Antispam Gateway
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+use v5.36;
 use strict;
+use warnings;
+use utf8;
+
 if ($0 =~ m/(\S*)\/\S+.pl$/) {
-  my $path = $1."/../lib";
-  unshift (@INC, $path);
+    my $path = $1."/../lib";
+    unshift (@INC, $path);
 }
 
 require ConfigTemplate;
@@ -33,7 +54,8 @@ print_result(\@column_names, $final_list);
 
 ## ------
 
-sub sort_by {
+sub sort_by
+{
     my $entries = shift;
     my $sort_order_arg = shift;
     my $sort_hash = shift;
@@ -63,7 +85,8 @@ sub sort_by {
     return \@output;
 }
 
-sub get_wlist_matches {
+sub get_wlist_matches
+{
     my $sender = shift;
     my $recipient = shift;
     my $column_names = shift;
@@ -88,7 +111,8 @@ sub get_wlist_matches {
     return \@matches;
 }
 
-sub get_possible_recipients {
+sub get_possible_recipients
+{
     $recipient = shift;
     my @recipients;
     push @recipients, $recipient;
@@ -97,7 +121,8 @@ sub get_possible_recipients {
     return \@recipients;
 }
 
-sub get_wlist_level {
+sub get_wlist_level
+{
     my $entry = shift;
     my $entry_with_level = $entry;
     if ($entry->{recipient} =~ m/^.+@.+\..+$/){
@@ -116,7 +141,8 @@ sub get_wlist_level {
     return $entry_with_level;
 }
 
-sub check_column_width {
+sub check_column_width
+{
     my $column_name = shift;
     my $column_value = shift // "";
     my $columns_widths = shift;
@@ -129,7 +155,8 @@ sub check_column_width {
     }
 }
 
-sub get_columns_widths {
+sub get_columns_widths
+{
     my $columns_names = shift;
     my $entries_list = shift;
     my $columns_widths = shift;
@@ -142,7 +169,8 @@ sub get_columns_widths {
     }
 }
 
-sub format_entry {
+sub format_entry
+{
     my $entry = shift;
     my $columns_widths = shift;
     my $columns_names = shift;
@@ -159,7 +187,8 @@ sub format_entry {
     return $return_string;
 }
 
-sub print_result {
+sub print_result
+{
     my $column_names = shift;
     my $entries = shift;
     my %columns_widths;

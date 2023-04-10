@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2018 MailCleaner <support@mailcleaner.net>
@@ -22,13 +22,18 @@
 #   This script is intended to be used by the MailCleaner SOAP API (Soaper).
 #
 #   Usage:
-#           add_to_blacklist.pl msg_dest msg_sender
+#		   add_to_blacklist.pl msg_dest msg_sender
 
+use v5.36;
 use strict;
+use warnings;
+use utf8;
+
 if ($0 =~ m/(\S*)\/\S+.pl$/) {
-  my $path = $1."/../lib";
-  unshift (@INC, $path);
+	my $path = $1."/../lib";
+	unshift (@INC, $path);
 }
+
 require DB;
 
 my %config = readConfig("/etc/mailcleaner.conf");
@@ -36,10 +41,10 @@ my %config = readConfig("/etc/mailcleaner.conf");
 my $dest = shift;
 my $sender = shift;
 if (not isValidEmail($dest)){
-    err("DESTNOTVALID");
+	err("DESTNOTVALID");
 }
 if (not isValidEmail($sender)){
-    err("SENDERNOTVALID");
+	err("SENDERNOTVALID");
 }
 
 my $dbh = DB::connect('master', 'mc_config') || err("CANNOTCONNECTDB");
@@ -51,14 +56,14 @@ $dest =~ s/([^\+]+)\+([^\@]+)\@(.*)/$1\@$3/;
 my $sth = $dbh->prepare("SELECT * FROM wwlists WHERE sender = ? AND recipient = ? AND type = 'black'") || err("CANNOTSELECTDB");
 $sth->execute($sender, $dest);
 if ($sth->fetchrow_arrayref()) {
-    err("DUPLICATEENTRY");
+	err("DUPLICATEENTRY");
 }
 
 $sth = $dbh->prepare("INSERT INTO wwlists (sender, recipient, type, expiracy, status, comments)
-    values (?, ?, 'black', '0000-00-00', 1, '[Blacklist]')");
+	values (?, ?, 'black', '0000-00-00', 1, '[Blacklist]')");
 $sth->execute($sender, $dest);
 unless ($sth->rows() > 0) {
-    err("CANNOTINSERTDB");
+	err("CANNOTINSERTDB");
 }
 
 print("OK");
@@ -67,40 +72,40 @@ exit 0;
 ##########################################
 sub isValidEmail
 {
-    my $email_str = shift;
-    if ($email_str =~ /^\S*\@\S+\.\S+$/) {
-        return 1;
-    } else {
-        return 0;
-    }
+	my $email_str = shift;
+	if ($email_str =~ /^\S*\@\S+\.\S+$/) {
+		return 1;
+	} else {
+		return 0;
+	}
 }
 
 ##########################################
 sub readConfig
-{       # Reads configuration file given as argument.
-        my $configfile = shift;
-        my %config;
-        my ($var, $value);
+{   # Reads configuration file given as argument.
+	my $configfile = shift;
+	my %config;
+	my ($var, $value);
 
-        open CONFIG, $configfile || err("CONFIGREADFAIL");
-        while (<CONFIG>) {
-                chomp;                  # no newline
-                s/#.*$//;                # no comments
-                s/^\*.*$//;             # no comments
-                s/;.*$//;                # no comments
-                s/^\s+//;               # no leading white
-                s/\s+$//;               # no trailing white
-                next unless length;     # anything left?
-                my ($var, $value) = split(/\s*=\s*/, $_, 2);
-                $config{$var} = $value;
-        }
-        close CONFIG;
-        return %config;
+	open(my $CONFIG, '<', $configfile) || err("CONFIGREADFAIL");
+	while (<$CONFIG>) {
+		chomp;			  # no newline
+		s/#.*$//;		   # no comments
+		s/^\*.*$//;		 # no comments
+		s/;.*$//;		   # no comments
+		s/^\s+//;		   # no leading white
+		s/\s+$//;		   # no trailing white
+		next unless length; # anything left?
+		my ($var, $value) = split(/\s*=\s*/, $_, 2);
+		$config{$var} = $value;
+	}
+	close $CONFIG;
+	return %config;
 }
 
 sub err
 {
 	my $err = shift || "UNKNOWNERROR";
 	print $err . "\n";
-        exit(1);
+	exit(1);
 }

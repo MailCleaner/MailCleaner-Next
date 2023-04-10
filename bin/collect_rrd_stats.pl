@@ -1,7 +1,8 @@
-#!/usr/bin/perl -w -I../lib/
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004 Olivier Diserens <olivier@diserens.ch>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -23,11 +24,16 @@
 #   Usage:
 #           collect_rrd_stats.pl 
 
+use v5.36;
 use strict;
-if ($0 =~ m/(\S*)\/collect_rrd_stats\.pl$/) {
-  my $path = $1."/../lib";
-  unshift (@INC, $path);
+use warnings;
+use utf8;
+
+if ($0 =~ m/(\S*)\/\S+.pl$/) {
+    my $path = $1."/../lib";
+    unshift (@INC, $path);
 }
+
 require ReadConfig;
 require DB;
 require RRDStats;
@@ -36,17 +42,17 @@ require RRDArchive;
 my $mode = shift;
 my $m = '';
 if (defined($mode) && $mode eq 'daily') {
- $m = 'daily';
+   $m = 'daily';
 }
 
 my $conf = ReadConfig::getInstance();
 if ($conf->getOption('ISMASTER') !~ /^[Yy]$/) {
-  # not a master, so no more processing
-  exit 0;
+    # not a master, so no more processing
+    exit 0;
 }
 
 if (! -d $conf->getOption('VARDIR')."/spool/rrdtools") {
-  mkdir $conf->getOption('VARDIR')."/spool/rrdtools";
+    mkdir $conf->getOption('VARDIR')."/spool/rrdtools";
 }
 
 $conf->getOption('SRCDIR');
@@ -60,20 +66,20 @@ my @hosts = $slave_db->getListOfHash("SELECT id, hostname FROM slave");
 
 ## main hosts loops
 foreach my $host (@hosts) {
-  my $hostname = $host->{'hostname'};
-  my $host_stats = RRDStats::New($host->{'hostname'});
-  #print "processing: $hostname\n";
+    my $hostname = $host->{'hostname'};
+    my $host_stats = RRDStats::New($host->{'hostname'});
+    #print "processing: $hostname\n";
 
-  for my $stattype (@stats) {
-  	if ($m eq 'daily') {
-  	  $host_stats->createRRD($stattype);
-  	  $host_stats->plot($stattype, 'daily');
-  	} else {
-      $host_stats->createRRD($stattype);
-  	  $host_stats->collect($stattype);
-  	  $host_stats->plot($stattype, '');
-  	}
-   }
+    for my $stattype (@stats) {
+        if ($m eq 'daily') {
+            $host_stats->createRRD($stattype);
+            $host_stats->plot($stattype, 'daily');
+        } else {
+            $host_stats->createRRD($stattype);
+            $host_stats->collect($stattype);
+            $host_stats->plot($stattype, '');
+        }
+    }
 }
 
 
@@ -82,17 +88,17 @@ my %collections;
 my @collections_list = $slave_db->getListOfHash("SELECT id, name, type FROM rrd_stats");
 my %dynamic_oids;
 foreach my $collection (@collections_list) {
-	my $c = RRDArchive::New($collection->{'id'}, $collection->{'name'}, $collection->{'type'});
-	if (keys %dynamic_oids < 1) {
-		$c->getDynamicOids(\%dynamic_oids);
+    my $c = RRDArchive::New($collection->{'id'}, $collection->{'name'}, $collection->{'type'});
+    if (keys %dynamic_oids < 1) {
+        $c->getDynamicOids(\%dynamic_oids);
 
-	}
-	my @elements = $slave_db->getListOfHash("SELECT name, type, function, oid, min, max FROM rrd_stats_element WHERE stats_id=".$collection->{'id'}." order by draw_order");
-	foreach my $element (@elements) {
-		$c->addElement($element);
-	}
-	
-	$c->collect(\%dynamic_oids);
+    }
+    my @elements = $slave_db->getListOfHash("SELECT name, type, function, oid, min, max FROM rrd_stats_element WHERE stats_id=".$collection->{'id'}." order by draw_order");
+    foreach my $element (@elements) {
+        $c->addElement($element);
+    }
+    
+    $c->collect(\%dynamic_oids);
 }
 
 $slave_db->disconnect();

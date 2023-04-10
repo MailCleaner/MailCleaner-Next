@@ -1,7 +1,8 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004 Olivier Diserens <olivier@diserens.ch>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -23,8 +24,16 @@
 #   Usage:
 #           dump_ssh_keys.pl
 
-
+use v5.36;
 use strict;
+use warnings;
+use utf8;
+
+if ($0 =~ m/(\S*)\/\S+.pl$/) {
+    my $path = $1."/../lib";
+    unshift (@INC, $path);
+}
+
 use DBI();
 
 my $DEBUG = 1;
@@ -47,7 +56,8 @@ chown($uid, $gid, $authorized_file);
 
 
 ############################
-sub do_known_hosts {
+sub do_known_hosts
+{
 
 	my $dbh;
 	$dbh = DBI->connect("DBI:mysql:database=mc_config;host=localhost;mysql_socket=$config{VARDIR}/run/mysql_master/mysqld.sock",
@@ -66,7 +76,8 @@ sub do_known_hosts {
 	return;
 }
 
-sub do_authorized_keys {
+sub do_authorized_keys
+{
 	my $dbh;
         $dbh = DBI->connect("DBI:mysql:database=mc_config;host=localhost;mysql_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
                         "mailcleaner", "$config{MYMAILCLEANERPWD}", {RaiseError => 0, PrintError => 0})
@@ -88,22 +99,22 @@ sub do_authorized_keys {
 #############################
 sub readConfig
 {
-        my $configfile = shift;
-        my %config;
-        my ($var, $value);
+    my $configfile = shift;
+    my %config;
+    my ($var, $value);
 
-        open CONFIG, $configfile or die "Cannot open $configfile: $!\n";
-        while (<CONFIG>) {
-                chomp;                  # no newline
-                s/#.*$//;                # no comments
-                s/^\*.*$//;             # no comments
-                s/;.*$//;                # no comments
-                s/^\s+//;               # no leading white
-                s/\s+$//;               # no trailing white
-                next unless length;     # anything left?
-                my ($var, $value) = split(/\s*=\s*/, $_, 2);
-                $config{$var} = $value;
-        }
-        close CONFIG;
-        return %config;
+    open (my $CONFIG, '<', $configfile) or die "Cannot open $configfile: $!\n";
+    while (<$CONFIG>) {
+        chomp;              # no newline
+        s/#.*$//;           # no comments
+        s/^\*.*$//;         # no comments
+        s/;.*$//;           # no comments
+        s/^\s+//;           # no leading white
+        s/\s+$//;           # no trailing white
+        next unless length; # anything left?
+        my ($var, $value) = split(/\s*=\s*/, $_, 2);
+        $config{$var} = $value;
+    }
+    close $CONFIG;
+    return %config;
 }

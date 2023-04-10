@@ -1,10 +1,32 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
+#
+#   Mailcleaner - SMTP Antivirus/Antispam Gateway
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+use v5.36;
 use strict;
+use warnings;
+use utf8;
+
 if ($0 =~ m/(\S*)\/\S+.pl$/) {
-  my $path = $1."/../lib";
-  unshift (@INC, $path);
+    my $path = $1."/../lib";
+    unshift (@INC, $path);
 }
+
 require ReadConfig;
 
 my $conf = ReadConfig::getInstance();
@@ -67,7 +89,8 @@ foreach my $hour (@h) {
   printHourly($hour, 'Prefilters'); 
 }
 
-sub printStat {
+sub printStat
+{
   my $var = shift;
 
   my $av = 0;
@@ -81,7 +104,8 @@ sub printStat {
   print $var.": ".$counts{$var}." ($percent%) => ".$av."s (max:".$max{$var}."s, min:".$min{$var}."s)\n";
 }
 
-sub printHourly {
+sub printHourly
+{
   my $h = shift;
   my $var = shift;
 
@@ -91,10 +115,12 @@ sub printHourly {
   print $h.": ".$hourly_counts{$h}{$var}." => ".$av."s \n"; 
 }
 
-sub hashValueAscendingNum {
+sub hashValueAscendingNum
+{
    $counts{$a} <=> $counts{$b};
 }
 
-sub hashValueDescendingNum {
+sub hashValueDescendingNum
+{
    $counts{$b} <=> $counts{$a};
 }

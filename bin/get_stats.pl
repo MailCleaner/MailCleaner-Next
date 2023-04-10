@@ -1,7 +1,8 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004 Olivier Diserens <olivier@diserens.ch>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -23,11 +24,16 @@
 #   Usage:
 #           get_stats.pl domain|user|_global begindate enddate [-v]
 
+use v5.36;
 use strict;
-if ($0 =~ m/(\S*)\/get_stats\.pl$/) {
-  my $path = $1."/../lib";
-  unshift (@INC, $path);
+use warnings;
+use utf8;
+
+if ($0 =~ m/(\S*)\/\S+.pl$/) {
+    my $path = $1."/../lib";
+    unshift (@INC, $path);
 }
+
 require ReadConfig;
 require Stats;
 
@@ -203,7 +209,8 @@ print "done.\n" if $batchmode;
 exit 0;
 
 #######################
-sub clearStats {
+sub clearStats
+{
   $msgs = 0;
   $spams = 0;
   $highspams = 0;
@@ -217,7 +224,8 @@ sub clearStats {
 }
 
 #######################
-sub processFile {
+sub processFile
+{
   my $file = shift;
 
   my ($cmsgs, $cspams, $chighspams, $cviruses, $cnames, $cothers, $ccleans, $cbytes, $cusers, $cdomains) = Stats::readFile($file);
@@ -239,7 +247,8 @@ sub processFile {
 }
 
 #######################
-sub addDate {
+sub addDate
+{
  my $in = shift;
  my $add = shift;
  
@@ -295,7 +304,8 @@ sub addDate {
 }
 
 #######################
-sub returnStats {
+sub returnStats
+{
   my $dir = shift;
   if (! $verbose) {
     print "$msgs|$spams|$highspams|$viruses|$names|$others|$cleans|$bytes|$users|$domains\n";
@@ -312,7 +322,8 @@ sub returnStats {
 }
 
 #######################
-sub addGlobalStats {
+sub addGlobalStats
+{
   $global{'msgs'} += $msgs;
   $global{'spams'} += $spams;
   $global{'highspams'} += $highspams;
@@ -328,7 +339,8 @@ sub addGlobalStats {
 }
 
 #######################
-sub badUsage {
+sub badUsage
+{
   my $bad = shift;
   print "Bad Usage: wrong paremeter: $bad\n";
   print "    Usage: get_stats.pl what begindate enddate\n";

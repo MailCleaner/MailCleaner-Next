@@ -1,7 +1,8 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004 Olivier Diserens <olivier@diserens.ch>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -22,11 +23,16 @@
 #
 #   Requires : libconfig-simple-perl, libxml-simple-perl, libstring-random-perl
 
+use v5.36;
 use strict;
+use warnings;
+use utf8;
+
 if ($0 =~ m/(\S*)\/\S+.pl$/) {
-  my $path = $1."/../lib";
-  unshift (@INC, $path);
+    my $path = $1."/../lib";
+    unshift (@INC, $path);
 }
+
 require ReadConfig;
 use LWP::UserAgent;
 use XML::Simple;
@@ -36,7 +42,8 @@ use Data::Dumper;
 use String::Random;
 use Getopt::Std;
 
-sub usage() {
+sub usage
+{
   print STDERR << "EOF";
 usage: $0 [-rh]
 
@@ -94,7 +101,8 @@ foreach my $service (keys %services) {
 
 exit 0;
 
-sub checkHTTP {
+sub checkHTTP
+{
   my $params = shift;
 
   my $timeout = 10;
@@ -137,7 +145,8 @@ sub checkHTTP {
   return %return;
 }
 
-sub checkDNS {
+sub checkDNS
+{
   my %return = ('status' => 0, 'message' => 'no check done');
 
   my $random = new String::Random;

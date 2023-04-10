@@ -1,8 +1,8 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004 Olivier Diserens <olivier@diserens.ch>
-#   Copyright (C) 2021 John Mertz <git@john.me.tz>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -26,7 +26,16 @@
 #   where msg_id is the message id
 #   and destination is the email address of the original recipient
 
+use v5.36;
 use strict;
+use warnings;
+use utf8;
+
+if ($0 =~ m/(\S*)\/\S+.pl$/) {
+    my $path = $1."/../lib";
+    unshift (@INC, $path);
+}
+
 use DBI();
 use Net::SMTP;
 require MIME::Lite;
@@ -65,7 +74,8 @@ exit 0;
 
 
 ##########################################
-sub get_system_config {
+sub get_system_config
+{
 
 	my %default = (days_to_keep_spams => 30, sysadmin => 'support@localhost', summary_subject => 'Mailcleaner analysis request', summary_from => 'support@localhost', servername => 'localhost', analyse_to => 'analyse@localhost');
         
@@ -91,7 +101,8 @@ sub get_system_config {
 }
 
 ##########################################
-sub get_domain_config {
+sub get_domain_config
+{
   my $d = shift;
   my %default = (language => 'en', support_email => '');
 
@@ -117,7 +128,8 @@ sub get_domain_config {
 }
 
 ##########################################
-sub send_message {
+sub send_message
+{
 	my $msg_file = shift;
 	my $for = $system_conf{'analyse_to'};
 	#if ($domain_conf{'support_email'} =~ /^(\S+)\@(\S+)$/) { $for = $domain_conf{'support_email'};};
@@ -154,23 +166,23 @@ sub send_message {
 
 ##########################################
 sub readConfig
-{       # Reads configuration file given as argument.
-        my $configfile = shift;
-        my %config;
-        my ($var, $value);
+{
+    my $configfile = shift;
+    my %config;
+    my ($var, $value);
 
-        open CONFIG, $configfile or die "Cannot open $configfile: $!\n";
-        while (<CONFIG>) {
-                chomp;                  # no newline
-                s/#.*$//;                # no comments
-                s/^\*.*$//;             # no comments
-                s/;.*$//;                # no comments
-                s/^\s+//;               # no leading white
-                s/\s+$//;               # no trailing white
-                next unless length;     # anything left?
-                my ($var, $value) = split(/\s*=\s*/, $_, 2);
-                $config{$var} = $value;
-        }
-        close CONFIG;
-        return %config;
+    open (my $CONFIG, '<', $configfile) or die "Cannot open $configfile: $!\n";
+    while (<$CONFIG>) {
+        chomp;              # no newline
+        s/#.*$//;           # no comments
+        s/^\*.*$//;         # no comments
+        s/;.*$//;           # no comments
+        s/^\s+//;           # no leading white
+        s/\s+$//;           # no trailing white
+        next unless length; # anything left?
+        my ($var, $value) = split(/\s*=\s*/, $_, 2);
+        $config{$var} = $value;
+    }
+    close $CONFIG;
+    return %config;
 }

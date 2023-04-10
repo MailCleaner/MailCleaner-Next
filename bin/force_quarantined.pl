@@ -1,7 +1,8 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004 Olivier Diserens <olivier@diserens.ch>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -28,7 +29,16 @@
 #   The whole string (date/msg_id) will be included in the warning text file
 #   attached to the original messagein place of the quarantined content.
 
+use v5.36;
 use strict;
+use warnings;
+use utf8;
+
+if ($0 =~ m/(\S*)\/\S+.pl$/) {
+    my $path = $1."/../lib";
+    unshift (@INC, $path);
+}
+
 use File::Copy;
 
 my %config = readConfig("/etc/mailcleaner.conf");
@@ -145,23 +155,23 @@ sub mark_forced
 
 ##########################################
 sub readConfig
-{       # Reads configuration file given as argument.
-        my $configfile = shift;
-        my %config;
-        my ($var, $value);
+{
+    my $configfile = shift;
+    my %config;
+    my ($var, $value);
 
-        open CONFIG, $configfile or die "Cannot open $configfile: $!\n";
-        while (<CONFIG>) {
-                chomp;                  # no newline
-                s/#.*$//;                # no comments
-                s/^\*.*$//;             # no comments
-                s/;.*$//;                # no comments
-                s/^\s+//;               # no leading white
-                s/\s+$//;               # no trailing white
-                next unless length;     # anything left?
-                my ($var, $value) = split(/\s*=\s*/, $_, 2);
-                $config{$var} = $value;
-        }
-        close CONFIG;
-        return %config;
+    open (my $CONFIG, '<', $configfile) or die "Cannot open $configfile: $!\n";
+    while (<$CONFIG>) {
+        chomp;              # no newline
+        s/#.*$//;           # no comments
+        s/^\*.*$//;         # no comments
+        s/;.*$//;           # no comments
+        s/^\s+//;           # no leading white
+        s/\s+$//;           # no trailing white
+        next unless length; # anything left?
+        my ($var, $value) = split(/\s*=\s*/, $_, 2);
+        $config{$var} = $value;
+    }
+    close $CONFIG;
+    return %config;
 }

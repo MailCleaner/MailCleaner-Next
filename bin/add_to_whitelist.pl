@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2018 MailCleaner <support@mailcleaner.net>
@@ -24,11 +24,16 @@
 #   Usage:
 #           add_to_whitelist.pl msg_dest msg_sender
 
+use v5.36;
 use strict;
+use warnings;
+use utf8;
+
 if ($0 =~ m/(\S*)\/\S+.pl$/) {
-  my $path = $1."/../lib";
-  unshift (@INC, $path);
+    my $path = $1."/../lib";
+    unshift (@INC, $path);
 }
+
 require DB;
 
 my %config = readConfig("/etc/mailcleaner.conf");
@@ -78,29 +83,29 @@ sub isValidEmail
 ##########################################
 sub readConfig
 {       # Reads configuration file given as argument.
-        my $configfile = shift;
-        my %config;
-        my ($var, $value);
+    my $configfile = shift;
+    my %config;
+    my ($var, $value);
 
-        open CONFIG, $configfile || err("CONFIGREADFAIL");
-        while (<CONFIG>) {
-                chomp;                  # no newline
-                s/#.*$//;                # no comments
-                s/^\*.*$//;             # no comments
-                s/;.*$//;                # no comments
-                s/^\s+//;               # no leading white
-                s/\s+$//;               # no trailing white
-                next unless length;     # anything left?
-                my ($var, $value) = split(/\s*=\s*/, $_, 2);
-                $config{$var} = $value;
-        }
-        close CONFIG;
-        return %config;
+    open(my $CONFIG, '<', $configfile) || err("CONFIGREADFAIL");
+    while (<$CONFIG>) {
+        chomp;              # no newline
+        s/#.*$//;           # no comments
+        s/^\*.*$//;         # no comments
+        s/;.*$//;           # no comments
+        s/^\s+//;           # no leading white
+        s/\s+$//;           # no trailing white
+        next unless length; # anything left?
+        my ($var, $value) = split(/\s*=\s*/, $_, 2);
+        $config{$var} = $value;
+    }
+    close $CONFIG;
+    return %config;
 }
 
 sub err
 {
 	my $err = shift || "UNKNOWNERROR";
 	print $err . "\n";
-        exit(1);
+    exit(1);
 }
