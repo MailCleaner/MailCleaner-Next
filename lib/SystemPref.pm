@@ -44,7 +44,7 @@ sub getInstance {
 sub create {
   my $name = shift;
   my %prefs;
-  
+
   my $conf = ReadConfig::getInstance();
   my $preffile = $conf->getOption('VARDIR')."/spool/mailcleaner/prefs/_global/prefs.list";
   my $prefdir = $conf->getOption('VARDIR')."/spool/mailcleaner/prefs/_global/";
@@ -54,7 +54,7 @@ sub create {
          preffile => $preffile,
          prefs => \%prefs
          };
-         
+
   bless $this, "SystemPref";
   return $this;
 }
@@ -63,7 +63,7 @@ sub getPref {
   my $this = shift;
   my $pref = shift;
   my $default = shift;
-  
+
   if (!defined($this->{prefs}) || !defined($this->{prefs}->{id})) {	
  #-#   my $pref_daemon = PrefDaemon::create();
  #-#   ## get system prefs
@@ -85,7 +85,7 @@ sub getPref {
     }
     ## fallback loading
     $this->loadPrefs();
- 
+
   }
 
   if (defined($this->{prefs}->{$pref})) {
@@ -103,14 +103,14 @@ sub loadPrefs {
  if ( ! -f $this->{preffile}) {
     return 0;
   }
-  
+
   if (! open PREFFILE, $this->{preffile}) {
    return 0;
   }
   while (<PREFFILE>) {
     if (/^(\S+)\s+(.*)$/) {
       $this->{prefs}->{$1} = $2;
-    
+
     }
   }
   close PREFFILE;
@@ -119,12 +119,12 @@ sub loadPrefs {
 
 sub dumpPrefs {
   my $this = shift;
-  
+
   my $slave_db = DB::connect('slave', 'mc_config');
   my %prefs = $slave_db->getHashRow("SELECT * FROM antispam");
   my %conf = $slave_db->getHashRow("SELECT use_ssl, servername FROM httpd_config");
   my %sysconf = $slave_db->getHashRow("SELECT summary_from, analyse_to FROM system_conf");
-   
+
   if (! -d $this->{prefdir} && ! mkdir($this->{prefdir})) {
    	 print "CANNOTCREATESYSTEMPREFDIR\n";
      return 0;
@@ -132,7 +132,7 @@ sub dumpPrefs {
   my $uid = getpwnam( 'mailcleaner' );
   my $gid = getgrnam( 'mailcleaner' );
   chown $uid, $gid, $this->{prefdir};
-   
+
   if ( ! open PREFFILE, ">".$this->{preffile}) {
     print "CANNOTWRITESYSTEMPREF\n";
     return 0;

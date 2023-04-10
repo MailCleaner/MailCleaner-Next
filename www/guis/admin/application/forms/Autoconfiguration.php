@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Mentor Reka
  * @copyright 2017, Mentor Reka
- * 
+ *
  * Auto-configuration settings form
  */
 
@@ -26,9 +26,9 @@ class Default_Form_Autoconfiguration extends ZendX_JQuery_Form
 		$layout = Zend_Layout::getMvcInstance();
 	    	$view=$layout->getView();
     	
-		$this->setMethod('post'); 
+		$this->setMethod('post');
 		$this->setAttrib('id', 'autoconfiguration_form');
-        
+
 		require_once('MailCleaner/Config.php');
 	        $config = new MailCleaner_Config();
 		$autoconf_enabled = file_exists($config->getOption('VARDIR').$this->MC_AUTOCONF_TAG_FILE);
@@ -39,7 +39,7 @@ class Default_Form_Autoconfiguration extends ZendX_JQuery_Form
 		]);
 	   	$autoconf->setValue($autoconf_enabled);
 		$this->addElement($autoconf);
-	   
+	
 		$submit = new Zend_Form_Element_Submit('submit', [
 			'label'    => $t->_('Submit')
 		]);

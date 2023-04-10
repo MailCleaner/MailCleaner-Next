@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * NTP settings
  */
 
@@ -15,7 +15,7 @@ class Default_Model_NTPSettings
 	
 	public function __construct() {
 	}
-    
+
 	public function load() {
 		if (file_exists($this->_configfile)) {
 			$content = file($this->_configfile);

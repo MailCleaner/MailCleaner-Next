@@ -78,11 +78,11 @@ sub get_system_config
 {
 
 	my %default = (days_to_keep_spams => 30, sysadmin => 'support@localhost', summary_subject => 'Mailcleaner analysis request', summary_from => 'support@localhost', servername => 'localhost', analyse_to => 'analyse@localhost');
-        
+
         my $dbh = DBI->connect("DBI:mysql:database=mc_config;mysql_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
                                 "mailcleaner", "$config{MYMAILCLEANERPWD}", {RaiseError => 0, PrintError => 0})
                                         or die "cannot connect to database | get_system_config() |";
-        
+
         my $sth =  $dbh->prepare("SELECT s.days_to_keep_spams, s.sysadmin, s.summary_subject, s.summary_from, h.servername, s.analyse_to, s.falsepos_to FROM system_conf s, httpd_config h")
                                                 or die "cannot prepare query | get_system_config() |";
         $sth->execute() or die "cannot execute query | get_system_config() |";
@@ -96,7 +96,7 @@ sub get_system_config
         $sth->finish();
         %default = (days_to_keep_spams => $ref->{'days_to_keep_spams'}, sysadmin => $ref->{'sysadmin'}, summary_subject => $ref->{'summary_subject'}, summary_from => $ref->{'summary_from'}, servername => $ref->{'servername'}, analyse_to => $ref->{'falsepos_to'});
         $dbh->disconnect();
-        
+
         return %default;	
 }
 

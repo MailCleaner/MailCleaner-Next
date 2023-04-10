@@ -46,7 +46,7 @@ our $VERSION    = 1.0;
 sub create {
   my ($directory, $filename,$template,$destination_h,$language,$type ) = @_;
   my ($path, %subtemplates, $lang, $to, $from, %replacements, %headers, $sup_part, %values, %attachedpicts);
-  
+
   my $email = ${$destination_h};
   return if (!$email || !$email->can('getPref'));
   if (!defined($language)) {
@@ -68,7 +68,7 @@ sub create {
   if ($type !~ /(html|text)/) {
     $type = 'html';
   }
-  
+
   $to = $email->getAddress();
   my $sysconf = SystemPref::getInstance();
   $from = $sysconf->getPref('summary_from');
@@ -98,7 +98,7 @@ sub create {
          %values => (),
          %attachedpicts => ()
          };
-         
+
   bless $this, "MailTemplate";
 
   # first read main text part (also included in html version)
@@ -111,13 +111,13 @@ sub create {
   	  	chomp($file);
   	  	next if ($file !~ /\.(txt|html)$/);
   		$this->preParseTemplate($path."_parts/".$file);
-  	  } 
+  	  }
   	close(DIR);
   	}
   } else {
   	$this->{type} = 'text';
   }
-  
+
   #foreach my $tmpl (keys %{$this->{subtemplates}}) {
   #	print "Template: $tmpl\n=============\n".$this->{subtemplates}{$tmpl}."=============\n";
   #}
@@ -165,7 +165,7 @@ sub preParseTemplate {
   	  $this->{subtemplates}{$in_template} .= $line;
   	  next;
   	}
-  }  
+  }
   close FILE;
   return 1;
 }
@@ -178,7 +178,7 @@ sub preParseTemplate {
 sub getSubTemplate {
   my $this = shift;	
   my $name = shift;
-  
+
   if (defined($this->{subtemplates}{$name})) {
   	return $this->{subtemplates}{$name};
   }
@@ -194,7 +194,7 @@ sub setReplacements {
   my $this = shift;
   my $replace_h = shift;
   my %replace = %{$replace_h};
-  
+
   foreach my $tag (keys %replace) {
   	$this->{replacements}{$tag} = $replace{$tag};
   }
@@ -204,7 +204,7 @@ sub setReplacements {
 sub setDestination {
   my $this = shift;
   my $destination = shift;
-  
+
   $this->{to} = $destination;
   return 1;
 }
@@ -212,7 +212,7 @@ sub setDestination {
 sub setLanguage {
   my $this = shift;
   my $lang = shift;
-  
+
   $this->{language} = $lang;
   return 1;
 }
@@ -236,17 +236,17 @@ sub send {
   my $retries = shift;
   # set retries to 1 if it is not defined or inferior to 1
   $retries = 1 if ( (! defined($retries)) || ($retries < 1) );
-  
+
   my $to = $this->{to};
   if (defined($dest) && $dest =~ /^\S+\@\S+$/) {
   	$to = $dest;
   }
-  
+
 #  require MIME::Lite;
   require MIME::Entity;
 #  MIME::Lite->send("smtp", 'localhost:2525', Debug => 0, Timeout => 30);
 
-    
+
   ## first add the main text part
   my $subject = "";
   if (defined($this->{headers}{Subject})) {
@@ -257,11 +257,11 @@ sub send {
   my $mime_msg;
   my $txt = "";
   my %headers;
-  
+
   if ($this->{type} eq 'text') {
-     
+
     if ($this->{sup_part} eq "") {
-  
+
   	  $txt = $main_text_part;
           $txt = encode("utf8", $txt);
           $txt = encode_qp($txt);
@@ -291,7 +291,7 @@ sub send {
                        Filename => 'message.txt',
                        Data => $this->{sup_part}
 	            );
-       }   
+       }
        $mime_msg->replace('X-Mailer', 'MailCleaner');
        $txt = $mime_msg->stringify();
      }
@@ -302,7 +302,7 @@ sub send {
        Subject =>$subject,
        Type    =>'multipart/related',
     ) or return 0;
-    
+
     my @parts = $this->getUseableParts();
     foreach my $part (@parts) {
       if ($part =~ /\.(txt|text)$/i) {
@@ -351,14 +351,14 @@ sub send {
 		Filename => 'message.txt',
         Data => $this->{sup_part}
 	   )
-    } 
+    }
 
-    } 
-    
+    }
+
     $mime_msg->replace('X-Mailer', 'MailCleaner');
     $txt = $mime_msg->stringify();
   }
- 
+
   my $smtp;
   while ($retries > 0) {
     last if ($smtp = Net::SMTP->new('localhost:2525'));
@@ -388,7 +388,7 @@ sub send {
   foreach my $header (keys %headers) {
     $smtp->datasend("$header: ".$headers{$header}."\n");
   }
- 
+
   $smtp->datasend($txt);
   $smtp->dataend();
   $err = $smtp->code();
@@ -401,7 +401,7 @@ sub send {
   if ($returnmessage =~ m/id=(\S+)/) {
       $id = $1;
   }
-  
+
   return $id;
 }
 
@@ -411,7 +411,7 @@ sub send {
 ###
 sub getMainTextPart {
   my $this = shift;
-  
+
   my $file = $this->{path}.".txt";
   return $this->parseTemplate($file);
 }
@@ -419,7 +419,7 @@ sub getMainTextPart {
 sub getDefaultValue {
   my $this = shift;
   my $value = shift;
-  
+
   if (defined($this->{values}{$value})) {
   	return $this->{values}{$value};
   }
@@ -431,8 +431,8 @@ sub getDefaultValue {
 ###
 sub getUseableParts {
   my $this = shift;
-  
-  my @ret = (); 
+
+  my @ret = ();
   # first add html parts
   if ( opendir(DIR, $this->{path}."_parts")) {
   	while (defined(my $file = readdir(DIR))) {
@@ -458,7 +458,7 @@ sub getUseableParts {
   	 next if ($file !~ /\.(gif|jpg|jpeg|png)$/i);
   	 #print "pushing: $file\n";
   	 push @ret, $file;
-  	} 
+  	}
     close(DIR);
   }
   return @ret;
@@ -472,9 +472,9 @@ sub getUseableParts {
 sub parseTemplate {
   my $this = shift;
   my $template = shift;
-  
+
   return "" if (!open(FILE, $template));
-  
+
   my $ret;
   my $in_hidden = 0;
   my $in_headers = 1;
@@ -504,13 +504,13 @@ sub parseTemplate {
       $ret .= $line;
   	}
   }
-  
+
   ## do the replacements
-  
+
   ## replace well known tags
   my $sys = SystemPref::getInstance();
   my $conf = ReadConfig::getInstance();
-  
+
   my $http = "http://";
   if ( $sys->getPref('use_ssl') =~ /true/i ) {
 		$http = "https://";
@@ -535,7 +535,7 @@ sub parseTemplate {
   	  $ret =~ s/$tag2/$this->{replacements}{$tag}/g;
   	}
   }
-  
+
   foreach my $tag ( keys %wellknown ) {
     $ret =~ s/$tag/$wellknown{$tag}/g;
     if ($tag =~ /\_\_(\S+)\_\_/) {
@@ -543,7 +543,7 @@ sub parseTemplate {
   	  $ret =~ s/$tag2/$wellknown{$tag}/g;
   	}
   }
-  
+
   my @lines = split('\n', $ret);
   foreach my $rline (@lines) {
    while ($rline =~ /cid:(\S+.(jpe?g|gif|png))(.*)/ ) {
@@ -551,7 +551,7 @@ sub parseTemplate {
        $this->{attachedpicts}{$1} = 1;
    }
   }
-      
+
   return $ret;
 }
 

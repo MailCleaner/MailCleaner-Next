@@ -6,7 +6,7 @@
  * @copyright 2006, Olivier Diserens
  * @abstract This is the admin logout page controller
  */
- 
+
 /**
  * requires admin session
  */

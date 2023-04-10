@@ -117,7 +117,7 @@ foreach my $stage (@eximids) {
 	}
 	%exim_conf = get_exim_config($stage) or fatal_error("NOEXIMCONFIGURATIONFOUND", "no exim configuration found for stage $stage");
 
-	# Generate the included files and the associated customized files 
+	# Generate the included files and the associated customized files
 	my $custom = 0;
 	while ( $custom != 2) {
 		my $dir;
@@ -954,7 +954,7 @@ sub get_exim_config{
 }
 
 #############################
-sub dump_ignore_list 
+sub dump_ignore_list
 {
     my $ignorehosts = shift;
     my $filename = shift;
@@ -1027,17 +1027,17 @@ sub dump_lists_ip_domain
     foreach my $type (@types) {
         my @row = $db->getListOfHash("SELECT sender, recipient FROM wwlists where type = '$type' order by recipient");
         my $array_i = scalar @row;
-        
+
 	    next if ( ! $array_i );
-        
+
         my $last_domain = '';
         my $sender_list = '';
         my $i=0;
-        
+
         foreach my $line (@row) {
             my $current_domain = $$line{'recipient'};
             $last_domain = $$line{'recipient'}      if ($last_domain eq '');
-                
+
             if ( $current_domain ne $last_domain ) {
         		print_ip_domain_rule($sender_list, $last_domain, $type);
                 $sender_list = $$line{'sender'} .' ; ';
@@ -1048,7 +1048,7 @@ sub dump_lists_ip_domain
             $i++;
         }
         print_ip_domain_rule($sender_list, $last_domain, $type);
-    } 
+    }
     return 1;
 }
 

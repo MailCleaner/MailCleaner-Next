@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Firewall access
  */
 
@@ -72,12 +72,12 @@ class Default_Model_FirewallRule
         $this->getMapper()->find($id, $this);
         return $this;
     }
-    
+
     public function findByService($service) {
     	$this->getMapper()->findByService($service, $this);
     	return $this;
     }
-   
+
     public function save()
     {
         return $this->getMapper()->save($this);

@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Pending alias request
  */
 
@@ -17,7 +17,7 @@ class Default_Model_PendingAlias
 	  'alias' => '',
 	  'user' => 0,
 	];
-    
+
 	protected $_mapper;
 	
 	public function setParam($param, $value) {
@@ -67,19 +67,19 @@ class Default_Model_PendingAlias
         $this->getMapper()->find($address, $this);
         return $this;
     }
-        
+
     public function fetchAll($params = NULL) {
     	return $this->getMapper()->fetchAll($params);
     }
-      
+
     public function save()
     {	
         return $this->getMapper()->save($this);
     }
-    
+
     public function delete()
     {
     	return $this->getMapper()->delete($this);
     }
-    
+
 }

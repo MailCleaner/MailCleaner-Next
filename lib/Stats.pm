@@ -33,7 +33,7 @@ sub readFile {
   if (! -f $file) {
     return (0,0,0,0,0,0,0,0,0,0);
   }
-  
+
   my $c_msgs = 0;
   my $c_spams = 0;
   my $c_highspams = 0;
@@ -44,9 +44,9 @@ sub readFile {
   my $c_cleans = 0;
   my $c_users = 0;
   my $c_domains = 0;
-  
+
   if (open COUNTFILE, $file) {
-    
+
    while (<COUNTFILE>) {
         if (/^MSGS\ (\d+)$/) {
            $c_msgs = $1;

@@ -193,7 +193,7 @@ class Net_Socket extends PEAR
             if ($errno === 0 && !strlen($errstr)) {
                 $errstr = '';
                 if (isset($old_track_errors)) {
-                    $errstr = $php_errormsg ?: '';  
+                    $errstr = $php_errormsg ?: '';
                     @ini_set('track_errors', $old_track_errors);
                 } else {
                     $lastError = error_get_last();

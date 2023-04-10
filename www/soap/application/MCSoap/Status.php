@@ -6,7 +6,7 @@
  * @copyright 2009, Olivier Diserens
  */
 
-class MCSoap_Status 
+class MCSoap_Status
 {
 	
   static private function getMcStatusElement($element) {
@@ -50,7 +50,7 @@ class MCSoap_Status
 		foreach (preg_split("/\n/", $cmdres) as $line ) {
 			if (preg_match('/^(\/\S+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)%\s+(\S+)/', $line, $matches)) {
 				$data[] = [
-				       'dev' => $matches[1], 
+				       'dev' => $matches[1],
 				       'size' => $matches[2],
 				       'used' => $matches[3],
 				       'free' => $matches[4],
@@ -121,7 +121,7 @@ class MCSoap_Status
 		$cmdres = `$cmd`;
 		$data['cmd'] = $cmdres;
 		$data['reg'] = $reg;
-                
+
 		if (preg_match('/'.$reg.'/', $cmdres, $matches)) {
 			$i = 1;
 			foreach ($order as $key) {
@@ -131,18 +131,18 @@ class MCSoap_Status
 		return $data;
 	}
 	return $ret;
-  
+
   }
-  
+
   /**
    * This function will gather status
-   * 
+   *
    * @param  array
    * @return array
    */
    static public function Status_getStatusValues($params) {
    	  $res = ['data' => []];
-   	  
+   	
    	  $data = [];
    	  foreach ($params as $param) {
    	  	$data[$param] = MCSoap_Status::getMcStatusElement($param);
@@ -150,7 +150,7 @@ class MCSoap_Status
    	  $res['data'] = $data;
    	  return $res;
    }
-    
+
   /**
    * This function simply answer with the question
    *
@@ -162,7 +162,7 @@ class MCSoap_Status
 	
    /**
     * This function return the current load of the system (*100)
-    * 
+    *
     * @return float
     */
 	static public function Status_getSystemLoad() {
@@ -171,7 +171,7 @@ class MCSoap_Status
 	
    /**
     * This function return the current hardware status
-    * 
+    *
     * @return array
     */
 	static public function Status_getHardwareHealth() {
@@ -182,7 +182,7 @@ class MCSoap_Status
 	
 	/**
 	 * This function will fetch today's stats
-	 * 
+	 *
 	 * @return array
 	 */
 	static public function Status_getTodayStats($params) {
@@ -194,7 +194,7 @@ class MCSoap_Status
 			'spams' => 0,
 			'pspam' => 0,
 			'viruses' => 0,
-			'pvirus' => 0, 
+			'pvirus' => 0,
 		        'contents' => 0,
 			'pcontent' => 0,
 			'cleans' => 0,
@@ -215,7 +215,7 @@ class MCSoap_Status
 		];
 		
 		require_once('MailCleaner/Config.php');
-    
+
         $config = new MailCleaner_Config();
         $cmd = $config->getOption('SRCDIR')."/bin/get_today_stats.pl -A";
         $cmdres = `$cmd`;
@@ -238,10 +238,10 @@ class MCSoap_Status
      */
     static public function Status_getSpool($params) {
        $ret = ['message' => 'OK','msgs' => [], 'nbmsgs' => 0];
-       
+
        require_once('MailCleaner/Config.php');
        $config = new MailCleaner_Config();
-       
+
        $available_spools = [1, 2, 4];
        $spool = 1;
        if (isset($params['spool']) && in_[$params['spool'], $available_spools]) {
@@ -249,7 +249,7 @@ class MCSoap_Status
        }
        $cmd = "/opt/exim4/bin/exipick --spool ".$config->getOption('VARDIR')."/spool/exim_stage".$spool." -flatq --show-vars deliver_freeze,dont_deliver,first_delivery,warning_count,shown_message_size,message_age";
        $cmd_res = `$cmd`;
-       
+
        $limit = 200;
        if (isset($params['limit']) && is_numeric($params['limit'])) {
        	 $limit = $params['limit'];
@@ -258,15 +258,15 @@ class MCSoap_Status
        if (isset($params['offset']) && is_numeric($params['offset'])) {
          $offset = $params['offset'];
        }
-            
+
        $totallines = preg_split('/[\n\r]+/', $cmd_res, -1, PREG_SPLIT_NO_EMPTY);
        $ret['nbmsgs'] = count($totallines);
        $ret['page'] = floor($offset / $limit) + 1;
        $ret['pages'] = ceil($ret['nbmsgs'] / $limit);
-       
+
        $lines = array_splice($totallines, $offset, $limit);
        unset($totallines);
-       
+
        foreach ($lines as $line) {
        	 if (preg_match('/\s*(\d+[mhdy])\s+(\S+)\s+(\S+)\s+(<[^>]*>)\s+(.*)/', $line, $m)) {
        	 	$message = [
@@ -304,14 +304,14 @@ class MCSoap_Status
             foreach ($tos_lines as $line) {
               array_push($message['to'], utf8_encode($line));
             }
-       	    
+       	
        	    ## check if message is being forced
        	    $pscmd = "/bin/ps aux | grep ".$message['id']." | grep -v grep";
        	    $psres = `$pscmd`;
        	    if ($psres != '') {
        	    	$message['sending'] = 1;
        	    }
-       	    
+       	
        	    ## got msglogs
        	    $msglogpath = $config->getOption('VARDIR')."/spool/exim_stage".$spool."/msglog";
        	    $msglogfile = '';
@@ -347,8 +347,8 @@ class MCSoap_Status
        }
        return $ret;
     }
-    
-    
+
+
     /**
      * This function will delete messages in spool
      *
@@ -371,7 +371,7 @@ class MCSoap_Status
         if (isset($params['spool']) && in_[$params['spool'], $available_spools]) {
           $spool = $params['spool'];
         }
-        
+
         require_once('MailCleaner/Config.php');
         $config = new MailCleaner_Config();
         require_once('Zend/Validate/Abstract.php');
@@ -387,7 +387,7 @@ class MCSoap_Status
         }
         return $ret;
     }
-    
+
     /**
      * This function will try to send messages in spool
      *
@@ -410,7 +410,7 @@ class MCSoap_Status
         if (isset($params['spool']) && in_[$params['spool'], $available_spools]) {
           $spool = $params['spool'];
         }
-        
+
         require_once('MailCleaner/Config.php');
         $config = new MailCleaner_Config();
         require_once('Zend/Validate/Abstract.php');
@@ -426,7 +426,7 @@ class MCSoap_Status
         }
         return $ret;
     }
-    
+
     /**
      * This function will return all informational messages of the host
      *
@@ -441,7 +441,7 @@ class MCSoap_Status
     	## we need to check here:
     	# - registration
     	# - services restart
-    
+
     	require_once('InformationalMessage/Registration.php');
     	$reg = new Default_Model_InformationalMessage_Registration();
     	$reg->check();

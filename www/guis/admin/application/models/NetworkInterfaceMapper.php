@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Network interface mapper
  */
 
@@ -52,7 +52,7 @@ class Default_Model_NetworkInterfaceMapper
 
             	if (preg_match('/^\s*(\S+)\s+(.*)/', $line, $matches) && $in_virtual == '') {
             		$key = $matches[1];
-            	    $interface->setParam($key, $matches[2]);   
+            	    $interface->setParam($key, $matches[2]);
             	}
             }
     	}
@@ -74,7 +74,7 @@ class Default_Model_NetworkInterfaceMapper
     		}
     	}
     }
-    
+
     public function fetchAll() {
         $entries = [];
         ## first check for configured interfaces
@@ -93,9 +93,9 @@ class Default_Model_NetworkInterfaceMapper
           		}
           	}
           }
-          
+
         }
-        
+
         ## next check for physical interfaces not configured
         $proc_test_physical_file = '/proc/sys/net/ipv4/neigh/__INTERFACE__';
         $physical_name = 'eth__ID__';
@@ -110,10 +110,10 @@ class Default_Model_NetworkInterfaceMapper
         		}
         	}
         }
-        ksort($entries);        
+        ksort($entries);
         return $entries;
     }
-    
+
     public function save($model) {
     	
     	if (Zend_Registry::get('restrictions')->isRestricted('NetworkInterface', 'submit')) {

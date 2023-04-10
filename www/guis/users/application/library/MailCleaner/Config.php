@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * MailCleaner configuration fetcher
  */
 
@@ -46,7 +46,7 @@ class MailCleaner_Config
 	    }
 	    return null;
 	}
-	 
+	
 	public function getUserGUIAvailableLanguages() {
 		return ['en' => 'English', 'fr' => 'French', 'de' => 'German', 'es' => 'Spanish'];
 	}

@@ -1,10 +1,10 @@
-<?php 
+<?php
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Spamc form
  */
 
@@ -36,7 +36,7 @@ class Default_Form_AntiSpam_Spamc extends Default_Form_AntiSpam_Default
 		
     	$rbllist = new Default_Model_DnsLists();
 		$rbllist->load();
-        
+
 		foreach ($rbllist->getRBLs('IPRBL DNSRBL IPRWL URIRBL') as $rbl) {
 			$userbl = new Zend_Form_Element_Checkbox('use_rbl_'.$rbl['name'], [
 			        'label' => $rbl['dnsname'],
@@ -50,7 +50,7 @@ class Default_Form_AntiSpam_Spamc extends Default_Form_AntiSpam_Default
 	        $this->_rbl_checks[] = $userbl;
 	        if ($rbl['type'] == 'IPRBL' || $rbl['type'] == 'DNSRBL' || $rbl['type'] == 'IPRWL') {    	
                     $this->_ip_rbls[] = $userbl;
-	        }       
+	        }
 	        if ($rbl['type'] == 'URIRBL') {        	
  	            $this->_uri_rbls[] = $userbl;
 	        }
@@ -69,7 +69,7 @@ class Default_Form_AntiSpam_Spamc extends Default_Form_AntiSpam_Default
 		$titles = [
 			'Enable SpamAssassin Bayesian',
 			'',
-			'This plugin checks for specific keywords in image/gif, image/jpeg or image/png attachments, using gocr (an optical character recognition program). ', 
+			'This plugin checks for specific keywords in image/gif, image/jpeg or image/png attachments, using gocr (an optical character recognition program). ',
 			'Checks for specific  properties like format/size for image detection',
 			'This plugin helps detected spam using attached PDF files',
 			'Botnet looks for possible botnet sources of email by checking various DNS values',
@@ -119,7 +119,7 @@ class Default_Form_AntiSpam_Spamc extends Default_Form_AntiSpam_Default
             }
 	        $this->addElement($el_timeout);
 	    }
-	    
+	
 	    if (! $as->getParam('use_rbls')) {
 	    	$this->_rbls_class = 'hidden';
 	    }

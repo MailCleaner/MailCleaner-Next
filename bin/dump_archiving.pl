@@ -22,7 +22,7 @@
 #   This script will dump the domains configuration
 #
 #   Usage:
-#           dump_domains.pl 
+#           dump_domains.pl
 
 use v5.36;
 use strict;
@@ -96,7 +96,7 @@ sub dumpArchivedDomains
                 }
             #} else {
                 # print "user ".$e->{'address'}." not added as domain: $edom already fully archived\n";
-            } 
+            }
         }
     }
 }
@@ -137,7 +137,7 @@ sub dumpCopyto
                 }
             #} else {
                 # print "user ".$e->{'address'}." not added as domain: $edom already fully archived\n";
-            } 
+            }
         }
     }
 }

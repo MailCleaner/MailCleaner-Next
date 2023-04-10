@@ -4,12 +4,12 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
- * 
+ *
  * This is the controller for the parameters page
- * 
- * @todo  use Form object 
+ *
+ * @todo  use Form object
  */
- 
+
 /**
  * require valid session
  */

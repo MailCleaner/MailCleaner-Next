@@ -53,7 +53,7 @@ done
 
 CONFFILE=/etc/mailcleaner.conf
 SRCDIR=`grep 'SRCDIR' $CONFFILE | cut -d ' ' -f3`
-if [ "$SRCDIR" = "" ]; then 
+if [ "$SRCDIR" = "" ]; then
   SRCDIR="/opt/mailcleaner"
 fi
 VARDIR=`grep 'VARDIR' $CONFFILE | cut -d ' ' -f3`

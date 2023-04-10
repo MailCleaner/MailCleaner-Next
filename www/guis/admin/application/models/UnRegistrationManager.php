@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * System registration
  */
 
@@ -12,7 +12,7 @@ class Default_Model_UnRegistrationManager
 {	
 	private $_serial = ['abc1', 'def2', 'ghi3'];
         private $_data = ['rsp' => ''];
-    
+
 	public function load() {
 		//TODO: implement
 	}

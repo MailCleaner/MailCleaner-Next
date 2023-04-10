@@ -4,9 +4,9 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
- * 
+ *
  * This is the controller for the reasons list display page
- */  
+ */
 
 if ($_SERVER["REQUEST_METHOD"] == "HEAD") {
   return 200;
@@ -53,7 +53,7 @@ $template_->output($replace);
  */
 function get_window_height($factor, $limit, $n) {
   $ret = $limit;
-  if ($n < ($limit/$factor)) { 
+  if ($n < ($limit/$factor)) {
     $ret = $n*$factor;
   }
   return $ret;

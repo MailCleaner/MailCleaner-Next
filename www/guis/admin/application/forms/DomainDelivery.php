@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Domain delivery form
  */
 
@@ -34,13 +34,13 @@ class Default_Form_DomainDelivery extends Zend_Form
 	    ]);
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
-        
+
         foreach ($this->_domain->getConfigPanels() as $panel => $panelname) {
         	$panellist->addMultiOption($panel, $panelname);
         }
         $panellist->setValue($this->_panelname);
         $this->addElement($panellist);
-        
+
         $panel = new Zend_Form_Element_Hidden('panel');
 		$panel->setValue($this->_panelname);
 		$this->addElement($panel);
@@ -57,7 +57,7 @@ class Default_Form_DomainDelivery extends Zend_Form
 	    require_once('Validate/DomainName.php');
         $domainname->addValidator(new Validate_DomainName());
 	    $this->addElement($domainname);	
-        
+
 		require_once('Validate/SMTPHostList.php');
 		$servers = new Zend_Form_Element_Textarea('servers', [
 		      'label'    =>  $t->_('Destination servers')." :",
@@ -87,7 +87,7 @@ class Default_Form_DomainDelivery extends Zend_Form
             'required'   => false,
 	    'filters'    => ['StringTrim']
 	    ]);
-        
+
         foreach ($this->_domain->getDestinationActionOptions() as $key => $value) {
         	$multiple->addMultiOption($key, $t->_($key));
                 $options = $this->_domain->getDestinationActionOptions();
@@ -97,7 +97,7 @@ class Default_Form_DomainDelivery extends Zend_Form
         }
         #$multiple->setValue('');
         $this->addElement($multiple);
-        
+
         $usemx = new Zend_Form_Element_Checkbox('usemx', [
 	    'label'   => $t->_('Use MX resolution'). " :",
             'title' => $t->_("If destination servers have MX record in internal"),
@@ -108,7 +108,7 @@ class Default_Form_DomainDelivery extends Zend_Form
             $usemx->setChecked(true);
 	}
 	$this->addElement($usemx);
-        
+
         $test = new Zend_Form_Element_Button('testdestinationSMTP', [
 		     'label'    => $t->_('Test destinations'),
 		     'onclick' => 'javascript:stopreloadtest=0;testDestinationSMTP(\''.$this->_domain->getParam('name').'\', 1);'

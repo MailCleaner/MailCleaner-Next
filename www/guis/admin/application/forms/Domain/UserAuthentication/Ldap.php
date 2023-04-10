@@ -4,11 +4,11 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * LDAP user authentication settings form
  */
- 
-class Default_Form_Domain_UserAuthentication_Ldap 
+
+class Default_Form_Domain_UserAuthentication_Ldap
 {
 	protected $_domain;
 	protected $_settings = [
@@ -45,9 +45,9 @@ class Default_Form_Domain_UserAuthentication_Ldap
 	    $server->setValue($this->_domain->getPref('auth_server'));
         $server->addValidator(new Validate_SMTPHostList());
 	    $form->addElement($server);
-	    
+	
 	    $this->_settings = $this->getParams();
-	    	    
+	    	
 	    $basedn = new  Zend_Form_Element_Text('basedn', [
 	        'label'    => $t->_('Base DN')." :",
 		    'required' => false,
@@ -55,7 +55,7 @@ class Default_Form_Domain_UserAuthentication_Ldap
 	    ]);
 	    $basedn->setValue($this->_settings['basedn']);
 	    $form->addElement($basedn);
-	    
+	
 	    $binddn = new  Zend_Form_Element_Text('binddn', [
 	        'label'    => $t->_('Bind user')." :",
 		    'required' => false,
@@ -63,7 +63,7 @@ class Default_Form_Domain_UserAuthentication_Ldap
 	    ]);
 	    $binddn->setValue($this->_settings['binddn']);
 	    $form->addElement($binddn);
-	    
+	
 	    $bindpass = new  Zend_Form_Element_Password('bindpass', [
 	        'label'    => $t->_('Bind password')." :",
 		    'required' => false,
@@ -72,7 +72,7 @@ class Default_Form_Domain_UserAuthentication_Ldap
 	    ]);
 	    $bindpass->setValue($this->_settings['bindpw']);
 	    $form->addElement($bindpass);
-	    
+	
 	    $userattr = new  Zend_Form_Element_Text('userattribute', [
 	        'label'    => $t->_('User attribute')." :",
 		    'required' => false,
@@ -80,24 +80,24 @@ class Default_Form_Domain_UserAuthentication_Ldap
 	    ]);
 	    $userattr->setValue($this->_settings['userattr']);
 	    $form->addElement($userattr);
-	    
+	
 	    $ldapusesslcheck = new Zend_Form_Element_Checkbox('ldapusessl', [
 	        'label'   => $t->_('Use SSL'). " :",
             'uncheckedValue' => "0",
 	        'checkedValue' => "1"
 	    ]);
-	              
+	
 	    if ($this->_settings['use_ssl']) {
             $ldapusesslcheck->setChecked(true);
 	    }
 	    $form->addElement($ldapusesslcheck);
-	    
+	
 	    $version = new Zend_Form_Element_Select('ldapversion', [
             'label'      => $t->_('Protocol version')." :",
             'required'   => false,
 	    'filters'    => ['StringTrim']
 	    ]);
-        
+
         foreach ([2, 3) as $value] {
         	$version->addMultiOption($value, $value);
         }
@@ -125,7 +125,7 @@ class Default_Form_Domain_UserAuthentication_Ldap
     	}
     	$domain->setPref('auth_param', $this->getParamsString($array));
     }
-        
+
     public function getParams() {
        $ldapparams = $this->_settings;
        if ($this->_domain->getAuthConnector() != 'ldap') {
@@ -145,7 +145,7 @@ class Default_Form_Domain_UserAuthentication_Ldap
         }
         return $ldapparams;
     }
-    
+
     public function getParamsString($params) {
     	$fields = ['basedn', 'userattribute', 'binddn', 'bindpass', 'use_ssl', 'ldapversion'];
     	$str = '';

@@ -4,9 +4,9 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
- * 
+ *
  * This is the controller for the send to analyse page
- */   
+ */
 
 if ($_SERVER["REQUEST_METHOD"] == "HEAD") {
   return 200;

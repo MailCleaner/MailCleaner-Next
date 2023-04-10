@@ -19,7 +19,7 @@ class Api_Model_AddressAPI
 	 *
 	 *   General:
 	 *    address => email address
-	 *  
+	 *
 	 *   Settings:
 	 *    action_on_spam => can be drop, tag or quarantine, action on spam
 	 *    quarantine_bounce => can be 0 or 1, always block bounce messages
@@ -28,7 +28,7 @@ class Api_Model_AddressAPI
 	 *    summary_type => can be html, text, digest, format of mail quarantine reports
 	 *    send_reports_to => address to send mail quarantine reports to
 	 *    user => full username (with @domain) the address is (should be) linked to
-	 *    
+	 *
 	 *   Archiving:
 	 *     send_to_archiver => can be 0 or 1, set if messages should be sent to the archiver
 	 *     send_copy_to => string, email address to send a copy of every message (incoming and outgoing) to
@@ -42,7 +42,7 @@ class Api_Model_AddressAPI
             Zend_Registry::get('response')->setResponse(401, 'authentication required');
             return false;
         }
-        
+
         $email = null;
         try {
             $email = $this->findEmail($params);
@@ -253,7 +253,7 @@ class Api_Model_AddressAPI
                 $user->addAddress($email->getParam('address'), false, false);
                 $user->save();
             } catch (Exception $e) {
-                throw new Exception ($e->getMessage()); 
+                throw new Exception ($e->getMessage());
             }
         }
 	}
@@ -288,7 +288,7 @@ class Api_Model_AddressAPI
         ## Archiving
         $data['send_to_archiver'] = $email->getPref('archive_mail');
         $data['send_copy_to'] = $email->getPref('copyto_mail').'';
-        
+
 		if ($email->getLinkedUser()) {
 			$data['user'] = $email->getLinkedUser()->getParam('username');
 		}

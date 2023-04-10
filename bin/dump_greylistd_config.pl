@@ -65,15 +65,15 @@ sub get_greylist_config
 {
   my $slave_db = DB::connect('slave', 'mc_config');
 
-  my %configs = $slave_db->getHashRow("SELECT retry_min, retry_max, expire, avoid_domains 
+  my %configs = $slave_db->getHashRow("SELECT retry_min, retry_max, expire, avoid_domains
                                                                          FROM greylistd_config");
   my %ret;
-  
+
   $ret{'__RETRYMIN__'} = $configs{'retry_min'};
   $ret{'__RETRYMAX__'} = $configs{'retry_max'};
   $ret{'__EXPIRE__'} = $configs{'expire'};
   $ret{'__AVOID_DOMAINS_'} = $configs{'avoid_domains'};
-  
+
   return %ret;
 }
 
@@ -85,7 +85,7 @@ sub dump_domain_to_avoid
    if (! $domains eq "") {
      @domains_to_avoid = split /\s*[\,\:\;]\s*/, $domains;
    }
-   
+
    my $file = $conf->getOption('VARDIR')."/spool/tmp/mailcleaner/domains_to_avoid_greylist.list";
    if ( !open(DOMAINTOAVOID, ">$file") ) {
 		$lasterror = "Cannot open template file: $file";

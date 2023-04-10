@@ -9,7 +9,7 @@
 class MCSoap_Services
 {
     public static $STATUS_LOG = ['syslog' => '/tmp/local_service_syslog.log'];
-   
+
   /**
    * This function restart syslog services
    *
@@ -19,13 +19,13 @@ class MCSoap_Services
 		
 		require_once('MailCleaner/Config.php');
         $config = new MailCleaner_Config();
-        
+
 		#if (array_key_exists('SERVER_NAME', $_SERVER)) {
 		#	$cmd = "/opt/php5/bin/php ".$config->getOption('SRCDIR')."/www/soap/public/local_launcher.php Services_restartSyslog";
 		#	exec($cmd. ">/dev/null 2>&1 &");
 		#	return 'WAIT restartSyslog ';
 		#}
-        
+
 		$s = 'syslog';
 		
 		#$cmd = "echo 'START TASK syslog' > ".MCSoap_Services::$STATUS_LOG[$s];
@@ -53,7 +53,7 @@ class MCSoap_Services
 		`$cmd`;
 		return 'OK service restarted';
    }
-   
+
    /**
    * This function restart MTA (Exim) services
    *
@@ -91,7 +91,7 @@ class MCSoap_Services
 		}
 		return 'OK service(s) '.$status;
 	}
-   
+
   /**
    * This function get the actual service stop/start log
    *
@@ -129,7 +129,7 @@ class MCSoap_Services
 	
    /*
     * This function will set one process's status to be restarted
-    * 
+    *
     * @param  array  services
     * @return string
     */
@@ -150,7 +150,7 @@ class MCSoap_Services
 	
 	/*
 	 * This function will silently stop/start/restart a service
-	 * 
+	 *
 	 * @param array params
 	 * @return array
 	 */
@@ -195,17 +195,17 @@ class MCSoap_Services
 	
 	/*
      * This function will silently dump a config file
-     * 
+     *
      * @param array params
      * @return array
      */
     static public function Service_silentDump($params) {
-        $ret = ['status' => '', 'message' => ''];      
-    
+        $ret = ['status' => '', 'message' => ''];
+
         $cmd = "";
     	require_once('MailCleaner/Config.php');
         $config = new MailCleaner_Config();
-        if ($params['what'] == 'domains') {       
+        if ($params['what'] == 'domains') {
         if (isset($params['domain']) && $params['domain'] != "") {
                 $cmd = $config->getOption('SRCDIR')."/bin/dump_domains.pl ".$params['domain'];
             } else {
@@ -214,7 +214,7 @@ class MCSoap_Services
         } elseif ($params['what'] == 'archiving') {
         	$cmd = $config->getOption('SRCDIR')."/bin/dump_archiving.pl";
         }
-         
+
         if ($cmd != '') {
         	$cmd .= " >/dev/null 2>&1 &";
             $res = `$cmd`;
@@ -225,7 +225,7 @@ class MCSoap_Services
         }
         return $ret;
     }
-    
+
     /*
     * This function will clear the callout cache
     *

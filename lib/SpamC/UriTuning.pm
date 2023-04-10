@@ -6,7 +6,7 @@ our @ISA = qw(Mail::SpamAssassin::Plugin);
 
 sub new {
         my ($class, $mailsa) = @_;
-          
+
         # the usual perlobj boilerplate to create a subclass object
         $class = ref($class) || $class;
         my $self = $class->SUPER::new($mailsa);
@@ -14,7 +14,7 @@ sub new {
 
         # then register an eval rule, if desired...
         $self->register_eval_rule ("gglapi_domain");
-    
+
         # and return the new plugin object
         return $self;
 }

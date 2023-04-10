@@ -5,7 +5,7 @@
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
  */
- 
+
 /**
  * this class handles spam criteria found in the spam message
  */
@@ -34,7 +34,7 @@ class ReasonSet
 public function getReasons($msg_id, $destination, $host) {
     require_once('view/Language.php');
     require_once('system/SoapTypes.php');
-    
+
     $lang = Language::getInstance('user');
     if (!preg_match('/^([a-z,A-Z,0-9]{6}-[a-z,A-Z,0-9]{6}-[a-z,A-Z,0-9]{2})$/', $msg_id) || !preg_match('/^\S+\@\S+$/', $destination)) {
         return false;
@@ -44,7 +44,7 @@ public function getReasons($msg_id, $destination, $host) {
     if (!$soaper->load($host)) {
       return false;
     }
-    
+
     $soap_res = $soaper->queryParam('getReasons', [$msg_id, $destination, $lang->getLanguage()]);
     if (!is_object($soap_res) || !is_[$soap_res->reasons]) {
       return false;
@@ -53,7 +53,7 @@ public function getReasons($msg_id, $destination, $host) {
     if (isset($soap_res->reasons->item)) {
       $res = $soap_res->reasons->item;
     }
-    
+
     $score_a = [];
 	foreach ($res as $res_l) {
 	  $res_l = utf8_decode($res_l);

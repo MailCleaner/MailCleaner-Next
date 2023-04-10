@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Domain general settings form
  */
 
@@ -34,13 +34,13 @@ class Default_Form_DomainGeneral extends Zend_Form
 	    ]);
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
-        
+
         foreach ($this->_domain->getConfigPanels() as $panel => $panelname) {
         	$panellist->addMultiOption($panel, $panelname);
         }
         $panellist->setValue($this->_panelname);
         $this->addElement($panellist);
-        
+
         $panel = new Zend_Form_Element_Hidden('panel');
 		$panel->setValue($this->_panelname);
 		$this->addElement($panel);
@@ -96,7 +96,7 @@ class Default_Form_DomainGeneral extends Zend_Form
         require_once('Validate/EmailAddressField.php');
         $sender->addValidator(new Validate_EmailAddressField());
 	    $this->addElement($sender);	
-	    
+	
 	    $falseneg = new  Zend_Form_Element_Text('falseneg_to', [
 	        'label'    => $t->_('False negative address')." :",
 		    'title' => $t->_("Mail for false negatives (mails which were not detected as spam when they should have been)"),
@@ -106,7 +106,7 @@ class Default_Form_DomainGeneral extends Zend_Form
 	    $falseneg->setValue($this->_domain->getPref('falseneg_to'));
         $falseneg->addValidator(new Zend_Validate_EmailAddress(Zend_Validate_Hostname::ALLOW_LOCAL));
 	    $this->addElement($falseneg);
-	    
+	
 	    $falsepos = new  Zend_Form_Element_Text('falsepos_to', [
 	        'label'    => $t->_('False positive address')." :",
 		'title' => $t->_("Mail for false positives (mails which were detected as spam when they shouldn\'t have been) (sent from analyze button in summaries)"),
@@ -116,7 +116,7 @@ class Default_Form_DomainGeneral extends Zend_Form
 	    $falsepos->setValue($this->_domain->getPref('falsepos_to'));
         $falsepos->addValidator(new Zend_Validate_EmailAddress(Zend_Validate_Hostname::ALLOW_LOCAL));
 	    $this->addElement($falsepos);
-	    
+	
 	    $supportname = new  Zend_Form_Element_Text('supportname', [
 	        'label'    => $t->_('Support name')." :",
 		'title' => $t->_("Name of the person in charge of the support"),
@@ -125,7 +125,7 @@ class Default_Form_DomainGeneral extends Zend_Form
 	    ]);
 	    $supportname->setValue($this->_domain->getPref('supportname'));
 	    $this->addElement($supportname);
-	    
+	
 	    $supportemail = new  Zend_Form_Element_Text('supportemail', [
 	        'label'    => $t->_('Support email')." :",
                 'title' => $t->_("Email for release content"),

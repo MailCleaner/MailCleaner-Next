@@ -5,7 +5,7 @@
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
  */
- 
+
 /**
  * this is a preference handler
  */

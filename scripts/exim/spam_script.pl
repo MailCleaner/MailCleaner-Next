@@ -251,7 +251,7 @@ sub get_pref {
 		if ( $sth->rows < 1 ) {
 			$sth->finish();
 			$sth = $config_dbh->prepare(
-				"SELECT p.$pref FROM domain d, domain_pref p WHERE d.prefs=p.id 
+				"SELECT p.$pref FROM domain d, domain_pref p WHERE d.prefs=p.id
                                                 AND ( d.name='$to_domain' or d.name='*') order by name DESC LIMIT 1"
 			  )
 			  or return $default;

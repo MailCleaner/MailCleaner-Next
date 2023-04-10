@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Database service form
  */
 
@@ -25,9 +25,9 @@ class Default_Form_Database extends ZendX_JQuery_Form
     	$view=$layout->getView();
     	
 		$this->setMethod('post');
-	           
+	
 		$this->setAttrib('id', 'database_form');
-	   	    
+	   	
 	    require_once('Validate/HostList.php');
 		$allowed_ip = new Zend_Form_Element_Textarea('allowed_ip', [
 		      'label'    =>  $t->_('Allowed IP/ranges')." :",
@@ -40,7 +40,7 @@ class Default_Form_Database extends ZendX_JQuery_Form
 	    $allowed_ip->addValidator(new Validate_HostList());
 		$allowed_ip->setValue($this->_firewallrule->getParam('allowed_ip'));
 		$this->addElement($allowed_ip);
-	    
+	
 		$submit = new Zend_Form_Element_Submit('submit', [
 			'label'    => $t->_('Submit')
 		]);

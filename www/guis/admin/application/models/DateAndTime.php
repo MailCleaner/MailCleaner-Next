@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Date and time settings
  */
 
@@ -14,7 +14,7 @@ class Default_Model_DateAndTime
 	
 	public function __construct() {
 	}
-    
+
 	public function load() {
 		$currentdate = new Zend_Date();
         $this->_datearray = $currentdate->toArray();
@@ -88,7 +88,7 @@ class Default_Model_DateAndTime
 	
 	public function getFullSystemString() {
 		$str = sprintf('%02d%02d%02d%02d%04d.%02d',
-		               $this->getMonth(), $this->getDay(), $this->getHour(), 
+		               $this->getMonth(), $this->getDay(), $this->getHour(),
 		               $this->getMinute(), $this->getYear(), $this->getSecond());
 		return $str;
 	}

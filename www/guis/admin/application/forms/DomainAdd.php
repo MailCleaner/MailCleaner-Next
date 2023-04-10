@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * New domain form
  */
 
@@ -33,7 +33,7 @@ class Default_Form_DomainAdd extends Zend_Form
 		    'label'   =>  $t->_('Use default values from'). ": ",
 		    'filters'    => ['StringTrim']
 	    ]);
-        
+
 	    $defaultvalues->addMultiOption('__global__', $t->_('Global domains settings'));
         foreach ($this->_domain->fetchAllName() as $domain) {
         	$defaultvalues->addMultiOption($domain->getParam('name'), $domain->getParam('name'));
@@ -50,7 +50,7 @@ class Default_Form_DomainAdd extends Zend_Form
 	    require_once('Validate/DomainName.php');
         $domainname->addValidator(new Validate_DomainName());
 	    $this->addElement($domainname);	
-	    
+	
 	    $mdomainname = new  Zend_Form_Element_Textarea('mdomainname', [
             'label'   => $t->_('Domain name')." :",
 		    'required' => false,

@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Quarantined dangerous content
  */
 
@@ -72,7 +72,7 @@ class Default_Model_QuarantinedContent
 			} else {
 				$ret .= " ".$t->_('bytes');
 			}
-		} 
+		}
 		if (isset($split_fields[$param]) && (strlen($ret) > $split_fields[$param])) {
 			$ret = substr($ret, 0, $split_fields[$param]);
 			$ret .= '...';
@@ -194,7 +194,7 @@ class Default_Model_QuarantinedContent
 				$dline = @iconv_mime_decode($matches[1], ICONV_MIME_DECODE_STRICT, 'UTF-8');
 				$line = preg_replace('/\=\?[^?]{3,15}\?.\?[^?]+\?\=/', $dline, $line);
 			}
-                
+
 			if (strlen($line) > 78) {
 				$line = substr($line, 0, 78)."...";
 			}

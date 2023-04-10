@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Web interface settings
  */
 
@@ -72,7 +72,7 @@ class Default_Model_UserGUI
         $this->getMapper()->find($id, $this);
         return $this;
     }
-   
+
     public function save()
     {
         return $this->getMapper()->save($this);

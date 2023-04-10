@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * AntiSpam configuration mapper
  */
 
@@ -32,7 +32,7 @@ class Default_Model_AntispamConfigMapper
         }
         return $this->_dbTable;
     }
-    
+
     public function find($id, Default_Model_AntispamConfig $mta)
     {
         $result = $this->getDbTable()->find($id);
@@ -45,7 +45,7 @@ class Default_Model_AntispamConfigMapper
         	$mta->setParam($key, $row[$key]);
         }
     }
-    
+
     public function fetchAll()
     {
         $resultSet = $this->getDbTable()->fetchAll();
@@ -57,7 +57,7 @@ class Default_Model_AntispamConfigMapper
         }
         return $entries;
     }
-    
+
     public function save(Default_Model_AntispamConfig $mta) {
        $data = $mta->getParamArray();
        $res = '';

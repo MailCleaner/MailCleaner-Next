@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * controller for user management
  */
 
@@ -415,7 +415,7 @@ class ManageuserController extends Zend_Controller_Action
 			unset($params['action']);
 			unset($params['module']);
 			$params['removed'] = '1';
-            
+
 			$flashmessages = $this->_helper->getHelper('FlashMessenger')->addMessage('OK preferences removed');
 			$url = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('edit', 'manageuser', NULL, $params);
 			$this->_helper->getHelper('Redirector')->gotoSimple('editemail', null, null, $params);

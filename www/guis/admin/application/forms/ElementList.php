@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Generic element list form
  */
 
@@ -52,14 +52,14 @@ class Default_Form_ElementList extends ZendX_JQuery_Form
 		    'filters'    => ['StringTrim']
 		]);
 	    $this->addElement($addelement);
-	    
+	
 	    $addcomment = new  Zend_Form_Element_Text($this->_prefix.'addcomment', [
 		    'required' => false,
 	        'class' => 'addcommentfield',
 		'filters'    => ['StringTrim']
 	    ]);
 	    $this->addElement($addcomment);
-	    	    
+	    	
 		$add = new Zend_Form_Element_Submit($this->_prefix.'add', [
 		     'label'    => $t->_('< Add element'),
                      'title' => $t->_("Add the element in the Address field to the desired list"),
@@ -83,13 +83,13 @@ class Default_Form_ElementList extends ZendX_JQuery_Form
 	public function manageRequest($request) {
      	if ($request->getParam($this->_prefix.'disable') != "") {
             $this->disableElements($request);
-        } 
+        }
         if ($request->getParam($this->_prefix.'remove') != "") {
             $this->removeElements($request);
         }
         if ($request->getParam($this->_prefix.'add') != "") {
         	$this->addListElement($request);
-        } 
+        }
 	}
 	
         		

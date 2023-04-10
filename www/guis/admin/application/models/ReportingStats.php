@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Reporting statistics
  */
 
@@ -208,7 +208,7 @@ class Default_Model_ReportingStats
     	}
         return ($va > $vb) ? -1 : +1;
     }
-    
+
     static public function compareSpamsPercent($a, $b) {
     	$va = $a->getPercentValue('spams');
     	$vb = $b->getPercentValue('spams');
@@ -244,12 +244,12 @@ class Default_Model_ReportingStats
     	}
         return ($va > $vb) ? -1 : +1;
     }
-    
+
     public function createPieChart($id = null, $data = null, $params = []) {
-        include("pChart/class/pData.class.php"); 
-        include("pChart/class/pDraw.class.php"); 
-        include("pChart/class/pPie.class.php"); 
-        include("pChart/class/pImage.class.php"); 
+        include("pChart/class/pData.class.php");
+        include("pChart/class/pDraw.class.php");
+        include("pChart/class/pPie.class.php");
+        include("pChart/class/pImage.class.php");
 
         $t = Zend_Registry::get('translate');
         $DataSet = new pData;
@@ -270,7 +270,7 @@ class Default_Model_ReportingStats
 			$t->_('dangerous')
 		]
         }
-        
+
         $size = [190, 190];
         $position = [125, 80];
 
@@ -286,7 +286,7 @@ class Default_Model_ReportingStats
         }
         $label_bg = ['R'=>240,'G'=>240,'B'=>240,'A'=>255];
         $label_size = ['S' => -50, 'M' => 5, 'O' => LEGEND_HORIZONTAL];
-      
+
         if (isset($params['size']) && is_[$params['size']]) {
                 $size = $params['size'];
         }
@@ -294,7 +294,7 @@ class Default_Model_ReportingStats
         // 2D settings
         if (!isset($params['style']) || $params['style'] != '3D') {
         	$picture->setShadow(TRUE,["X"=>2,"Y"=>2,"R"=>150,"G"=>150,"B"=>150,"Alpha"=>100]);
-        
+
 
             if (isset($params['label_orientation']) && $params['label_orientation'] == 'vertical') {
             	$label_size = ['S' => -50, 'M' => 5, 'O' => LEGEND_VERTICAL];
@@ -343,10 +343,10 @@ class Default_Model_ReportingStats
             $position = [$radius,$radius];
         }
 
-        
+
         $config = new MailCleaner_Config();
-        $DataSet->AddPoints($vdata,"values");  
-        $DataSet->AddPoints($vwhats,"labels"); 
+        $DataSet->AddPoints($vdata,"values");
+        $DataSet->AddPoints($vwhats,"labels");
         $DataSet->setAbscissa("labels");
 
         $template = Zend_Registry::get('default_template');
@@ -367,12 +367,12 @@ class Default_Model_ReportingStats
 		"G"=>80,
 		"B"=>80)
 	];
-        
+
         $nonnull = false;
         foreach ($vdata as $d) {
         	if ($d > 0) {
         		$nonnull = true;
-        		break; 
+        		break;
         	}
         }
         if ($nonnull) {
@@ -387,7 +387,7 @@ class Default_Model_ReportingStats
         	} else {
         		$chart->draw3DPie(
         		           $position[0],$position[1],[
-        		                  "SliceHeight"=>10, 
+        		                  "SliceHeight"=>10,
 					  "DrawLabels"=>FALSE,
 					  "WriteValues"=>$value['T'],
 					  "ValuePosition"=>$value['P'],
@@ -407,7 +407,7 @@ class Default_Model_ReportingStats
 		"R"=>80,
 		"G"=>80,
 		"B"=>80
-	]); 
+	]);
         if (!isset($params['no_label'])) {
             $chart->drawPieLegend(
 		    $label_pos[0],
@@ -420,11 +420,11 @@ class Default_Model_ReportingStats
 			    'R'=>$label_bg['R'],
 			    'G'=>$label_bg['G'],
 			    'B'=>$label_bg['B'],
-			    'Alpha'=>$label_bg['A'] 
+			    'Alpha'=>$label_bg['A']
 		    ]
 	    );
         }
-        
+
         if (isset($params['render']) && $params['render']) {
         	$picture->Stroke();
         } else {
@@ -436,7 +436,7 @@ class Default_Model_ReportingStats
             return $id;
         }
     }
-    
+
     public function getTodayStatElements($type) {
 	    $els = [
 		    'cleans' => 'globalCleanCount',
@@ -451,7 +451,7 @@ class Default_Model_ReportingStats
 			case 'refused':
 				$els = [
 					'rbl' => 'globalRefusedRBLCount+globalRefusedBackscatterCount',
-    		                   	'blacklists'=>  'globalRefusedHostCount+globalRefusedBlacklistedSenderCount', 
+    		                   	'blacklists'=>  'globalRefusedHostCount+globalRefusedBlacklistedSenderCount',
     		                   	'relay' => 'globalRefusedRelayCount',
     		                   	'policies' => 'globalRefusedSpoofingCount+globalRefusedBATVCount+globalRefusedBadSPFCount+globalRefusedUnauthenticatedCount+globalRefusedUnencryptedCount+globalRefusedBadRDNSCount',
     	                       		'callout' => 'globalRefusedCalloutCount',
@@ -463,7 +463,7 @@ class Default_Model_ReportingStats
 				      	'cleans' => 'globalCleanCount',
     		                   	'spams'=>  'globalRefusedCount+globalSpamCount',
     		                   	'dangerous' => 'globalNameCount+globalOtherCount',
-    		                   	'viruses'=>  'globalVirusCount', 
+    		                   	'viruses'=>  'globalVirusCount',
 					'outgoing' => 'globalRelayedCount'
 				];
 				break;
@@ -476,7 +476,7 @@ class Default_Model_ReportingStats
 			case 'relayed':
 				$els = [
 					'by hosts' => 'globalRelayedHostCount',
-    		                   	'authentified'=>  'globalRelayedAuthenticatedCount', 
+    		                   	'authentified'=>  'globalRelayedAuthenticatedCount',
     		                   	'refused' => 'globalRelayedRefusedCount',
 					'viruses' => 'globalRelayedVirusCount'
 				];
@@ -484,7 +484,7 @@ class Default_Model_ReportingStats
 			case 'sessions':
 				$els = [
 					'accepted' => 'globalAcceptedCount',
-    		                   	'refused'=>  'globalRefusedCount', 
+    		                   	'refused'=>  'globalRefusedCount',
     		                   	'delayed' => 'globalDelayedCount',
 					'relayed' => 'globalRelayedCount'
 				];
@@ -503,11 +503,11 @@ class Default_Model_ReportingStats
             $slaves = $slave->fetchAll();
 	    }
         $total = [];
-        
+
         foreach ($slaves as $s) {
             $total = $this->cumulStats($total, $s->getTodaySNMPStats($what));
         }
-        
+
         if (!$type || $type == '') {
         	$type = 'unknown';
         }

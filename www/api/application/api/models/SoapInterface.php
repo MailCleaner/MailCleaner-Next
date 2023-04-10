@@ -22,7 +22,7 @@ class Api_Model_SoapInterface
 	public function Test_getResponse($question) {
 		return $question;
 	}
-	 
+	
 	/**
 	 * *************
 	 * domainAdd
@@ -79,7 +79,7 @@ class Api_Model_SoapInterface
         $api->remove($domain_name);
         return Zend_Registry::get('response')->getResponse();
     }
-    
+
     /**
      * This function shows domain's data
      *
@@ -97,7 +97,7 @@ class Api_Model_SoapInterface
         }
         return Zend_Registry::get('response')->getResponse();
     }
-    
+
     /**
      * This function lists all domains
      *
@@ -119,8 +119,8 @@ class Api_Model_SoapInterface
                 Zend_Registry::set('user', $user);
             } else {
                 Zend_Registry::get('response')->setResponse(401, 'authentication failed');
-            }        
-            
+            }
+
 		}
 	}
 	

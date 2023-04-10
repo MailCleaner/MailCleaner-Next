@@ -50,7 +50,7 @@ sub do {
   $this->{dlg}->build('Choose your continent', \@dlglist, 1, 1);
   my $cont = $this->{dlg}->display();
 
-  $cont = 'US' if ($cont eq 'US time zones'); 
+  $cont = 'US' if ($cont eq 'US time zones');
   $cont = 'Canada' if ($cont eq 'Canada time zones');
   $cont = 'Atlantic' if ($cont eq 'Atlantic Ocean');
   $cont = 'Indian' if ($cont eq 'Indian Ocean');

@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Domain callout form
  */
 
@@ -37,13 +37,13 @@ class Default_Form_DomainAddressverification extends Zend_Form
 	    ]);
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
-        
+
         foreach ($this->_domain->getConfigPanels() as $panel => $panelname) {
         	$panellist->addMultiOption($panel, $panelname);
         }
         $panellist->setValue($this->_panelname);
         $this->addElement($panellist);
-        
+
         $panel = new Zend_Form_Element_Hidden('panel');
 		$panel->setValue($this->_panelname);
 		$this->addElement($panel);
@@ -75,13 +75,13 @@ class Default_Form_DomainAddressverification extends Zend_Form
 		    'onchange'   => 'javascript:changeConnector();',
 		    'filters'    => ['StringTrim']
 		]);
-        
+
         foreach ($this->_connectors as $connector) {
         	$connectorlist->addMultiOption($connector, $t->_($connector));
         }
         $connectorlist->setValue($this->_domain->getCalloutConnector());
         $this->addElement($connectorlist);
-        
+
 		$test = new Zend_Form_Element_Button('testcallout', [
 		     'label'    => $t->_('Test configuration'),
 		     'onclick' => 'javascript:stopreloadtest=0;testCallout(\''.$this->_domain->getParam('name').'\', 1);'

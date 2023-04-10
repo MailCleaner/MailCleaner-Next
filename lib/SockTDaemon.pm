@@ -95,7 +95,7 @@ sub preForkHook() {
     if ( -e $this->{socketpath} ) {
         unlink( $this->{socketpath} );
     }
-    
+
     ## bind to socket
     $this->{server} = IO::Socket::UNIX->new(
         Local  => $this->{socketpath},
@@ -163,7 +163,7 @@ sub mainLoopHook {
 
     while ( my $client = $this->{server}->accept() ) {
         $this->{socks_status}{$client} = 'connected';
-        
+
     	if (\$client =~ m/REF(0x[a-f0-9]+)/  ) {
         	print STDERR "Got conenction from: ".$1."\n";
         }
@@ -173,7 +173,7 @@ sub mainLoopHook {
             $this->{socks_status}{$client} .= ',PIPE received';
             if (defined($this->{sock_timer}{$client})) {
                 my $interval = tv_interval($this->{sock_timer}{$client});
-                my $time     = ( int( $interval * 10000 ) / 10000 ); 
+                my $time     = ( int( $interval * 10000 ) / 10000 );
                 $this->{socks_status}{$client} .= " ($time s.)";
             }
             $this->doLog( 'connection closed by PIPE: '.$this->{socks_status}{$client}, 'socket' );
@@ -214,13 +214,13 @@ sub mainLoopHook {
                 $this->{socks_status}{$client} .= ',response sent';
                 if (defined($this->{sock_timer}{$client})) {
                     my $interval = tv_interval($this->{sock_timer}{$client});
-                    my $time     = ( int( $interval * 10000 ) / 10000 ); 
+                    my $time     = ( int( $interval * 10000 ) / 10000 );
                     $this->{socks_status}{$client} .= " ($time s.)";
                 }
                 $this->doLog( 'connection closed by response sent: '.$this->{socks_status}{$client}, 'socket', 'debug' );
-                delete($this->{socks_status}{$client}); 
+                delete($this->{socks_status}{$client});
                 undef($this->{socks_status}{$client});
-                delete($this->{sock_timer}{$client});       
+                delete($this->{sock_timer}{$client});
                 undef($this->{sock_timer}{$client});
                 close($client);
                 $this->doLog( 'response sent, client socket closed ',

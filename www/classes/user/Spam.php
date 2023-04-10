@@ -5,7 +5,7 @@
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
  */
- 
+
 /**
  * This is the class is mainly a data wrapper for the spam objects
  */
@@ -34,13 +34,13 @@ class Spam {
 /**
  * body of the spam
  * @var string
- */           
+ */
 private $body_ = "";
 
 /**
  * plain headers of the spam
  * @var string
- */           
+ */
 private $plain_headers_ = "";
 private $unrefined_headers_ = "";
 
@@ -62,7 +62,7 @@ private $ruleset_ = [];
  * @var array
  */
 private $parts_type_ = [];
-                     
+
 /**
  * constructor
  */
@@ -108,8 +108,8 @@ public function getAllData() {
     $data[$key] = $this->getData($key);
   }
   return $data;
-} 
- 
+}
+
 /**
  * get data cleaned from html code
  * @param  $field  string  data field name
@@ -142,22 +142,22 @@ public function loadFromArray($datas) {
   foreach ($datas as $key => $value) {
     $this->setData($key, $value);
   }
-  return true;  
+  return true;
 }
 
 /**
  * load messages datas from database
- * 
+ *
  */
 public function loadDatas($id, $dest) {
   if (!preg_match('/^([a-z,A-Z,0-9]{6}-[a-z,A-Z,0-9]{6}-[a-z,A-Z,0-9]{2})$/', $id) || !preg_match('/^\S+\@\S+$/', $dest)) {
     return false;
   }
-  
+
   require_once('helpers/DM_MasterSpool.php');
   $db = DM_MasterSpool::getInstance();
   $clean_id = $db->sanitize($id);
-    
+
   // build the query
   $table = "spam";
   if (preg_match('/^(\S)/', $dest, $matches)) {
@@ -190,15 +190,15 @@ public function loadDatas($id, $dest) {
  * @return       bool     true on success, false on failure
  */
 public function loadHeadersAndBody() {
-  require_once("system/SystemConfig.php"); 
+  require_once("system/SystemConfig.php");
   require_once("system/Soaper.php");
   require_once("system/SoapTypes.php");
 
   if ($this->body_ != "" and !empty($this->headers_)) {
     return true;
   }
-  
-  $sysconf = Systemconfig::getInstance(); 
+
+  $sysconf = Systemconfig::getInstance();
   $slave = $sysconf->getSlaveName($this->getData('store_slave'));
   if ($slave == "") {
     return false;
@@ -217,7 +217,7 @@ public function loadHeadersAndBody() {
   } else {
     $headers = $soap_res->text;
   }
- 
+
   $soap_res = $soaper->queryParam('getBody', [$this->getData('exim_id'), $dest, 30]);
   if (is_object($soap_res) && is_[$soap_res->text]) {
     $body = $soap_res->text;
@@ -232,13 +232,13 @@ public function loadHeadersAndBody() {
   ## remove html tags
   #$this->body_ = preg_replace('/<br>/', "\n", $this->body_);
   #$this->body_ = preg_replace('/<[^>]+>/', '', $this->body_);
-  
+
   $last_header="";
   $matches = [];
   if (empty($headers)) {
   	return false;
   }
-  
+
   $lh = "";
   foreach ($headers as $line) {
     $this->unrefined_headers_ .= $line;
@@ -276,7 +276,7 @@ public function loadHeadersAndBody() {
   if ($last_header != "" && $lh != "") {
     array_push($this->headersfields_, [$last_header, $lh]);
   }
-  
+
   $soap_res = $soaper->queryParam('getMIMEPart', [$this->getData('exim_id'), $this->getData('to'), 0]);
   if (is_object($soap_res) && is_[$soap_res->text]) {
     $this->parts_type_ = preg_split('/\-/', $soap_res->text[0]);
@@ -285,12 +285,12 @@ public function loadHeadersAndBody() {
     $b = $this->getMIMEPartAsText('text/plain', $soaper);
     if (preg_match('/^\s*$/', $b)) {
       $b = $this->getMIMEPartAsText('text/html', $soaper);
-    } 
+    }
     if (!preg_match('/^\s*$/', $b)) {
      $this->body_ = $b;
     }
-  } 
-  
+  }
+
   return true;
 }
 
@@ -340,15 +340,15 @@ public function getReasons() {
   return $this->ruleset_;
 }
 
-private function setRulesDescription() {    
+private function setRulesDescription() {
   global $lang_;
-  
+
   if (empty($this->ruleset_)) {
   	return true;
   }
-  
+
   $SA_BASE_PATH = "/var/lib/spamassassin/*/updates_spamassassin_org/";
-  
+
   $i = 0;
   foreach ($this->ruleset_ as $rule) {
     $tag = $rule['tag'];
@@ -365,7 +365,7 @@ private function setRulesDescription() {
     }
     $i++;
   }
-  
+
   $sysconf = SystemConfig::getInstance();
   $MC_BASE_PATH = $sysconf->SRCDIR_."/share/spamassassin";
   $i = 0;
@@ -384,7 +384,7 @@ private function setRulesDescription() {
     }
     $i++;
   }
-  
+
   return true;
 }
 
@@ -401,7 +401,7 @@ private function getMIMEPartAsText($part, $soaper) {
       }
     }
   }
-  
+
   #$ret = preg_replace('/<br>/', '\n', $ret);
   #$ret = preg_replace('/<[^>]+>/', '', $ret);
   return $ret;
@@ -427,11 +427,11 @@ public function getGlobalScore($t) {
 
 public function getFormatedDate() {
   global $lang_;
-  
+
   require_once('Zend/Locale.php');
   require_once('Zend/Registry.php');
   require_once('Zend/Date.php');
-  
+
   $locale = new Zend_Locale($lang_->getLanguage());
   Zend_Registry::set('Zend_Locale', $locale);
   $date = new Zend_Date();
@@ -460,7 +460,7 @@ public function setReplacements($template, $replace) {
      'PARTS' => $this->getMIMEPartsType(),
      'STORESLAVE' => $this->getData('store_slave')
   ];
-  
+
   if (!empty($_SESSION['user'])) {
     $session = unserialize($_SESSION['user']);
     $userId = $session->getID();
@@ -481,9 +481,9 @@ public function setReplacements($template, $replace) {
           }
     }
   }
-  
+
   $this->loadHeadersAndBody();
-  
+
   $general_str = $template->getTemplate('GENERALINFO');
   $full_generalinfos = "";
   foreach ($generalinfos as $key => $value) {
@@ -492,13 +492,13 @@ public function setReplacements($template, $replace) {
     $full_generalinfos .= $str;
   }
   $replace['__GENERALINFO_LIST__'] = $full_generalinfos;
-  
+
   $replace['__MSG_BODY__'] = $this->getFormatedBody();
   $t = $template->getTemplate('MSGHEADERS');
   $replace['__MSGHEADERS_LIST__'] = $this->getHeadersInTemplate($t);
   $t = $template->getTemplate('SARULES');
   $replace['__SARULES_LIST__'] = $this->getSARulesInTemplate($t);
-  
+
   return $replace;
 }
 
@@ -508,7 +508,7 @@ public function getFormatedBody() {
   $charset = "=?UTF-8?Q?";
 
   $lines = preg_split("/\n/", $body);
-  $fullbody = ""; 
+  $fullbody = "";
   $csdefined = 0;
   foreach ($lines as $line) {
     if (!$csdefined && preg_match('/^(\=\?[^?]{3,15}\?Q\?)/', $line, $matches)) {
@@ -535,12 +535,12 @@ public function getFormatedBody() {
 
 private function getHeadersInTemplate($template) {
   $full_str = "";
-  
+
   foreach ($this->headersfields_ as $head) {
     $key = $head[0];
     $fvalue = $head[1];
-    
-    
+
+
     $key = htmlentities($key);
     $fvalue = htmlentities($fvalue);
     $key = preg_replace('/\n/', '<br />', $key);
@@ -556,7 +556,7 @@ private function getHeadersInTemplate($template) {
 private function getSARulesInTemplate($template) {
   $rules = $this->getReasons();
   $full_str = "";
-  
+
   foreach ($rules as $rule) {
   	$str = str_replace('__INFO_NAME__', number_format($rule['score'],1, '.', ''), $template);
     $str = str_replace('__INFO_VALUE__', $rule['description'], $str);
@@ -578,7 +578,7 @@ private function displayGlobalValue($value) {
 
 private function getMIMEPartsType() {
   global $lang_;
-  
+
   $parts = $this->getPartsType();
   if (count($parts) < 1) {
     return $lang_->print_txt('NONE');

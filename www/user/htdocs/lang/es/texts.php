@@ -462,7 +462,7 @@ $txt['REMTHEENTRY'] = "Eliminar selección";
 $txt['DISABLETHEENTRY'] = "Desactivar/activar selección";
 $txt['WHITELISTSHORTHELP'] = "La lista blanca contiene las direcciones de los remitentes de confianza, las cuales no serán puestas en cuarentena.<br />
 Advertencia: esta función debe ser utilizada como solución temporal, porque impide una protección total.
-Leer el manual (disponible en la parte <a href=\"help.php\">\"Ayuda\"</a>) para obtener más información sobre el uso de la lista blanca. 
+Leer el manual (disponible en la parte <a href=\"help.php\">\"Ayuda\"</a>) para obtener más información sobre el uso de la lista blanca.
 ";
 $txt['BLACKLISTSHORTHELP'] = "La lista negra contiene la dirección del remitente incluida en la lista negra.
  Revise el manual (disponible en la sección <a href=\"help.php\">\"Ayuda\"</a>) para obtener más información sobre el uso de la lista negra.

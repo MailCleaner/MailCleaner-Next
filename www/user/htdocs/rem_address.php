@@ -4,17 +4,17 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
- * 
+ *
  * This is the controler for the remove address page
  */
- 
+
 if ($_SERVER["REQUEST_METHOD"] == "HEAD") {
   return 200;
 }
 
 /**
  * require valid session
- */ 
+ */
 require_once('objects.php');
 require_once("view/Template.php");
 global $sysconf_;
@@ -41,7 +41,7 @@ $template_ = new Template('rem_address.tmpl');
 $params = $_GET;
 $params['doit'] = '1';
 $replace = [
-        '__INCLUDE_JS__' => 
+        '__INCLUDE_JS__' =>
 "<script type=\"text/javascript\" language=\"javascript\">
     function confirm() {
         window.location.href=\"".$_SERVER['PHP_SELF']."?add=$add&doit=1\";

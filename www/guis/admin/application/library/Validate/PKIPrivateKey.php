@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Validate a list of email addresses
  */
 
@@ -19,7 +19,7 @@ class Validate_PKIPrivateKey extends Zend_Validate_Abstract
     public function isValid($value)
     {
         $this->_setValue($value);
-        
+
         $pki = new Default_Model_PKI();
         $pki->setPrivateKey($value);
         if ($pki->checkPrivateKey()) {

@@ -42,9 +42,9 @@ sub new {
   my $class = shift;
   my $name = shift;
   my $file = shift;
-  
+
   my $this = $class->SUPER::create($name, $file);
-  
+
   my $conf = ReadConfig::getInstance();
   $this->{slaveID} = $conf->getOption('HOSTID');
   bless $this, $class;
@@ -85,8 +85,8 @@ sub processDatas {
     if (!$logged_in_slave) {
       $this->logMessage("Message ".$msg{id}." cannot be logged in slave DB !");
     }
-    
-    if ($logged_in_master && $logged_in_slave) { 
+
+    if ($logged_in_master && $logged_in_slave) {
       $this->logMessage("Message ".$msg{id}." logged both");
       return "LOGGED BOTH";
     }
@@ -102,7 +102,7 @@ sub logSpam {
   my $this = shift;
   my %msg;
 
-  my $query = "LOG";  
+  my $query = "LOG";
   my $params = "";
   foreach my $field (@fields) {
   	$msg{$field} = shift;
@@ -127,7 +127,7 @@ sub logInMaster {
   my $this = shift;
   my $msg_h = shift;
   my %message = %$msg_h;
- 
+
   if (!defined($this->{masterDB}) || !$this->{masterDB}->ping()) {
   	$this->{masterDB} = DB::connect('realmaster', 'mc_spool', 0);
     if ( !defined($this->{masterDB}) || !$this->{masterDB}->ping()) { return 0; }
@@ -162,7 +162,7 @@ sub logInSlave {
   my $msg_h = shift;
   my %message = %$msg_h;
   my $master_stored = shift;
- 
+
   if (!defined($this->{slaveDB}) || !$this->{slaveDB}->ping()) {
   	$this->{slaveDB} = DB::connect('slave', 'mc_spool', 0);
     if ( !defined($this->{slaveDB}) || !$this->{slaveDB}->ping()) { return 0; }
@@ -185,7 +185,7 @@ sub logInSlave {
 
   if (!$this->{slaveDB}->execute($query)) {
     return 0;
-  } 
+  }
   return 1;
 }
 

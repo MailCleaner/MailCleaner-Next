@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Slave host mapper
  */
 
@@ -32,7 +32,7 @@ class Default_Model_SlaveMapper
         }
         return $this->_dbTable;
     }
-    
+
     public function find($id, Default_Model_Slave $slave)
     {
         $result = $this->getDbTable()->find($id);
@@ -44,7 +44,7 @@ class Default_Model_SlaveMapper
         $slave->setHostname($row->hostname, $row->password);
         $slave->setPassword($row->password);
     }
-    
+
     public function fetchAll()
     {
         $resultSet = $this->getDbTable()->fetchAll(null, "id ASC");

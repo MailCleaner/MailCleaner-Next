@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Logging settings form
  */
 
@@ -25,9 +25,9 @@ class Default_Form_Archiving extends ZendX_JQuery_Form
     	$view=$layout->getView();
     	
 		$this->setMethod('post');
-	           
+	
 		$this->setAttrib('id', 'archiving_form');
-		        
+		
 		$type = new Zend_Form_Element_Select('archiving_type', [
 		            'label'      => $t->_('Archiving mode')." :",
 		            'required'   => true,
@@ -45,7 +45,7 @@ class Default_Form_Archiving extends ZendX_JQuery_Form
 			}
 		}
 		$this->addElement($type);
-			    
+			
 	    $archiverhost = new  Zend_Form_Element_Text('archiver_host', [
             'label'   => $t->_('External archiver server')." :",
             'size' => 40,
@@ -55,7 +55,7 @@ class Default_Form_Archiving extends ZendX_JQuery_Form
     	require_once('Validate/HostWithPort.php');
         $archiverhost->addValidator(new Validate_HostWithPort());
 	    $this->addElement($archiverhost);
-	    
+	
 		$submit = new Zend_Form_Element_Submit('submit', [
 			'label'    => $t->_('Submit')
 		]);

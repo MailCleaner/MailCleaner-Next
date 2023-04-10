@@ -1,10 +1,10 @@
-<?php 
+<?php
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * local user authentication settings form
  */
 
@@ -37,7 +37,7 @@ class Default_Form_Domain_UserAuthentication_Local
     public function getParams() {
        return [];
     }
-    
+
     public function getParamsString($params) {
        return '';
     }	

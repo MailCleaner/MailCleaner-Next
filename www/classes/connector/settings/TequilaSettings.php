@@ -5,33 +5,33 @@
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
  */
- 
- 
+
+
 /**
  * This class takes care of storing Tequila settings
  * @package mailcleaner
  */
  class TequilaSettings extends ConnectorSettings {
-   
+
    /**
     * template tag
     * @var string
     */
    protected $template_tag_ = 'TEQUILAAUTH';
-   
+
    /**
    * Specialized settings array with default values
    * @var array
    */
    protected $spec_settings_ = [
-                              'usessl' => false,  
+                              'usessl' => false,
                               'fields' => '',
                               'url' => '',
                               'loginfield' => '',
                               'realnameformat' => '',
                               'allowsfilter' => ''
    ];
-                             
+
    /**
     * fields type
     * @var array
@@ -43,12 +43,12 @@
                               'loginfield' => ['text', 20],
                               'realnameformat' => ['text', 30],
                               'allowsfilter' => ['text', 30]
-   ];                          
+   ];
 
    public function __construct($type) {
       parent::__construct($type);
       $this->setSetting('server', 'localhost');
       $this->setSetting('port', '80');
-   }   
+   }
  }
 ?>

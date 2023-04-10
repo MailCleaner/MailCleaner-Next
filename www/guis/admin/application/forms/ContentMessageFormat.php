@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Message format controls form
  */
 
@@ -39,7 +39,7 @@ class Default_Form_ContentMessageFormat extends ZendX_JQuery_Form
 		
 		
 		$this->setAttrib('id', 'contenthtmlcontrols_form');
-	    
+	
 		$allowoptions = ['yes' => $t->_('allow'), 'no' => $t->_('block')];
 		$blockoptions = ['no' => $t->_('allow'), 'yes' => $t->_('block')];
 		$disarmoptions = ['yes' => $t->_('allow'), 'no' => $t->_('block'), 'disarm' => $t->_('disarm')];
@@ -51,15 +51,15 @@ class Default_Form_ContentMessageFormat extends ZendX_JQuery_Form
                			'required'   => true,
 				'filters'    => ['StringTrim']
 			]);
-        
+
           		foreach ($this->{$f['options']} as $lk => $lv) {
              			$ff->addMultiOption($lk, $t->_($lv));
           		}
           		$ff->setValue($this->_dangerouscontent->getParam($mf));
           		$this->addElement($ff);
 		}
-        
-	    
+
+	
 		$submit = new Zend_Form_Element_Submit('submit', [
 			'label'    => $t->_('Submit')
 		]);

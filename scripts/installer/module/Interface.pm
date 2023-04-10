@@ -86,7 +86,7 @@ sub ask {
   while( !module::Interface::isIP($lmask) ) {
    print "Bad address format, please type again.\n" if ! $lmask eq "";
    $lmask = $dlg->display();
-  } 
+  }
   $this->{mask} = $lmask;
 
   $this->computeData();
@@ -99,7 +99,7 @@ sub ask {
    print "Bad address format, please type again.\n" if ! $lgate eq "";
    $lgate = $dlg->display();
   }
-  $this->{gateway} = $lgate; 
+  $this->{gateway} = $lgate;
 }
 
 sub getGateway {

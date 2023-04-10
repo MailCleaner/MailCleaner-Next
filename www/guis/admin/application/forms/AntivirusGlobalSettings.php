@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Antivirus global settings form
  */
 
@@ -25,9 +25,9 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
     	$view=$layout->getView();
     	
 		$this->setMethod('post');
-	           
+	
 		$this->setAttrib('id', 'antivirusglobalsettings_form');
-	     
+	
 	    $maxattach = new Zend_Form_Element_Text('max_attachments_per_message', [
                 'label'   => $t->_('Maximum attachments per message')." :",
                 'title' => $t->_("A message having more attachments than this is not analyzed. The message is sent to quarantine or tagged"),
@@ -39,7 +39,7 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
 	    $maxattach->setValue($this->_antivirus->getParam('max_attachments_per_message'));
             $maxattach->addValidator(new Zend_Validate_Int());
 	    $this->addElement($maxattach);	
-	    
+	
 	    $maxattachsize = new  Zend_Form_Element_Text('max_attach_size', [
                 'label' => $t->_('Maximum attachment size')." :",
                 'title' => $t->_("If an attachment weights more than this, he will not be analyzed and the message is either sent to quarantine or tagged"),
@@ -51,7 +51,7 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
 	    $maxattachsize->setValue($this->_antivirus->getParam('max_attach_size'));
             $maxattachsize->addValidator(new Zend_Validate_Int());
 	    $this->addElement($maxattachsize);	
-	    
+	
 	    $maxattachsizeenable = new Zend_Form_Element_Checkbox('max_attach_size_enable', [
 	        'label'   => $t->_('no maximum size'),
                 'title' => $t->_("MailScanner will check all attachments"),
@@ -64,7 +64,7 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
             $maxattachsize->setAttrib('class', 'fieldrighted disabled');
 	    }
 	    $this->addElement($maxattachsizeenable);
-	    
+	
 	    $max_archive_depth = new  Zend_Form_Element_Text('max_archive_depth', [
                 'label'   => $t->_('Content control maximum archive depth')." :",
                 'title' => $t->_("Depth of \"archives in archives\" which will be analyzed"),
@@ -76,7 +76,7 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
 	    $max_archive_depth->setValue($this->_antivirus->getParam('max_archive_depth'));
             $max_archive_depth->addValidator(new Zend_Validate_Int());
 	    $this->addElement($max_archive_depth);	
-	    
+	
 	    $max_archive_depth_disable = new Zend_Form_Element_Checkbox('max_archive_depth_disable', [
 	        'label'   => $t->_('disable content controls in archives'),
                 'title' => $t->_("If checked, MailCleaner wont check the items inside archives / If unchecked the files in the archives will be analyzed with the same rules as files not in archives"),
@@ -89,8 +89,8 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
             $max_archive_depth->setAttrib('class', 'fieldrighted disabled');
 	    }
 	    $this->addElement($max_archive_depth_disable);
-	    
-        
+	
+
 	    $expand_tnef = new Zend_Form_Element_Checkbox('expand_tnef', [
 	        'label'   => $t->_('Expand TNEF (winmail.dat) attachments')." :",
                 'title' => $t->_("Extract files from the TNEF attachment (TNEF is an archive like format). This is required to perform antivirus checks on the content"),
@@ -101,7 +101,7 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
             $expand_tnef->setChecked(true);
 	    }
 	    $this->addElement($expand_tnef);
-	    
+	
 	    $deliver_bad_tnef = new Zend_Form_Element_Checkbox('deliver_bad_tnef', [
 	        'label'   => $t->_('Still deliver bad TNEF attachments')." :",
                 'title' => $t->_("Delivers the TNEF attachments even if they are seen as corrupted by MailCleaner"),
@@ -112,14 +112,14 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
             $deliver_bad_tnef->setChecked(true);
 	    }
 	    $this->addElement($deliver_bad_tnef);
-	    
+	
 	    $usetnefcontent = new Zend_Form_Element_Select('usetnefcontent', [
                 'label'      => $t->_('Use decoded TNEF attachments')." :",
                 'title' => $t->_("Choose action to perform with the TNEF attachment s scontent"),
                 'required'   => false,
 	        'filters'    => ['StringTrim']
 	    ]);
-        
+
 	    $tnefactions = [
 	      'no' => 'do nothing but checking content',
 	      'add' => 'add decoded content to message',
@@ -130,12 +130,12 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
         }
         $usetnefcontent->setValue($this->_antivirus->getParam('usetnefcontent'));
         $this->addElement($usetnefcontent);
-        
+
         if ($this->_antivirus->getParam('expand_tnef') != 'yes') {
             $deliver_bad_tnef->setAttrib('class', 'disabled');
             $usetnefcontent->setAttrib('class', 'disabled');
         }
-	    
+	
         $send_notices = new Zend_Form_Element_Checkbox('send_notices', [
 	        'label'   => $t->_('Sent notice to administrator')." :",
                 'title' => $t->_("If one of the rule above is met, the administrator will be warned"),
@@ -146,7 +146,7 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
             $send_notices->setChecked(true);
 	    }
 	    $this->addElement($send_notices);
-	    
+	
 	    $notices_to = new  Zend_Form_Element_Text('notices_to', [
             	'label'   => $t->_('Administrator address')." :",
 		'required' => false,
@@ -155,12 +155,12 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
 	    $notices_to->setValue($this->_antivirus->getParam('notices_to'));
         $notices_to->addValidator(new Zend_Validate_EmailAddress(Zend_Validate_Hostname::ALLOW_DNS | Zend_Validate_Hostname::ALLOW_LOCAL));
 	    $this->addElement($notices_to);	
-	    
+	
 	    if ($this->_antivirus->getParam('send_notices') != 'yes') {
             	$notices_to->setAttrib('class', 'disabled');
 	    }
-	    
-	    
+	
+	
 		$submit = new Zend_Form_Element_Submit('submit', [
 			'label'    => $t->_('Submit')
 		]);
@@ -170,7 +170,7 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
 	
 	public function setParams($request, $av) {
         $av->setParam('max_attachments_per_message', $request->getParam('max_attachments_per_message'));
-        
+
         if ($request->getParam('max_attach_size_enable')) {
         	$av->setParam('max_attach_size', -1);
         } else {
@@ -180,13 +180,13 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
         	}
         	$av->setParam('max_attach_size', $request->getParam('max_attach_size'));
         }
-        
+
 	    if ($request->getParam('max_archive_depth_disable')) {
         	$av->setParam('max_archive_depth', 0);
         } else {
         	$av->setParam('max_archive_depth', $request->getParam('max_archive_depth'));
         }
-        
+
         if ($request->getParam('expand_tnef')) {
            $av->setParam('expand_tnef', 'yes');
            if ($request->getParam('deliver_bad_tnef')) {
@@ -198,16 +198,16 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
         } else {
            $av->setParam('expand_tnef', 'no');
         }
-        
+
         if ($request->getParam('send_notices')) {
         	$av->setParam('send_notices', 'yes');
         	$av->setParam('notices_to', $request->getParam('notices_to'));
         } else {
         	$av->setParam('send_notices', 'no');
         }
-	    
+	
         $av->save();
-        
+
         if ($av->getParam('max_archive_depth') == 0) {
         	$this->getElement('max_archive_depth_disable')->setChecked(true);
             $this->getElement('max_archive_depth')->setValue('');
@@ -215,7 +215,7 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
         } else {
             $this->getElement('max_archive_depth')->setAttrib('class', 'fieldrighted');
         }
-        
+
 	    if ($av->getParam('max_attach_size') < 0) {
         	$this->getElement('max_attach_size_enable')->setChecked(true);
             $this->getElement('max_attach_size')->setValue('');
@@ -223,7 +223,7 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
         } else {
             $this->getElement('max_attach_size')->setAttrib('class', 'fieldrighted');
         }
-        
+
 	   if ($av->getParam('expand_tnef') != 'yes') {
             $this->getElement('deliver_bad_tnef')->setAttrib('class', 'disabled');
             $this->getElement('usetnefcontent')->setAttrib('class', 'disabled');
@@ -235,13 +235,13 @@ class Default_Form_AntivirusGlobalSettings extends ZendX_JQuery_Form
         if ($av->getParam('deliver_bad_tnef') == 'yes') {
         	$this->getElement('deliver_bad_tnef')->setChecked(true);
         }
-        
+
 	    if ($av->getParam('send_notices') != 'yes') {
             $this->getElement('notices_to')->setAttrib('class', 'disabled');
 	    } else {
 	        $this->getElement('notices_to')->setAttrib('class', '');
 	    }
         $this->getElement('notices_to')->setValue($av->getParam('notices_to'));
-        
+
 	}
 }

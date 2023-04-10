@@ -47,10 +47,10 @@ CREATE TABLE stat (
 sub new {
     my $class = shift;
     my $daemon = shift;
- 
+
     my $conf = ReadConfig::getInstance();
-     
-    my $this = {    
+
+    my $this = {
         'class' => $class,
         'daemon' => $daemon,
         'data' => undef,
@@ -60,9 +60,9 @@ sub new {
         'history_avoid_keys_a' => [],
         'template_database' => $conf->getOption('SRCDIR').'/lib/StatsDaemon/Backend/data/stat_template.sqlite'
     };
-    
+
     bless $this, $class;
-    
+
     foreach my $option (keys %{ $this->{daemon} }) {
     	if (defined($this->{$option})) {
     		$this->{$option} = $this->{daemon}->{$option};
@@ -76,14 +76,14 @@ sub new {
     	$this->doLog("base path created: ".$this->{basepath});
     }
     $this->doLog("backend loaded", 'statsdaemon');
-    
+
     $this->{data} = $StatsDaemon::data_;
     return $this;
 }
 
 sub threadInit {
     my $this = shift;
-    
+
     $this->doLog("backend thread initialization", 'statsdaemon');
 }
 
@@ -92,16 +92,16 @@ sub accessFlatElement {
     my $element = shift;
 
     my $value = 0;
-    
+
     my ($path, $file, $base, $el_key) = $this->getPathFileBaseAndKeyFromElement($element);
     if (! -f $file) {
     	return $value;
     }
     my $dbh = $this->connectToDB($file);
     if (defined($dbh)) {
-    	my $current_date = sprintf( '%.4d%.2d%.2d', 
-    	                       $this->{daemon}->getCurrentDate()->{'year'}, 
-    	                       $this->{daemon}->getCurrentDate()->{'month'}, 
+    	my $current_date = sprintf( '%.4d%.2d%.2d',
+    	                       $this->{daemon}->getCurrentDate()->{'year'},
+    	                       $this->{daemon}->getCurrentDate()->{'month'},
     	                       $this->{daemon}->getCurrentDate()->{'day'});
     	my $query = 'SELECT value FROM stat WHERE date='.$current_date.' AND key=\''.$el_key.'\'';
     	my $res = $dbh->selectrow_hashref($query);
@@ -120,23 +120,23 @@ sub accessFlatElement {
 sub stabilizeFlatElement {
     my $this = shift;
     my $element = shift;
-    
+
     my ($path, $file, $base, $el_key) = $this->getPathFileBaseAndKeyFromElement($element);
     foreach my $unwantedkey ( @{ $this->{history_avoid_keys_a} } ) {
         if ($el_key eq $unwantedkey) {
             return 'UNWANTEDKEY';
         }
     }
-    
+
     if (! -d $path) {
         mkpath($path);
     }
-    
+
     my $dbh = $this->connectToDB($file);
     if (defined($dbh)) {
-    	my $current_date = sprintf( '%.4d%.2d%.2d', 
-                               $this->{daemon}->getCurrentDate()->{'year'}, 
-                               $this->{daemon}->getCurrentDate()->{'month'}, 
+    	my $current_date = sprintf( '%.4d%.2d%.2d',
+                               $this->{daemon}->getCurrentDate()->{'year'},
+                               $this->{daemon}->getCurrentDate()->{'month'},
                                $this->{daemon}->getCurrentDate()->{'day'});
         my $query = 'REPLACE INTO stat (date,key,value) VALUES(?,?,?)';
         my $nbrows =  $dbh->do($query, undef, $current_date, $el_key, $this->{daemon}->getElementValueByName($element, 'value'));
@@ -149,7 +149,7 @@ sub stabilizeFlatElement {
         $this->doLog( "Cannot connect to database: " . $file, 'statsdaemon', 'error' );
         return '_CANNOTCONNECTDB';
     }
-    
+
     return 'STABILIZED';
 }
 
@@ -159,7 +159,7 @@ sub getStats {
     my $stop = shift;
     my $what = shift;
     my $data = shift;
-    
+
     return 'OK';
 }
 
@@ -172,10 +172,10 @@ sub doLog {
     my $message   = shift;
     my $given_set = shift;
     my $priority  = shift;
-    
+
     my $msg = $this->{class}." ".$message;
     if ($this->{daemon}) {
-        $this->{daemon}->doLog($msg, $given_set, $priority); 
+        $this->{daemon}->doLog($msg, $given_set, $priority);
     }
 }
 
@@ -186,7 +186,7 @@ sub getPathFileBaseAndKeyFromElement {
 	
 	my @els = split(/:/, $element);
     my $key = pop @els;
-    
+
     my $path = $this->{basepath}.'/'.join('/',@els);
     my $file = $path.'/'.$this->{dbfilename};
     my $base = join(':', @els);

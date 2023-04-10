@@ -4,14 +4,14 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Pending alias requests table
  */
 
 class Default_Model_DbTable_RRDGraphic extends Zend_Db_Table_Abstract
 {
     protected $_name    = 'rrd_stats';
-    
+
     public function __construct() {
     	$this->_db = Zend_Registry::get('writedb');
     }

@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * controller for status page
  */
 
@@ -25,7 +25,7 @@ class StatusController extends Zend_Controller_Action
     	
     	$slave = new Default_Model_Slave();
         $slaves = $slave->fetchAll();
-        
+
         $users = 0;
         foreach ($slaves as $s) {
            foreach (['hardware', 'spools', 'load') as $what] {
@@ -57,7 +57,7 @@ class StatusController extends Zend_Controller_Action
     			    $mo =  unserialize(base64_decode($m));
                         } else {
                             $mo = $m;
-                        } 
+                        }
                         if (! $mo instanceof Default_Model_InformationalMessage) {
                            continue;
                         }

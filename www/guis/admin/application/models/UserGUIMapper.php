@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Web interface settings mapper
  */
 
@@ -32,7 +32,7 @@ class Default_Model_UserGUIMapper
         }
         return $this->_dbTable;
     }
-    
+
     public function find($id, Default_Model_UserGUI $conf)
     {
         $result = $this->getDbTable()->find($id);
@@ -40,13 +40,13 @@ class Default_Model_UserGUIMapper
             return;
         }
         $row = $result->current();
-        
+
         $conf->setId($id);
         foreach ($conf->getAvailableParams() as $key) {
         	$conf->setParam($key, $row->$key);
         }
     }
-    
+
     public function save(Default_Model_UserGUI $conf) {
        $data = $conf->getParamArray();
        $res = '';
@@ -58,5 +58,5 @@ class Default_Model_UserGUIMapper
         }
         return $res;
     }
-    
+
 }

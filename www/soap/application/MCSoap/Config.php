@@ -29,7 +29,7 @@ class MCSoap_Config
 			return 'NOK '.$res;
 		}
    }
-   
+
    /**
    * This function restart networking services
    *
@@ -45,7 +45,7 @@ class MCSoap_Config
           if (!is_dir ($rundir) ) {
               mkdir($rundir);
           }
-          
+
       ## shut down all existing interfaces
       $ifconfig = `/sbin/ifconfig`;
       foreach (preg_split("/\n/", $ifconfig) as $line) {
@@ -61,16 +61,16 @@ class MCSoap_Config
              echo $downcmd."<br />";
           }
       }
-          	  
+          	
       $cmd = '/usr/bin/systemctl restart networking 2>/dev/null && /usr/bin/systemctl restart ssh 2> /dev/null && echo done.';
       $res = `$cmd`;
       $status = 'OK networkingrestarted';
-   	  
+   	
       $res = preg_replace('/\n/', '', $res);
    	  if (! preg_match('/^$/', $res)) {
    	  	return "NOK $res";
    	  }
-   	  
+   	
    	  require_once('NetworkInterface.php');
    	  require_once('NetworkInterfaceMapper.php');
    	  $ifs = new Default_Model_NetworkInterface();
@@ -88,8 +88,8 @@ class MCSoap_Config
           `$cmd >/dev/null 2>&1`;
    	  return $status;
    }
-   
-   
+
+
   /**
    * This function simply copy temporary resolv.conf file to system one
    *
@@ -124,7 +124,7 @@ class MCSoap_Config
 		
 		return $status;
    }
-   
+
    /**
    * This function set up the time zone
    *
@@ -144,7 +144,7 @@ class MCSoap_Config
         if (! file_exists($fullfile)) {
         	return 'NOK unknown locale ';
         }
-	    
+	
 	    $written = file_put_contents($timezonefile, $zone);
 	    if (!$written) {
 	    	return 'NOK could not same timezone';
@@ -217,7 +217,7 @@ class MCSoap_Config
 			    	$res = preg_replace('/\n/', '', $res);
 			    	return "NOK could not sync <br />($res)";
 			    }
-			    
+			
 		        $cmd = "$starter start";
 		        $res = `$cmd`;
 		        $full .= preg_replace('/\n/', '', $res)."<br />";

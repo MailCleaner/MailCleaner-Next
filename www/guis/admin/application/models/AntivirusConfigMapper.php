@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * AntiVirus configuration mapper
  */
 
@@ -32,7 +32,7 @@ class Default_Model_AntivirusConfigMapper
         }
         return $this->_dbTable;
     }
-    
+
     public function find($id, Default_Model_AntivirusConfig $av)
     {
         $result = $this->getDbTable()->find($id);
@@ -45,7 +45,7 @@ class Default_Model_AntivirusConfigMapper
         	$av->setParam($key, $row[$key]);
         }
     }
-        
+
     public function save(Default_Model_AntivirusConfig $av) {
        $data = $av->getParamArray();
        $res = '';

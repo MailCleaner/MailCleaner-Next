@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Local user
  */
 
@@ -73,20 +73,20 @@ class Default_Model_LocalUser
 
     public function find($username, $domain)
     {
-        $this->getMapper()->find($username, $domain, $this);       
+        $this->getMapper()->find($username, $domain, $this);
         return $this;
     }
-    
+
     public function save()
     {	
         return $this->getMapper()->save($this);
     }
-    
+
     public function delete()
     {
     	return $this->getMapper()->delete($this);
     }
-    
+
     public function setPassword($password) {
     	if ($password == '') {
     		return;

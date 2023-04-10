@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Administrator
  */
 
@@ -145,7 +145,7 @@ class Default_Model_Administrator
 		}
 		return 'none';
 	}
-    
+
 	public function setUserType($r) {
 	  if ($r == 'administrator') {
 	  	$this->setParam('domains', '*');
@@ -182,11 +182,11 @@ class Default_Model_Administrator
         $this->getMapper()->find($username, $this);
         return $this;
     }
-    
+
     public function fetchAllName($params = NULL) {
     	return $this->getMapper()->fetchAllName($params);
     }
-    
+
     public function setPassword($password) {
     	if ($password == '') {
     		return;
@@ -196,7 +196,7 @@ class Default_Model_Administrator
         $crypted = crypt($password, '$6$rounds=1000$'.dechex(rand(0,15)).dechex(rand(0,15)).'$');
         $this->setParam('password', $crypted);
     }
-    
+
     public function save()
     {	
     	if ($this->_values['password'] == '') {
@@ -213,7 +213,7 @@ class Default_Model_Administrator
     	}
         return $this->getMapper()->save($this);
     }
-    
+
     public function delete()
     {
     	$t = Zend_Registry::get('translate');
@@ -221,11 +221,11 @@ class Default_Model_Administrator
     		throw new Exception($t->_('Cannot remove admin user'));
     	}
     	if ($this->getParam('username') == Zend_Registry::get('user')->getParam('username')) {
-    		throw new Exception($t->_('Cannot commit suicide')); 
+    		throw new Exception($t->_('Cannot commit suicide'));
     	}
     	return $this->getMapper()->delete($this);
     }
-   
+
     public function checkAuthentication($givenusername, $givenpassword) {
         // deprecated call, gui interface authentication through controller
         return false;

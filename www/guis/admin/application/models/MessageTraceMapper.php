@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Message trace mapper
  */
 
@@ -29,7 +29,7 @@ class Default_Model_MessageTraceMapper
 		$trace_id = 0;
 		$slave = new Default_Model_Slave();
         $slaves = $slave->fetchAll();
-        
+
         foreach ($slaves as $s) {
         	$res = $s->sendSoapRequest('Logs_StartTrace', $params);
         	if (isset($res['trace_id'])) {
@@ -50,7 +50,7 @@ class Default_Model_MessageTraceMapper
 		];
 	    $slave = new Default_Model_Slave();
         $slaves = $slave->fetchAll();
-        
+
         $params['noresults'] = 1;
         $stillrunning = count($slaves);
         $globalrows = 0;
@@ -78,7 +78,7 @@ class Default_Model_MessageTraceMapper
     public function abortFetchAll($params) {
 		$slave = new Default_Model_Slave();
         $slaves = $slave->fetchAll();
-        
+
         foreach ($slaves as $s) {
         	$res = $s->sendSoapRequest('Logs_AbortTrace', $params);
         }
@@ -93,7 +93,7 @@ class Default_Model_MessageTraceMapper
         $entriesflat = [];
         $sortarray = [];
         $slaveentries = [];
-        
+
         $params['noresults'] = 0;
         $params['soap_timeout'] = 20;
         $stillrunning = count($slaves);
@@ -113,14 +113,14 @@ class Default_Model_MessageTraceMapper
 
         	foreach ($sres['data'] as $line) {
         		if (preg_match('/^(\d{4}-\d\d-\d\d \d\d:\d\d:\d\d)/', $line, $matches)) {
-                    $id = md5(uniqid(mt_rand(), true)); 
+                    $id = md5(uniqid(mt_rand(), true));
         			$sortarray[$id] = $matches[1];
         			$entriesflat[$id] = $line;
         			$slaveentries[$id] = $s->getId();
         		}
         	}
         }
-        
+
         if (isset($params['orderfield']) && $params['orderfield'] == 'date') {
         	if ($params['orderorder'] == 'asc') {
         		$params['orderorder'] = 'desc';
@@ -141,9 +141,9 @@ class Default_Model_MessageTraceMapper
         	$entry->setParam('slave_id', $slaveentries[$se]);
         	$entries[] = $entry;
         }
-        
+
         $this->_nbelements = count($entries);
-        
+
 	    $mpp = 20;
 		if (isset($params['mpp']) && is_numeric($params['mpp'])) {
 			$mpp = $params['mpp'];

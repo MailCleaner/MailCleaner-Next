@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * AntiVirus scanner
  */
 
@@ -66,7 +66,7 @@ class Default_Model_AntivirusScanner
         }
         return $this->_mapper;
     }
-    
+
     public function findByName($name) {
     	$this->getMapper()->findByName($name, $this);
         return $this;
@@ -77,11 +77,11 @@ class Default_Model_AntivirusScanner
         $this->getMapper()->find($id, $this);
         return $this;
     }
-    
+
     public function fetchAllActive() {
     	return $this->getMapper()->fetchAllActive();
     }
-   
+
     public function save()
     {
         return $this->getMapper()->save($this);

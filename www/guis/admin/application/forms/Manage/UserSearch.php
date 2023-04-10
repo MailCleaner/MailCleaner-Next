@@ -4,19 +4,19 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * User/Email search form
  */
 
 class Default_Form_Manage_UserSearch extends Zend_Form
 {
     protected $_params;
-    
+
     public function __construct($params) {
         $this->_params = $params;
 		parent::__construct();
     }
-    
+
 	public function init()
 	{
 		$this->setMethod('post');
@@ -38,7 +38,7 @@ class Default_Form_Manage_UserSearch extends Zend_Form
 	    ]);
 	    $username->setValue($this->_params['search']);
 	    $this->addElement($username);
-	    
+	
 	    $domainField = new  Zend_Form_Element_Select('domain', [
 		    'required' => false
 	    ]);
@@ -50,7 +50,7 @@ class Default_Form_Manage_UserSearch extends Zend_Form
 	    }
 	    $domainField->setValue($this->_params['domain']);
 	    $this->addElement($domainField);
-	    
+	
 	    $submit = new Zend_Form_Element_Submit('submit', [
 		     'label'    => $t->_('Edit or add >>'),
 		     'class' => 'useraddsubmit'

@@ -24,8 +24,8 @@ require          Exporter;
 
 use strict;
 use NetSNMP::agent;
-use NetSNMP::OID (':all'); 
-use NetSNMP::agent (':all'); 
+use NetSNMP::OID (':all');
+use NetSNMP::agent (':all');
 use NetSNMP::ASN (':all');
 use lib qw(/usr/rrdtools/lib/perl/);
 use ReadConfig;
@@ -73,11 +73,11 @@ my %processes_tmpl = (
 
 sub initAgent() {
    doLog('Agent Status initializing', 'status', 'debug');
-   
+
    $conf = ReadConfig::getInstance();
-   
+
    populateProcesses();
-   
+
    return $mib_root_position;
 }
 
@@ -123,7 +123,7 @@ sub getVersion {
 	my $version = 'Unknown';
     my $file = $conf->getOption('SRCDIR')."/etc/mailcleaner/version.def";
     my $f;
-    
+
     if (open($f, $file)) {
         while (<$f>) {
             $version = $_;
@@ -171,7 +171,7 @@ sub getPatchLevel {
 sub getSpool {
 	my $oid = shift;
 	my @oid = $oid->to_array();
-    
+
     my $spool = pop(@oid);
     if ($spool !~ /^[124]$/) {
     	$spool = 1;
@@ -186,12 +186,12 @@ sub getSpool {
 sub populateProcesses {
     foreach my $p (sort { $a <=> $b} keys %processes_tmpl ) {
         SNMPAgent::doLog("Added process: $p: ".$processes_tmpl{$p}->{'name'},'status','debug');
-        
+
         $mib_processes_index{1}{$p} = \&getProcessIndex;
         $mib_processes_index{2}{$p} = \&getProcessName;
         $mib_processes_index{3}{$p} = \&getProcessCount;
         $mib_processes_index{4}{$p} = \&getProcessStatus;
-    }        
+    }
 }
 
 sub getRealProcessCount {
@@ -215,7 +215,7 @@ sub getRealProcessCount {
 sub getProcessIndex {
 	my $oid = shift;
     my @oid = $oid->to_array();
-    
+
     #my $field = pop(@oid);
     my $proc = pop(@oid);
     return (ASN_INTEGER, int($proc));
@@ -223,7 +223,7 @@ sub getProcessIndex {
 sub getProcessName {
     my $oid = shift;
     my @oid = $oid->to_array();
-    
+
     #my $field = pop(@oid);
     my $proc = pop(@oid);
     return (ASN_OCTET_STR, $processes_tmpl{$proc}->{'name'});
@@ -231,7 +231,7 @@ sub getProcessName {
 sub getProcessCount {
     my $oid = shift;
     my @oid = $oid->to_array();
-    
+
     #my $field = pop(@oid);
     my $proc = pop(@oid);
     my $count = getRealProcessCount($proc);

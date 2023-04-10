@@ -5,29 +5,29 @@
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
  */
- 
+
 /**
  * requires PEAR's Auth class
  */
 require_once("Auth.php");
- 
+
 /**
  * This is the RadiusAuthenticator class
  * This will take care of authenticate user against a Radius server
  * @package mailcleaner
  */
 class RadiusAuthenticator extends AuthManager {
-    
+
     protected $exhaustive_ = true;
-    
+
     function create($domain) {
        $settings = $domain->getConnectorSettings();
        if (! $settings instanceof RadiusSettings) {
             return false;
         }
-       
+
        $ser = [  [$settings->getSetting('server'), $settings->getSetting('port'), $settings->getSetting('secret')] ];
-       
+
        $funct = ["LoginDialog", "loginFunction"];
        $params = [
                         "servers" => $ser,

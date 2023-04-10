@@ -91,7 +91,7 @@ sub Checks {
         $global::MS->{mta}->AddHeaderToOriginal($message, $Cloudmark::conf{'header'}, 'server could not be reached for');
         return 0;
    }
-  
+
    my (@WholeMessage, $maxsize);
    push(@WholeMessage, $global::MS->{mta}->OriginalMsgHeaders($message, "\n"));
    push(@WholeMessage, "\n");
@@ -100,7 +100,7 @@ sub Checks {
     foreach my $line (@WholeMessage) {
       $msg .= $line;
    }
-    
+
    my $score;
    my $category;
    my $sub_category;
@@ -113,39 +113,39 @@ sub Checks {
             out_sub_category => \$sub_category,
             out_rescan => \$rescan,
             out_analysis => \$analysis);
-    
+
     if ($err) {
         MailScanner::Log::InfoLog("$MODULE scoring failed for ".$message->{id}."!");
         $global::MS->{mta}->AddHeaderToOriginal($message, $Cloudmark::conf{'header'}, 'scoring failed');
         return 0;
     }
-    
+
     my $header = "$analysis";
     my $result_str = "";
-    
+
     if ($Cloudmark::conf{'show_categories'} eq 'yes') {
         my $out_cat;
         my $out_subcat;
 
-        $err = $client->describe_category(category => $category, 
-                sub_category => $sub_category, 
+        $err = $client->describe_category(category => $category,
+                sub_category => $sub_category,
                 out_category_desc => \$out_cat,
                 out_sub_category_desc => \$out_subcat);
 
         if ($err) {
             MailScanner::Log::InfoLog("$MODULE Can't extract category/subcat names for ".$message->{id}."!");
         }
-        else 
+        else
         {
             # replace all punctuation and whitespace with underscores
             $out_subcat =~ s/[[:punct:]\s]/_/g;
-            
+
             $result_str = ", xcat=$out_cat/$out_subcat";
         }
     }
-    
+
     $global::MS->{mta}->AddHeaderToOriginal($message, $Cloudmark::conf{'header'}."-cmaetag", $header);
-    
+
     if ($score > $Cloudmark::conf{'threshold'}) {
         MailScanner::Log::InfoLog("$MODULE result is spam (".$score.$result_str.") for ".$message->{id});
         if ($Cloudmark::conf{'putSpamHeader'}) {
@@ -164,9 +164,9 @@ sub Checks {
 
         return 0;
     }
-    
-  return 0;    
-  
+
+  return 0;
+
 }
 
 sub dispose {

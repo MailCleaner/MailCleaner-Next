@@ -1,10 +1,10 @@
-<?php 
+<?php
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * default antispam settings form
  */
 
@@ -29,7 +29,7 @@ class Default_Form_AntiSpam_Default extends ZendX_JQuery_Form
     	$view=$layout->getView();
     	
 		$this->setMethod('post');
-	           
+	
 		$this->setAttrib('id', 'module_form');
 		
 		$active = new Zend_Form_Element_Checkbox('active', [
@@ -40,7 +40,7 @@ class Default_Form_AntiSpam_Default extends ZendX_JQuery_Form
 		]);
 	    $active->setValue($this->_module->getParam('active'));
 	    $this->addElement($active);
-	    
+	
 	    $decisive = new Zend_Form_Element_Checkbox('decisive', [
 	        'label' => $t->_('Module is decisive'). " :",
                 'title' => $t->_("The module's advice is taken into account"),
@@ -49,20 +49,20 @@ class Default_Form_AntiSpam_Default extends ZendX_JQuery_Form
 	    ]);
 	    $decisive->setValue($this->_module->isDecisive());
 	    $this->addElement($decisive);
-	    
+	
 	    $position = new Zend_Form_Element_Select('position', [
                 'label'      => $t->_('Position in filter chain')." :",
                 'title' => $t->_("Rank of the filter in the execution order"),
                 'required'   => false,
 		'filters'    => ['StringTrim']
 	    ]);
-        
+
         for ($i = 1; $i <= count($this->_module->fetchAll()); $i++) {
         	$position->addMultiOption($i, $i);
         }
         $position->setValue($this->_module->getParam('position'));
         $this->addElement($position);
-	    
+	
         $timeout = new  Zend_Form_Element_Text('timeOut', [
 	    'label' => $t->_('Maximum check time')." :",
             'title' => $t->_("Timeout for the module"),
@@ -74,7 +74,7 @@ class Default_Form_AntiSpam_Default extends ZendX_JQuery_Form
 	$timeout->setValue($this->_module->getParam('timeOut'));
         $timeout->addValidator(new Zend_Validate_Int());
 	$this->addElement($timeout);
-	    
+	
 	    $maxsize = new  Zend_Form_Element_Text('maxSize', [
 	        'label'    => $t->_('Maximum message size')." :",
                 'title' => $t->_("Messages above this size limit are not analyzed"),
@@ -86,7 +86,7 @@ class Default_Form_AntiSpam_Default extends ZendX_JQuery_Form
 	    $maxsize->setValue($this->_module->getParam('maxSize'));
         $maxsize->addValidator(new Zend_Validate_Int());
 	    $this->addElement($maxsize);
-	    
+	
 		$submit = new Zend_Form_Element_Submit('submit', [
 			'label'    => $t->_('Submit')
 		]);

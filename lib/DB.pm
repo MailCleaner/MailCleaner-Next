@@ -35,7 +35,7 @@ sub connect {
   my $type = shift;
   my $db = shift;
   my $critical_p = shift;
-  
+
   my $critical = 1;
   if (defined($critical_p) && $critical_p < 1) {
     $critical = 0;
@@ -48,14 +48,14 @@ sub connect {
   if ($db) {
     $dbase = $db;
   }
-  
+
   # determine socket to use
   my $conf = ReadConfig::getInstance();
   my $socket = $conf->getOption('VARDIR')."/run/mysql_master/mysqld.sock";
   if ($type =~ /slave/) {
     $socket = $conf->getOption('VARDIR')."/run/mysql_slave/mysqld.sock";
   }
-  
+
   my $dbh;
   my $realmaster = 0;
   my $masterfile = $conf->getOption('VARDIR')."/spool/mailcleaner/master.conf";
@@ -81,10 +81,10 @@ sub connect {
       $dbh = DBI->connect("DBI:MariaDB:database=$dbase;host=$host:$port;",
 			"mailcleaner", $password, {RaiseError => 0, PrintError => 0, AutoCommit => 1})
 		or fatal_error("CANNOTCONNECTDB", $critical);
-	  
+	
       $realmaster = 1;
     }
-  } 
+  }
   if ($realmaster < 1) {
     $dbh = DBI->connect("DBI:MariaDB:database=$db;host=localhost;mariadb_socket=$socket",
 			"mailcleaner", $conf->getOption('MYMAILCLEANERPWD'), {RaiseError => 0, PrintError => 0})
@@ -95,7 +95,7 @@ sub connect {
          type => $type,
          critical => $critical,
          };
-         
+
  return bless $this, "DB";
 }
 
@@ -123,7 +123,7 @@ sub disconnect {
 }
 
 sub fatal_error
-{ 
+{
   my $msg = shift;
   my $critical = shift;
 
@@ -138,7 +138,7 @@ sub prepare {
   my $this = shift;
   my $query = shift;
   my $dbh = $this->{dbh};
-  
+
   my $prepared = $dbh->prepare($query);
   if (! $prepared) {
     print "WARNING, CANNOT EXECUTE ($query => ".$dbh->errstr.")\n";
@@ -156,7 +156,7 @@ sub execute {
      $nolock = 0;
   }
   my $dbh = $this->{dbh};
-  
+
   if (!defined($dbh)) {
   	print "WARNING, DB HANDLE IS NULL\n";
     return 0;
@@ -172,7 +172,7 @@ sub commit {
   my $this = shift;
   my $query = shift;
   my $dbh = $this->{dbh};
-  
+
   if (! $dbh->commit()) {
     print "WARNING, CANNOT commit\n";
     return 0;
@@ -182,14 +182,14 @@ sub commit {
 
 sub getListOfHash {
   my $this = shift;
-  my $query = shift;  
+  my $query = shift;
   my $nowarnings = shift;
   if (!defined($nowarnings) || $nowarnings != 1) {
     $nowarnings = 0;
   }
   my $dbh = $this->{dbh};
   my @results;
-  
+
   my $sth = $dbh->prepare($query);
   my $res = $sth->execute();
   if (!defined($res)) {
@@ -201,7 +201,7 @@ sub getListOfHash {
   while (my $ref = $sth->fetchrow_hashref()) {
     push @results, $ref;
   }
-  
+
   $sth->finish();
   return @results;
 }
@@ -215,7 +215,7 @@ sub getList{
   }
   my $dbh = $this->{dbh};
   my @results;
-  
+
   my $sth = $dbh->prepare($query);
   my $res = $sth->execute();
   if (!defined($res)) {
@@ -227,7 +227,7 @@ sub getList{
   while (my @ref = $sth->fetchrow_array()) {
     push @results, $ref[0];
   }
-  
+
   $sth->finish();
   return @results;
 }
@@ -256,7 +256,7 @@ sub getHashRow {
   }
   my $dbh = $this->{dbh};
   my %results;
-  
+
   my $sth = $dbh->prepare($query);
   my $res = $sth->execute();
   if (!defined($res)) {
@@ -265,7 +265,7 @@ sub getHashRow {
   	}
     return %results;
   }
-  
+
   my $ret = $sth->fetchrow_hashref();
   foreach my $key (keys %$ret ) {
     $results{$key} = $ret->{$key};
@@ -299,7 +299,7 @@ sub getLastID {
 sub getError {
   my $this = shift;
   my $dbh = $this->{dbh};
-  
+
   if (defined($dbh->errstr)) {
     return $dbh->errstr;
   }
@@ -309,7 +309,7 @@ sub getError {
 sub setAutoCommit {
   my $this = shift;
   my $v = shift;
-  
+
   if ($v) {
     $this->{dbh}->{AutoCommit} = 1;
     return 1;

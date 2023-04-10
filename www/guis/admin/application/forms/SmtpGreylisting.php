@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * SMTP greylisting form
  */
 
@@ -25,9 +25,9 @@ class Default_Form_SmtpGreylisting extends ZendX_JQuery_Form
     	$view=$layout->getView();
     	
 		$this->setMethod('post');
-	           
+	
 		$this->setAttrib('id', 'greylisting_form');
-	    
+	
 		$retrymin = new  Zend_Form_Element_Text('retry_min', [
 		    'required' => false,
 		    'size' => 6,
@@ -37,7 +37,7 @@ class Default_Form_SmtpGreylisting extends ZendX_JQuery_Form
 	    $retrymin->setValue($this->_greylist->getParam('retry_min'));
         $retrymin->addValidator(new Zend_Validate_Int());
 	    $this->addElement($retrymin);
-	    
+	
 		$retrymax = new  Zend_Form_Element_Text('retry_max', [
 		    'required' => false,
 		    'size' => 6,
@@ -47,7 +47,7 @@ class Default_Form_SmtpGreylisting extends ZendX_JQuery_Form
 	    $retrymax->setValue($this->_greylist->getParam('retry_max'));
         $retrymax->addValidator(new Zend_Validate_Int());
 	    $this->addElement($retrymax);
-	    
+	
 	    $expiretime = new  Zend_Form_Element_Text('expire', [
 		    'required' => false,
 	        'label' => $t->_('Records expiration')." :",
@@ -59,7 +59,7 @@ class Default_Form_SmtpGreylisting extends ZendX_JQuery_Form
 	    $expiretime->setValue($this->_greylist->getParam('expire'));
         $expiretime->addValidator(new Zend_Validate_Int());
 	    $this->addElement($expiretime);
-	    
+	
 	    require_once('Validate/DomainList.php');
 	    $avoiddomains = new Zend_Form_Element_Textarea('avoid_domains', [
 		      'label'    =>  $t->_('Avoid greylisting for these domains')." :",
@@ -72,8 +72,8 @@ class Default_Form_SmtpGreylisting extends ZendX_JQuery_Form
 	    $avoiddomains->addValidator(new Validate_DomainList());
 		$avoiddomains->setValue(preg_replace('/\s+/', "\n", $this->_greylist->getParam('avoid_domains')));
 		$this->addElement($avoiddomains);
-	    
-	    
+	
+	
 		$submit = new Zend_Form_Element_Submit('submit', [
 			'label'    => $t->_('Submit')
 		]);

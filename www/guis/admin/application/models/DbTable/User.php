@@ -4,14 +4,14 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * User table
  */
 
 class Default_Model_DbTable_User extends Zend_Db_Table_Abstract
 {
     protected $_name    = 'user';
-    
+
     public function __construct() {
     	$this->_db = Zend_Registry::get('writedb');
     }

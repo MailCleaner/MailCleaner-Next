@@ -27,7 +27,7 @@ our @EXPORT     = qw(build display);
 our $VERSION    = 1.0;
 
 sub get {
-  
+
   my $text = '';
   my $default = '';
 
@@ -47,7 +47,7 @@ sub build {
 
   $this->{text} = $text;
   $this->{default} = $default;
-  
+
   return $this;
 }
 

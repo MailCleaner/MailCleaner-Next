@@ -25,7 +25,7 @@ use warnings;
 
 our @ISA = "ManageServices";
 
-sub init 
+sub init
 {
 	my $module = shift;
 	my $class = shift;
@@ -102,7 +102,7 @@ sub mainLoop
 	my $class = shift;
 	
 	my $cmd = $self->{'cmd'};
-	open(my $CONF, '<', $self->{'conffile'}) 
+	open(my $CONF, '<', $self->{'conffile'})
 		|| die "Cannot open config file $self->{'conffile'}";
 	while (my $line = <$CONF>) {
 		if ($line =~ m/^#/) {

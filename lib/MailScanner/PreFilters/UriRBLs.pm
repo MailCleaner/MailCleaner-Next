@@ -125,7 +125,7 @@ sub Checks {
         my $senderdomain = $message->{fromdomain};
         my $senderip = $message->{clientip};
 
-        ## try to find sender hostname 
+        ## try to find sender hostname
         ## find out any previous SPF control
         foreach my $hl ($global::MS->{mta}->OriginalMsgHeaders($message)) {
             if ($senderhostname eq '' && $hl =~ m/^Received: from (\S+) \(\[$senderip\]/) {
@@ -185,7 +185,7 @@ sub Checks {
 
     my %uris;
     my %emails;
-    my %shorts; 
+    my %shorts;
 
     if ($entity->is_multipart) {
         foreach my $part ($entity->parts) {

@@ -4,10 +4,10 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
- * 
+ *
  * This is the controller for the file type protection configuration page
  */
- 
+
 if ($_SERVER["REQUEST_METHOD"] == "HEAD") {
   return 200;
 }
@@ -48,7 +48,7 @@ if ($aform->shouldSave()) {
   if ($address == "") {
     $address = 0;
   }
-  $type_get = $sposted['t'];  
+  $type_get = $sposted['t'];
 } else {
   $address = $_REQUEST['a'];
   $type_get = $_REQUEST['t'];
@@ -72,7 +72,7 @@ if ($mode == "badmode") {
 
 // check list type parameter
 $type = 'warn';
-if ($type_get=='1' || $type_get=='white') 
+if ($type_get=='1' || $type_get=='white')
 	$type = 'white';
 if($type_get == '3' || $type_get =='black')
 	$type = 'black';
@@ -85,9 +85,9 @@ if ($_GET['d'] && is_numeric($_GET['d'])) {
     if ($deleted == "OKDELETED") {
       $deleted_msg = $lang_->print_txt('DELETESUCCESSFULL');
     } else {
-      $deleted_msg = $lang_->print_txt('DELETEERROR')."(".$deleted.")";    
+      $deleted_msg = $lang_->print_txt('DELETEERROR')."(".$deleted.")";
     };
-  }      
+  }
 }
 
 // create add form
@@ -110,7 +110,7 @@ if ($aform->shouldSave()) {
   } else {
   	$addstatus = $lang_->print_txt("ADDEDERROR")." ($addstatus)";
   }
-}   
+}
 
 // load list
 $wwlist = new WWList();

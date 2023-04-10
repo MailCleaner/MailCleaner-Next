@@ -245,7 +245,7 @@ sub loadPrefs {
         my %res = $this->{db}->getHashRow($query);
         if ( !%res || !$res{id} ) {
             return 0;
-        } 
+        }
         foreach my $p (keys %res) {
             $this->{prefs}->{$p} = $res{$p};
         }

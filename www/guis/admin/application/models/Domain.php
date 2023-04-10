@@ -28,16 +28,16 @@ class Default_Model_Domain
 	protected $_aliases = [];
 
 	protected $_configpanels = [
-		'general', 
+		'general',
 		'delivery',
-		'addressverification', 
+		'addressverification',
 		'preferences',
-		'authentication', 
-		'filtering', 
-		'advanced', 
-		'spamcovercharge', 
-		'outgoing', 
-		'archiving', 
+		'authentication',
+		'filtering',
+		'advanced',
+		'spamcovercharge',
+		'outgoing',
+		'archiving',
 		'templates'
 	];
 
@@ -190,7 +190,7 @@ class Default_Model_Domain
 	}
 
         public function getDistinctDomainsCount() {
-                return $this->getMapper()->getDistinctDomainsCount();        
+                return $this->getMapper()->getDistinctDomainsCount();
         }
 
 	public function fetchAll() {
@@ -200,7 +200,7 @@ class Default_Model_Domain
 	public function fetchAllName($params = NULL) {
 		return $this->getMapper()->fetchAllName($params);
 	}
-	 
+	
 	public function save()
 	{
 		if (!$this->_prefs) {
@@ -217,7 +217,7 @@ class Default_Model_Domain
 		
                 if ($this->getParam('name') == '') {
                   return;
-                } 
+                }
                 $givenparams = $this->getParamArray();
 		$ret = $this->getMapper()->save($this);
 
@@ -253,7 +253,7 @@ class Default_Model_Domain
 		$params = ['what' => 'domains'];
         $slave = new Default_Model_Slave();
         $res = $slave->sendSoapToAll('Service_silentDump', $params);
-        
+
 		return $ret;
 	}
 
@@ -327,7 +327,7 @@ class Default_Model_Domain
 	public function saveAliases() {
 		require_once('Validate/DomainName.php');
 		$validator = new Validate_DomainName();
-		 
+		
 		foreach ($this->_aliases as $alias) {
 			if ($validator->isValid($alias)) {
 				$domain = new Default_Model_Domain();
@@ -336,7 +336,7 @@ class Default_Model_Domain
 				$domain->setAsAliasOf($this);
 			}
 		}
-		 
+		
 		## delete removed aliases
 		$listed = $this->getMapper()->getAliases($this);
 		foreach ($listed as $l) {
@@ -369,7 +369,7 @@ class Default_Model_Domain
 			$servers = $matches[1];
 			$options = $matches[2];
 		}
-		 
+		
 		$ports = ['25' => 0];
 		$servers = preg_replace('/::+/', '%', $servers);
 		#if (preg_match('/\/(mx|MX)/', $servers)) {
@@ -404,7 +404,7 @@ class Default_Model_Domain
 		## find default port:
 		arsort($ports);
 		$this->_destination_port = key($ports);
-		 
+		
 		$i = 0;
 		foreach ($this->_destinations as $dest) {
 			if ($dest['port'] == $this->_destination_port) {
@@ -429,7 +429,7 @@ class Default_Model_Domain
 			$servers = $matches[1];
 			$options = $matches[2];
 		}
-		 
+		
 		$ports_smarthost = ['25' => 0];
 		$servers = preg_replace('/::+/', '%', $servers);
 		#if (preg_match('/\/(mx|MX)/', $servers)) {
@@ -464,7 +464,7 @@ class Default_Model_Domain
 		## find default port:
 		arsort($ports);
 		$this->_destination_port_smarthost = key($ports);
-		 
+		
 		$i = 0;
 		foreach ($this->_destinations_smarthost as $dest) {
 			if ($dest['port'] == $this->_destination_port_smarthost) {
@@ -537,7 +537,7 @@ class Default_Model_Domain
 			}
 			if (preg_match('/^([^:]+):+(\d+)/', $destination['host'], $matches)) {
 				$destination['port'] = $matches[2];
-				$destination['host'] = $matches[1]; 
+				$destination['host'] = $matches[1];
 			}
 			$hoststr = $destination['host'].':'.$destination['port'];
 			if ($destination['host'] == '+') {
@@ -549,7 +549,7 @@ class Default_Model_Domain
 			$str .= $hoststr."\n";
 		}
 		$str = preg_replace("/\n$/", '', $str);
-		 
+		
 		return $str;
 	}
 
@@ -561,7 +561,7 @@ class Default_Model_Domain
 			}
 			if (preg_match('/^([^:]+):+(\d+)/', $destination_smarthost['host'], $matches)) {
 				$destination_smarthost['port'] = $matches[2];
-				$destination_smarthost['host'] = $matches[1]; 
+				$destination_smarthost['host'] = $matches[1];
 			}
 			$hoststr = $destination_smarthost['host'].':'.$destination_smarthost['port'];
 			if ($destination_smarthost['host'] == '+') {
@@ -573,7 +573,7 @@ class Default_Model_Domain
 			$str .= $hoststr."\n";
 		}
 		$str = preg_replace("/\n$/", '', $str);
-		 
+		
 		return $str;
 	}
 
@@ -612,7 +612,7 @@ class Default_Model_Domain
 			}
 			$this->_destinations[] = $s;
 		}
-		 
+		
 	}
 
         public function setDestinationServersFieldString_smarthost($string) {
@@ -631,9 +631,9 @@ class Default_Model_Domain
 			}
 			$this->_destinations_smarthost[] = $s;
 		}
-		 
+		
 	}
-	 
+	
 	public function getDestinationPort() {
 		return $this->_destination_port;
 	}
@@ -658,7 +658,7 @@ class Default_Model_Domain
 			#}
 		    if (preg_match('/^([^:]+):+(\d+)/', $destination['host'], $matches)) {
                 $destination['port'] = $matches[2];
-                $destination['host'] = $matches[1]; 
+                $destination['host'] = $matches[1];
             }
 			$hoststr = $destination['host'].'::'.$destination['port'];
 			if ($destination['host'] == '+') {
@@ -673,7 +673,7 @@ class Default_Model_Domain
 		}
 		$str = preg_replace('/\s$/', '', $str);
 		$str = preg_replace('/^\:.*/', '', $str);
-		 
+		
 		return $str;
 	}
 
@@ -688,7 +688,7 @@ class Default_Model_Domain
 			#}
 		    if (preg_match('/^([^:]+):+(\d+)/', $destination_smarthost['host'], $matches)) {
                 $destination_smarthost['port'] = $matches[2];
-                $destination_smarthost['host'] = $matches[1]; 
+                $destination_smarthost['host'] = $matches[1];
             }
 			$hoststr = $destination_smarthost['host'].'::'.$destination_smarthost['port'];
 			if ($destination_smarthost['host'] == '+') {
@@ -703,7 +703,7 @@ class Default_Model_Domain
 		}
 		$str = preg_replace('/\s$/', '', $str);
 		$str = preg_replace('/^\:.*/', '', $str);
-		 
+		
 		return $str;
 	}
 
@@ -717,7 +717,7 @@ class Default_Model_Domain
                 return 'false';
 	}
 	public function setDestinationUseMX($value) {
-                $this->setParam('forward_by_mx', false); 
+                $this->setParam('forward_by_mx', false);
                 if ($value) {
                    $this->setParam('forward_by_mx', true);
                 }
@@ -733,7 +733,7 @@ class Default_Model_Domain
 	public function testDestinationsSMTP() {
 		return 'OK passed';
 	}
-	 
+	
 	public function getDestinationServers() {
 		return $this->_destinations;
 	}
@@ -741,7 +741,7 @@ class Default_Model_Domain
 	public function getDestinationServers_smarthost() {
 		return $this->_destinations_smarthost;
 	}
-	 
+	
 	public function destinationTestFinished() {
 		return $this->_destinationtest_finished;
 	}
@@ -750,7 +750,7 @@ class Default_Model_Domain
 		if (count($servers) < 1 || (count($servers) == 1 && $servers[0]['host'] == ''))  {
 			$this->_destinationtest_finished = true;
 			return [
-				'nodestinationset' => 
+				'nodestinationset' =>
 					['status' => 'NOK', 'message' => 'nodestinationset']
 			];
 		}
@@ -797,7 +797,7 @@ class Default_Model_Domain
 		$this->_destinationtest_finished = true;
 		return $whats;
 	}
-	 
+	
 	/*
 	 * Callout management
 	 */
@@ -819,7 +819,7 @@ class Default_Model_Domain
 	public function setCalloutConnector($connector) {
 		$this->_calloutconnector = $connector;
 	}
-	 
+	
 	public function getCalloutTestStatus($reset) {
 		if ($this->getParam('callout') == 'false' && $this->getParam('adcheck') == 'false') {
 			$this->_callouttest_finished = true;
@@ -886,7 +886,7 @@ class Default_Model_Domain
 	public function calloutTestFinished() {
 		return $this->_callouttest_finished;
 	}
-	 
+	
 	/**
 	 * Default preferences
 	 */
@@ -926,7 +926,7 @@ class Default_Model_Domain
 	public function getSummaryTypes() {
 		return $this->_summaryTypes;
 	}
-	 
+	
 	/**
 	 * user authentication
 	 */
@@ -936,7 +936,7 @@ class Default_Model_Domain
 		}
 		return 'none';
 	}
-	 
+	
 	private function loadAuthConnector($create = 1) {
 		if ($this->getAuthConnector() == 'none') {
 			return;
@@ -965,7 +965,7 @@ class Default_Model_Domain
 		  $this->auth_->create($domain_);
                 }
 	}
-	 
+	
 	public function isAuthExhaustive() {
 		if (!$this->auth_) {
 			$this->loadAuthConnector(0);
@@ -975,28 +975,28 @@ class Default_Model_Domain
 		}
 		return $this->auth_->isExhaustive();
 	}
-	 
+	
 	public function isAuthLocal() {
 		if ($this->getPref('auth_type') == 'local') {
 			return true;
 		}
 		return false;
 	}
-	 
+	
 	public function isFetcherLocal() {
 		if ($this->getPref('address_fetcher') == 'local') {
 			return true;
 		}
 		return false;
 	}
-	 
+	
 	public function getAddresFetcher() {
 		if ($this->getPref('address_fetcher') != '') {
 			return $this->getPref('address_fetcher');
 		}
 		return 'none';
 	}
-	 
+	
 	private function loadAddressFetcher() {
 		if ($this->getPref('address_fetcher') == 'none') {
 			return;
@@ -1029,8 +1029,8 @@ class Default_Model_Domain
                 }
                 return $this->fetcher_->isExhaustive();
         }
- 
-	 
+
+	
 	public function loadOldDomain() {
 		if ($this->domain_) {
             return $this->domain_;
@@ -1057,7 +1057,7 @@ class Default_Model_Domain
 
 		return $this->domain_;
 	}
-	 
+	
 	public function fetchUsers($username) {
 		if (!$this->fetcher_) {
 			$this->loadAddressFetcher();
@@ -1069,7 +1069,7 @@ class Default_Model_Domain
 		$ret = $this->fetcher_->searchUsers($username, $this->domain_);
 		return $ret;
 	}
-	 
+	
 	public function fetchEmails($address) {
 		if (!$this->fetcher_) {
 			$this->loadAddressFetcher();
@@ -1081,7 +1081,7 @@ class Default_Model_Domain
 		$ret = $this->fetcher_->searchEmails($address, $this->domain_);
 		return $ret;
 	}
-	 
+	
 	public function testUserAuth($username, $password) {
 		//TODO: test authentication
 
@@ -1110,7 +1110,7 @@ class Default_Model_Domain
 
 		$domain_ = new Domain();
 		$domain_->load($this->getParam('name'));
-		 
+		
 		$username = $domain_->getFormatedLogin($username);
 		$_POST['username'] = utf8_decode($username);
 		$_POST['password'] = utf8_decode($password);
@@ -1123,7 +1123,7 @@ class Default_Model_Domain
 			$user = new User();
 			$user->setDomain($this->getParam('name'));
 			$user->load($username);
-			 
+			
 			$addresses = $user->getAddresses();
 			$addlist = [];
 			foreach ($addresses as $add => $ismain) {
@@ -1144,7 +1144,7 @@ class Default_Model_Domain
 			'errors' => $auth_->getMessages()
 		];
 	}
-	 
+	
 	/*
 	 * templates
 	 */
@@ -1153,7 +1153,7 @@ class Default_Model_Domain
 		$path = $config->getOption('SRCDIR')."/www/user/htdocs/templates";
 		return $this->getTemplates($path);
 	}
-	 
+	
 	public function getSummaryTemplates() {
 		$config = MailCleaner_Config::getInstance();
 		$path = $config->getOption('SRCDIR')."/templates/summary/";
@@ -1165,7 +1165,7 @@ class Default_Model_Domain
                 $path = $config->getOption('SRCDIR')."/templates/reports/";
                 return $this->getTemplates($path);
         }
-	 
+	
 	protected function getTemplates($path) {
 		$ret = ['default'];
 		if (is_dir($path)) {

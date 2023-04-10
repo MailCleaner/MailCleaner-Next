@@ -34,17 +34,17 @@ our $VERSION    = 1.0;
 
 sub New {
   my $hostname = shift;
-  
+
   my $conf = ReadConfig::getInstance();
   my $spooldir = $conf->getOption('VARDIR')."/spool/rrdtools/".$hostname;
   my $pictdir = $conf->getOption('VARDIR')."/www/mrtg/".$hostname;
   my %stats = ();
- 
+
   my $slave_db = DB::connect('slave', 'mc_config');
   my %row = $slave_db->getHashRow("SELECT community FROM snmpd_config WHERE set_id=1");
   $slave_db->disconnect();
   my $community = $row{'community'};
- 
+
   my $this = {
          hostname => $hostname,
          spooldir => $spooldir,
@@ -71,13 +71,13 @@ sub New {
 sub createRRD {
   my $this = shift;
   my $type = shift;
-  
+
   if ($type eq 'cpu') {
 	my $res = `uname -r`;
 	if ($res =~ m/^2.4/) {
 	  require RRD::Cpu24;
 	  $this->{stats}{$type} = &RRD::Cpu24::New($this->{spooldir}, 0);
-	} else { 
+	} else {
 	  require RRD::Cpu;
   	  $this->{stats}{$type} = &RRD::Cpu::New($this->{spooldir}, 0);
 	}
@@ -105,7 +105,7 @@ sub createRRD {
 sub collect {
   my $this = shift;
   my $type = shift;
-  
+
   if (defined($this->{stats}->{$type})) {
     $this->{stats}->{$type}->collect($this->{snmp_session});
   }
@@ -115,7 +115,7 @@ sub plot {
   my $this = shift;
   my $type = shift;
   my $mode = shift;
-  
+
   my @ranges = ('day', 'week');
   if ($mode eq 'daily') {
     @ranges = ('month', 'year');
@@ -131,7 +131,7 @@ sub plot {
 
 sub create_stats_dir {
   my $this = shift;
-  
+
   my $conf = ReadConfig::getInstance();
   my $dir = $this->{spooldir};
   if ( ! -d $dir) {
@@ -142,7 +142,7 @@ sub create_stats_dir {
 
 sub create_graph_dir {
   my $this = shift;
-  
+
   my $conf = ReadConfig::getInstance();
   my $dir = $this->{pictdir};
   if ( ! -d $dir) {
@@ -153,12 +153,12 @@ sub create_graph_dir {
 
 sub connectSNMP {
   my $this = shift;
-  
+
   if (defined($this->{snmp_session})) {
     return 1;
   }
 
-  my ($session, $error) = Net::SNMP->session( 
+  my ($session, $error) = Net::SNMP->session(
                             -hostname => $this->{hostname},
                             -community => $this->{'community'},
                             -port => 161,

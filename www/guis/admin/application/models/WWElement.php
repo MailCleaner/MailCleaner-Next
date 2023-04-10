@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * White/Warn list element
  */
 
@@ -78,11 +78,11 @@ class Default_Model_WWElement
         $this->getMapper()->find($id, $this);
         return $this;
     }
-    
+
     public function fetchAll($destination, $type) {
     	return $this->getMapper()->fetchAll($destination, $type);
     }
-    
+
     public function fetchAllField($destination, $type, $field) {
     	return $this->getMapper()->fetchAllField($destination, $type, $field);
     }
@@ -91,46 +91,46 @@ class Default_Model_WWElement
     public function setBulkSender($domain, $senders, $type) {
     	return $this->getMapper()->setBulkSender($domain, $senders, $type);
     }
-    
+
     public function setSpamcOvercharge($domain, $comment, $type) {
     	return $this->getMapper()->setSpamcOvercharge($domain, $comment, $type);
     }
-    
+
     public function save()
     {
         return $this->getMapper()->save($this);
     }
-    
+
     public function delete()
     {
     	return $this->getMapper()->delete($this);
     }
-    
+
    public function getStatus() {
     	if ($this->getParam('status')) {
     		return 1;
     	}
     	return 0;
     }
-    
+
     public function setValue($value) {
     	$this->setParam('sender', $value);
     }
-    
+
     public function setComment($comment) {
     	if ($comment == '') {
     		$comment = "-";
     	}
     	$this->setParam('comments', $comment);
     }
-    
+
     public function getComment() {
     	if ($this->getParam('comments') != '-') {
           return $this->getParam('comments');
     	}
     	return '';
     }
-    
+
     public function disable() {
     	$this->setParam('status', 0);
     	$this->save();

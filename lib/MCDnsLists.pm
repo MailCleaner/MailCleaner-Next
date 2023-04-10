@@ -510,7 +510,7 @@ sub check_dns {
                 my $IPobject = Net::IP->new($callvalue);
                 if ($IPobject) {
                     $callvalue = $IPobject->reverse_ip;
-                    $callvalue =~ s/[a-z0-9]\.arpa\.$//; 
+                    $callvalue =~ s/[a-z0-9]\.arpa\.$//;
                     $callvalue =~ s/\.in-add$//;
                     $callvalue =~ s/\.ip$//;
                     $callvalue =~ s/\.\./\./;

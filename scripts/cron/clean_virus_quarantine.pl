@@ -38,7 +38,7 @@ opendir(QDIR, $quarantine_dir) or die "Couldn't read directory $quarantine_dir";
 # Loop through this list looking for any *directory* which hasn't been
 # modified in the last $days_to_keep days.
 # Unfortunately this will do nothing if the filesystem is backed up using tar.
-while(my $entry = readdir(QDIR)) { 
+while(my $entry = readdir(QDIR)) {
         next if $entry =~ /^\./;
         $entry = $quarantine_dir . '/' . $entry;
         system("rm -rf $entry") if -d $entry &&

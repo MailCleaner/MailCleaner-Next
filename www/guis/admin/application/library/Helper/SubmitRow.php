@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Setup base view variables
  */
 
@@ -12,7 +12,7 @@ class MailCleaner_View_Helper_SubmitRow extends Zend_View_Helper_Abstract
 {
 	
     public $view;
- 
+
     public function setView(Zend_View_Interface $view)
     {
         $this->view = $view;
@@ -20,7 +20,7 @@ class MailCleaner_View_Helper_SubmitRow extends Zend_View_Helper_Abstract
 	
 	/*
 	 * possible params:
-	 * 
+	 *
 	 * cols: int
 	 * row_id : string
 	 * row_class: string
@@ -37,7 +37,7 @@ class MailCleaner_View_Helper_SubmitRow extends Zend_View_Helper_Abstract
 		$string = '';
 		
 		// tr
-		if ( (!isset($params['field_only']) || !$params['field_only']) ) {    
+		if ( (!isset($params['field_only']) || !$params['field_only']) ) {
     	    $string .= '<tr';
     	    if (isset($params['row_id'])) {
     	    	$string .= ' id="'.$params['row_id'].'"';
@@ -58,7 +58,7 @@ class MailCleaner_View_Helper_SubmitRow extends Zend_View_Helper_Abstract
                 $string .= ' class="fvalue fsubmit';
                 if (isset($params['field_addclass'])) {
                     $string .= ' '.$params['field_addclass'];
-                }          
+                }
             }
             $string .= '"';
 		    $string .= ' colspan="';
@@ -78,8 +78,8 @@ class MailCleaner_View_Helper_SubmitRow extends Zend_View_Helper_Abstract
 		// /tr
 		if ( (!isset($params['field_only']) || !$params['field_only'])) {
 	        $string .= "</tr>\n";
-        } 
-        
+        }
+
 		return $string;
 	}
 }

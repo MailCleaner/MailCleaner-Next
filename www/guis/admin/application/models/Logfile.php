@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Logfile
  */
 
@@ -101,7 +101,7 @@ class Default_Model_Logfile
 
 		$slave = new Default_Model_Slave();
         $slaves = $slave->fetchAll();
-        
+
         $params['files'] = [];
         foreach ($this->_available_types as $c => $v) {
         	$params['files'][] = $v['basefile'];
@@ -124,7 +124,7 @@ class Default_Model_Logfile
                 }
                 $l->setParam('link', preg_replace('/\//', '-', $l->getParam('file')));
                 $res[] = $l;
-            }           
+            }
         }
         return $res;
 	}

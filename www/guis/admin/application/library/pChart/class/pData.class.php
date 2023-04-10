@@ -810,7 +810,7 @@ class pData
 						foreach($Values as $Key => $Value) {
 							(!in_[$Key, $SkipColumns)] AND $this->addPoints($Value, $SerieNames[$Key]);
 						}
-					} 
+					}
 				} # $Buffer != ""
 			} # while
 

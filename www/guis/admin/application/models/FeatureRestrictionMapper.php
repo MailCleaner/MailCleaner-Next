@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Administrator mapper
  */
 
@@ -32,7 +32,7 @@ class Default_Model_FeatureRestrictionMapper
         }
         return $this->_dbTable;
     }
-        
+
     public function fetchAll($params)
     {
     	$restrictions = [];

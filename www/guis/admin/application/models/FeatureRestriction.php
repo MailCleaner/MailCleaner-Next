@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Administrator
  */
 
@@ -58,12 +58,12 @@ class Default_Model_FeatureRestriction
         }
         return $this->_mapper;
     }
-    
+
     public function load($params = NULL) {
     	$this->_restrictions = $this->getMapper()->fetchAll($params);
     	return true;
     }
-    
+
     public function isRestricted($section, $feature) {
     	if (!$this->_restrictions) {
     		$this->load();

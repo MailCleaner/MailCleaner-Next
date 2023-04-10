@@ -1,10 +1,10 @@
-<?php 
+<?php
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * MessageSniffer form
  */
 
@@ -36,7 +36,7 @@ class Default_Form_AntiSpam_MessageSniffer extends Default_Form_AntiSpam_Default
 			    'filters'    => ['StringTrim']
 		]);
                 $licenseid->setValue($as->getParam('licenseid'));
-                $this->addElement($licenseid);     
+                $this->addElement($licenseid);
 
                 $authentication = new  Zend_Form_Element_Text('authentication', [
                             'label'   => $t->_('Authentication')." :",

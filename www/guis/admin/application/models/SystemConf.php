@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * System configuration
  */
 
@@ -34,7 +34,7 @@ class Default_Model_SystemConf
       'api_fulladmin_ips' => '',
       'api_admin_ips' => ''
     ];
-    
+
     protected $_restart_what = [
        'default_domain' => ['exim_stage1','exim_stage4']
     ];
@@ -109,7 +109,7 @@ class Default_Model_SystemConf
         $this->getMapper()->find($id, $this);
         return $this;
     }
-   
+
     public function save()
     {
     	$ret = $this->getMapper()->save($this);

@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Localization settings form
  */
 
@@ -26,34 +26,34 @@ class Default_Form_Localization extends ZendX_JQuery_Form
     	$view=$layout->getView();
     	
 		$this->setMethod('post');
-	           
+	
 		$this->setAttrib('id', 'localization_form');
 	    $zlist = new Zend_Form_Element_Select('zone', [
             'label'      => $t->_('Main zone')." :",
             'required'   => true,
 	    'filters'    => ['StringTrim']
 	    ]);
-        
+
         foreach ($this->_locale->getZones() as $zk => $zv) {
         	$zlist->addMultiOption($zk, $t->_($zv));
         }
         $zlist->setValue($this->_locale->getMainZone());
         $this->addElement($zlist);
-        
-        
+
+
         $subzlist = new Zend_Form_Element_Select('selectsubzone', [
             'label'      => $t->_('Sub zone')." :",
             'required'   => true,
 	    'filters'    => ['StringTrim']
 	]);
-        
+
         foreach ($this->_locale->getSubZones() as $zk => $zv) {
         	$subzlist->addMultiOption($zk, $t->_($zv));
         }
         $subzlist->setValue($this->_locale->getSubZone());
         $this->addElement($subzlist);
-        
-        
+
+
 		$submit = new Zend_Form_Element_Submit('localesubmit', [
 			'label'    => $t->_('Submit')
 		]);

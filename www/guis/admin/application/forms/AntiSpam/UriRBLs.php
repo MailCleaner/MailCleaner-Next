@@ -1,10 +1,10 @@
-<?php 
+<?php
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * UriRBLs form
  */
 
@@ -40,13 +40,13 @@ class Default_Form_AntiSpam_UriRBLs extends Default_Form_AntiSpam_Default
             'required'   => false,
 	    'filters'    => ['StringTrim']
 	]);
-        
+
         for ($i = 1; $i <= count($rbllist->getRBLs('URIRBL')); $i++) {
         	$spam_list_to_be_spam->addMultiOption($i, $i);
         }
         $spam_list_to_be_spam->setValue($as->getParam('listeduristobespam'));
         $this->addElement($spam_list_to_be_spam);
-        
+
 	foreach ($rbllist->getRBLs('URIRBL') as $rbl) {
 		$userbl = new Zend_Form_Element_Checkbox('use_rbl_'.$rbl['name'], [
 			'label' => $rbl['dnsname'],

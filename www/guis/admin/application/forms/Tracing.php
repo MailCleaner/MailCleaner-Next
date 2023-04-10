@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Tracing page form
  */
 
@@ -26,7 +26,7 @@ class Default_Form_Tracing extends ZendX_JQuery_Form
     	$view=$layout->getView();
     	
 		$this->setMethod('post');
-	           
+	
 		$this->setAttrib('id', 'filter_form');
 		
 		$search = new  Zend_Form_Element_Text('search', [
@@ -34,7 +34,7 @@ class Default_Form_Tracing extends ZendX_JQuery_Form
 		]);
 	    $search->setValue($this->_params['search']);
 	    $this->addElement($search);
-	    
+	
 	    $domainField = new  Zend_Form_Element_Select('domain', [
 		    'required' => false
 	    ]);
@@ -46,7 +46,7 @@ class Default_Form_Tracing extends ZendX_JQuery_Form
 	    }
 	    $domainField->setValue($this->_params['domain']);
 	    $this->addElement($domainField);
-	    
+	
 	    $sender = new  Zend_Form_Element_Text('sender', [
 	        'label' => $t->_('Filter by Incoming MTA details')." : ",
                 'title' => $t->_('Enter value for another Incoming MTA stage attribute of the message such as the external address, hostname, Message Id or Queue Id. Search multiple criteria by separating with a space.'),
@@ -55,7 +55,7 @@ class Default_Form_Tracing extends ZendX_JQuery_Form
 	    ]);
 	    $sender->setValue($this->_params['sender']);
 	    $this->addElement($sender);
-	    
+	
 	    $months = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
 	    $fd = new Zend_Form_Element_Select('fd', [
 		    'required' => true
@@ -67,7 +67,7 @@ class Default_Form_Tracing extends ZendX_JQuery_Form
             $fd->setValue($this->_params['fd']);
 	    }
 	    $this->addElement($fd);
-	    
+	
 	    $fm = new Zend_Form_Element_Select('fm', [
 		    'required' => true
 	    ]);
@@ -79,7 +79,7 @@ class Default_Form_Tracing extends ZendX_JQuery_Form
             $fm->setValue($this->_params['fm']);
 	    }
 	    $this->addElement($fm);
-	    
+	
 	    $td = new Zend_Form_Element_Select('td', [
 		    'required' => true
 	    ]);
@@ -101,14 +101,14 @@ class Default_Form_Tracing extends ZendX_JQuery_Form
             $tm->setValue($this->_params['tm']);
 	    }
 	    $this->addElement($tm);
-	    
-	    
+	
+	
 	    $mpps = [5, 10, 20, 50, 100];
 	    $mpp = new Zend_Form_Element_Select('mpp', [
 	        'label' => $t->_('Number of lines displayed').' : ',
 		'required' => true
 	    ]);
-	    
+	
 	    foreach ($mpps as $m) {
 	    	$mpp->addMultiOption($m, $m);
 	    }
@@ -116,7 +116,7 @@ class Default_Form_Tracing extends ZendX_JQuery_Form
 	    if (isset($this->_params['mpp']) && $this->_params['mpp']) {
             $mpp->setValue($this->_params['mpp']);
 	    }
-	    $this->addElement($mpp); 
+	    $this->addElement($mpp);
 
             $hiderejected = new Zend_Form_Element_Checkbox('hiderejected', [
                 'label'   => $t->_('Hide rejected messages '),
@@ -127,7 +127,7 @@ class Default_Form_Tracing extends ZendX_JQuery_Form
                  $hiderejected->setChecked(true);
             }
             $this->addElement($hiderejected);
-	    
+	
 	    $submit = new Zend_Form_Element_Submit('submit', [
 		     'label'    => $t->_('Refresh'),
 		     'onclick' => 'javascript:resubmit=1;canceled=0;noshowreload=0;launchSearch();return false;'

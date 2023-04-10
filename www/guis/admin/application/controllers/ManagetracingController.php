@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * controller for message tracing page
  */
 
@@ -28,11 +28,11 @@ class ManagetracingController extends Zend_Controller_Action
 		$todateO = Zend_Date::now();
 	    $fromdateO = Zend_Date::now();
 #        $fromdateO->sub('1', Zend_Date::DAY, Zend_Registry::get('Zend_Locale')->getLanguage());
-        
+
         $todate = Zend_Locale_Format::getDate($todateO, ['date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()]);
         $fromdate = Zend_Locale_Format::getDate($fromdateO, ['date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()]);
-       
-        
+
+
         foreach ( ['fd' => 'day', 'fm' => 'month') as $tk => $tv] {
         	if  (!isset($params[$tk]) || !$params[$tk]) {
         	    $params[$tk] = $fromdate[$tv];
@@ -48,7 +48,7 @@ class ManagetracingController extends Zend_Controller_Action
         if ($params['tm'] < $params['fm']) {
         	$params['fy']--;
         }
-        
+
         $params['datefrom'] = sprintf("%04d%02d%02d",$params['fy'],$params['fm'],$params['fd']);
         $params['dateto'] = sprintf("%04d%02d%02d",$params['ty'],$params['tm'],$params['td']);
         if (isset($params['search']) && isset($params['domain'])) {
@@ -76,12 +76,12 @@ class ManagetracingController extends Zend_Controller_Action
     	$main_menus = Zend_Registry::get('main_menu')->findOneBy('id', 'submanage_Tracing')->class = 'submenuelselected';
     	$view->selectedSubMenu = 'Tracing';
     }
-    
+
     public function indexAction() {
   	    $t = Zend_Registry::get('translate');
 		$layout = Zend_Layout::getMvcInstance();
 		$view=$layout->getView();
-		 
+		
 		$request = $this->getRequest();
 		$form    = new Default_Form_Tracing($this->getSearchParams());
 		$form->setAction(Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managetracing'));
@@ -96,9 +96,9 @@ class ManagetracingController extends Zend_Controller_Action
 		$layout->disableLayout();
 		$view->addScriptPath(Zend_Registry::get('ajax_script_path'));
 		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managecontentquarantine', NULL, []);
-		 
+		
 		$request = $this->getRequest();
-		 
+		
 		$loading = 1;
 		if (! $request->getParam('load')) {
 			sleep(1);
@@ -106,10 +106,10 @@ class ManagetracingController extends Zend_Controller_Action
 		}
 		$view->loading = $loading;
 		$view->params = $this->getSearchParams();
-		 
+		
 		$orderfield = 'date';
 		$orderorder = 'desc';
-		 
+		
 		$columns = [
                   'taction' => ['label' => 'Action'],
 		  'in_date' => ['label' => 'Arrival date'],
@@ -193,7 +193,7 @@ class ManagetracingController extends Zend_Controller_Action
 		
 		$view->page = $page;
 		$view->elements = $elements;
-		 
+		
 		$view->columns = $columns;
 		$view->nbelements = $nbelements;
 		$view->orderfield = $orderfield;
@@ -229,7 +229,7 @@ class ManagetracingController extends Zend_Controller_Action
                 $session = new Zend_Session_Namespace('MailCleaner');
                 if (isset($session->trace_id) && $session->trace_id) {
                     $traceid = $session->trace_id;
-                } 
+                }
                 $msgid = $request->getParam('m');
 
                 if (is_numeric($request->getParam('s'))) {
@@ -263,7 +263,7 @@ class ManagetracingController extends Zend_Controller_Action
                 $layout = Zend_Layout::getMvcInstance();
                 $view=$layout->getView();
                 $layout->disableLayout();
-                        
+
                 $request = $this->getRequest();
 
                 $messages = [];
@@ -280,7 +280,7 @@ class ManagetracingController extends Zend_Controller_Action
                     $traceid = $session->trace_id;
                 }
                 $traces = [];
-               
+
                 foreach ($messages as $msg_lid) {
                   if (preg_match('/^(\d+)_([-a-zA-Z0-9]+)$/', $msg_lid, $matches)) {
                     $slave = new Default_Model_Slave();
@@ -333,7 +333,7 @@ class ManagetracingController extends Zend_Controller_Action
                         flush();
                 }
                 fclose($handle);
-                
+
                 flush();
                 unlink($tmpfile);
   }

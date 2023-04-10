@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * PreRBLs prefilter mapper
  */
 
@@ -32,7 +32,7 @@ class Default_Model_Antispam_PreRBLsMapper
         }
         return $this->_dbTable;
     }
-    
+
     public function find($id, Default_Model_Antispam_PreRBLs $module)
     {
         $result = $this->getDbTable()->find($id);
@@ -45,7 +45,7 @@ class Default_Model_Antispam_PreRBLsMapper
         	$module->setParam($key, $row[$key]);
         }
     }
-    
+
     public function save(Default_Model_Antispam_PreRBLs $module) {
        $data = $module->getParamArray();
        $res = '';

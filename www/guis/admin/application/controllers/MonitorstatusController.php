@@ -12,7 +12,7 @@ class MonitorstatusController extends Zend_Controller_Action
 {
 	protected $_columns = ['messages', 'load', 'disks', 'memory', 'spools', 'processes'];
     protected $_statscachefile = '/tmp/host.stat.cache';
-    
+
 	public function init()
 	{
 		$layout = Zend_Layout::getMvcInstance();
@@ -70,7 +70,7 @@ class MonitorstatusController extends Zend_Controller_Action
 
 		$slave = new Default_Model_Slave();
 		$slave->find($request->getparam('s'));
-        
+
 		$reporting = new Default_Model_ReportingStats();
 		$what = [];
 		$what['stats'] = $reporting->getTodayStatElements($stats_type);
@@ -219,7 +219,7 @@ class MonitorstatusController extends Zend_Controller_Action
         $spool=1;
         require_once('Validate/MessageID.php');
         $msgvalidator = new Validate_MessageID();
-        
+
         $request = $this->getRequest();
         if (is_numeric($request->getParam('slave')) && is_numeric($request->getParam('spool')) && $msgvalidator->isValid($request->getParam('msg'))) {
         	$slaveid = $request->getParam('slave');
@@ -234,12 +234,12 @@ class MonitorstatusController extends Zend_Controller_Action
 		$layout = Zend_Layout::getMvcInstance();
         $view=$layout->getView();
         $layout->disableLayout();
-        
+
         $slave = new Default_Model_Slave();
         $spool=1;
         require_once('Validate/MessageID.php');
         $msgvalidator = new Validate_MessageID();
-        
+
         $request = $this->getRequest();
         if (is_numeric($request->getParam('slave')) && is_numeric($request->getParam('spool')) && $msgvalidator->isValid($request->getParam('msg')) ) {
         	$slaveid = $request->getParam('slave');
@@ -255,7 +255,7 @@ class MonitorstatusController extends Zend_Controller_Action
         $view=$layout->getView();
         $layout->disableLayout();
 		$view->addScriptPath(Zend_Registry::get('ajax_script_path'));
-        
+
     	$request = $this->getRequest();
     	
     	$slaveid = 1;
@@ -336,11 +336,11 @@ class MonitorstatusController extends Zend_Controller_Action
         $what = [];
 	    $what['stats'] = $reporting->getTodayStatElements($stats_type);
         $data = $reporting->getTodayValues($what, $slaveid, $stats_type);
-        
+
         $view->pielink = $view->baseurl.'/monitorstatus/todaypie/c/1/s/'.$slave->getId();
         $view->pielink .= '/t/'.$stats_type;
         $view->pielink .= '/r/'.uniqid();
-        
+
         $view->stats_type = $stats_type;
         $total = 0;
         foreach ($data as $d) {

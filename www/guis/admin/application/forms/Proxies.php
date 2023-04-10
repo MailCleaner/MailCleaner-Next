@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Proxies settings form
  */
 
@@ -26,9 +26,9 @@ class Default_Form_Proxies extends ZendX_JQuery_Form
     	$view=$layout->getView();
     	
 		$this->setMethod('post');
-	           
+	
 		$this->setAttrib('id', 'proxies_form');
-        
+
 		require_once('Validate/HostList.php');
         $http = new  Zend_Form_Element_Text('httpproxy', [
             'label' => $t->_('HTTP proxy'). " :",
@@ -37,7 +37,7 @@ class Default_Form_Proxies extends ZendX_JQuery_Form
 	    $http->setValue($this->_proxymanager->getHttpProxy());
 	    $http->addValidator(new Validate_HostList());
 	    $this->addElement($http);
-	   
+	
 	    $smtp = new  Zend_Form_Element_Text('smtpproxy', [
 	        'label' => $t->_('SMTP proxy'). " :",
 		'required' => false
@@ -45,7 +45,7 @@ class Default_Form_Proxies extends ZendX_JQuery_Form
 	    $smtp->setValue($this->_proxymanager->getSmtpProxy());
 	    $smtp->addValidator(new Validate_HostList());
 	    $this->addElement($smtp);
-	   
+	
 		$submit = new Zend_Form_Element_Submit('submit', [
 			'label'    => $t->_('Submit')
 		]);

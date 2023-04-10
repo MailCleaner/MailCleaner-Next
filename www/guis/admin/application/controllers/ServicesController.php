@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * controller for services
  */
 
@@ -30,18 +30,18 @@ class ServicesController extends Zend_Controller_Action
     	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Database', 'id' => 'database', 'action' => 'database', 'controller' => 'services']));
         $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'API', 'id' => 'api', 'action' => 'api', 'controller' => 'services']));
         $view->config_menu = $this->config_menu;
-        
+
         $view->headScript()->appendFile($view->scripts_path.'/baseconfig.js', 'text/javascript');
         $view->headScript()->appendFile($view->scripts_path.'/servicesconfig.js', 'text/javascript');
         $view->headScript()->appendFile($view->scripts_path.'/tooltip.js', 'text/javascript');
         $this->_flashMessenger = $this->_helper->getHelper('FlashMessenger');
-            
+
     }
-    
+
     public function indexAction() {
   	
     }
-    
+
      public function httpdAction() {
     	$t = Zend_Registry::get('translate');
     	$this->config_menu->findOneBy('id', 'webinterfaces')->class = 'generalconfigmenuselected';
@@ -65,7 +65,7 @@ class ServicesController extends Zend_Controller_Action
         $cert->setCertificate($httpdconfig->getParam('tls_certificate_data'));
 	    $cert->setPrivateKey($httpdconfig->getParam('tls_certificate_key'));
         $certdata = $cert->getCertificateData();
-        
+
     	$form = new Default_Form_Httpd($httpdconfig, $fwrule);
 
     	if ($request->isPost()) {
@@ -81,7 +81,7 @@ class ServicesController extends Zend_Controller_Action
                  } else {
                       $view->ssl_display_class = 'hidden';
                  }
-                 
+
                  $message = 'OK data saved';
             	 $slaves = new Default_Model_Slave();
             	 $slaves->sendSoapToAll('Service_setServiceToRestart', ['apache', 'firewall']);
@@ -103,7 +103,7 @@ class ServicesController extends Zend_Controller_Action
     	$view->message = $message;
         $view->certdata = $certdata;
      }
-     
+
      public function snmpdAction() {
     	$t = Zend_Registry::get('translate');
     	$this->config_menu->findOneBy('id', 'snmp')->class = 'generalconfigmenuselected';
@@ -140,7 +140,7 @@ class ServicesController extends Zend_Controller_Action
     	$view->form = $form;
     	$view->message = $message;
      }
-     
+
      public function sshdAction() {
     	$t = Zend_Registry::get('translate');
     	$this->config_menu->findOneBy('id', 'console')->class = 'generalconfigmenuselected';
@@ -150,7 +150,7 @@ class ServicesController extends Zend_Controller_Action
     	$request = $this->getRequest();
     	
      }
-     
+
      public function databaseAction() {
     	$t = Zend_Registry::get('translate');
     	$this->config_menu->findOneBy('id', 'database')->class = 'generalconfigmenuselected';
@@ -184,7 +184,7 @@ class ServicesController extends Zend_Controller_Action
     	$view->form = $form;
     	$view->message = $message;
      }
-     
+
      public function apiAction() {
         $t = Zend_Registry::get('translate');
         $this->config_menu->findOneBy('id', 'api')->class = 'generalconfigmenuselected';
@@ -192,14 +192,14 @@ class ServicesController extends Zend_Controller_Action
         $view=$layout->getView();
         $view->selectedConfigMenuLabel = $this->config_menu->findOneBy('id', 'api')->label;
         $request = $this->getRequest();
-        
+
         $message = '';
-        
+
         $defaults = new Default_Model_SystemConf();
         $defaults->load();
-        
+
         $form = new Default_Form_Api($defaults);
-        
+
         if ($request->isPost()) {
            if ($form->isValid($request->getPost())) {
                try {
@@ -210,7 +210,7 @@ class ServicesController extends Zend_Controller_Action
                }
            }
         }
-        
+
         $view->form = $form;
         $view->message = $message;
      }

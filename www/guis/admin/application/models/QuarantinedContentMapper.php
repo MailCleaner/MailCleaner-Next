@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Quarantined dangerous content mapper
  */
 
@@ -32,7 +32,7 @@ class Default_Model_QuarantinedContentMapper
 		
         $entriesflat = [];
         $sortarray = [];
-        
+
         if (!isset($params['orderfield'])) {
         	$params['orderfield'] = 'to_address';
         } else {
@@ -51,7 +51,7 @@ class Default_Model_QuarantinedContentMapper
         		$sortarray[$r['id']] = $r[$params['orderfield']].''.$r['time'];
         	}
         }
-        
+
         if ($params['orderfield'] == 'date') {
         	if ($params['orderorder'] == 'asc') {
         		$params['orderorder'] = 'desc';
@@ -73,9 +73,9 @@ class Default_Model_QuarantinedContentMapper
         	}
         	$entries[] = $entry;
         }
-        
+
         $this->_nbelements = count($entries);
-        
+
 	    $mpp = 20;
 		if (isset($params['mpp']) && is_numeric($params['mpp'])) {
 			$mpp = $params['mpp'];

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -31,10 +31,10 @@ if (!file_exists($file)) {
 
 $handle = fopen($file, "r");
 
-header("Content-Type: application/octet-stream; "); 
-header("Content-Transfer-Encoding: binary"); 
-header("Content-Length: " . filesize($file) ."; "); 
-header("filename=\"".$fileparam."\"; "); 
+header("Content-Type: application/octet-stream; ");
+header("Content-Transfer-Encoding: binary");
+header("Content-Length: " . filesize($file) ."; ");
+header("filename=\"".$fileparam."\"; ");
 flush();
 
 while(!feof($handle)) {

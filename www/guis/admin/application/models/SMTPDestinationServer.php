@@ -1,10 +1,10 @@
-<?php 
+<?php
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * SMTP destination server
  */
 
@@ -42,7 +42,7 @@ class Default_Model_SMTPDestinationServer {
 		   'message' => "Unable to set sender to <$from> (".$e->getMessage().")"
 	   ];
         }
-        
+
         $to  = 'postmaster@'.$domain;
 	    if (PEAR::isError($res = $smtp->rcptTo($to))) {
 	    	$smtp->disconnect();
@@ -51,13 +51,13 @@ class Default_Model_SMTPDestinationServer {
 			'message' => "Unable to set recipient &lt;$to&gt; (".$res->getCode()." - ".$res->getMessage().")"
 		];
         }
-        
+
         $response = $smtp->getResponse();
 	    if ($response[0] >= 500) {
 	    	$smtp->disconnect();
         	return ['status' => 'NOK', 'message' => "Message refused <$to>"];
         }
-        
+
         if ($response[0] < 200 || $response[0] >= 300) {
 	    	$smtp->disconnect();
         	return ['status' => 'NOK', 'message' => "Message not immediately accepted <$to>"];
@@ -83,16 +83,16 @@ class Default_Model_SMTPDestinationServer {
            $smtp->disconnect();
            return ['status' => 'NOK', 'message' => "Unable to set sender to <$address>"];
         }
-        
+
         $message = "correctly accepted !";
 	    if ( PEAR::isError($res = $smtp->rcptTo($address)) && $expected == 'OK') {
 	    	$smtp->disconnect();
 	    	return ['status' => 'NOK', 'message' => "Could not setup recipient <$address>"];
         }
-        
+
         $response = $smtp->getResponse();
         if ($response[0] >= 500) {
-    
+
            if ($expected == 'OK') {
                $smtp->disconnect();
         	   return ['status' => 'NOK', 'message' => "Recipient wrongly refused &lt;$address&gt;"];
@@ -106,7 +106,7 @@ class Default_Model_SMTPDestinationServer {
            	$smtp->disconnect();
             return ['status' => 'NOK', 'message' => "Recipient wrongly accepted &lt;$address&gt;"];
         }
-        
+
         $smtp->disconnect();
 		return ['status' => 'OK', 'message' => "Recipient correctly accepted"];
 	}
@@ -121,5 +121,5 @@ class Default_Model_SMTPDestinationServer {
           $random .= substr($char_list,(rand()%(strlen($char_list))), 1);
        }
        return $random;
-    } 
+    }
 }

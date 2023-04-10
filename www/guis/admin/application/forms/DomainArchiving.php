@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Domain general settings form
  */
 
@@ -45,20 +45,20 @@ class Default_Form_DomainArchiving extends Zend_Form
 	    ]);;
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
-        
+
         foreach ($this->_domain->getConfigPanels() as $panel => $panelname) {
         	$panellist->addMultiOption($panel, $panelname);
         }
         $panellist->setValue($this->_panelname);
         $this->addElement($panellist);
-        
+
         $panel = new Zend_Form_Element_Hidden('panel');
 		$panel->setValue($this->_panelname);
 		$this->addElement($panel);
 		$name = new Zend_Form_Element_Hidden('name');
 		$name->setValue($this->_domain->getParam('name'));
 		$this->addElement($name);
-        
+
 		$archive_mail = new Zend_Form_Element_Checkbox('archive_mail', [
 		            'label'   => $t->_('Archive messages (whole domain)'). " :",
 		            'uncheckedValue' => "0",
@@ -89,13 +89,13 @@ class Default_Form_DomainArchiving extends Zend_Form
 		   'label'    => $t->_('Submit')
 	   ]);
 	   $this->addElement($submit);	
-	  
+	
  	}
 	
 	public function setParams($request, $domain) {
 
                 $restrictions = Zend_Registry::get('restrictions');
-        
+
 		if ($this->canArchive()) {
     		$domain->setPref('archive_mail', $request->getParam('archive_mail'));
 		}

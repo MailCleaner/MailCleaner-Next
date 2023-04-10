@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * controller for content protection settings
  */
 
@@ -32,20 +32,20 @@ class ContentprotectionController extends Zend_Controller_Action
         $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Attachment name', 'id' => 'filename', 'action' => 'filename', 'controller' => 'contentprotection']));
         $this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Attachment type', 'id' => 'filetype', 'action' => 'filetype', 'controller' => 'contentprotection']));
         $view->config_menu = $this->config_menu;
-        
+
         $view->headScript()->appendFile($view->scripts_path.'/baseconfig.js', 'text/javascript');
         $view->headScript()->appendFile($view->scripts_path.'/antivirusconfig.js', 'text/javascript');
         $this->_flashMessenger = $this->_helper->getHelper('FlashMessenger');
-        
+
         $module = new Default_Model_AntispamModule();
         $modules = $module->fetchAll();
         $view->modules = $modules;
     }
-    
+
     public function indexAction() {
   	
     }
-    
+
     public function globalsettingsAction() {
     	$t = Zend_Registry::get('translate');
     	$this->config_menu->findOneBy('id', 'globalsettings')->class = 'generalconfigmenuselected';
@@ -60,7 +60,7 @@ class ContentprotectionController extends Zend_Controller_Action
     	$form    = new Default_Form_AntivirusGlobalSettings($av);
         $form->setAction(Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('globalsettings', 'contentprotection'));
         $message = '';
-        
+
         if ($request->isPost()) {
             if ($form->isValid($request->getPost())) {
             	
@@ -75,11 +75,11 @@ class ContentprotectionController extends Zend_Controller_Action
             	$message = "NOK bad settings";
             }
         }
-        
+
         $view->form = $form;
     	$view->message = $message;
     }
-    
+
     public function antivirusAction() {
     	$t = Zend_Registry::get('translate');
     	$this->config_menu->findOneBy('id', 'antivirus')->class = 'generalconfigmenuselected';
@@ -94,7 +94,7 @@ class ContentprotectionController extends Zend_Controller_Action
     	$form    = new Default_Form_ContentAntivirus($av);
         $form->setAction(Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('antivirus', 'contentprotection'));
         $message = '';
-        
+
         if ($request->isPost()) {
             if ($form->isValid($request->getPost())) {
             	
@@ -109,11 +109,11 @@ class ContentprotectionController extends Zend_Controller_Action
             	$message = "NOK bad settings";
             }
         }
-        
+
         $view->form = $form;
     	$view->message = $message;
     }
-    
+
     public function htmlcontrolsAction() {
     	$t = Zend_Registry::get('translate');
     	$this->config_menu->findOneBy('id', 'htmlcontrols')->class = 'generalconfigmenuselected';
@@ -131,7 +131,7 @@ class ContentprotectionController extends Zend_Controller_Action
     	$form    = new Default_Form_ContentHTMLControls($dc,$as);
         $form->setAction(Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('htmlcontrols', 'contentprotection'));
         $message = '';
-        
+
         if ($request->isPost()) {
             if ($form->isValid($request->getPost())) {
             	
@@ -145,11 +145,11 @@ class ContentprotectionController extends Zend_Controller_Action
             	$message = "NOK bad settings";
             }
         }
-        
+
         $view->form = $form;
     	$view->message = $message;
     }
-    
+
     public function messageformatAction() {
     	$t = Zend_Registry::get('translate');
     	$this->config_menu->findOneBy('id', 'messageformat')->class = 'generalconfigmenuselected';
@@ -164,7 +164,7 @@ class ContentprotectionController extends Zend_Controller_Action
     	$form    = new Default_Form_ContentMessageFormat($dc);
         $form->setAction(Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('messageformat', 'contentprotection'));
         $message = '';
-        
+
         if ($request->isPost()) {
             if ($form->isValid($request->getPost())) {
             	
@@ -178,11 +178,11 @@ class ContentprotectionController extends Zend_Controller_Action
             	$message = "NOK bad settings";
             }
         }
-        
+
         $view->form = $form;
     	$view->message = $message;
     }
-    
+
     public function filenameAction() {
     	$t = Zend_Registry::get('translate');
     	$this->config_menu->findOneBy('id', 'filename')->class = 'generalconfigmenuselected';
@@ -211,13 +211,13 @@ class ContentprotectionController extends Zend_Controller_Action
               } catch (Exception $e) {
             	  $message = 'NOK error saving data ('.$e->getMessage().')';
               }
-               	       
+               	
         	}
         }
         $view->listform = $listform;
         $view->message = $message;
     }
-    
+
     public function filetypeAction() {
     	$t = Zend_Registry::get('translate');
     	$this->config_menu->findOneBy('id', 'filetype')->class = 'generalconfigmenuselected';
@@ -246,7 +246,7 @@ class ContentprotectionController extends Zend_Controller_Action
               } catch (Exception $e) {
             	  $message = 'NOK error saving data ('.$e->getMessage().')';
               }
-               	       
+               	
         	}
         }
         $view->listform = $listform;

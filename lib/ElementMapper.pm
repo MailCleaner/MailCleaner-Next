@@ -30,9 +30,9 @@ our $VERSION    = 1.0;
 
 sub getElementMapper {
   my $what = shift;
-  
+
   my $el;
-  
+
   if ($what eq "domain") {
     require ElementMappers::DomainMapper;
     $el = ElementMappers::DomainMapper::create();
@@ -41,13 +41,13 @@ sub getElementMapper {
     require ElementMappers::EmailMapper;
     $el = ElementMappers::EmailMapper::create();
   }
-  
+
    $el->{db} = DB::connect('master', 'mc_config', 0);
    if (! $el->{db}->ping()) {
   	 print "Cannot connect to configuration database";
   	 return;
    }
-   
+
   return $el;
 }
 

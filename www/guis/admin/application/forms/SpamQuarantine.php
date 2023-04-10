@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Spam quarantine page form
  */
 
@@ -26,7 +26,7 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
     	$view=$layout->getView();
     	
 		$this->setMethod('post');
-	           
+	
 		$this->setAttrib('id', 'filter_form');
 		
 		
@@ -35,7 +35,7 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
 		]);
 	    $search->setValue($this->_params['search']);
 	    $this->addElement($search);
-	    
+	
 	    $domainField = new  Zend_Form_Element_Select('domain', [
 		    'required' => false
 	    ]);
@@ -47,7 +47,7 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
 	    }
 	    $domainField->setValue($this->_params['domain']);
 	    $this->addElement($domainField);
-	    
+	
 	    $sender = new  Zend_Form_Element_Text('sender', [
 	        'label' => $t->_('Sender')." : ",
 		'required' => false
@@ -55,14 +55,14 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
 	    $sender->setValue($this->_params['sender']);
 	    $sender->addValidator('Zend_Validate_EmailAddress');
 	    $this->addElement($sender);
-	    
+	
 	    $subject = new  Zend_Form_Element_Text('subject', [
             'label' => $t->_('Subject')." : ",
 	    'required' => false
 	    ]);
 	    $subject->setValue($this->_params['subject']);
 	    $this->addElement($subject);
-	    
+	
 	    $months = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
 	    $fd = new Zend_Form_Element_Select('fd', [
 		    'required' => true
@@ -74,7 +74,7 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
             $fd->setValue($this->_params['fd']);
 	    }
 	    $this->addElement($fd);
-	    
+	
 	    $fm = new Zend_Form_Element_Select('fm', [
 		    'required' => true
 	    ]);
@@ -86,7 +86,7 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
             $fm->setValue($this->_params['fm']);
 	    }
 	    $this->addElement($fm);
-	    
+	
 	    $td = new Zend_Form_Element_Select('td', [
 		    'required' => true
 	    ]);
@@ -108,8 +108,8 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
             $tm->setValue($this->_params['tm']);
 	    }
 	    $this->addElement($tm);
-	    
-	   
+	
+	
 	    $forced = new Zend_Form_Element_Checkbox('forced', [
 	        'label'   => $t->_('Hide user-released messages'),
             'uncheckedValue' => "0",
@@ -129,14 +129,14 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
                  $hidedup->setChecked(true);
             }
             $this->addElement($hidedup);
-	    
-	    
+	
+	
 	    $mpps = [5, 10, 20, 50, 100];
 	    $mpp = new Zend_Form_Element_Select('mpp', [
 	        'label' => $t->_('Number of lines displayed').' : ',
 		'required' => true
 	    ]);
-	    
+	
 	    foreach ($mpps as $m) {
 	    	$mpp->addMultiOption($m, $m);
 	    }
@@ -145,30 +145,30 @@ class Default_Form_SpamQuarantine extends ZendX_JQuery_Form
             $mpp->setValue($this->_params['mpp']);
 	    }
 	    $this->addElement($mpp);
-	    
+	
 	    $showSpamOnly = new Zend_Form_Element_Checkbox('showSpamOnly', [
 	        'label'   => $t->_('Show spam only'),
 	        'uncheckedValue' => "0",
 	        'checkedValue' => "1"
 	    ]);
-            
+
             ### newsl
 	    $showNewslettersOnly = new Zend_Form_Element_Checkbox('showNewslettersOnly', [
 	        'label'   => $t->_('Show newsletters only'),
 	        'uncheckedValue' => "0",
 	        'checkedValue' => "1"
 	    ]);
-            
+
 	    if (!empty($this->_params['showSpamOnly'])) {
 	        $showSpamOnly->setChecked(true);
 	        $showNewslettersOnly->setChecked(false);
 	    } elseif (!empty($this->_params['showNewslettersOnly'])) {
 	        $showNewslettersOnly->setChecked(true);
 	    }
-            
-	    $this->addElement($showSpamOnly);	    
-	    $this->addElement($showNewslettersOnly);	    
-	    
+
+	    $this->addElement($showSpamOnly);	
+	    $this->addElement($showNewslettersOnly);	
+	
 	    $submit = new Zend_Form_Element_Submit('submit', [
 		     'label'    => $t->_('Refresh'),
 		     'onclick' => 'javascript:launchSearch();return false;'

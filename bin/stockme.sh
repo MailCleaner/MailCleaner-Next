@@ -22,7 +22,7 @@
 #   settings found in the database.
 #
 #   Usage:
-#           stock.sh 
+#           stock.sh
 
 VARDIR=`grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3`
 if [ "VARDIR" = "" ]; then

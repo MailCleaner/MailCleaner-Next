@@ -1068,7 +1068,7 @@ class pDraw
 		if ($DrawBox && ($Angle == 0 || $Angle == 90 || $Angle == 180 || $Angle == 270)) {
 			$T = [0 => ["X" => 0, "Y" => 0]];
 			#$T[0]["X"] = 0;
-			#$T[0]["Y"] = 0; 
+			#$T[0]["Y"] = 0;
 			#$T[1]["X"] = 0; # Momchil: Only $T[0] is in use
 			#$T[1]["Y"] = 0;
 			#$T[2]["X"] = 0;
@@ -1259,12 +1259,12 @@ class pDraw
 			$Xleaf = $X - $Xi;
 			
 			# Momchil: That allows to skip the check in drawAlphaPixel and reuse the safe param
-			if (($Xi + 1) >= $this->XSize || ($Yi + 1) >= $this->YSize){ 
+			if (($Xi + 1) >= $this->XSize || ($Yi + 1) >= $this->YSize){
 				return -1;
 			}
 			
 			# Momchil: well worth the local var
-			$AntialiasQuality = $this->AntialiasQuality; 
+			$AntialiasQuality = $this->AntialiasQuality;
 			
 			# Momchil: Fast path: mostly zeroes in my test cases
 			# AntialiasQuality does not seem to be in use and is always 0
@@ -1436,7 +1436,7 @@ class pDraw
 			imagecopy($this->Picture, $Raster, $X, $Y, 0, 0, $Width, $Height);
 			imagedestroy($Raster);
 		}
-	} 
+	}
 
 		/* Draw an arrow */
 	function drawArrow($X1, $Y1, $X2, $Y2, array $Format = [])
@@ -2043,9 +2043,9 @@ class pDraw
 						if (isset($Data["Series"][$SerieID]["Data"][$ID]) && $Data["Series"][$SerieID]["Data"][$ID] != NULL) {
 							$Value = $Data["Series"][$SerieID]["Data"][$ID];
 							if ($Value > 0) {
-								$PointMax = $PointMax + $Value; 
-							} else { 
-								$PointMin = $PointMin + $Value; 
+								$PointMax = $PointMax + $Value;
+							} else {
+								$PointMin = $PointMin + $Value;
 							}
 						}
 					}
@@ -3095,7 +3095,7 @@ class pDraw
 	}
 
 	/* Draw an X threshold area */
-	function drawXThresholdArea($Value1, $Value2, array $Format = []) 
+	function drawXThresholdArea($Value1, $Value2, array $Format = [])
 	{
 		$R = isset($Format["R"]) ? $Format["R"] : 255;
 		$G = isset($Format["G"]) ? $Format["G"] : 0;
@@ -3147,7 +3147,7 @@ class pDraw
 				if ($NameAngle == ZONE_NAME_ANGLE_AUTO) {
 					$TxtPos = $this->getTextBox($XPos, $YPos, $this->FontName, $this->FontSize, 0, $AreaName);
 					$TxtWidth = $TxtPos[1]["X"] - $TxtPos[0]["X"];
-					$NameAngle = (abs($XPos2 - $XPos1) > $TxtWidth) ? 0 : 90; 
+					$NameAngle = (abs($XPos2 - $XPos1) > $TxtWidth) ? 0 : 90;
 				}
 
 				$this->Shadow = $RestoreShadow;
@@ -3329,7 +3329,7 @@ class pDraw
 	}
 
 	/* Draw a threshold with the computed scale */
-	function drawThresholdArea($Value1, $Value2, array $Format = []) 
+	function drawThresholdArea($Value1, $Value2, array $Format = [])
 	{
 		$AxisID = 0;
 		$R = isset($Format["R"]) ? $Format["R"] : 255;
@@ -3505,7 +3505,7 @@ class pDraw
 					} else {
 						if (!is_numeric($Value)) { // Momchil: No idea how that will affect the overall image
 							$Value = 1;
-						} 
+						}
 						$Result[] = $this->GraphAreaX1 + $Data["Axis"][$AxisID]["Margin"] + ($Step * ($Value - $Data["Axis"][$AxisID]["ScaleMin"]));
 					}
 				}
@@ -4015,9 +4015,9 @@ class pDraw
 							$this->addToImageMap("CIRCLE", floor($X) . "," . floor($Y) . "," . $ImageMapPlotSize, $this->toHTMLColor($R, $G, $B), $SerieDescription, $this->scaleFormat($Serie["Data"][$Key], $Mode, $Format, $Unit));
 						}
 
-						if ($Y == VOID && $LastY != NULL){ 
+						if ($Y == VOID && $LastY != NULL){
 							$this->drawSpline($WayPoints,["Force"=>$Force,"R"=>$R,"G"=>$G,"B"=>$B,"Alpha"=>$Alpha,"Ticks"=>$Ticks,"Weight"=>$Weight]);
-							$WayPoints = []; 
+							$WayPoints = [];
 						}
 
 						if ($Y != VOID && $LastY == NULL && $LastGoodY != NULL && !$BreakVoid) {
@@ -4917,7 +4917,7 @@ class pDraw
 						if ($Y != VOID) {
 							$LastGoodY = $Y;
 							$LastGoodX = $X;
-						} else { 
+						} else {
 							$Y = NULL;
 						}
 
@@ -4984,7 +4984,7 @@ class pDraw
 
 						if ($X != VOID && $LastX != NULL && $LastY != NULL) {
 							(count($Points) == 0) AND $Points = [$YZero, $LastY];
-							$Points[] = $LastX; 
+							$Points[] = $LastX;
 							$Points[] = $LastY;
 							$Points[] = $LastX;
 							$Points[] = $Y;
@@ -4995,7 +4995,7 @@ class pDraw
 						if ($X != VOID) {
 							$LastGoodY = $Y;
 							$LastGoodX = $X;
-						} else { 
+						} else {
 							$X = NULL;
 						}
 
@@ -5843,7 +5843,7 @@ class pDraw
 				}
 			}
 		}
-	} 
+	}
 
 	/* Draw a stacked area chart */
 	function drawStackedAreaChart(array $Format = [])
@@ -6336,7 +6336,7 @@ class pDraw
 				$this->Shadow = $RestoreShadow;
 			}
 		}
-	} 
+	}
 
 	/* Draw the line of best fit */
 	function drawBestFit(array $Format = [])

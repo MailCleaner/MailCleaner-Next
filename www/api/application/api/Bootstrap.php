@@ -52,7 +52,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                         'password'    => $mcconfig->getOption('MYMAILCLEANERPWD'),
                         'dbname'      => 'mc_config'
                 ]);
-                               
+
                 Zend_Registry::set('writedb', $writeConfigDb);
 	}
 
@@ -62,7 +62,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                 if ($config->getOption('ISMASTER') != 'Y' ) {
                    Zend_Registry::get('response')->setResponse(404, 'API is only available on master host');
                 }
-                
+
 		function netMatch ($CIDR,$IP) {
 			if (!preg_match('/\//', $CIDR)) {
 				return $CIDR == $IP;

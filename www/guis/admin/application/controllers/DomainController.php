@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * controller for domains configuration
  */
 
@@ -58,13 +58,13 @@ class DomainController extends Zend_Controller_Action
   	    $view->domains = array_slice($domains, $offset, $nbelperpage);
   	    $view->page = $page;
   	    $view->sname = $request->getParam('sname');
-  	    
+  	
   	    $view->addurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('add', 'domain');
   	    $view->globalurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('global', 'domain');
-  	    
+  	
   	    $view->searchurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('edit', 'domain');
   	    $view->searchurl .= '/sname/'.$view->sname.'/page/'.$view->page;
-  	    
+  	
   	    #$view->searchdomainurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('search', 'domain');
   	    $view->searchdomainurl = "/admin/domain/search";
   	    $view->panellinkurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('panellink', 'domain');
@@ -83,14 +83,14 @@ class DomainController extends Zend_Controller_Action
   	    #$addurl .= "/name/".$view->name;
   	    #$view->addurl = $addurl;
   	    $view->domain = $domain;
-  	    
+  	
   	    $view->testdestinationsmtpurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('testdestinationsmtp', 'domain');
         $view->calloutconnectorurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('calloutconnector', 'domain');
         $view->authconnectorurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('authconnector', 'domain');
         $view->testcalloutURL = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('testcallout', 'domain');
         $view->testuserauthURL = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('testuserauth', 'domain');
    }
-    
+
    public function indexAction() {
     	$layout = Zend_Layout::getMvcInstance();
     	$view=$layout->getView();
@@ -105,13 +105,13 @@ class DomainController extends Zend_Controller_Action
         $view->message = $message;
     	
     }
-    
+
     public function panellinkAction() {
     	$layout = Zend_Layout::getMvcInstance();
     	$view=$layout->getView();
     	$layout->disableLayout();
         $view->addScriptPath(Zend_Registry::get('ajax_script_path'));
-        
+
         $request = $this->getRequest();
         $panel = 'general';
         if ($request->getParam('panel') && array_key_exists($request->getParam('panel'), $view->domain->getConfigPanels())) {
@@ -122,13 +122,13 @@ class DomainController extends Zend_Controller_Action
         $view->previouspanel = $domain->getPreviousPanel($panel);
         $view->nextpanel = $domain->getNextPanel($panel);
     }
-    
+
     public function editAction() {
     	$layout = Zend_Layout::getMvcInstance();
     	$view=$layout->getView();
     	
     	$request = $this->getRequest();
-        
+
         if ($request->isXmlHttpRequest()) {
         	$layout->disableLayout();
         	$view->addScriptPath(Zend_Registry::get('ajax_script_path'));
@@ -143,7 +143,7 @@ class DomainController extends Zend_Controller_Action
     	$view->name = $request->getParam('name');	
     	$view->previouspanel = $view->domain->getPreviousPanel($panel);
     	$view->nextpanel = $view->domain->getNextPanel($panel);
-    
+
         $whitelistelement = new Default_Model_WWElement();
         $whitelistform = $whitelistelement->fetchAll('@'.$view->domain->getParam('name'),'white');
         $warnlistelement = new Default_Model_WWElement();
@@ -202,7 +202,7 @@ class DomainController extends Zend_Controller_Action
          $view->newslistform = $newslistform;
 
     }
-    
+
     public function globalAction() {
     	$redirector = $this->_helper->getHelper('Redirector');
 	$redirector->gotoSimple(
@@ -295,7 +295,7 @@ class DomainController extends Zend_Controller_Action
             	    }
             	  	$pos++;
             	  }
-            	  $page = floor($pos / $view->nbelperpage) + 1; 
+            	  $page = floor($pos / $view->nbelperpage) + 1;
             	  $redirector = $this->_helper->getHelper('Redirector');
             	  $redirector->gotoSimple('edit', 'domain', null, [
             	                                   'name' => $view->domain->getParam('name'),
@@ -318,8 +318,8 @@ class DomainController extends Zend_Controller_Action
          }
          $view->message = $message;
     }
-    
-    
+
+
     public function calloutconnectorAction() {
     	$layout = Zend_Layout::getMvcInstance();
     	$view=$layout->getView();
@@ -331,7 +331,7 @@ class DomainController extends Zend_Controller_Action
 	    $view->connector = $connector;
 	    $view->form = $connectorform;
     }
-    
+
     public function authconnectorAction() {
     	$layout = Zend_Layout::getMvcInstance();
     	$view=$layout->getView();
@@ -343,17 +343,17 @@ class DomainController extends Zend_Controller_Action
 	    $view->connector = $connector;
 	    $view->form = $connectorform;
     }
-    
+
     public function searchAction() {
     	$layout = Zend_Layout::getMvcInstance();
     	$view=$layout->getView();
     	$layout->disableLayout();
-    	$view->addScriptPath(Zend_Registry::get('ajax_script_path'));   
+    	$view->addScriptPath(Zend_Registry::get('ajax_script_path'));
     	unset($this->domain);	
     	#unset($view->name);
     	unset($view->domain);
     }
-    
+
     public function testdestinationsmtpAction() {
     	$layout = Zend_Layout::getMvcInstance();
     	$view=$layout->getView();
@@ -363,7 +363,7 @@ class DomainController extends Zend_Controller_Action
     	$view->status = $view->domain->getDestinationTestStatus($this->getRequest()->getParam('reset'));
     	$view->finished = $view->domain->destinationTestFinished();
     }
-    
+
     public function testcalloutAction() {
     	$layout = Zend_Layout::getMvcInstance();
     	$view=$layout->getView();
@@ -373,7 +373,7 @@ class DomainController extends Zend_Controller_Action
     	$view->status = $view->domain->getCalloutTestStatus($this->getRequest()->getParam('reset'));
     	$view->finished = $view->domain->calloutTestFinished();
     }
-    
+
     public function testuserauthAction() {
     	$layout = Zend_Layout::getMvcInstance();
     	$view=$layout->getView();
@@ -381,24 +381,24 @@ class DomainController extends Zend_Controller_Action
     	$view->addScriptPath(Zend_Registry::get('ajax_script_path'));
     	
     	$view->data = $view->domain->testUserAuth(
-    	                          $this->getRequest()->getParam('username'), 
+    	                          $this->getRequest()->getParam('username'),
     	                          $this->getRequest()->getParam('password'));
     }
-    
+
     public function removeAction() {
     	$layout = Zend_Layout::getMvcInstance();
     	$view=$layout->getView();
     	$view->backurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('edit', 'domain')."/name/".$this->getRequest()->getparam('name');
   	    $view->backurl .= '/sname/'.$view->sname.'/page/'.$view->page;
-  	    
+  	
   	    $urladding = '/sname/'.$view->sname.'/page/'.$view->page;
   	    $view->removeurldomain = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('remove', 'domain')."/name/".$this->getRequest()->getparam('name');
   	    $view->removeurldomain .= $urladding."/remove/only";
   	    $view->removeurlaliases = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('remove', 'domain')."/name/".$this->getRequest()->getparam('name');
         $view->removeurlaliases .= $urladding."/remove/all";
-        
+
         $domain = $view->domain;
-        
+
         $request = $this->getRequest();
         $message = '';
         if ($request->getParam('remove') == 'only') {
@@ -423,7 +423,7 @@ class DomainController extends Zend_Controller_Action
         }
         $view->message = $message;
     }
-    
+
     public function isauthexhaustiveAction() {
         $layout = Zend_Layout::getMvcInstance();
     	$view=$layout->getView();
@@ -433,7 +433,7 @@ class DomainController extends Zend_Controller_Action
         $domain = $view->domain;
     	$view->response = 'NO';
         if (!$domain->getId() || $domain->isAuthExhaustive()) {
-    	  $view->response = 'YES';  
+    	  $view->response = 'YES';
         }
     }
 
@@ -445,7 +445,7 @@ class DomainController extends Zend_Controller_Action
 
         $request = $this->getRequest();
         $domain_name = $request->getParam('name');
-    
+
         $slave = new Default_Model_Slave();
         $slave->sendSoapToAll('Service_clearSMTPAutCache', ['domain' => $domain_name]);
         $view->message = 'OK';

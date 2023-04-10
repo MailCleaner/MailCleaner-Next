@@ -31,7 +31,7 @@ our $VERSION    = 1.0;
 
 sub create {
    my $domainname = shift;
- 
+
    if (!defined($domainname) || $domainname eq "") {
      my $system = SystemPref::create();
      $domainname = $system->getPref('default_domain');
@@ -40,24 +40,24 @@ sub create {
    if (!$domain) {
      return 0;
    }
-   
+
    my $useable = 1;
    my $last_message = '';
-   
+
    my $domain_pref =  $domain->getPref('extcallout');
    if ($domain_pref ne 'true') {
    	 $useable = 0;
    	 $last_message = 'not using external callout';
    	 return;
    }
-   
+
    my $this = {
    	  'domain' => $domain,
    	  'last_message' => $last_message,
    	  'useable' => $useable,
    	  'default_on_error' => 1 ## we accept in case of any failure, to avoid false positives
   };
-         
+
   bless $this, "SMTPCalloutConnector";
   return $this;
 }
@@ -65,7 +65,7 @@ sub create {
 sub verify {
    my $this = shift;
    my $address = shift;
-   
+
    if (! $this->{useable}) {
    	  return $this->{default_on_error};
    }
@@ -83,7 +83,7 @@ sub verify {
    	  $this->{last_message} = 'define external callout type does not exists';
       return $this->{default_on_error};
    }
-   
+
    my @callout_params = ();
    my $params = $this->{domain}->getPref('extcallout_param');
    foreach my $p (split /:/, $params) {
@@ -93,11 +93,11 @@ sub verify {
    	  $p =~ s/__C__/:/;
    	  push @callout_params, $p;
    }
-   
+
    my $connector = new $class(\@callout_params);
-   
+
    if ($connector->isUseable()) {
-     my $res = $connector->verify($address);     
+     my $res = $connector->verify($address);
      $this->{last_message} = $connector->lastMessage();
      return $res;
    }
@@ -107,7 +107,7 @@ sub verify {
 
 sub lastMessage {
    my $this = shift;
- 
+
    my $msg = $this->{last_message};
    chomp($msg);
    return $msg;

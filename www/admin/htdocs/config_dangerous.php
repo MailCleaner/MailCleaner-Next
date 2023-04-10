@@ -4,10 +4,10 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
- * 
+ *
  * This is the controller for the dangerous content configuration page
  */
- 
+
  /**
   * require admin session, view and dangerous content objects
   */

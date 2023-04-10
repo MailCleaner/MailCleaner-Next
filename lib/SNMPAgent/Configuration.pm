@@ -24,8 +24,8 @@ require          Exporter;
 
 use strict;
 use NetSNMP::agent;
-use NetSNMP::OID (':all'); 
-use NetSNMP::agent (':all'); 
+use NetSNMP::OID (':all');
+use NetSNMP::agent (':all');
 use NetSNMP::ASN (':all');
 use lib qw(/usr/rrdtools/lib/perl/);
 use ReadConfig;
@@ -45,7 +45,7 @@ sub initAgent() {
    doLog('Agent Configuration initializing', 'status', 'debug');
 
    $conf = ReadConfig::getInstance();
-   
+
    return $mib_root_position;
 }
 

@@ -30,21 +30,21 @@ class AddressController extends Zend_Controller_Action
         $api = new Api_Model_AddressAPI();
         $api->edit($request->getParams());
     }
-    
+
     public function existsAction()
     {
         $request = $this->getRequest();
         $api = new Api_Model_AddressAPI();
         $api->exists($request->getParams());
     }
-    
+
     public function deleteAction()
     {
         $request = $this->getRequest();
         $api = new Api_Model_AddressAPI();
         $api->delete($request->getParams());
     }
-    
+
     public function showAction()
     {
         $request = $this->getRequest();

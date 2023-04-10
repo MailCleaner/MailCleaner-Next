@@ -1,10 +1,10 @@
-<?php 
+<?php
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * IMAP user authentication settings form
  */
 
@@ -36,20 +36,20 @@ class Default_Form_Domain_UserAuthentication_Imap
 	    $server->setValue($this->_domain->getPref('auth_server'));
         $server->addValidator(new Validate_SMTPHostList());
 	    $form->addElement($server);
-	    
+	
 	    $this->_settings = $this->getParams();
-	    
+	
 	    $imapusesslcheck = new Zend_Form_Element_Checkbox('imapusessl', [
 	        'label'   => $t->_('Use SSL'). " :",
             'uncheckedValue' => "0",
 	        'checkedValue' => "1"
 	    ]);
-	              
+	
 	    if ($this->_settings['use_ssl']) {
             $imapusesslcheck->setChecked(true);
 	    }
 	    $form->addElement($imapusesslcheck);
-	    
+	
 	}
 	
 	public function setParams($request, $domain) {
@@ -80,7 +80,7 @@ class Default_Form_Domain_UserAuthentication_Imap
        $params['auth_server'] = $this->_domain->getPref('auth_server');
        return $params;
     }
-    
+
     public function getParamsString($params) {
        $str = implode(':', [$params['use_ssl']]);
        return $str;

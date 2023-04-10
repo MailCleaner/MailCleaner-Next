@@ -114,12 +114,12 @@ sub mainLoopHook() {
     $SIG{'INT'} = $SIG{'KILL'} = $SIG{'TERM'} = sub {
     	my $t = threads->self;
         $this->{tid} = $t->tid;
-    
+
         $this->doLog(
             "Thread " . $t->tid . " got TERM! Proceeding to shutdown thread...",
             'daemon'
         );
- 
+
         threads->detach();
         $this->doLog( "Thread " . $t->tid . " detached.", 'daemon' );
         #$this->disconnect();
@@ -127,7 +127,7 @@ sub mainLoopHook() {
         $this->doLog( "Huho... Thread " . $t->tid . " still working though...",
             'daemon', 'error' );
     };
-    
+
 	## first prepare databases access for loggin ('_Xname' are for order)
 	$this->connectDatabases();
 
@@ -202,11 +202,11 @@ sub connectDatabases {
 			my %db_prepare = ();
 			$this->{prepared}{$dbname}{$t} = $db->prepare(
 				    'INSERT IGNORE INTO spam_' . $t
-				  . ' (date_in, time_in, to_domain, to_user, sender, exim_id, M_score, M_rbls, M_prefilter, M_subject, M_globalscore, forced, in_master, store_slave, is_newsletter) 
+				  . ' (date_in, time_in, to_domain, to_user, sender, exim_id, M_score, M_rbls, M_prefilter, M_subject, M_globalscore, forced, in_master, store_slave, is_newsletter)
                                                                         VALUES(NOW(),   NOW(),     ?,         ? ,     ? ,       ?,      ?,      ?,        ?,          ?,             ?,      \'0\',     ?,'
 				  . $this->{storeslave} . ', ?)'
 			);
-            
+
 			if ( !$this->{prepared}{$dbname}{$t} ) {
 				$this->doLog( "Error in preparing statement $dbname, $t!",
 					'spamhandler', 'error' );

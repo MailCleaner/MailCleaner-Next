@@ -20,7 +20,7 @@ $services_ = [
   'MASTERDB' => ['restartfile' => "mysql_master.rn", 'starter' => "S_mysql_master.sh", 'stopper' => "H_mysql_master.sh", 'restarter' => "R_mysql_master.sh"],
   'SLAVEDB' => ['restartfile' => "mysql_slave.rn", 'starter' => "S_mysql_slave.sh", 'stopper' => "H_mysql_slave.sh", 'restarter' => "R_mysql_slave.sh"],
   'SNMPD' => ['restartfile' => "snmpd.rn", 'starter' => "S_snmpd.sh", 'stopper' => "H_snmpd.sh", 'restarter' => "R_snmpd.sh"],
-  'GREYLISTD' => ['restartfile' => "greylistd.rn", 'starter' => "S_greylistd.sh", 'stopper' => "H_greylistd.sh", 'restarter' => "R_greylistd.sh"],  
+  'GREYLISTD' => ['restartfile' => "greylistd.rn", 'starter' => "S_greylistd.sh", 'stopper' => "H_greylistd.sh", 'restarter' => "R_greylistd.sh"],
   'CRON' => ['restartfile' => "cron.rn", 'starter' => "S_cron.sh", 'stopper' => "H_cron.sh", 'restarter' => "R_cron.sh"],
   'PREFDAEMON' => ['restartfile' => "prefdaemon.rn", 'starter' => "S_prefdaemon.sh", 'stopper' => "H_prefdaemon", 'restarter' => "R_prefdaemon.sh"],
   'SPAMD' => ['restartfile' => "spamd.rn", 'starter' => "S_spamd.sh", 'stopper' => "H_spamd", 'restarter' => "R_spamd.sh"],
@@ -29,7 +29,7 @@ $services_ = [
   'SPAMHANDLER' => ['restartfile' => "spamhandler.rn", 'starter' => "S_spamhandler.sh", 'stopper' => "H_spamhandler", 'restarter' => "R_spamhandler.sh"],
   'FIREWALL' => ['restartfile' => "firewall.rn", 'starter' => "S_firewall.sh", 'stopper' => "H_firewall.sh" ,'restarter' => "R_firewall.sh"],
 ];
-         
+
 /**
  * return the status of each critical process (running/stopped)
  * @param   $sid    string   soap session id
@@ -62,16 +62,16 @@ function getProcessesStatus($sid) {
    $ret->firewall = $processes[16];
    return $ret;
 }
- 
+
 /**
  * stop a given service deamon
  * @param $sid     string   soap session id
  * @param $service string   service name
  * @return         string   OK resultset on success, error result set on failure
- */ 
+ */
 function stopService($sid, $service) {
   global $services_;
-  
+
   $soap_ret = new SoapServiceStatus();
   if (!array_key_exists($service, $services_)) {
     $soap_ret->status = 'FAILED';
@@ -102,7 +102,7 @@ function stopService($sid, $service) {
  * @param $sid     string   soap session id
  * @param $service string   service name
  * @return         string   OK resultset on success, error result set on failure
- */ 
+ */
 function startService($sid, $service) {
   global $services_;
 
@@ -169,7 +169,7 @@ function restartService($sid, $service) {
  */
  function dumpConfiguration($config, $params) {
     $sysconf_ = SystemConfig::getInstance();
-    
+
     `echo "conf: $config" > /tmp/out.log`;
     switch ($config) {
     	case 'domains':
@@ -178,7 +178,7 @@ function restartService($sid, $service) {
              $cmd .= " ".escapeshellcmd($params);
            }
            break;
-        
+
         case 'wwlist':
            $cmd = $sysconf_->SRCDIR_."/bin/dump_wwlist.pl";
            if ($params != "") {
@@ -198,8 +198,8 @@ function restartService($sid, $service) {
     # execute
     $res = `$cmd`;
     $res = trim($res);
-    
-   
+
+
     # postpone the job to let the mysql sync finish the propagation
     # but first find out previous already pending jobs
     $atcheck = `atq | cut -f1`;
@@ -214,7 +214,7 @@ function restartService($sid, $service) {
           $already_pending = 1;
        }
     }
-    
+
     if (! $already_pending) {
       # postpone by 2 minutes
       $atcmd = "echo \"$cmd\" | at now + 2 minutes 2>&1";
@@ -228,7 +228,7 @@ function restartService($sid, $service) {
     }
     return $res;
  }
- 
+
 /**
  * return the status whereas the process must be restarted or not
  * @param $process string   process to ask for
@@ -237,14 +237,14 @@ function restartService($sid, $service) {
  function processNeedsRestart($process) {
     global $services_;
  	$sysconf_ = SystemConfig::getInstance();
-    
+
     $restart_file = $sysconf_->VARDIR_."/run/".$services_[$process]['restartfile'];
     if (file_exists($restart_file)) {
     	return 1;
     }
     return 0;
  }
- 
+
 /**
  * set the status of a process to be restarted or not
  * @param  $process  string  process to set
@@ -254,7 +254,7 @@ function restartService($sid, $service) {
  function setRestartStatus($process, $status) {
  	global $services_;
     $sysconf_ = SystemConfig::getInstance();
-    
+
     if ($status < 1) {
     	return true;
     }

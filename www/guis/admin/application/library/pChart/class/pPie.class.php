@@ -250,7 +250,7 @@ class pPie
 					$Yc = sin(($i - 90) * PI / 180) * $Radius + $Y;
 					if ($FirstPoint) {
 						$this->pChartObject->drawLine($Xc, $Yc, $X0, $Y0, $Settings);
-					} 
+					}
 					$FirstPoint = FALSE;
 					$this->pChartObject->drawAntialiasPixel($Xc, $Yc, $Settings);
 				}
@@ -668,7 +668,7 @@ class pPie
 					$Yc = sin(($i - 90) * PI / 180) * $Radius * $SkewFactor + $Y - $SliceHeight;
 					if ($FirstPoint) {
 						$this->pChartObject->drawLine($Xc, $Yc, $X0, $Y0, $Settings);
-					} 
+					}
 					$FirstPoint = FALSE;
 
 					$this->pChartObject->drawAntialiasPixel($Xc, $Yc, $Settings);
@@ -1312,7 +1312,7 @@ class pPie
 		$Slice = 0;
 		$Slices = [];
 		$SliceColors = [];
-		$Visible = []; 
+		$Visible = [];
 		
 		foreach($Values as $Key => $Value) {
 			
@@ -1545,7 +1545,7 @@ class pPie
 			$Outer = TRUE;
 			$Inner = FALSE;
 			$OuterPlotsA = [];
-			$OuterPlotsB = []; 
+			$OuterPlotsB = [];
 			
 			foreach($Plots["Angle"] as $ID => $Angle) {
 				if ($Angle == VOID) {

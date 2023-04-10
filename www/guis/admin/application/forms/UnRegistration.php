@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Mentor Reka
  * @copyright (C) 2017 Mentor Reka <reka.mentor@gmail.com>
- * 
+ *
  * UnRegistration form
  */
 

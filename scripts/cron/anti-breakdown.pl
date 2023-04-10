@@ -141,7 +141,7 @@ sub is_dns_service_available {
 		retry       => 3,
 		retrans     => 1,
 		recurse     => 0,
-		debug       => 0 
+		debug       => 0
 	);
 
 	$res->nameservers($host);

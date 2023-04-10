@@ -28,7 +28,7 @@ package SpamHandler::Message;
 require Exporter;
 require Email;
 require ReadConfig;
-require Net::SMTP;  
+require Net::SMTP;
 use File::Path qw(mkpath);
 use Time::HiRes qw(gettimeofday tv_interval);
 
@@ -161,7 +161,7 @@ sub process {
     my $status;
 
     ## check what to do with message
-    
+
     # If uncheckable (consumed licenses, etc. don't filter
     if ( defined($this->{accounting}) && !$this->{accounting}->checkCheckeableUser( $this->{env_rcpt} ) ) {
         $status = $this->{accounting}->getLastMessage();
@@ -354,7 +354,7 @@ sub process {
                 $status .= ": want quarantine";
                 $this->quarantine();
             }
-    
+
         ## Newsletter
         } elsif ($this->{sc_newsl} >= 5 ) {
             if ($email->getPref('allow_newsletters')) {
@@ -588,7 +588,7 @@ sub loadScores {
         $this->{sc_newsl} = $1;
         # Not processed as decisive module
         if ( $this->{sc_newsl} >= 5 )  {
-            $this->{sc_global} += 1; 
+            $this->{sc_global} += 1;
             $this->{prefilters} .= ", Newsl";
         }
     }
@@ -734,11 +734,11 @@ sub manageBlacklist {
 
     $this->{fullheaders} =~
         s/(.*Subject:\s+)(\{(MC_SPAM|MC_HIGHSPAM)\})?(.*)/$1\{MC_SPAM\}$4/i;
-    
+
     ## modify the X-MailCleaner-SpamCheck header
     $this->{fullheaders} =~
         s/X-MailCleaner-SpamCheck: ([^,]*),/X-MailCleaner-SpamCheck: spam, $str,/i;
-    
+
     return 1;
 }
 
@@ -818,7 +818,7 @@ sub sendMeAnyway {
     $err = $smtp->code();
     if ( $err < 200 || $err >= 500 ) {
         ## smtpError
-    
+
         $this->{daemon}->doLog(
             $this->{batchid}
               . ": message "
@@ -1020,7 +1020,7 @@ sub log {
     }
 
     my $isNewsletter = ( $this->{sc_newsl} >= 5 && !$this->{nwhitelisted} && !$this->{news_allowed}) || 0;
-    
+
     my $res = $p->execute(
         $this->{env_domain}, $this->{env_tolocal},
         $this->{env_sender}, $this->{exim_id},
@@ -1071,7 +1071,7 @@ sub log {
 sub decisiveModule {
     my $this = shift;
     my ($module, $line) = @_;
-    
+
     $line =~ s/.*$module \((.*)/$1/;
     $line =~ s/decisive\).*/decisive/;
     my $position = my $decisive = $line;

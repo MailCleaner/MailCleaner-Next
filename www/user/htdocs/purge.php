@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
- * 
+ *
  * This is the controller for the quarantine purge page
  */
 
@@ -76,6 +76,6 @@ function confirm_button($doit) {
   if (!$doit) {
      $ret = "<input type=\"button\" id=\"confirm\" class=\"button\" onclick=\"javascript:confirmation();\" value=\"".$lang_->print_txt('CONFIRM')."\" />";
   }
-  return $ret; 
+  return $ret;
 }
 ?>

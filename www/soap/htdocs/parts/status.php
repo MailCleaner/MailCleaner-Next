@@ -5,7 +5,7 @@
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
  */
-         
+
 /**
  * main status fetcher function
  * will execute the get_status.pl script with authorization checks
@@ -28,7 +28,7 @@ function getStatus($sid, $params) {
   $res_a = [];
   exec($cmd, $res_a);
 
-  return $res_a[0]; 
+  return $res_a[0];
 }
 
 /**
@@ -152,7 +152,7 @@ function getTodaysCounts($sid, $spec) {
  * @return          array   counts as array (key is counted value, value is actual count)
  */
  function getStats($what, $start, $stop) {
-    
+
   $sysconf_ = SystemConfig::getInstance();
 
   $cmd = $sysconf_->SRCDIR_."/bin/get_stats.pl $what $start $stop";

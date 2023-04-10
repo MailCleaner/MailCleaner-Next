@@ -1,10 +1,10 @@
-<?php 
+<?php
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Commtouch form
  */
 
@@ -36,7 +36,7 @@ class Default_Form_AntiSpam_Commtouch extends Default_Form_AntiSpam_Default
 			    'filters'    => ['StringTrim']
 		]);
                 $ctasdLicense->setValue($as->getParam('ctasdLicense'));
-                $this->addElement($ctasdLicense);     
+                $this->addElement($ctasdLicense);
 
                 $ctipdLicense = new  Zend_Form_Element_Text('ctipdLicense', [
                             'label'   => $t->_('Ctipd Licence')." :",

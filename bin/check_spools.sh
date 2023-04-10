@@ -18,7 +18,7 @@
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
 #
-#   This script will display the number of messages waiting on each of the 3 
+#   This script will display the number of messages waiting on each of the 3
 #   main spools which are:
 #   Stage 1 for the incoming spool
 #   Stage 2 for the filtering spool (antispam/antivirus processes)

@@ -72,7 +72,7 @@ if (defined $options{r}) {
   my $delay = int(rand($maxsleeptime)) + $minsleeptime;
   my $date = `date "+%Y-%m-%d %H:%M:%S"`;
   chomp($date);
-  `echo "[$date] sleeping for $delay seconds..." >> $config{'VARDIR'}/log/mailcleaner/update.log`;  
+  `echo "[$date] sleeping for $delay seconds..." >> $config{'VARDIR'}/log/mailcleaner/update.log`;
   sleep($delay);
 }
 if (defined $options{h}) {

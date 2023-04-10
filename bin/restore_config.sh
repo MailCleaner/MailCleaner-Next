@@ -19,8 +19,8 @@
 #
 #
 #   This script will backup the configuration database
-#   Usage: 
-#           restore_config.sh 
+#   Usage:
+#           restore_config.sh
 
 
 VARDIR=`grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3`

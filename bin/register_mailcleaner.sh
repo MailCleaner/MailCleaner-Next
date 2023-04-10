@@ -27,7 +27,7 @@
 #           register_mailcleaner.sh
 
 batch=0
-if [ "$4" = "-b" ];then 
+if [ "$4" = "-b" ];then
   batch=1
 fi
 
@@ -39,7 +39,7 @@ if [ "$HOSTID" = "" ]; then
 fi
 
 SRCDIR=`grep 'SRCDIR' $CONFFILE | cut -d ' ' -f3`
-if [ "$SRCDIR" = "" ]; then 
+if [ "$SRCDIR" = "" ]; then
   SRCDIR="/opt/mailcleaner"
 fi
 VARDIR=`grep 'VARDIR' $CONFFILE | cut -d ' ' -f3`
@@ -121,7 +121,7 @@ fi
 
 if [ "$batch" = 0 ]; then
 echo -n "fetching keys..."
-fi 
+fi
 wget -q http://reselleradmin.mailcleaner.net/hosts/register.php?cid="$CLIENTID"\&hid="$HOSTID"\&rid="$RESELLERID"\&p="$RESELLERPWD" -O /tmp/mc_register.out >/dev/null 2>&1
 
 TYPE=`file -b /tmp/mc_register.out | cut -d' ' -f1`
@@ -187,7 +187,7 @@ if [ -f "$CLIENTID-$HOSTID.tar.gz" ]; then
           fi
 	  exit 1
 	fi
-else 
+else
         if [ "$batch" = 0 ]; then
 	  echo "failed !"
 	  echo "Sorry, we were not able to validate these informations. Please retry and check your paremeters."

@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * DNS settings form
  */
 
@@ -60,7 +60,7 @@ class Default_Form_NetworkDns extends Zend_Form
 	    ## TODO: add specific validator
 	    $secondary->setValue($this->_dns->getNameServer(2));
 	    $secondary->addValidator(new Zend_Validate_Ip());
-            if ($restrictions->isRestricted('NetworkDns', 'secondarydns')) { 
+            if ($restrictions->isRestricted('NetworkDns', 'secondarydns')) {
                 $secondary->setAttrib('disabled', 'disabled');
             }
 		$this->addElement($secondary);
@@ -73,7 +73,7 @@ class Default_Form_NetworkDns extends Zend_Form
 	    ## TODO: add specific validator
 	    $tertiary->setValue($this->_dns->getNameServer(3));
 	    $tertiary->addValidator(new Zend_Validate_Ip());
-            if ($restrictions->isRestricted('NetworkDns', 'tertiarydns')) { 
+            if ($restrictions->isRestricted('NetworkDns', 'tertiarydns')) {
                 $tertiary->setAttrib('disabled', 'disabled');
             }
 		$this->addElement($tertiary);
@@ -97,7 +97,7 @@ class Default_Form_NetworkDns extends Zend_Form
 		$submit = new Zend_Form_Element_Submit('dnssubmit', [
 			'label'    => $t->_('Submit')
 		]);
-            if ($restrictions->isRestricted('NetworkDns', 'dnssubmit')) { 
+            if ($restrictions->isRestricted('NetworkDns', 'dnssubmit')) {
                 $submit->setAttrib('disabled', 'disabled');
             }
 		$this->addElement($submit);

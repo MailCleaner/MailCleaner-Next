@@ -75,7 +75,7 @@ class MonitorlogsController extends Zend_Controller_Action
 		$layout->disableLayout();
 		$view->addScriptPath(Zend_Registry::get('ajax_script_path'));
 		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'monitorlogs', NULL, []);
-			      
+			
 		$request = $this->getRequest();
 
 		if ($request->getParam('load')) {
@@ -163,7 +163,7 @@ class MonitorlogsController extends Zend_Controller_Action
         $view->headScript()->appendFile($view->scripts_path.'/logview.js', 'text/javascript');
 		$view->headLink()->appendStylesheet($view->css_path.'/ie7.css', 'screen', 'lt IE 8');
 		$view->headLink()->appendStylesheet($view->css_path.'/ie8.css', 'screen', 'gt IE 7');
-        
+
         $request = $this->getRequest();
         $file = '';
         if ($request->getParam('f')) {
@@ -180,11 +180,11 @@ class MonitorlogsController extends Zend_Controller_Action
         $file = $matches[2];
         $view->thisfile = $file;
         $slave_id = $matches[1];
-        $view->slaveid = $slave_id;           
+        $view->slaveid = $slave_id;
 
         $log = new Default_Model_Logfile();
         $log->loadByFileName($file);
-            
+
 		if ($request->isXmlHttpRequest()) {
 			$view->addScriptPath(Zend_Registry::get('ajax_script_path'));
 
@@ -259,17 +259,17 @@ class MonitorlogsController extends Zend_Controller_Action
             }
             $res['nextlog_link'] = $nextlog_link;
             #var_dump($res['nextlog_link']);
-            
+
 			$view->res = $res;
 			
 		} else {
 			$slave = new Default_Model_Slave();
             $slave->find($slave_id);
-            
+
             if ($request->getParam('s')) {
                $view->initial_search = $request->getParam('s');
             }
-            
+
             $t = Zend_Registry::get('translate');
             $view->headTitle($t->_('Log view')." - ".$slave_id." (".$slave->getHostname().") - ".$t->_($log->getParam('name')));
 		}

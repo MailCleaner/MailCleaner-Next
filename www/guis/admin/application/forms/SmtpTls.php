@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * SMTP ssl settings form
  */
 
@@ -25,11 +25,11 @@ class Default_Form_SmtpTls extends ZendX_JQuery_Form
     	$view=$layout->getView();
     	
 		$this->setMethod('post');
-	           
+	
 		$this->setAttrib('id', 'smtptls_form');
 
         $restrictions = Zend_Registry::get('restrictions');
-	    
+	
 		$sslenable = new Zend_Form_Element_Checkbox('use_incoming_tls', [
 	        'label'   => $t->_('Enable SSL/TLS'). " :",
             'uncheckedValue' => "0",
@@ -50,7 +50,7 @@ class Default_Form_SmtpTls extends ZendX_JQuery_Form
             $ciphers->setValue($this->_mta->getParam('ciphers'));
             $this->addElement($ciphers);
 
-	    
+	
 	    $ssmtplisten = new Zend_Form_Element_Checkbox('tls_use_ssmtp_port', [
 	        'label'   => $t->_('Enable obsolete SMTPS port 465'). " :",
             'uncheckedValue' => "0",
@@ -60,7 +60,7 @@ class Default_Form_SmtpTls extends ZendX_JQuery_Form
             $ssmtplisten->setChecked(true);
 	    }
 	    $this->addElement($ssmtplisten);
-	    
+	
 	    $forbidclearauth = new Zend_Form_Element_Checkbox('forbid_clear_auth', [
             'label'   => $t->_('Forbid unencrypted SMTP authentication'). " :",
             'title' => $t->_("Force the SMTP authentication to be encrypted"),
@@ -71,7 +71,7 @@ class Default_Form_SmtpTls extends ZendX_JQuery_Form
             $forbidclearauth->setChecked(true);
         }
         $this->addElement($forbidclearauth);
-	    
+	
 	    $sslcert = new Zend_Form_Element_Textarea('tls_certificate_data', [
 		      'label'    =>  $t->_('Encoded SSL certificate')." :",
 		      'required'   => false,
@@ -115,7 +115,7 @@ class Default_Form_SmtpTls extends ZendX_JQuery_Form
         $require_tls->addValidator(new Validate_HostList());
         $require_tls->setValue($this->_mta->getParam('hosts_require_tls'));
         $this->addElement($require_tls);
-        
+
         $require_incoming_tls = new Zend_Form_Element_Textarea('hosts_require_incoming_tls', [
               'label'    =>  $t->_('Force encryption from these hosts')." :",
               'title' => $t->_("Force the distant server to use encryption when dealing with the MailCleaner server"),
@@ -127,7 +127,7 @@ class Default_Form_SmtpTls extends ZendX_JQuery_Form
         $require_incoming_tls->addValidator(new Validate_HostList());
         $require_incoming_tls->setValue($this->_mta->getParam('hosts_require_incoming_tls'));
         $this->addElement($require_incoming_tls);
-        
+
         require_once('Validate/DomainList.php');
         $domains_require_tls_to = new Zend_Form_Element_Textarea('domains_require_tls_to', [
               'label'    =>  $t->_('Force encryption to these external domains')." :",
@@ -140,7 +140,7 @@ class Default_Form_SmtpTls extends ZendX_JQuery_Form
         $domains_require_tls_to->addValidator(new Validate_DomainList());
         $domains_require_tls_to->setValue($this->_mta->getParam('domains_require_tls_to'));
         $this->addElement($domains_require_tls_to);
-        
+
         $domains_require_tls_from = new Zend_Form_Element_Textarea('domains_require_tls_from', [
               'label'    =>  $t->_('Force encryption from these external domains')." :",
               'title' => $t->_("Force the distant domains to use encryption when dealing with the MailCleaner server"),
@@ -152,7 +152,7 @@ class Default_Form_SmtpTls extends ZendX_JQuery_Form
         $domains_require_tls_from->addValidator(new Validate_DomainList());
         $domains_require_tls_from->setValue($this->_mta->getParam('domains_require_tls_from'));
         $this->addElement($domains_require_tls_from);
-	    
+	
 		$submit = new Zend_Form_Element_Submit('submit', [
 			'label'    => $t->_('Submit')
 		]);

@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * User mapper
  */
 
@@ -43,14 +43,14 @@ class Default_Model_UserMapper
           return;
       }
       $row = $result->current();
-        
+
       $user->setId($id);
       foreach ($user->getAvailableParams() as $key) {
       	$user->setParam($key, $row->$key);
       }
     }
-    
-    
+
+
     public function find($username, $domain, Default_Model_User $user)
     {
         if ($username == '' || $domain == '') {
@@ -125,8 +125,8 @@ class Default_Model_UserMapper
         }
         return $entries;
     }
-     
-     
+
+
     public function save(Default_Model_User $user) {
         $data = $user->getParamArray();
         $res = '';

@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Company form
  */
 
@@ -26,9 +26,9 @@ class Default_Form_Company extends ZendX_JQuery_Form
     	$view=$layout->getView();
     	
 		$this->setMethod('post');
-	           
+	
 		$this->setAttrib('id', 'company_form');
-		        
+		
         $company = new  Zend_Form_Element_Text('companyname', [
 	        'label'    => $t->_('Company name')." :",
             'size' => 40,
@@ -36,7 +36,7 @@ class Default_Form_Company extends ZendX_JQuery_Form
 	]);
 	    $company->setValue($this->_systemconf->getParam('organisation'));
 	    $this->addElement($company);
-	    
+	
 	    $contactname = new  Zend_Form_Element_Text('contactname', [
 	        'label'    => $t->_('Contact name')." :",
             'size' => 40,
@@ -44,7 +44,7 @@ class Default_Form_Company extends ZendX_JQuery_Form
 	    ]);
 	    $contactname->setValue($this->_systemconf->getParam('contact'));
 	    $this->addElement($contactname);
-	    
+	
 	    $contactemail = new  Zend_Form_Element_Text('contactemail', [
 	        'label'    => $t->_('Contact email address')." :",
             'size' => 40,
@@ -54,8 +54,8 @@ class Default_Form_Company extends ZendX_JQuery_Form
 	    $contactemail->setValue($this->_systemconf->getParam('contact_email'));
         $contactemail->addValidator(new Zend_Validate_EmailAddress(Zend_Validate_Hostname::ALLOW_LOCAL));
 	    $this->addElement($contactemail);
-	    
-	    
+	
+	
 		$submit = new Zend_Form_Element_Submit('submit', [
 			'label'    => $t->_('Submit')
 		]);

@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * HTML controls form
  */
 
@@ -37,7 +37,7 @@ class Default_Form_ContentHTMLControls extends ZendX_JQuery_Form
 		
 		
 		$this->setAttrib('id', 'contenthtmlcontrols_form');
-	    
+	
 		$allowoptions = ['yes' => $t->_('allow'), 'no' => $t->_('block')];
 		$blockoptions = ['no' => $t->_('allow'), 'yes' => $t->_('block')];
 		$disarmoptions = ['yes' => $t->_('allow'), 'no' => $t->_('block'), 'disarm' => $t->_('disarm')];
@@ -50,7 +50,7 @@ class Default_Form_ContentHTMLControls extends ZendX_JQuery_Form
                'required'   => true,
 	       'filters'    => ['StringTrim']
 		  ];
-        
+
           foreach ($disarmoptions as $lk => $lv) {
              $ff->addMultiOption($lk, $lv);
           }
@@ -67,7 +67,7 @@ class Default_Form_ContentHTMLControls extends ZendX_JQuery_Form
 	       }
 	      $this->addElement($sff);
 		}
-        
+
 		require_once('Validate/IpList.php');
 		$trustednet = new Zend_Form_Element_Textarea('html_wl_ips', [
 		      'label'    =>  $t->_('Trusted IPs/Networks')." :",
@@ -80,7 +80,7 @@ class Default_Form_ContentHTMLControls extends ZendX_JQuery_Form
 	    $trustednet->addValidator(new Validate_IpList());
 		$trustednet->setValue($this->_antispam->getParam('html_wl_ips'));
 		$this->addElement($trustednet);
-	    
+	
 		$submit = new Zend_Form_Element_Submit('submit', [
 			'label'    => $t->_('Submit')
 		]);

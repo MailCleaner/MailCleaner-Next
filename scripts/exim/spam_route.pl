@@ -21,7 +21,7 @@
 use strict;
 use Net::SMTP;
 
-my %config = readConfig("/etc/mailcleaner.conf"); 
+my %config = readConfig("/etc/mailcleaner.conf");
 
 use strict;
 use Time::HiRes qw(gettimeofday tv_interval);
@@ -174,7 +174,7 @@ sub parseInputMessage {
 		}
 	}
 
-    
+
     if (/^\S+:/) {
        $in_score = 0;
     }
@@ -229,7 +229,7 @@ sub parseInputMessage {
 		}
 	}
   }
-  
+
   $prefilters =~ s/^\s*,\s*//g;
   $rbls =~ s/^\s*,\s*//g;
 }
@@ -237,7 +237,7 @@ sub parseInputMessage {
 #####
 ## cleanVariables
 #####
-sub cleanVariables { 
+sub cleanVariables {
   $to_domain = clean($to_domain);
   $to_local  = clean($to_local);
   $sender    = clean($sender);

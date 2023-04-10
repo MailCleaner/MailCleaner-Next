@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Web interface localized texts
  */
 
@@ -92,7 +92,7 @@ return [
   'important' => 'Important !',
   'Back' => 'Back...',
   'applying network now will' => 'Applying network settings now will probably break your current connection to this interface.
-  Make sure the new settings are correct before pressing the Reload button or you may definitively loose connectivity to your MailCleaner system. 
+  Make sure the new settings are correct before pressing the Reload button or you may definitively loose connectivity to your MailCleaner system.
   Once the settings are applied, this interface may not be responsive and you may not have any answer. You should however be able to connect back with the new settings you provided.',
 
   'networkingrestarted' => 'Networking successfully restarted',
@@ -114,7 +114,7 @@ return [
   'notInt' => 'Not valid',
   'notLessThan' => 'Not valid',
   'invalidHostlist' => 'Not a valid host list',
-  
+
 ## proxies settings
   'HTTP proxy' => 'HTTP proxy',
   'SMTP proxy' => 'SMTP proxy',
@@ -123,7 +123,7 @@ return [
   'Registration number' => 'Registration number',
   'registered' => 'registered',
 
-## General settings 
+## General settings
   'Defaults' => 'Defaults',
   'Defaults Title' => 'defaults',
   'Company' => 'Company',
@@ -154,7 +154,7 @@ return [
   'Spam retention time' => 'Spam retention time',
   'Dangerous content retention time' => 'Dangerous content retention time',
   'days' => 'days',
-  
+
 ## Periodic tasks
    'Daily tasks run at ' => 'Daily tasks run at ',
    'Weekly tasks run on' => 'Weekly tasks run on',
@@ -176,7 +176,7 @@ return [
    'blacklist' => 'Black list',
    'newslist' => 'Newsletter list',
    'actions' => 'Actions',
-   
+
 ## domain configuration menu
    'general' => 'General',
    'delivery' => 'Delivery',
@@ -245,7 +245,7 @@ return [
    'process_clamspamd' => 'ClamSpam daemon',
    'process_spamhandler' => 'SpamHandler daemon',
    'process_newsld'      => "Newsletters daemon",
-   
+
 ## global status
    'loadlow' => 'low',
    'spoolslow' => 'low',
@@ -349,14 +349,14 @@ return [
 ## TrustedSources
    'IPRWL' => 'IP addresses whitelist',
    'SPFLIST' => 'Domains with good SPF',
-   
+
 ## Management, Email
    'Send summary to' => 'Send reports to this address',
    'interfacesettings' => 'Interface settings',
    'quarantinedisplay' => 'Quarantine display',
    'addressgroup' => 'Addresses group',
    'authentication' => 'Authentication',
-   
+
 ## reporting
    'countglobal_rrdtitle' => 'Global messages/sessions counts',
    'countglobal_rrdlegend' => 'messages',
@@ -425,10 +425,10 @@ return [
   'log_stage4' => 'Outgoing stage',
   'log_spamhandler' => 'Spam handling stage',
   'log_finalstage4' => 'Final outgoing stage',
-  
+
 ## informational messages
   'unregistered system has low efficiency' => 'using an unregistered system will not provide optimal efficiency. It is strongly advised to register the system.',
-  
+
   ### newsl
-  'Show newsletters only' => 'Show newsletters only',    
+  'Show newsletters only' => 'Show newsletters only',
 ];

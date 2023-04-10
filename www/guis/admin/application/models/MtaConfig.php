@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * SMTP server settings
  */
 
@@ -127,20 +127,20 @@ class Default_Model_MtaConfig
         $this->getMapper()->find($id, $this);
         return $this;
     }
-   
+
     public function save()
     {
         return $this->getMapper()->save($this);
     }
-    
+
     public function useRBL($rbl) {
     	return preg_match('/\b'.$rbl.'\b/', $this->getParam('rbls'));
     }
-    
+
     public function checkSSLCertificate() {
     	## openssl x509 -noout -modulus -in certificate.crt | openssl md5
     	## openssl rsa -noout -modulus -in privateKey.key | openssl md5
-     
+
     	## openssl verify certificate.crt
     }
 }

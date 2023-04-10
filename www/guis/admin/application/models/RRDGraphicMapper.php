@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Pending alias request mapper
  */
 
@@ -64,11 +64,11 @@ class Default_Model_RRDGraphicMapper
 		'graphicid' => $graphic->getID())
 	]);
     }
-    
+
     public function fetchAll($params)
     {
         $elements = [];
-        
+
         $query = $this->getDbTable()->select();
         foreach ($params as $key => $value) {
         	if ($value) {

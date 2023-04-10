@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * SNMP service settings form
  */
 
@@ -29,9 +29,9 @@ class Default_Form_Snmpd extends ZendX_JQuery_Form
 		$this->setMethod('post');
 
              $restrictions = Zend_Registry::get('restrictions');
-	           
+	
 		$this->setAttrib('id', 'snmpd_form');
-	    
+	
 		$community = new  Zend_Form_Element_Text('community', [
 	        'label'    => $t->_('Read community')." :",
                 'title' => $t->_("SNMP community key for SNMP"),
@@ -43,7 +43,7 @@ class Default_Form_Snmpd extends ZendX_JQuery_Form
                         $community->setAttrib('disabled', 'disabled');
             }
 
-	    
+	
 	    require_once('Validate/HostList.php');
 		$allowed_ip = new Zend_Form_Element_Textarea('allowed_ip', [
 		      'label'    =>  $t->_('Allowed IP/ranges')." :",
@@ -60,7 +60,7 @@ class Default_Form_Snmpd extends ZendX_JQuery_Form
             if ($restrictions->isRestricted('ServicesSNMP', 'allowed_ip')) {
                         $allowed_ip->setAttrib('disabled', 'disabled');
             }
-	    
+	
 		$submit = new Zend_Form_Element_Submit('submit', [
 			'label'    => $t->_('Submit')
 		]);

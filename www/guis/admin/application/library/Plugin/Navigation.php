@@ -4,16 +4,16 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Interface menu managment
  */
 
-class Plugin_Navigation extends Zend_Controller_Plugin_Abstract 
+class Plugin_Navigation extends Zend_Controller_Plugin_Abstract
   {
   	protected $_acl;
   	protected $_role;
   	
-  	public function preDispatch(Zend_Controller_Request_Abstract $request) 
+  	public function preDispatch(Zend_Controller_Request_Abstract $request)
     {
     	$t = Zend_Registry::get('translate');
 	$main_menus_defs = [
@@ -32,7 +32,7 @@ class Plugin_Navigation extends Zend_Controller_Plugin_Abstract
     	} catch(Exception $e) {
     		return;
     	}
-            
+
     	foreach ($main_menus_defs as $mk => $m) {
     		if (!$this->_acl->isAllowed($this->_role, 'Menu_'.$mk)) {
     			continue;
@@ -56,7 +56,7 @@ class Plugin_Navigation extends Zend_Controller_Plugin_Abstract
         if ($main_menu->findOneBy('id', 'Monitoring')) {
            $this->setupMonitoringMenu($main_menu->findOneBy('id', 'Monitoring'));
         }
-            
+
     	Zend_Registry::set('main_menu', $main_menu);
     	
     	$layout = Zend_Layout::getMvcInstance();
@@ -68,7 +68,7 @@ class Plugin_Navigation extends Zend_Controller_Plugin_Abstract
     	$view->logoutLink = $helper->simple('logout', 'user');
     	
     }
-    
+
     protected function setupConfigurationMenu($nav) {
     	$t = Zend_Registry::get('translate');
     	$config_menus_defs = [
@@ -96,7 +96,7 @@ class Plugin_Navigation extends Zend_Controller_Plugin_Abstract
             $nav->addPage($page);
     	}
     }
-    
+
     protected function setupManagementMenu($nav) {
     	$t = Zend_Registry::get('translate');
     	$manage_menus_defs = [
@@ -116,7 +116,7 @@ class Plugin_Navigation extends Zend_Controller_Plugin_Abstract
             $nav->addPage($page);
     	}    	
     }
-    
+
     protected function setupMonitoringMenu($nav) {
         $t = Zend_Registry::get('translate');
     	$monitor_menus_defs = [
@@ -139,7 +139,7 @@ class Plugin_Navigation extends Zend_Controller_Plugin_Abstract
             $nav->addPage($page);
     	}
     }
-    
+
     public function postDispatch(Zend_Controller_Request_Abstract $request) {
     	$layout = Zend_Layout::getMvcInstance();
     	$view=$layout->getView();

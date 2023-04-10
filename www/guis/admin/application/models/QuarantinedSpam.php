@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Quarantined spam
  */
 
@@ -24,7 +24,7 @@ class Default_Model_QuarantinedSpam
           ### newsl
           'is_newsletter' => '0',
 	];
-    
+
 	protected $_mapper;
 	protected $_table = 'spam';
 
@@ -140,29 +140,29 @@ class Default_Model_QuarantinedSpam
         $this->getMapper()->find($todomain, $touser, $exim_id, $this);
         return $this;
     }
-        
+
     public function fetchAllCount($params = NULL) {
     	return $this->getMapper()->fetchAllCount($params);
     }
     public function fetchAll($params = NULL) {
     	return $this->getMapper()->fetchAll($params);
     }
-    
+
     public function getNbPages() {
     	return $this->getMapper()->getNbPages();
     }
     public function getEffectivePage() {
     	return $this->getMapper()->getEffectivePage();
     }
-      
+
     public function save()
     {	
         return $this->getMapper()->save($this);
     }
-    
+
     public function delete()
     {
     	return $this->getMapper()->delete($this);
     }
-    
+
 }

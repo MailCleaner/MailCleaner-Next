@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Domain mapper
  */
 
@@ -32,7 +32,7 @@ class Default_Model_DomainMapper
         }
         return $this->_dbTable;
     }
-    
+
     public function find($id, Default_Model_Domain $domain)
     {
         $result = $this->getDbTable()->find($id);
@@ -40,18 +40,18 @@ class Default_Model_DomainMapper
             return;
         }
         $row = $result->current();
-        
+
         $user = Zend_Registry::get('user');
         if (!$user || (!$user->canManageDomain($row->name) && $row->name != '__global__') ) {
             return;
         }
-        
+
         $domain->setId($id);
         foreach ($domain->getAvailableParams() as $key) {
         	$domain->setParam($key, $row->$key);
         }
     }
-    
+
     public function findByName($name, Default_Model_Domain $domain) {
         $user = Zend_Registry::get('user');
         if (!$user || (!$user->canManageDomain($name) && $name != '__global__')) {
@@ -62,14 +62,14 @@ class Default_Model_DomainMapper
         $row = $this->getDbTable()->fetchRow($query);
         return $this->find($row['id'], $domain);
     }
-    
+
     public function fetchAll()
     {
         $resultSet = $this->getDbTable()->fetchAll($this->getDbTable()->select()->order('name ASC'));
         $entries   = [];
-        
+
         $user = Zend_Registry::get('user');
-        
+
         foreach ($resultSet as $row) {
         	if ($row['name'] == '__global__') {
         		continue;
@@ -95,7 +95,7 @@ class Default_Model_DomainMapper
         }
         return $res;
      }
-     
+
      public function fetchAllName($params)
     {
     	$user = Zend_Registry::get('user');
@@ -122,18 +122,18 @@ class Default_Model_DomainMapper
           if ($row['name'] == '__global__') {
         		continue;
           }
-          
+
           if (!$user || !$user->canManageDomain($row['name'])) {
                 continue;
           }
           $entry = new Default_Model_Domain();
           $entry->setId($row['id']);
           $entry->setParam('name', $row['name']);
-          $entries[] = $entry;   
+          $entries[] = $entry;
         }
         return $entries;
     }
-    
+
     public function save(Default_Model_Domain $conf) {
        $data = $conf->getParamArray();
        $res = '';
@@ -141,7 +141,7 @@ class Default_Model_DomainMapper
        if (!$user || !$user->canManageDomain($conf->getParam('name'))) {
        	   throw new Exception('permission denied');
        }
-        
+
        if (null === ($id = $conf->getId())) {
             unset($data['id']);
     		if ($conf->findByName($conf->getParam('name'))->getID()) {
@@ -151,7 +151,7 @@ class Default_Model_DomainMapper
         } else {
             $res = $this->getDbTable()->update($data, ['id = ?' => $id]);
         }
-        
+
         ## check if default domain is empty. If yes, put me as default
         $defaults = new Default_Model_SystemConf();
         $defaults->load();
@@ -161,7 +161,7 @@ class Default_Model_DomainMapper
         }
         return $res;
     }
-    
+
     public function getAliases(Default_Model_Domain $d) {
     	$query = $this->getDbTable()->select();
     	$query->where('prefs = ?', $d->getParam('prefs'));
@@ -175,13 +175,13 @@ class Default_Model_DomainMapper
     	}
     	return $entries;
     }
-    
+
     public function delete(Default_Model_Domain $domain) {
         $user = Zend_Registry::get('user');
         if (!$user || !$user->canManageDomain($domain->getParam('name'))) {
            throw new Exception('Not authorized');
         }
-       
+
     	$where = $this->getDbTable()->getAdapter()->quoteInto('id = ?', $domain->getId());
     	return $this->getDbTable()->delete($where);   	
     }

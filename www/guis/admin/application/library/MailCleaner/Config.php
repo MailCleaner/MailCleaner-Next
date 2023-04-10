@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * MailCleaner configuration fetcher
  */
 
@@ -46,10 +46,10 @@ class MailCleaner_Config
 	    }
 	    return null;
 	}
-	 
+	
 	public function getUserGUIAvailableLanguages() {
 		require_once($this->_options["SRCDIR"]."/www/classes/view/Language.php");
 		$lang = Language::getInstance('user');
-		return $lang->getLanguages(); 
+		return $lang->getLanguages();
 	}
 }

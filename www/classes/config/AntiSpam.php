@@ -5,12 +5,12 @@
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
  */
- 
+
 /**
  * this is a preference handler
  */
  require_once('helpers/PrefHandler.php');
- 
+
 /**
  * This class is only a settings wrapper for the antispam configurations
  */
@@ -36,7 +36,7 @@ class AntiSpam extends PrefHandler
     'use_pyzor' => 1,
     'pyzor_timeout' => 10,
     'global_max_size' => '',
-    'enable_whitelists' => 0,   
+    'enable_whitelists' => 0,
     'enable_warnlists' => 0,
     'enable_blacklists' => 0,
     'trusted_ips' => '',

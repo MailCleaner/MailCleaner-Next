@@ -5,20 +5,20 @@
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
  */
- 
- 
+
+
 /**
  * This class takes care of storing settings of a simple server
  * @package mailcleaner
  */
  class SimpleServerSettings extends ConnectorSettings {
-    
+
    /**
     * template tag
     * @var string
     */
    protected $template_tag_ = 'SIMPLEAUTH';
-   
+
     /**
    * Specialized settings array with default values
    * @var array
@@ -29,6 +29,6 @@
     * @var array
     */
    protected $spec_settings_type_ = ['usessl' => ['checkbox', '1']];
-    
+
  }
 ?>

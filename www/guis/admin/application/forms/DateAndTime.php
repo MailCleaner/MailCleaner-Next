@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Date and time settings form
  */
 
@@ -21,9 +21,9 @@ class Default_Form_DateAndTime extends ZendX_JQuery_Form
 	{
 		$this->setMethod('post');
 		$this->setAttrib('id', 'dateandtimeform');
-	    
+	
         $now = Zend_Date::now();
-        
+
 		$t = Zend_Registry::get('translate');
 		$layout = Zend_Layout::getMvcInstance();
     	$view=$layout->getView();
@@ -36,9 +36,9 @@ class Default_Form_DateAndTime extends ZendX_JQuery_Form
                 );
 	   $date->addValidator(new Zend_Validate_Date());
        $date->addDecorator('ViewHelper');
-       
+
        $this->addElement($date);
-       
+
        $locale = Zend_Registry::get('Zend_Locale');
        $hour = new  Zend_Form_Element_Text('hour', [
 		    'required' => false,
@@ -65,13 +65,13 @@ class Default_Form_DateAndTime extends ZendX_JQuery_Form
        ]);
 	   $second->addValidator(new Zend_Validate_Int());
 	   $second->addValidator(new Zend_Validate_LessThan(60));
-	   $this->addElement($second);	   
-	   
+	   $this->addElement($second);	
+	
 	   $saveandsync = new Zend_Form_Element_Submit('saveandsync', [
 		   'label'    => $t->_('Save and sync now')
 	   ]);
 	   $this->addElement($saveandsync);
-	   
+	
 	   $hsaveandsync = new Zend_Form_Element_Hidden('hsaveandsync');
 	   $hsaveandsync->setValue('0');
 	   $this->addElement($hsaveandsync);
@@ -85,7 +85,7 @@ class Default_Form_DateAndTime extends ZendX_JQuery_Form
 	   $ntpserver->setValue($this->_ntp->getServersString());
 	   $ntpserver->addValidator(new Validate_HostList());
 	   $this->addElement($ntpserver);
-	   
+	
 	   $usentp = new Zend_Form_Element_Checkbox('usentp', [
 	        'label'   => $t->_('Use time server'). " :",
             'uncheckedValue' => "0",
@@ -93,7 +93,7 @@ class Default_Form_DateAndTime extends ZendX_JQuery_Form
 	   ]);
 	   $usentp->setValue($this->_ntp->useNTP());
 	   $this->addElement($usentp);
-	           
+	
 		$submit = new Zend_Form_Element_Submit('datetimesubmit', [
 			'label'    => $t->_('Set time and date')
 		]);

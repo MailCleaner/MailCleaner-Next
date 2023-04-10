@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Network interface form
  */
 
@@ -48,7 +48,7 @@ class Default_Form_NetworkInterface extends Zend_Form
 	    ]);
 	    ## TODO: add specific validator
 	    $iflist->addValidator(new Zend_Validate_Alnum());
-        
+
         foreach ($this->_interfaces as $if) {
         	$iflist->addMultiOption($if->getName(), $if->getName());
         }
@@ -239,7 +239,7 @@ class Default_Form_NetworkInterface extends Zend_Form
         } else {
         	$interface->setIPv4Param('mode', 'disabled');
         }
-        
+
         if ($request->getParam('ipv6mode') == 'static') {
         	if ($request->getParam('ipv6address') == '') {
         		$f = $this->getElement('ipv6address');

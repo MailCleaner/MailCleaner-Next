@@ -1,14 +1,14 @@
-<?php 
+<?php
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * LDAP callout form
  */
 
-class Default_Form_Domain_AddressVerification_Ldap 
+class Default_Form_Domain_AddressVerification_Ldap
 {
 	protected $_domain;
 	
@@ -33,9 +33,9 @@ class Default_Form_Domain_AddressVerification_Ldap
 	    $server->setValue($this->_domain->getPref('ldapcalloutserver'));
         $server->addValidator(new Validate_SMTPHostList());
 	    $form->addElement($server);
-	    
+	
         $ldapparams = $this->getParams();
-	    
+	
 	    $basedn = new  Zend_Form_Element_Text('basedn', [
 	        'label'    => $t->_('Base DN')." :",
 		    'required' => false,
@@ -43,7 +43,7 @@ class Default_Form_Domain_AddressVerification_Ldap
 	    ]);
 	    $basedn->setValue($ldapparams['basedn']);
 	    $form->addElement($basedn);
-	    
+	
 	    $binddn = new  Zend_Form_Element_Text('binddn', [
 	        'label'    => $t->_('Bind user')." :",
 		    'required' => false,
@@ -51,7 +51,7 @@ class Default_Form_Domain_AddressVerification_Ldap
 	    ]);
 	    $binddn->setValue($ldapparams['binddn']);
 	    $form->addElement($binddn);
-	    
+	
 	    $bindpass = new  Zend_Form_Element_Password('bindpass', [
 	        'label'    => $t->_('Bind password')." :",
 		    'required' => false,
@@ -73,12 +73,12 @@ class Default_Form_Domain_AddressVerification_Ldap
         $ldapusesslcheck = new Zend_Form_Element_Checkbox('usessl', [
             'label'   => $t->_('Use SSL'). " :",
             'uncheckedValue' => "0",
-            'checkedValue' => "1" 
-	]); 
-    
+            'checkedValue' => "1"
+	]);
+
         if ($ldapparams['usessl']) {
             $ldapusesslcheck->setChecked(true);
-        }   
+        }
         $form->addElement($ldapusesslcheck);
 	}
 	
@@ -113,7 +113,7 @@ class Default_Form_Domain_AddressVerification_Ldap
           }
           $ldapparams[$i] = preg_replace('/__C__/', ':', $ldapparams[$i]);
         }
-        
+
         return [
                'basedn' => $ldapparams[0],
                'binddn' => $ldapparams[1],

@@ -8,11 +8,11 @@
  *		  2015-2017 Florian Billebault <florian.billebault@gmail.com>
  * This is the controller for the quarantine page
  */
- 
+
 /**
  * require valid session and quarantine objects
  */
-require_once("objects.php"); 
+require_once("objects.php");
 require_once("user/SpamQuarantine.php");
 require_once("view/Template.php");
 require_once("view/Form.php");
@@ -80,7 +80,7 @@ $pie_stats->addValue($quarantine->getStat('clean'), 'clean', [0x54, 0xEB, 0x48])
 
 $pie_stats->generate();
 
-// prepare replacements   
+// prepare replacements
 $nb_msgs_choice = ['2' => 2, '5' => 5, '10' => 10, '20' => 20, '50' => 50, '100' => 100];
 $user_addresses_ = $user_->getAddressesForSelect();
 $get_query = http_build_query([

@@ -31,6 +31,6 @@ if (!$argv[1]) {
 }
 
 include('MCSoap/Services.php');
-$res = MCSoap_Services::$argv[1](); 
+$res = MCSoap_Services::$argv[1]();
 echo $res;
 ?>

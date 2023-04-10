@@ -217,7 +217,7 @@ sub set_as_slave {
                  ReadKey(0);
                  return;
               }
-            } 
+            }
            }
            print "Unknown error !\n";
            print "Check the master hostname or IP address, DNS resolution and that this script has been run on the master first.\n";

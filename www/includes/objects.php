@@ -1,16 +1,16 @@
-<?    
+<?
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
  */
- 
+
  /**
  * include log, system config and session objects
  */
 require_once('variables.php');
-require_once('system/SystemConfig.php');        
+require_once('system/SystemConfig.php');
 require_once('user/User.php');
 require_once('view/Language.php');
 

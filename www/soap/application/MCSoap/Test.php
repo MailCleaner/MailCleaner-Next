@@ -6,7 +6,7 @@
  * @copyright 2009, Olivier Diserens
  */
 
-class MCSoap_Test 
+class MCSoap_Test
 {
 	static public function Test_getResponse($question) {
 		

@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Quarantine page form
  */
 
@@ -26,9 +26,9 @@ class Default_Form_Quarantines extends ZendX_JQuery_Form
     	$view=$layout->getView();
     	
 		$this->setMethod('post');
-	           
+	
 		$this->setAttrib('id', 'quarantines_form');
-		        
+		
         $spamret = new  Zend_Form_Element_Text('spamretention', [
 	        'label'    => $t->_('Spam retention time')." :",
 		    'required' => false,
@@ -38,7 +38,7 @@ class Default_Form_Quarantines extends ZendX_JQuery_Form
         $spamret->addValidator(new Zend_Validate_Digits());
 	    $spamret->setValue($this->_systemconf->getParam('days_to_keep_spams'));
 	    $this->addElement($spamret);
-	    
+	
 	    $contentret = new  Zend_Form_Element_Text('contentretention', [
 	        'label'    => $t->_('Dangerous content retention time')." :",
                 'title'    => $t->_("The longer the quarantine is, the more space you'll require to stock it (in /var)"),
@@ -49,7 +49,7 @@ class Default_Form_Quarantines extends ZendX_JQuery_Form
         $contentret->addValidator(new Zend_Validate_Digits());
 	    $contentret->setValue($this->_systemconf->getParam('days_to_keep_virus'));
 	    $this->addElement($contentret);
-	    
+	
 		$submit = new Zend_Form_Element_Submit('submit', [
 			'label'    => $t->_('Submit')
 		]);

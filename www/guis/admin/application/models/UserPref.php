@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * User/Email preferences
  */
 
@@ -94,16 +94,16 @@ class Default_Model_UserPref
         $this->getMapper()->find($id, $this);
         return $this;
     }
-   
+
     public function save()
     {
         return $this->getMapper()->save($this);
     }
-    
+
     public function delete() {
     	return $this->getmapper()->delete($this);
     }
-    
+
     public function setDefaultDomainPref($domain) {
     	foreach ($this->_values as $pref => $value) {
     		if ($domain->getPref($pref)) {

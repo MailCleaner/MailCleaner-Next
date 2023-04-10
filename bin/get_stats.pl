@@ -118,7 +118,7 @@ foreach my $what ( @tmpwhats ) {
     	     push @dirs, $dir;
     	     $whats{$dir} = $what;
         }
-        
+
 	} else {
 		my $isdomain = 0;
 		my $domain = '';
@@ -229,7 +229,7 @@ sub processFile
   my $file = shift;
 
   my ($cmsgs, $cspams, $chighspams, $cviruses, $cnames, $cothers, $ccleans, $cbytes, $cusers, $cdomains) = Stats::readFile($file);
-  
+
   $msgs = $msgs + $cmsgs;
   $spams = $spams + $cspams;
   $highspams = $highspams + $chighspams;
@@ -251,26 +251,26 @@ sub addDate
 {
  my $in = shift;
  my $add = shift;
- 
+
  if ($in !~ m/^(\d{4})(\d{2})(\d{2})$/ ) {
    return $in;
  }
  my $sy = $1;
  my $sm = $2;
  my $sd = $3;
- 
+
  if ($add !~ m/^([\-\+])(\d+)$/) {
    return $in;
  }
  my $op = $1;
  my $delta = $2;
- 
+
  my @nbdays = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
  # Compensate for leap year:
  if ( $sy % 4 == 0 ) {
    $nbdays[1] += 1;
  }
- 
+
  my $adelta = $delta;
  while ($adelta > 0) {
    if ($op eq '+') {
@@ -284,7 +284,7 @@ sub addDate
        $sy = $sy + 1;
      }
    }
-   
+
    if ($op eq '-') {
      $sd = $sd - 1;
      if ($sd == 0) {

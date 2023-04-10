@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Setup base view variables
  */
 
@@ -12,7 +12,7 @@ class MailCleaner_View_Helper_InputRow extends Zend_View_Helper_Abstract
 {
 	
     public $view;
- 
+
     public function setView(Zend_View_Interface $view)
     {
         $this->view = $view;
@@ -20,7 +20,7 @@ class MailCleaner_View_Helper_InputRow extends Zend_View_Helper_Abstract
 	
 	/*
 	 * possible params:
-	 * 
+	 *
 	 * field_only: boolean
 	 * label_only: boolean
 	 * norow: boolean
@@ -47,7 +47,7 @@ class MailCleaner_View_Helper_InputRow extends Zend_View_Helper_Abstract
 		}
 		if (!isset($params['error_display'])) {
             $params['error_display'] = true;
-        }  
+        }
 
 		$string = '';
 		
@@ -57,7 +57,7 @@ class MailCleaner_View_Helper_InputRow extends Zend_View_Helper_Abstract
 		     (!isset($params['nobox']) || !$params['nobox']) &&
              (!isset($params['norow']) || !$params['norow'])) {
 		     	
-		    
+		
     	    $string .= '<tr';
     	    if (isset($params['row_id'])) {
     	    	$string .= ' id="'.$params['row_id'].'"';
@@ -81,7 +81,7 @@ class MailCleaner_View_Helper_InputRow extends Zend_View_Helper_Abstract
     	            }
     	            $string .= '"';
 			    }
-          
+
 			    $string .= '>';
 			}
     	    $string .= $element->getLabel();
@@ -100,29 +100,29 @@ class MailCleaner_View_Helper_InputRow extends Zend_View_Helper_Abstract
     	           $string .= ' class="fvalue';
 			       if (isset($params['field_addclass'])) {
                        $string .= ' '.$params['field_addclass'];
-                    }          
+                    }
 			     }
 			     // error highlight
                  if ($params['error_higlight'] && $element->getMessages()) {
                      $string .= ' ferror';
-                 }             
+                 }
                  $string .= '">';
 			} else {
 			   // error highlight
                if ($params['error_higlight'] && $element->getMessages()) {
                      $string .= '<span class="ferror">';
-               } 
+               }
 			}
 			if (isset($params['pre_field_text'])) {
 				$string .= $params['pre_field_text'];
 			}
             $string .= $element->renderViewHelper();
-            
+
             if (!isset($params['nobox']) || !$params['nobox']) {
             } else {
                if ($params['error_higlight'] && $element->getMessages()) {
                      $string .= '</span>';
-               } 
+               }
             }
             // error text display
             if ($params['error_display'] && $element->getMessages()) {
@@ -135,7 +135,7 @@ class MailCleaner_View_Helper_InputRow extends Zend_View_Helper_Abstract
             if (isset($params['post_field_text'])) {
             	$string .= " ".$params['post_field_text'];
             }
-            
+
             if (!isset($params['nobox']) || !$params['nobox']) {
     	        $string .= "\n</td>\n";
             }
@@ -148,7 +148,7 @@ class MailCleaner_View_Helper_InputRow extends Zend_View_Helper_Abstract
              (!isset($params['norow']) || !$params['norow'])) {
 	        $string .= "</tr>\n";
         }
-          
+
 		return $string;
 	}
 }

@@ -38,13 +38,13 @@ my $_current_table_creating : shared = 0;
 sub new {
     my $class = shift;
     my $daemon = shift;
-    
+
     my $this = {	
     	'class' => $class,
     	'daemon' => $daemon
     };
     bless $this, $class;
-    
+
    foreach my $option (keys %{ $this->{daemon} }) {
        if (defined($this->{$option})) {
            $this->{$option} = $this->{daemon}->{$option};
@@ -52,7 +52,7 @@ sub new {
     }
 
     $this->doLog("backend loaded", 'statsdaemon');
-    
+
     $this->{data} = $StatsDaemon::data_;
     return $this;
 }
@@ -85,7 +85,7 @@ sub accessFlatElement {
             if ( $res{'id'} && $res{'value'} ) {
             	
                 $this->{data}->{$element}->{'stable_id'} = $res{'id'};
-                
+
                 $value = $res{'value'};
             }
             $this->doLog( 'loaded data for ' . $element . ' from backend',
@@ -97,7 +97,7 @@ sub accessFlatElement {
 sub stabilizeFlatElement {
 	my $this = shift;
 	my $element = shift;
-        
+
 	my $table = '';
     if ( $_current_table_exists ) {
         $table = $_current_table;
@@ -116,7 +116,7 @@ sub stabilizeFlatElement {
     my $day = $this->{daemon}->getCurrentDate()->{'day'};
 
     ## find out if element already is registered, register it if not.
-    if (!defined($this->{data}->{$element}) || 
+    if (!defined($this->{data}->{$element}) ||
          !defined($this->{data}->{$element}->{'stable_id'}) ||
          (defined($this->{data}->{$element}->{'stable_id'}) && !$this->{data}->{$element}->{'stable_id'})
        ) {
@@ -334,7 +334,7 @@ sub getStats {
                 } else {
                 	 $query .=  "AND ( s.subject LIKE '%domain' OR s.subject LIKE '%user' ) ";
                 }
-                
+
                 $query .= " group by d.subject";
                 $this->doLog( 'Using query: "'.$query.'"', 'statsdaemon', 'debug' );
                 $this->{daemon}->increaseLongRead();
@@ -460,7 +460,7 @@ sub doLog {
 	
     my $msg = $this->{class}." ".$message;
     if ($this->{daemon}) {
-        $this->{daemon}->doLog($msg, $given_set, $priority); 
+        $this->{daemon}->doLog($msg, $given_set, $priority);
     }
 }
 

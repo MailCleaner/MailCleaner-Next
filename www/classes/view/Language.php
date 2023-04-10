@@ -10,12 +10,12 @@
 * Language only needs some global configuration settings
 */
 require_once("system/SystemConfig.php");
-/** 
+/**
 * Language handler class
 * This class takes care of the languages and tranlsation for the web interfaces
 * It basically takes the language file corresponding to the desired language
 * and replace tags with translated equivalence when needed
-* 
+*
 * @package mailcleaner
 */
 
@@ -26,12 +26,12 @@ class Language
      * @var  string
      */
     private	$lang_ = "en";
-    
+
     /*
      * Available language
      * @var array array of language. Shortcut name as key, and full name as value
      */
-    private $available_languages_ = []; 
+    private $available_languages_ = [];
 
     /*
      * Available languages array in reversed key <==> value
@@ -52,7 +52,7 @@ class Language
      * @var SystemConfig
      */
     private	$sysconf_;
-    
+
     /**
      * work mode of the language class. It can be 'user' or 'admin' depending of the interface displayed
      * This mode will define where the languages file will be searched (in user htdocs or in admin htdocs)
@@ -215,7 +215,7 @@ class Language
      $this->lang_ = $lang;
      return true;
    }
-   return false;   
+   return false;
   }
 
   /**

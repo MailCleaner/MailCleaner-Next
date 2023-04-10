@@ -101,11 +101,11 @@ foreach my $database (split(',', $databases)) {
         output(" avoiding mc_stats on a master database");
         next;
     }
-  
+
     ## connect to database
     my $db = DB::connect($dbtype, $database);
     output("Connected to database");
-  
+
     if ($checkmode) {
         ## mysql check mode
         myCheckRepairDatabase(\$db, 0);
@@ -153,14 +153,14 @@ sub getRefTables
 {
     my $dbname = shift;
     my %tables;
-  
+
     my $prefix = 'cf';
     if ($dbname eq 'mc_stats') {
         $prefix='st';
     } elsif ($dbname eq 'mc_spool') {
         $prefix='sp';
     }
-  
+
     my $install_dir = $conf->getOption('SRCDIR')."/install/dbs";
     if ($dbname eq 'mc_spool') {
         $install_dir .= "/spam";
@@ -184,10 +184,10 @@ sub getActualTables
     my $db_ref = shift;
     my $db = $$db_ref;
     my %tables_hash;
-  
+
     my $sql = "SHOW tables;";
     my @tables = $db->getList($sql);
-  
+
     foreach my $table (@tables) {
         $tables_hash{$table} = $table;
     }
@@ -204,7 +204,7 @@ sub getRefFields
     my %fields;
     my $previous = 0;
     my $order = 0;
-  
+
     open(TABLEFILE, $file) or die("ERROR, cannot open reference database file $file\nABORTED\n");
     my $in_desc = 0;
     while(<TABLEFILE>) {
@@ -250,18 +250,18 @@ sub getActualFields
     my $db = $$db_ref;
     my $tablename = shift;
     my %fields;
-    my $previous = ""; 
-  
+    my $previous = "";
+
     my $sql = "DESCRIBE $tablename;";
     my @afields = $db->getListOfHash($sql);
-  
+
     foreach my $f (@afields) {
         my $fname = $f->{Field};
         my $ftype = $f->{Type};
         $fields{$fname} = { previous => $previous, def => $ftype };
         $previous = $1;
     }
-  
+
     return %fields;
 }
 
@@ -274,9 +274,9 @@ sub myCheckRepairDatabase
     my $db = $$db_ref;
     my $repair = shift;
     my $sql = "";
-  
+
     my %tables = getActualTables(\$db);
-  
+
     foreach my $tname (keys %tables) {
         if ($repair) {
             print "   repairing table: $tname...";
@@ -325,7 +325,7 @@ sub addDatabase
         }
         `$mysql < $descfile 2>&1`;
     }
-  
+
     print "Done.\n";
 }
 
@@ -365,7 +365,7 @@ sub checkReplicationStatus
                 print " could not modify database. fix failed\n";
                 return 0;
             }
-        } 
+        }
     }
     return 0;
 }
@@ -379,7 +379,7 @@ sub compareUpdateDatabase
     my $db = $$db_ref;
     my $dbname = shift;
     my $update=shift;
-  
+
     my %reftables = getRefTables($dbname);
     my %actualtables = getActualTables(\$db);
 
@@ -406,14 +406,14 @@ sub compareUpdateDatabase
             print "\n";
             next;
         }
-    
+
         # compare and repair table
         if (!compareUpdateTable(\$db, $table, $reftables{$table}, $update)) {
             print "ERROR, cannot update table $table\nABORTED\n";
             exit 1;
         }
     }
-  
+
     # check useless tables
     # ...
 }
@@ -428,11 +428,11 @@ sub compareUpdateTable
     my $tablename = shift;
     my $tablefile = shift;
     my $update=shift;
-  
+
     my %reffields = getRefFields($tablefile);
     my %actualfields = getActualFields(\$db, $tablename);
     my %nonofields;
-  
+
     # check missing columns
     foreach my $reff (sort (keys %reffields)) {
         my $f = $reff;
@@ -456,8 +456,8 @@ sub compareUpdateTable
             print "\n";
         }
     }
- 
-  
+
+
     # check useless columns
     foreach my $f (keys %actualfields) {
         if (! defined($nonofields{$f})) {

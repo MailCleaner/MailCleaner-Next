@@ -814,7 +814,7 @@ class pScatter
 		}
 
 		$this->Shadow = $RestoreShadow;
-	} 
+	}
 
 	/* Get the legend box size */
 	function getScatterLegendSize(array $Format = [])
@@ -961,7 +961,7 @@ class pScatter
 			return 0;
 		}
 		
-		(!is_[$Points)] AND $Points = [$Points]; 
+		(!is_[$Points)] AND $Points = [$Points];
 		$OverrideTitle = isset($Format["OverrideTitle"]) ? $Format["OverrideTitle"] : NULL;
 		$DrawPoint = isset($Format["DrawPoint"]) ? $Format["DrawPoint"] : LABEL_POINT_BOX;
 		$Decimals = isset($Format["Decimals"]) ? $Format["Decimals"] : NULL;

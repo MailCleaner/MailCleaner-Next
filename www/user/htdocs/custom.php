@@ -4,14 +4,14 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
- * 
+ *
  * This is the controller for a custom page
  */
 
 /**
  * require session
- */ 
-require_once("objects.php"); 
+ */
+require_once("objects.php");
 require_once("view/Template.php");
 
 $template = 1;

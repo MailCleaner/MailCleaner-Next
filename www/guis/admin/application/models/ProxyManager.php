@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Proxies settings
  */
 
@@ -12,7 +12,7 @@ class Default_Model_ProxyManager
 {	
 	protected $_httpproxy = '';
 	protected $_smtpproxy = '';
-    
+
 	public function load() {
 		$config = MailCleaner_Config::getInstance();
 		$this->setHttpProxy($config->getOption('HTTPPROXY'));
@@ -32,7 +32,7 @@ class Default_Model_ProxyManager
     	}
     	return '';
     }
-    
+
     public function getSmtpProxy() {
     	return $this->_smtpproxy;
     }

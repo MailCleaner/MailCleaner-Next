@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * controller for content quarantine page
  */
 
@@ -28,11 +28,11 @@ class ManagecontentquarantineController extends Zend_Controller_Action
 		$todateO = Zend_Date::now();
 	    $fromdateO = Zend_Date::now();
         $fromdateO->sub('1', Zend_Date::DAY, Zend_Registry::get('Zend_Locale')->getLanguage());
-        
-        $todate = Zend_Locale_Format::getDate($todateO, ['date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()]);      
+
+        $todate = Zend_Locale_Format::getDate($todateO, ['date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()]);
         $fromdate = Zend_Locale_Format::getDate($fromdateO, ['date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()]);
-       
-        
+
+
         foreach ( ['fd' => 'day', 'fm' => 'month') as $tk => $tv] {
         	if  (!isset($params[$tk]) || !$params[$tk]) {
         	    $params[$tk] = $fromdate[$tv];
@@ -48,7 +48,7 @@ class ManagecontentquarantineController extends Zend_Controller_Action
         if ($params['tm'] < $params['fm']) {
         	$params['fy']--;
         }
-        
+
 		return $params;
 	}
 	
@@ -66,12 +66,12 @@ class ManagecontentquarantineController extends Zend_Controller_Action
     	$main_menus = Zend_Registry::get('main_menu')->findOneBy('id', 'submanage_ContentQuarantine')->class = 'submenuelselected';
     	$view->selectedSubMenu = 'ContentQuarantine';
     }
-    
+
     public function indexAction() {
   	    $t = Zend_Registry::get('translate');
 		$layout = Zend_Layout::getMvcInstance();
 		$view=$layout->getView();
-		 
+		
 		$request = $this->getRequest();
 		$form    = new Default_Form_ContentQuarantine($this->getSearchParams());
 		$form->setAction(Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managecontentquarantine'));
@@ -79,16 +79,16 @@ class ManagecontentquarantineController extends Zend_Controller_Action
 
 		$view->form = $form;
     }
-    
+
     public function searchAction() {
 		$layout = Zend_Layout::getMvcInstance();
 		$view=$layout->getView();
 		$layout->disableLayout();
 		$view->addScriptPath(Zend_Registry::get('ajax_script_path'));
 		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managecontentquarantine', NULL, []);
-		 
+		
 		$request = $this->getRequest();
-		 
+		
 		$loading = 1;
 		if (! $request->getParam('load')) {
 			sleep(1);
@@ -96,14 +96,14 @@ class ManagecontentquarantineController extends Zend_Controller_Action
 		}
 		$view->loading = $loading;
 		$view->params = $this->getSearchParams();
-		 
+		
 		$nbelements = 0;
 		$orderfield = 'date';
 		$orderorder = 'desc';
 		$nbpages = 0;
 		$page = 0;
 		$elements = [];
-		 
+		
 		$columns = [
     	  'caction' => ['label' => 'Action'],
     	  'date' => ['label' => 'Date', 'label2' => 'date', 'order' => 'desc'],
@@ -127,7 +127,7 @@ class ManagecontentquarantineController extends Zend_Controller_Action
 			$element = new Default_Model_QuarantinedContent();
 			$params = $this->getSearchParams();
 			#$nbelements = $element->fetchAllCount($params);
-			 
+			
 			#if ($nbelements > 0) {
 				$elements = $element->fetchAll($params);
 				$nbelements = $element->fetchAllCount();
@@ -137,7 +137,7 @@ class ManagecontentquarantineController extends Zend_Controller_Action
 		}
 		$view->page = $page;
 		$view->elements = $elements;
-		 
+		
 		$view->columns = $columns;
 		$view->nbelements = $nbelements;
 		$view->orderfield = $orderfield;
@@ -152,7 +152,7 @@ class ManagecontentquarantineController extends Zend_Controller_Action
 		$layout->disableLayout();
 		$view->addScriptPath(Zend_Registry::get('ajax_script_path'));
 		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'managecontentquarantine', NULL, []);
-		 
+		
 		$view->headLink()->appendStylesheet($view->css_path.'/popup.css');
 
 		$view->release_status = '';

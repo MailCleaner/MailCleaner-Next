@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * User authentification form
  */
 
@@ -66,7 +66,7 @@ class Default_Form_Manage_UserAuthentification extends Zend_Form
 		]);
 		$realname->setValue($this->_local->getParam('realname'));
 		$this->addElement($realname);
-	  
+	
 		if ($this->_user->getDomainObject()->isFetcherLocal()) {
 			$address = new  Zend_Form_Element_Text('email', [
             'label'   => $t->_('Email address')." :",
@@ -76,7 +76,7 @@ class Default_Form_Manage_UserAuthentification extends Zend_Form
 			$address->setValue($this->_local->getParam('email'));
 			$this->addElement($address);
 		}
-	  
+	
 		$password = new  Zend_Form_Element_Password('password', [
 	        'label'    => $t->_('Password')." :",
 	        'renderPassword' => true,
@@ -86,7 +86,7 @@ class Default_Form_Manage_UserAuthentification extends Zend_Form
 			$password->setValue('_keeppassword1_');
 		}
 		$this->addElement($password);
-	  
+	
 		$confirm = new  Zend_Form_Element_Password('confirm', [
 	        'label'    => $t->_('Confirm')." :",
 	        'renderPassword' => true,
@@ -118,7 +118,7 @@ class Default_Form_Manage_UserAuthentification extends Zend_Form
 				$local->setPassword($request->getParam('password'));
 			}
 		}
-		$local->save(); 
+		$local->save();
         if (preg_match('/^\s*$/', $request->getParam('password'))) {
              # generate and send password
             require_once("Pear/Text/Password.php");

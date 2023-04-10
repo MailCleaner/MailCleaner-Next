@@ -1,14 +1,14 @@
-<?php 
+<?php
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * SMTP callout form
  */
 
-class Default_Form_Domain_AddressVerification_Smtp 
+class Default_Form_Domain_AddressVerification_Smtp
 {
 	protected $_domain;
 	

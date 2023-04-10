@@ -112,7 +112,7 @@ class Default_Form_RegistrationCE extends ZendX_JQuery_Form
 		    'filters'    => ['StringTrim'],
 	    ]);
 
-	   $countries = [ 
+	   $countries = [
 			"Afghanistan",
 			"Albania",
 			"Algeria",

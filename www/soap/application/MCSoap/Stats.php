@@ -6,7 +6,7 @@
  * @copyright 2009, Olivier Diserens
  */
 
-class MCSoap_Stats 
+class MCSoap_Stats
 {
 
  /**
@@ -111,10 +111,10 @@ class MCSoap_Stats
                           $data_res = $lines;
 			}
 		}
-               
+
                 foreach ($data_res as $line) {
                    $res['data'][] = utf8_encode($line);
-                } 
+                }
 		return $res;
 	}
   /**

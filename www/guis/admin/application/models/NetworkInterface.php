@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Network interface
  */
 
@@ -107,7 +107,7 @@ class Default_Model_NetworkInterface
 	public function getName() {
 		return $this->_ifname;
 	}
-    
+
     public function setMapper($mapper)
     {
         $this->_mapper = $mapper;
@@ -127,12 +127,12 @@ class Default_Model_NetworkInterface
         $this->getMapper()->find($interface, $this);
         return $this;
     }
-    
+
     public function fetchAll()
     {
         return $this->getMapper()->fetchAll();
     }
-    
+
     public function fetchFirst($interfaces)
     {    	
     	if (!is_[$interfaces] || !count($interfaces)) {
@@ -145,12 +145,12 @@ class Default_Model_NetworkInterface
     	}
     	return new Default_Model_NetworkInterface();
     }
-    
+
     public function save()
     {
     	return $this->getMapper()->save($this);
     }
-    
+
     public function setIfMode($mode) {
       if ($this->_current_class == 'inet') {
         $this->setIPv4Param('mode', 'disabled');
@@ -171,7 +171,7 @@ class Default_Model_NetworkInterface
     		return $this->getIPv6Param('mode');
     	}
     }
-    
+
     public function getConfigText() {
       $ret = '';
       $ipcalc_cmd = "/usr/bin/ipcalc -nb ".$this->getIPv4Param('address')." ".$this->getIPv4Param('netmask');
@@ -190,12 +190,12 @@ class Default_Model_NetworkInterface
       		$this->setIPv4Param('network', $matches[1]);
       	}
       }
-      
+
       if ($this->getIPv4Param('mode') != 'disabled' || $this->getIPv6Param('mode') != 'disabled') {
           $ret .= "auto ".$this->getName()."\n";
           $ret .= "allow-hotplug ".$this->getName()."\n";
       }
-      
+
       ## create IPv4 configuration
       if ($this->getIPv4Param('mode') == 'static') {
           $ret .= "iface ".$this->getName()." inet static\n";
@@ -212,7 +212,7 @@ class Default_Model_NetworkInterface
               $ret .= "\tpre-up echo 1 > /proc/sys/net/ipv6/conf/".$this->getName()."/disable_ipv6"."\n";
           }
       }
-      
+
       $sub_int = 0;
       foreach ($this->getIPv4Param('virtual_addresses') as $add) {
           if (!preg_match('/^\d+\.\d+\.\d+\.\d+$/', $add)) {
@@ -249,7 +249,7 @@ class Default_Model_NetworkInterface
       	  $ret .= " \tpre-up echo 1 > /proc/sys/net/ipv6/conf/".$this->getName()."/accept_ra\n";
       	  $ret .= " \tpre-up echo 1 > /proc/sys/net/ipv6/conf/".$this->getName()."/autoconf\n";
       }
-      
+
       return $ret;
     }
 }

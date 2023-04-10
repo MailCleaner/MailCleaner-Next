@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Domain filtering settings form
  */
 
@@ -46,13 +46,13 @@ class Default_Form_DomainFiltering extends Zend_Form
 	    ]);
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
-        
+
         foreach ($this->_domain->getConfigPanels() as $panel => $panelname) {
         	$panellist->addMultiOption($panel, $panelname);
         }
         $panellist->setValue($this->_panelname);
         $this->addElement($panellist);
-        
+
         $panel = new Zend_Form_Element_Hidden('panel');
 		$panel->setValue($this->_panelname);
 		$this->addElement($panel);
@@ -70,7 +70,7 @@ class Default_Form_DomainFiltering extends Zend_Form
             $useantispam->setChecked(true);
 	    }
 	    $this->addElement($useantispam);
-	    
+	
 	    $usecontent = new Zend_Form_Element_Checkbox('contentwall', [
 	        'label'   => $t->_('Enable dangerous content controls'). " :",
                 'title' => $t->_("Enable / disable antivirus part of MailCleaner"),
@@ -81,7 +81,7 @@ class Default_Form_DomainFiltering extends Zend_Form
             $usecontent->setChecked(true);
 	    }
 	    $this->addElement($usecontent);
-	    
+	
 	    $greylist = new Zend_Form_Element_Checkbox('greylist', [
 	        'label'   => $t->_('Enable greylisting'). " :",
                 'title' => $t->_("Enable/Disable greylisting (http://www.greylisting.org/)"),
@@ -92,10 +92,10 @@ class Default_Form_DomainFiltering extends Zend_Form
             $greylist->setChecked(true);
 	    }
 	    $this->addElement($greylist);
-	    
+	
 	    $antispoof = new Zend_Form_Element_Checkbox('prevent_spoof', [
             'label'   => $t->_('Enable antispoof'). " :",
-            'title' => $t->_("Rejects messages from the domain you are configuring sent from an IP which is not authorized. If you need to add hosts to the list of allowed senders for your domain, please consider using SPF"), 
+            'title' => $t->_("Rejects messages from the domain you are configuring sent from an IP which is not authorized. If you need to add hosts to the list of allowed senders for your domain, please consider using SPF"),
             'uncheckedValue' => "0",
             'checkedValue' => "1"
 	    ]);
@@ -125,7 +125,7 @@ class Default_Form_DomainFiltering extends Zend_Form
             $require_incoming_tls->setChecked(true);
 	    }
 	    $this->addElement($require_incoming_tls);
-	    
+	
 	    $enablewhitelist = new Zend_Form_Element_Checkbox('enable_whitelists', [
 	        'label'   => $t->_('Enable whitelists'). " :",
                 'title' => $t->_("Enable the use of whitelist /!\ (http://www.mailcleaner.net/antispam/documentations/whitelist.html) must be enabled in Configuration > Anti-Spam first"),
@@ -149,7 +149,7 @@ class Default_Form_DomainFiltering extends Zend_Form
                 $this->_blacklistenabled = 1;
             }
             $this->addElement($enableblacklist);
-	    
+	
 	    $enablewarnlist = new Zend_Form_Element_Checkbox('enable_warnlists', [
 	        'label'   => $t->_('Enable warnlists'). " :",
                 'title' => $t->_("Enable / disable the use of warnlist. This list alert the user when a mail comes from sender from the list."),
@@ -161,7 +161,7 @@ class Default_Form_DomainFiltering extends Zend_Form
                 $this->_warnlistenabled = 1;
 	    }
 	    $this->addElement($enablewarnlist);
-	    
+	
 	    $warnwwhit = new Zend_Form_Element_Checkbox('notice_wwlists_hit', [
 	        'label'   => $t->_('Warn admin on white/warn list hit'). " :",
                 'title' => $t->_("Alert the administrator for every hit in white / warnlist"),
@@ -180,13 +180,13 @@ class Default_Form_DomainFiltering extends Zend_Form
 	        'uncheckedValue' => "0",
 		'checkedValue' => "1"
 	    ]);
-	    
+	
 	    if ($this->_domain->getPref('allow_newsletters')) {
 	        $allowNewsletters->setChecked(true);
 	    }
-            
+
             $this->addElement($allowNewsletters);
-            
+
             $this->_whitelistform = new Default_Form_ElementList($this->_whitelist, 'Default_Model_WWElement', 'whitelist_');
                 $this->_whitelistform->init();
 	    $this->_whitelistform->setAddedValues([
@@ -210,7 +210,7 @@ class Default_Form_DomainFiltering extends Zend_Form
 		    'type' => 'warn'
 	    ]);
                 $this->_warnlistform->addFields($this);
-	    
+	
             $this->_newslistform = new Default_Form_ElementList($this->_newslist, 'Default_Model_WWElement', 'newslist_');
                 $this->_newslistform->init();
 	    $this->_newslistform->setAddedValues([
@@ -249,7 +249,7 @@ class Default_Form_DomainFiltering extends Zend_Form
 	$domain->setPref('prevent_spoof', $request->getParam('prevent_spoof'));
 	$domain->setPref('reject_capital_domain', $request->getParam('reject_capital_domain'));
         $domain->setPref('require_incoming_tls', $request->getParam('require_incoming_tls'));
- 
+
         ### newsl
         $domain->setPref('allow_newsletters', $request->getParam('allow_newsletters'));
 

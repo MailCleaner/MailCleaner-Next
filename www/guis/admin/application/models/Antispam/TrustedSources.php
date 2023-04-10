@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * TrustedSources prefilter
  */
 
@@ -73,18 +73,18 @@ class Default_Model_Antispam_TrustedSources
         $this->getMapper()->find($id, $this);
         return $this;
     }
-    
-    public function findByName($name) 
+
+    public function findByName($name)
     {
     	$this->getMapper()->findByName($name, $this);
     	return $this;
     }
-   
+
     public function save()
     {
         return $this->getMapper()->save($this);
     }
-    
+
     public function useRWL($rwl) {
         return preg_match('/\b'.$rwl.'\b/', $this->getParam('whiterbls'));
     }

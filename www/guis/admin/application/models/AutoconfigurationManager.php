@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Mentor Reka
  * @copyright 2017, Mentor Reka
- * 
+ *
  * Auto-configuration Manager
  */
 

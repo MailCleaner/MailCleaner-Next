@@ -1,10 +1,10 @@
-<?php 
+<?php
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Validate a list of SMTP hosts
  */
 
@@ -12,13 +12,13 @@ class Validate_SMTPHostList extends Zend_Validate_Abstract
 {
     const MSG_SMTPHOSTLIST = 'invalidHostlist';
     const MSG_SMTPBADHOST = 'invalidHost';
-    
+
     public $host;
 
     protected $_messageVariables = [
         'host' => 'host'
     ];
-    
+
     protected $_messageTemplates = [
         self::MSG_SMTPHOSTLIST => "'%value%' is not a valid host list",
         self::MSG_SMTPBADHOST => "'%host%' is not a valid host"
@@ -27,9 +27,9 @@ class Validate_SMTPHostList extends Zend_Validate_Abstract
     public function isValid($value)
     {
         $this->_setValue($value);
-        
-        $validator = new Zend_Validate_Hostname( 
-                                    Zend_Validate_Hostname::ALLOW_DNS | 
+
+        $validator = new Zend_Validate_Hostname(
+                                    Zend_Validate_Hostname::ALLOW_DNS |
                                     Zend_Validate_Hostname::ALLOW_IP |
                                     Zend_Validate_Hostname::ALLOW_LOCAL);
 

@@ -30,7 +30,7 @@ require StatsClient;
 # Constructor.
 sub new {
   my $preposttype = shift;
-  
+
   if (!$preposttype || $preposttype ne 'pre') {
   	$preposttype = 'post';
   }
@@ -38,9 +38,9 @@ sub new {
      last_message => '',
      prepost_type => $preposttype
   };
-  
+
   $this->{statsclient} = StatsClient->new();
-    
+
   bless $this, 'MailScanner::Accounting';
   return $this;
 }
@@ -48,7 +48,7 @@ sub new {
 sub checkCheckeableUser {
   my $this = shift;
   my $user = shift;
-  
+
   if (! $this->isUserCheckeable($user)) {
   	 $this->{last_message} = 'Number of licensed users has been exhausted';
      return 0;
@@ -65,35 +65,35 @@ sub checkCheckeable {
   my $msg = shift;
 
   #return 1; ## to debug spamhandler
-  
+
   my $nb_notcheakable = 0;
   my $nb_recipients = @{$msg->{to}};
-  
+
   ## check globally
   foreach my $rcpt (@{$msg->{to}}) {
     if (! $this->isUserCheckeable($rcpt)) {
         $nb_notcheakable++;
-    }   
+    }
   }
   ## only of all recipients are not checkeable, otherwise still filter message
   if ($nb_notcheakable >= $nb_recipients) {
     $this->{last_message} = 'Number of licensed users has been exhausted';
     return 0;
   }
-  
+
   ## check per domain
   $nb_notcheakable = 0;
   foreach my $rcpt (@{$msg->{to}}) {
   	if (! $this->isUserCheckeableForDomain($rcpt)) {
         $nb_notcheakable++;
     }	
-  }  
+  }
   ## only of all recipients are not checkeable, otherwise still filter message
   if ($nb_notcheakable >= $nb_recipients) {
   	$this->{last_message} = 'Number of licensed users for domain has been exhausted';
   	return 0;
-  } 
-  
+  }
+
   return 1;
 }
 
@@ -104,7 +104,7 @@ sub isUserCheckeable {
 	if ($user =~ m/(\S+)\@(\S+)/) {
         my $domain_name = $2;
         my $local_part = $1;
-        
+
         if ($this->{statsclient}->getValue('user:'.$domain_name.":".$local_part.":unlicenseduser") > 0) {
             ## if user already has exhausted license
             return 0;
@@ -113,7 +113,7 @@ sub isUserCheckeable {
             ## user already has been counted
             return 1;
         }
-        
+
         my $maxusers = 0;
         if ($maxusers > 0) {
         	my $current_count = $this->{statsclient}->getValue('global:user');
@@ -138,7 +138,7 @@ sub isUserCheckeableForDomain {
 	if ($user =~ m/(\S+)\@(\S+)/) {
 	    my $domain_name = $2;
 	    my $local_part = $1;
-	    
+	
 	    if ($this->{statsclient}->getValue('user:'.$domain_name.":".$local_part.":domainunlicenseduser") > 0) {
 	    	## if user already has exhausted license
 	    	return 0;
@@ -147,7 +147,7 @@ sub isUserCheckeableForDomain {
             ## user already has been counted
             return 1;
         }
-        
+
         my $domain = Domain::create($domain_name);
         if ($domain) {
             my $maxusers = $domain->getPref('acc_max_daily_users');
@@ -171,7 +171,7 @@ sub isUserCheckeableForDomain {
 
 sub getLastMessage {
   my $this = shift;
-  
+
   return $this->{last_message};
 }
 

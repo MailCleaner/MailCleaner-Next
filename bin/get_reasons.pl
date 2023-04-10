@@ -43,7 +43,7 @@ my $msg_id = shift;
 my $for = shift;
 my $lang = shift;
 
-if (! $lang) {  
+if (! $lang) {
         $lang = 'en';
 }
 
@@ -57,7 +57,7 @@ if ( (!$for) || !($for =~ /^(\S+)\@(\S+)$/)) {
 	print "INCORRECTMSGDEST\n";
 	exit 0;
 }
- 
+
 my $for_local = $1;
 my $for_domain = $2;
 
@@ -95,7 +95,7 @@ if ( open(MSG, $msg_file)) {
                                         foreach $hit (@hits) {
                                                 chomp($hit);
                                                 $hit =~ s/^\s+//;
-                                                $hit =~ s/\s+$//;       
+                                                $hit =~ s/\s+$//;
                                                 if ($hit =~ /^([0-9_A-Za-z]*)\s+([\-]?[0-9\.]*)/) {
                                                         $hit = $1;
 							if ($hit =~ /required/) {
@@ -125,7 +125,7 @@ if ( open(MSG, $msg_file)) {
 		}
         }
 	close(MSGFILE);
-} 
+}
 else {
 	print "MSGFILENOTFOUND\n";
 }

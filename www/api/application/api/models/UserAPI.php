@@ -20,7 +20,7 @@ class Api_Model_UserAPI
 	 *   General:
 	 *    user => user name, can be only local part or username with domain in the form of 'username[@%]domain' - cannot be modified
 	 *    domain  => domain the user belongs to - cannot be modified
-	 *  
+	 *
 	 *   Interface display:
 	 *    language =>  preferred language
 	 *
@@ -29,7 +29,7 @@ class Api_Model_UserAPI
 	 *    gui_displayed_spams => integer, number of spams to display per page, should be one of 5, 10, 20, 50 or 100
 	 *    gui_displayed_days => integer, number of day to display in quarantine
 	 *    gui_mask_forced => can be 0 or 1, mask or show messages already forced
-	 *    
+	 *
 	 *   Address group:
 	 *    addresses => comma separated list of email address linked to this user
 	 *
@@ -42,7 +42,7 @@ class Api_Model_UserAPI
             Zend_Registry::get('response')->setResponse(401, 'authentication required');
             return false;
         }
-        
+
         $user = null;
         try {
             $user = $this->findUser($params);
@@ -246,7 +246,7 @@ class Api_Model_UserAPI
 		$data['addresses'] = [];
 		foreach ($user->getAddresses() as $add) {
        		array_push($data['addresses'], $add);
-		} 
+		}
 		return $data;
 	}
 }

@@ -26,8 +26,8 @@ require          Exporter;
 use DB;
 use strict;
 use NetSNMP::agent;
-use NetSNMP::OID (':all'); 
-use NetSNMP::agent (':all'); 
+use NetSNMP::OID (':all');
+use NetSNMP::agent (':all');
 use NetSNMP::ASN (':all');
 use ReadConfig;
 
@@ -50,10 +50,10 @@ my %mib = ();
 
 sub init {
   doLog('MailCleaner SNMP Agent Initializing...', 'daemon', 'debug');
-  
+
   my $conf = ReadConfig::getInstance();
   my $agents_dir = $conf->getOption('SRCDIR')."/lib/SNMPAgent/";
-  
+
   my $dh;
   if (! opendir($dh, $agents_dir)) {
       doLog('No valid agents directory : '.$agents_dir, 'daemon', 'error');
@@ -66,7 +66,7 @@ sub init {
   	  }
   }	
   closedir $dh;
-  
+
   foreach my $agent (@agents) {
       my $agent_class = 'SNMPAgent::'.ucfirst($agent);
 
@@ -74,22 +74,22 @@ sub init {
           die('Agent type does not exists: '.$agent_class);
       }
       my $position = $agent_class->initAgent();
-      $mib{$position} = $agent_class->getMIB();    
+      $mib{$position} = $agent_class->getMIB();
   }
-  
+
   my $agent = new NetSNMP::agent('dont_init_agent' => 1,
                               'dont_init_lib' => 1);
 
   my $regoid = new NetSNMP::OID($rootOID);
   $agent->register("MailCleaner SNMP agent", $regoid, \&SNMPHandler);
- 
+
   doLog('MailCleaner SNMP Agent Initialized.', 'daemon', 'debug');
 }
 
 sub SNMPHandler {
   my  ($handler, $registration_info, $request_info, $requests) = @_;
 
-  for (my $request = $requests; $request; $request = $request->next()) { 
+  for (my $request = $requests; $request; $request = $request->next()) {
 
         my $oid = $request->getOID();
         if ($request_info->getMode() == MODE_GET) {
@@ -104,7 +104,7 @@ sub SNMPHandler {
         }
         if ($request_info->getMode() == MODE_GETNEXT) {
            doLog("GETNEXT : $oid", 'daemon', 'debug');
-           
+
            my $nextoid = getNextForOID($oid);
            if (defined($nextoid)) {
                my $value_call = getValueForOID(new NetSNMP::OID($nextoid));
@@ -139,10 +139,10 @@ sub getOIDElement {
     my @oid = $oid->to_array();
     my $regoid = new NetSNMP::OID($rootOID);
     my @rootoid = $regoid->to_array();
-           
+
     my @local_oid = splice(@oid, @rootoid);
     #doLog("Local oid : ".join('.',@local_oid));
-     
+
     my $branch = \%mib;
     foreach my $b (@local_oid) {
     	if (ref($branch) eq 'HASH') {
@@ -161,7 +161,7 @@ sub getOIDElement {
 sub getNextForOID {
 	my $oid = shift;
 	my $nextbranch = shift;
-    
+
     if (new NetSNMP::OID($oid) < new NetSNMP::OID($rootOID)) {
     	return undef;
     }
@@ -178,7 +178,7 @@ sub getNextForOID {
         $oid = join('.', @oida);
     	my $branch = getOIDElement(new NetSNMP::OID($oid));
     	#foreach my $selpos (sort(keys(%{$branch}))) {
-    	foreach my $selpos ( sort { $a <=> $b} keys %{$branch} ) { 
+    	foreach my $selpos ( sort { $a <=> $b} keys %{$branch} ) {
     		if ($selpos > $pos) {
     			doLog("Got a higer element at pos $oid.$selpos", 'oid', 'debug');
     			my $sel = getOIDElement(new NetSNMP::OID("$oid.$selpos"));
@@ -217,8 +217,8 @@ sub getNextElementInBranch {
     	if (ref($branch->{$e}) eq 'HASH') {
             return $e.".".getNextElementInBranch($branch->{$e});
         }
-    }  
-    return undef; 
+    }
+    return undef;
 }
 ##### Log management
 

@@ -25,7 +25,7 @@ my $PROFILE = 1;
 my (%prof_start, %prof_res) = ();
 profile_start('init');
 
-my %config = readConfig("/etc/mailcleaner.conf"); 
+my %config = readConfig("/etc/mailcleaner.conf");
 use SpamLogger;
 use Email;
 use Net::SMTP;
@@ -239,7 +239,7 @@ sub parseInputMessage {
 #####
 ## cleanVariables
 #####
-sub cleanVariables { 
+sub cleanVariables {
   $to_domain = clean($to_domain);
   $to_local  = clean($to_local);
   $sender    = clean($sender);
@@ -345,7 +345,7 @@ sub put_in_quarantine {
 		return 0;
 	}
     profile_stop('putInQuar');
-    
+
     profile_start('logSpam');
     my $logger = SpamLogger->new("Client", "etc/exim/spamlogger.conf");
     my $res = $logger->logSpam($exim_id, $to_local, $to_domain, $sender, $subject, $score, $rbls, $prefilters, $globalscore);
@@ -417,7 +417,7 @@ sub profile_start {
   return unless $PROFILE;
   my $var = shift;
   $prof_start{$var} = [gettimeofday];
-  
+
 }
 
 sub profile_stop {

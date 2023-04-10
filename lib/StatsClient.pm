@@ -30,9 +30,9 @@ our @ISA        = "SockClient";
 
 sub new {
   my $class = shift;
-  
+
   my %msgs = ();
-  
+
   my $spec_this = {
      %msgs => (),
      currentid => 0,
@@ -41,12 +41,12 @@ sub new {
      set_timeout => 5,
      get_timeout => 120,
   };
-  
+
   my $conf = ReadConfig::getInstance();
   $spec_this->{socketpath} = $conf->getOption('VARDIR')."/run/statsdaemon.sock";
-  
+
   my $this = $class->SUPER::new($spec_this);
-  
+
   bless $this, $class;
   return $this;
 }
@@ -78,8 +78,8 @@ sub addMessageStats {
 	
     my $final_ret = 'ADDED';
     my $nbmessages = 0;
-    $values{'msg'} = 1; 
-    $values{'clean'} = 1;  
+    $values{'msg'} = 1;
+    $values{'clean'} = 1;
 
     my @dirtykeys = ('spam', 'highspam', 'virus', 'name', 'other', 'content');
     foreach my $ckey (@dirtykeys) {
@@ -107,7 +107,7 @@ sub addMessageStats {
 sub setTimeout {
    my $this = shift;
    my $timeout = shift;
-   
+
    return 0 if ($timeout !~ m/^\d+$/);
    $this->{timeout} = $timeout;
    return 1;
@@ -115,7 +115,7 @@ sub setTimeout {
 
 sub logStats {
    my $this = shift;
-   
+
    my $query = 'STATS';
    return $this->query($query);
 }

@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * controller for access configuration
  */
 
@@ -26,7 +26,7 @@ class AccessesController extends Zend_Controller_Action
     	$view->selectedSubMenu = 'Accesses';
     	$t = Zend_Registry::get('translate');
         $view->defaultsearchstring = $t->_('Administrator search');
-        
+
         $request = $this->getRequest();
     	
   	    $admin = new Default_Model_Administrator();
@@ -34,7 +34,7 @@ class AccessesController extends Zend_Controller_Action
   	    	$admin->find($request->getParam('username'));
   	    }
   	    $view->admin = $admin;
-  	    
+  	
         $sname = $request->getParam('sname');
         if ($sname == $view->defaultsearchstring) {
             $sname = '';
@@ -64,16 +64,16 @@ class AccessesController extends Zend_Controller_Action
   	    $view->admins = array_slice($admins, $offset, $nbelperpage);
   	    $view->page = $page;
   	    $view->sname = $request->getParam('sname');
-  	    
+  	
   	    $view->searchurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('edit', 'accesses');
   	    $view->searchurl .= '/sname/'.$view->sname.'/page/'.$view->page;
   	    $view->searchdomainurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('search', 'accesses');
         $view->addurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('add', 'accesses');
         $view->removeurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('remove', 'accesses')."/username/".$request->getparam('username');
   	    $view->removeurl .= '/sname/'.$view->sname.'/page/'.$view->page;
-        
+
     }
-    
+
     public function indexAction() {
         $layout = Zend_Layout::getMvcInstance();
     	$view=$layout->getView();
@@ -87,7 +87,7 @@ class AccessesController extends Zend_Controller_Action
         }
         $view->message = $message;
     }
-    
+
     public function addAction() {
     	$layout = Zend_Layout::getMvcInstance();
     	$view=$layout->getView();
@@ -125,18 +125,18 @@ class AccessesController extends Zend_Controller_Action
                 $redirector = $this->_helper->getHelper('Redirector');
                 $redirector->gotoSimple('edit', 'accesses', null, [
                                                    'username' => $view->admin->getParam('username'),
-						   'page' => $page 
+						   'page' => $page
 		]);
               } catch (Exception $e) {
             	  $message = 'NOK error saving data ('.$e->getMessage().')';
               }
-               	       
+               	
         	}
         }
         $view->form = $form;
         $view->message = $message;
     }
-    
+
     public function editAction() {
     	$layout = Zend_Layout::getMvcInstance();
     	$view=$layout->getView();
@@ -157,7 +157,7 @@ class AccessesController extends Zend_Controller_Action
               }
             } else {
                 $message = "NOK bad settings";
-            }       	       
+            }       	
         }
         $view->form = $form;
         $view->message = $message;
@@ -169,19 +169,19 @@ class AccessesController extends Zend_Controller_Action
     	$layout->disableLayout();
     	$view->addScriptPath(Zend_Registry::get('ajax_script_path'));   	
     }
-    
+
     public function removeAction() {
     	$layout = Zend_Layout::getMvcInstance();
     	$view=$layout->getView();
     	$view->backurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('edit', 'accesses')."/username/".$this->getRequest()->getparam('username');
   	    $view->backurl .= '/sname/'.$view->sname.'/page/'.$view->page;
-  	    
+  	
   	    $urladding = '/sname/'.$view->sname.'/page/'.$view->page;
   	    $view->removeurldomain = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('remove', 'accesses')."/username/".$this->getRequest()->getparam('username');
   	    $view->removeurldomain .= $urladding."/remove/only";
-        
+
         $admin = $view->admin;
-        
+
         $request = $this->getRequest();
         $message = '';
         if ($request->getParam('remove') == 'only') {
@@ -195,5 +195,5 @@ class AccessesController extends Zend_Controller_Action
         }
         $view->message = $message;
     }
-    
+
 }

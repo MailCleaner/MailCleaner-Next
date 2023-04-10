@@ -6,7 +6,7 @@
  * @copyright 2009, Olivier Diserens
  */
 
-class MCSoap_Content 
+class MCSoap_Content
 {
 
 	static public $_fieldstosend = [
@@ -66,7 +66,7 @@ class MCSoap_Content
                 $query->where('id = ?', $params['reference']);
         	}
         }
-        
+
 	    if (isset($params['domain']) && $params['domain'] != '') {
         	$query->where('to_domain = ?', $params['domain']);
         }
@@ -79,27 +79,27 @@ class MCSoap_Content
 	    if (isset($params['subject']) && $params['subject'] != '') {
         	$query->where('subject LIKE ?', '%'.$params['subject'].'%');
         }
-        
-        if (isset($params['td']) && isset($params['td']) && isset($params['tm']) && isset($params['tm']) 
+
+        if (isset($params['td']) && isset($params['td']) && isset($params['tm']) && isset($params['tm'])
 		  && isset($params['fd']) && isset($params['fd']) && isset($params['fm']) && isset($params['fm'])
 		   ) {
-        
+
             $today = getDate();
             $params['fy'] = $today['year'];
             $params['ty'] = $today['year'];
             if ($params['tm'] < $params['fm']) {
         	    $params['fy']--;
             }
-        
+
          	$query->where("date >= DATE(?)", $params['fy']."-".$params['fm']."-".$params['fd']);
 			$query->where("date <= DATE(?)", $params['ty']."-".$params['tm']."-".$params['td']);
 	    }
 
         $query->where('quarantined=1');
-             
+
         echo $query;
         $result = $query->query()->fetchAll();
-        
+
         $elements = [];
         if ($limit && count($result) > $limit) {
         	return ['error' => 'LIMITREACHED'];
@@ -110,14 +110,14 @@ class MCSoap_Content
 			$elements[$c['id']][$f] = preg_replace('/[\x00-\x1F\x7F]/u', '', $elements[$c['id']][$f]);
         	}
         }
-        
+
         return $elements;
 	}
 
 	
    /**
     * This function will fetch information on quarantined content
-    * 
+    *
     * @param  array  params
     * @return array
     */
@@ -143,7 +143,7 @@ class MCSoap_Content
 	]);
         $query = $contentDb->select();
         $query->from('maillog');
-        
+
         $query->where('id = ?', $id);
         $result = $query->query()->fetch();
         if (!$result) {
@@ -160,7 +160,7 @@ class MCSoap_Content
 	
    /**
     * This function will release a quarantined message
-    * 
+    *
     * @param  array  params
     * @return array
     */

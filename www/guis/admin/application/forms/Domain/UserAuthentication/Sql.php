@@ -4,10 +4,10 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * SQL user authentication settings form
  */
- 
+
 class Default_Form_Domain_UserAuthentication_Sql
 {
 	protected $_domain;
@@ -15,7 +15,7 @@ class Default_Form_Domain_UserAuthentication_Sql
                         "sqlusername" => '',
                         "sqlpassword" => ''
 	];
-     
+
 	public function __construct($domain)
 	{
 	    $this->_domain = $domain;
@@ -37,9 +37,9 @@ class Default_Form_Domain_UserAuthentication_Sql
 	    $server->setValue($this->_domain->getPref('auth_server'));
         $server->addValidator(new Validate_SMTPHostList());
 	    $form->addElement($server);
-	    
+	
 	    $this->_settings = $this->getParams();
-	    
+	
 	    $username = new  Zend_Form_Element_Text('sqlusername', [
 	        'label'    => $t->_('Username')." :",
 		    'required' => false,
@@ -47,7 +47,7 @@ class Default_Form_Domain_UserAuthentication_Sql
 	    ]);
 	    $username->setValue($this->_settings['sqlusername']);
 	    $form->addElement($username);
-	    
+	
 		$password = new  Zend_Form_Element_Password('sqlpassword', [
 	        'label'    => $t->_('Password')." :",
 		    'required' => false,
@@ -88,7 +88,7 @@ class Default_Form_Domain_UserAuthentication_Sql
         $params['auth_server'] = $this->_domain->getPref('auth_server');
         return $params;
     }
-    
+
     public function getParamsString($params) {
        $fields = ['sqlusername', 'sqlpassword'];
        $str = '';

@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Email address form
  */
 
@@ -34,13 +34,13 @@ class Default_Form_Manage_EmailAddresssettings extends Zend_Form
 	    ]);
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
-        
+
         foreach ($this->_email->getConfigPanels() as $panel => $panelname) {
         	$panellist->addMultiOption($panel, $panelname);
         }
         $panellist->setValue($this->_panelname);
         $this->addElement($panellist);
-        
+
         $panel = new Zend_Form_Element_Hidden('panel');
 		$panel->setValue($this->_panelname);
 		$this->addElement($panel);
@@ -96,7 +96,7 @@ class Default_Form_Manage_EmailAddresssettings extends Zend_Form
 	    ]);
             $bypassfiltering->setValue($this->_email->getPref('bypass_filtering'));
             $this->addElement($bypassfiltering);
-	    
+	
 	    $frequency = new Zend_Form_Element_Select('frequency', [
             'required'   => true,
 		    'label'      => $t->_('Frequency of quarantine reports')." : ",
@@ -148,7 +148,7 @@ class Default_Form_Manage_EmailAddresssettings extends Zend_Form
 		foreach (['delivery_type', 'quarantine_bounces', 'bypass_filtering', 'summary_type') as $pref] {
             if ($request->getParam($pref)) {
 			    $email->setPref($pref, $request->getParam($pref));
-		    }	    
+		    }	
 		}
         $email->setPref('spam_tag', $request->getParam('spam_tag'));
         $email->setPref('summary_to', $request->getParam('summary_to'));

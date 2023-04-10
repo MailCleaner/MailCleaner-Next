@@ -26,9 +26,9 @@ class Default_Form_Registration extends ZendX_JQuery_Form
     	$view=$layout->getView();
     	
 		$this->setMethod('post');
-	           
+	
 		$this->setAttrib('id', 'registration_form');
-        
+
             $sysconf = MailCleaner_Config::getInstance();
 
             $clientid = new  Zend_Form_Element_Text('clientid', [
@@ -52,7 +52,7 @@ class Default_Form_Registration extends ZendX_JQuery_Form
 	    'required' => false
 	    ]);
             $this->addElement($resellerpwd);
-   
+
 		$submit = new Zend_Form_Element_Submit('register', [
 			'label'    => $t->_('Register')
 		]);

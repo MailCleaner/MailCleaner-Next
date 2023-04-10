@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Pending alias request
  */
 
@@ -26,7 +26,7 @@ class Default_Model_RRDGraphicElement
 	   'draw_format' => '8.0lf',
 	   'draw_unit' => ''
 	];
-    
+
     protected $_graphic;
 	protected $_mapper;
 	
@@ -80,16 +80,16 @@ class Default_Model_RRDGraphicElement
         $this->getMapper()->find($elementid, $this);
         return $this;
     }
-        
+
     public function fetchAll($params = NULL) {
     	return $this->getMapper()->fetchAll($params);
     }
-      
+
     public function save()
     {	
         return $this->getMapper()->save($this);
     }
-    
+
     public function delete()
     {
     	return $this->getMapper()->delete($this);
@@ -98,13 +98,13 @@ class Default_Model_RRDGraphicElement
     private function getMinValue() {
         return 0;
     }
-      
+
 	public function getDEFParamString($e) {
 	
         $name = $this->getParam('name');
         $nocdefname = 'nocdef'.$name;
         $str = '';
-        
+
 		if (preg_match('/([*])(\d+)/', $this->getParam('draw_factor'), $matches)) {
 			$str = "DEF:$nocdefname=\"".$this->getRRDArchiveFile()."\":$name:".$this->getParam('function');
 			$str .= " CDEF:$name=$nocdefname,".$matches[2].",".$matches[1];
@@ -124,7 +124,7 @@ class Default_Model_RRDGraphicElement
             $colorname = $matches[1];
         }
         $color = sprintf('#%02x%02x%02x',$c[$colorname]['R'],$c[$colorname]['G'],$c[$colorname]['B']);
-        
+
         ## get text with alignment (padding)
         $padding = 20;
         if ($this->_graphic->getType() == 'count') {
@@ -163,7 +163,7 @@ class Default_Model_RRDGraphicElement
 	    #$name = $newname;
 		#	
 		#if ($this->getParam('type') == 'COUNTER' || $this->getParam('type') == 'DERIVE') {
-		#    
+		#
 		#    ## last value
 		#    $lastname = $name."last";
 		#    $vdefstr .= 'VDEF:'.$lastname.'='.$name.',LAST';

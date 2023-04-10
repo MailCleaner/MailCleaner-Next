@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Greylist daemon configuration mapper
  */
 
@@ -32,7 +32,7 @@ class Default_Model_GreylistConfigMapper
         }
         return $this->_dbTable;
     }
-    
+
     public function find($id, Default_Model_GreylistConfig $greylist)
     {
         $result = $this->getDbTable()->find($id);
@@ -45,7 +45,7 @@ class Default_Model_GreylistConfigMapper
         	$greylist->setParam($key, $row[$key]);
         }
     }
-        
+
     public function save(Default_Model_GreylistConfig $greylist) {
        $data = $greylist->getParamArray();
        $res = '';

@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * controller for cluster configuration
  */
 
@@ -22,7 +22,7 @@ class ClusterController extends Zend_Controller_Action
     	$main_menus = Zend_Registry::get('main_menu')->findOneBy('id', 'subconfig_Cluster')->class = 'submenuelselected';
     	$view->selectedSubMenu = 'Cluster';
     }
-    
+
     public function indexAction() {
   	
     }

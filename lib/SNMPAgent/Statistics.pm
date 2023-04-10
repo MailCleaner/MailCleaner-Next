@@ -24,8 +24,8 @@ require          Exporter;
 
 use strict;
 use NetSNMP::agent;
-use NetSNMP::OID (':all'); 
-use NetSNMP::agent (':all'); 
+use NetSNMP::OID (':all');
+use NetSNMP::agent (':all');
 use NetSNMP::ASN (':all');
 use lib qw(/usr/rrdtools/lib/perl/);
 require StatsClient;
@@ -42,7 +42,7 @@ my %mib_global_delayed = ();
 my %mib_global_relayed = ();
 my %mib_global_accepted = ();
 
-my %mib_global = ('1' => \%mib_global_processed, '2' => \%mib_global_refused, 
+my %mib_global = ('1' => \%mib_global_processed, '2' => \%mib_global_refused,
                   '3' => \%mib_global_delayed, '4' => \%mib_global_relayed,
                   '5' => \%mib_global_accepted);
 my %mib_domains = ();
@@ -51,7 +51,7 @@ my %mib_statistics = ('1' => \%mib_global, '2' => \%mib_domains_table);
 
 ## .1.1
 my %smtp_processed_stats = (
-       '1' => 'msg', 
+       '1' => 'msg',
        '2' => 'clean',
        '3' => 'spam',
        '4' => 'virus',
@@ -100,10 +100,10 @@ my %smtp_accepted_stats = (
 );
 
 my %domain_stats = (
-       '3' => 'msg', 
+       '3' => 'msg',
        '4' => 'clean',
        '5' => 'spam',
-       '6' => 'virus', 
+       '6' => 'virus',
        '7' => 'name',
        '8' => 'other',
        '9' => 'size',
@@ -118,9 +118,9 @@ my %domain_stats = (
        '18'=> 'delayed',
        '19'=> 'greylisted'
 );
-                  
+
 my %domain_statistics = ();
-                  
+
 my $conf;
 my %domains = ();
 my $stats_client;
@@ -130,7 +130,7 @@ sub initAgent() {
    SNMPAgent::doLog('Agent Statistics initializing', 'statistics', 'debug');
 
    $conf = ReadConfig::getInstance();
-   
+
    $stats_client = StatsClient->new();
    return $mib_root_position;
 }
@@ -168,10 +168,10 @@ sub populateDomains {
     for (keys %domains) {
     	delete $domains{$_};
     }
-    
+
 	my $file = $conf->getOption('VARDIR')."/spool/tmp/mailcleaner/snmpdomains.list";
 	
-	my $f;  
+	my $f;
     if (open($f, $file)) {
         while (<$f>) {
             if (/^(\d+):(\S+)/) {
@@ -187,7 +187,7 @@ sub setDomain {
 	my $id = shift;
 	my $domain = shift;
 	
-	$domains{$id} = $domain; 
+	$domains{$id} = $domain;
 	foreach my $s (keys %domain_stats) {
 		$mib_domains{'1'}{$id} = \&getDomainIndex;
 		$mib_domains{'2'}{$id} = \&getDomainName;
@@ -199,14 +199,14 @@ sub setDomain {
 sub getDomainIndex {
     my $oid = shift;
     my @oid = $oid->to_array();
-    
+
     my $domainIndex = pop(@oid);
     return (ASN_INTEGER, int($domainIndex));
 }
 sub getDomainName {
 	my $oid = shift;
 	my @oid = $oid->to_array();
-    
+
     my $domainIndex = pop(@oid);
     return (ASN_OCTET_STR, $domains{$domainIndex});
 }
@@ -224,7 +224,7 @@ sub getDomainStat {
     }
     my $total_value = 0;
     foreach my $single_stat (split(/\+/, $domain_stats{$stat_el})) {
-  
+
         my $st_str = 'domain:'.$domains{$domainIndex}.':'.$single_stat;
         #SNMPAgent::doLog('Querying stat daemon for : '.$st_str,'daemon','debug');
         my $value = $stats_client->query('GET '.$st_str);
@@ -239,27 +239,27 @@ sub getDomainStat {
 
 sub getGlobalProcessedStat {
     my $oid = shift;
-    
+
     return getGlobalStat($oid, \%smtp_processed_stats, 'global');
 }
 sub getGlobalRefusedStat {
     my $oid = shift;
-    
+
     return getGlobalStat($oid, \%smtp_refused_stats, 'smtp');
 }
 sub getGlobalDelayedStat {
     my $oid = shift;
-    
+
     return getGlobalStat($oid, \%smtp_delayed_stats, 'smtp');
 }
 sub getGlobalRelayedStat {
     my $oid = shift;
-    
+
     return getGlobalStat($oid, \%smtp_relayed_stats, 'smtp');
 }
 sub getGlobalAcceptedStat {
     my $oid = shift;
-    
+
     return getGlobalStat($oid, \%smtp_accepted_stats, 'smtp');
 }
 

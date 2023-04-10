@@ -19,7 +19,7 @@
 #
 #
 #   This script will apply the patch given in parameter
-#   Usage: 
+#   Usage:
 #           apply_update.sh patch_id
 
 
@@ -68,6 +68,6 @@ if [ "$RES" = "OK" ]; then
   echo "["`date "+%Y-%m-%d %H:%M:%S"`"] [$PATCHID] done with update, status: $RES" >> $LOGFILE
   echo "INSERT INTO update_patch VALUES('$PATCHID', NOW(), NOW(), '$RES', '$DESC');" | /opt/mysql5/bin/mysql -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/mysql_slave/mysqld.sock mc_config
 else
-  echo "["`date "+%Y-%m-%d %H:%M:%S"`"] [$PATCHID] aborted, will retry later, reason is: $RES" >> $LOGFILE 
+  echo "["`date "+%Y-%m-%d %H:%M:%S"`"] [$PATCHID] aborted, will retry later, reason is: $RES" >> $LOGFILE
 fi
 echo $RES

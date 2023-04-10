@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * TrustedSources prefilter mapper
  */
 
@@ -32,7 +32,7 @@ class Default_Model_Antispam_TrustedSourcesMapper
         }
         return $this->_dbTable;
     }
-    
+
     public function find($id, Default_Model_Antispam_TrustedSources $module)
     {
         $result = $this->getDbTable()->find($id);
@@ -45,7 +45,7 @@ class Default_Model_Antispam_TrustedSourcesMapper
         	$module->setParam($key, $row[$key]);
         }
     }
-    
+
     public function save(Default_Model_Antispam_TrustedSources $module) {
        $data = $module->getParamArray();
        $res = '';

@@ -87,13 +87,13 @@ my %proc_strings = ( 'exim_stage1' => 'exim/exim_stage1.conf',
 		     'spamhandler' => 'SpamHandler');
 
 my @order = ('exim_stage1', 'exim_stage2', 'exim_stage4', 'apache', 'mailscanner', 'mysql_master', 'mysql_slave', 'snmpd', 'greylistd', 'cron', 'preftdaemon', 'spamd', 'clamd', 'clamspamd', 'spamhandler', 'newsld');
-		     
+		
 
 my $res;
 if (! $mode_given) {
 	bad_usage();
 }
-if  ($mode_given =~ /s/) { 
+if  ($mode_given =~ /s/) {
     my $restartdir = $config{VARDIR}."/run/";
 	$cmd = "ps -efww";
 	$res = `$cmd`;
@@ -169,7 +169,7 @@ elsif  ($mode_given =~ /p/) {
 	}
 	print "\n";
 }
-elsif  ($mode_given =~ /l/) { 
+elsif  ($mode_given =~ /l/) {
 	$cmd = "cat /proc/loadavg | cut -d' ' -f-3";
 	$res = `$cmd`;
 	chomp($res);
@@ -194,7 +194,7 @@ elsif ($mode_given =~ /m/) {
 	foreach my $field (@fields) {
 		if ($res =~ /$field:\s+(\d+)/) {
 			print "|$1";
-		} 
+		}
 	}
 	print "\n";
 }
@@ -217,7 +217,7 @@ else {
 	bad_usage();
 }
 
-sub bad_usage 
+sub bad_usage
 {
         printf("Usage: get_status.pl [-s, -p, -l, -d, -m, -t, -u]\n");
         exit(1);

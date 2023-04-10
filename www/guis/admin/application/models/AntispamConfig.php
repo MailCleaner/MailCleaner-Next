@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Antispam configuration
  */
 
@@ -95,12 +95,12 @@ class Default_Model_AntispamConfig
         $this->getMapper()->find($id, $this);
         return $this;
     }
-   
+
     public function save()
     {
         return $this->getMapper()->save($this);
     }
-    
+
     public function useRBL($rbl) {
     	return preg_match('/\b'.$rbl.'\b/', $this->getParam('sa_rbls'));
     }

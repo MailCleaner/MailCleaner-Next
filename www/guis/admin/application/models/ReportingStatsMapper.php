@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Reporting statistics mapper
  */
 
@@ -19,7 +19,7 @@ class Default_Model_ReportingStatsMapper
 		$trace_id = 0;
 		$slave = new Default_Model_Slave();
         $slaves = $slave->fetchAll();
-        
+
         foreach ($slaves as $s) {
         	$res = $s->sendSoapRequest('Logs_StartGetStat', $params);
         	if (isset($res['search_id'])) {
@@ -40,7 +40,7 @@ class Default_Model_ReportingStatsMapper
 		];
 	    $slave = new Default_Model_Slave();
         $slaves = $slave->fetchAll();
-        
+
         $params['noresults'] = 1;
         $stillrunning = count($slaves);
         $globalrows = 0;
@@ -66,7 +66,7 @@ class Default_Model_ReportingStatsMapper
     public function abortFetchAll($params) {
 		$slave = new Default_Model_Slave();
         $slaves = $slave->fetchAll();
-        
+
         foreach ($slaves as $s) {
         	$res = $s->sendSoapRequest('Logs_AbortStats', $params);
         }
@@ -80,7 +80,7 @@ class Default_Model_ReportingStatsMapper
 		
         $entriesflat = [];
         $sortarray = [];
-        
+
         $params['noresults'] = 0;
         $stillrunning = count($slaves);
         $globalrows = 0;
@@ -140,7 +140,7 @@ class Default_Model_ReportingStatsMapper
 
         if (isset($params['sort'])) {
            switch ($params['sort']) {
-           	case 'msgs':  
+           	case 'msgs':
            	    usort($entries, ['Default_Model_ReportingStats', 'compareMsgs']);
            	    break;
            	case 'spams':

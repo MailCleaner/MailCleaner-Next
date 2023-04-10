@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Logs page form
  */
 
@@ -26,9 +26,9 @@ class Default_Form_Logs extends ZendX_JQuery_Form
     	$view=$layout->getView();
     	
 		$this->setMethod('post');
-	           
+	
 		$this->setAttrib('id', 'filter_form');
-	    	    
+	    	
 	    $months = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
 	    $fd = new Zend_Form_Element_Select('fd', [
 		    'required' => true
@@ -40,7 +40,7 @@ class Default_Form_Logs extends ZendX_JQuery_Form
             $fd->setValue($this->_params['fd']);
 	    }
 	    $this->addElement($fd);
-	    
+	
 	    $fm = new Zend_Form_Element_Select('fm', [
 		    'required' => true
 	    ]);
@@ -51,8 +51,8 @@ class Default_Form_Logs extends ZendX_JQuery_Form
 	    if (isset($this->_params['fm']) && $this->_params['fm']) {
             $fm->setValue($this->_params['fm']);
 	    }
-	    $this->addElement($fm);	    
-	    
+	    $this->addElement($fm);	
+	
 	    $submit = new Zend_Form_Element_Submit('submit', [
 		     'label'    => $t->_('Refresh'),
 		     'onclick' => 'javascript:resubmit=1;launchSearch();return false;'

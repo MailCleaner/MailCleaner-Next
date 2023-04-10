@@ -5,12 +5,12 @@
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
  */
- 
+
 /**
  * this is a preference handler
  */
  require_once('helpers/PrefHandler.php');
- 
+
 /**
  * This class is only a settings wrapper for the Greylist Daemon configurations
  */

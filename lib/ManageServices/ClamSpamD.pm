@@ -25,7 +25,7 @@ use warnings;
 
 our @ISA = "ManageServices";
 
-sub init 
+sub init
 {
 	my $module = shift;
 	my $class = shift;

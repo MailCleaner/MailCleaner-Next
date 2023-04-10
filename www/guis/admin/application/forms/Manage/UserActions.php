@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * User action form
  */
 
@@ -36,13 +36,13 @@ class Default_Form_Manage_UserActions extends Zend_Form
 	    ]);
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
-        
+
         foreach ($this->_user->getConfigPanels() as $panel => $panelname) {
         	$panellist->addMultiOption($panel, $panelname);
         }
         $panellist->setValue($this->_panelname);
         $this->addElement($panellist);
-        
+
         $panel = new Zend_Form_Element_Hidden('panel');
 		$panel->setValue($this->_panelname);
 		$this->addElement($panel);
@@ -62,13 +62,13 @@ class Default_Form_Manage_UserActions extends Zend_Form
             'required'   => false,
 	    'filters'    => ['StringTrim']
 		]);
-        
+
         foreach ($this->_user->getAddresses() as $address => $ismain) {
         	$addresses->addMultiOption($address, $address);
         }
         $addresses->setValue($this->_user->getPref('addresses'));
         $this->addElement($addresses);
-        
+
 		$submit = new Zend_Form_Element_Submit('submit', [
 			'label'    => $t->_('> go to preferences')
 		]);
@@ -89,7 +89,7 @@ class Default_Form_Manage_UserActions extends Zend_Form
 		foreach (['') as $pref] {
             if ($request->getParam($pref)) {
 			    $domain->setPref($pref, $request->getParam($pref));
-		    }	    
+		    }	
 		}
 		return true;
 	}

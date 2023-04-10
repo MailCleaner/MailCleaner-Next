@@ -590,7 +590,7 @@ class Net_SMTP
 
         return PEAR::raiseError('No supported authentication methods');
     }
-    
+
     /**
      * Establish STARTTLS Connection.
      *
@@ -632,17 +632,17 @@ class Net_SMTP
                 } elseif ($result !== true) {
                     return PEAR::raiseError('STARTTLS failed');
                 }
-                
+
                 /* Send EHLO again to recieve the AUTH string from the
                  * SMTP server. */
                 $this->negotiate();
             } else {
                 return false;
             }
-            
+
             return true;
     }
-        
+
     /**
      * Attempt to do SMTP authentication.
      *
@@ -971,7 +971,7 @@ class Net_SMTP
             if (!empty($this->gssapi_cname)) {
                 $ccache->open($this->gssapi_cname);
             }
-            
+
             $gssapicontext = new GSSAPIContext();
             $gssapicontext->acquireCredentials($ccache);
 

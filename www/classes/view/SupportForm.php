@@ -5,7 +5,7 @@
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
  */
- 
+
 /**
  * SupportForm still need some variable check function
  * @todo to be removed.. and checked against static class
@@ -19,10 +19,10 @@ class SupportForm {
 
     /**
      * is form coorectly posted
-     * @var boolean 
+     * @var boolean
      */
 	private $is_ok_ = false;
-    
+
     /**
      * form fields
      * @var array
@@ -35,14 +35,14 @@ class SupportForm {
                             'phone' => ['', 'name', false],
                             'company' => ['', 'name', false],
     ];
-                       
+
     /**
      * unfilled needed field
      * @var string
      */
     private $bad_field_ = '';
 
-                       
+
 public function __construct() {
     foreach ($this->fields_ as $key => $value) {
     	if (isset($_POST[$key]) && $_POST[$key]!= "") {
@@ -58,7 +58,7 @@ public function __construct() {
     		  return false;
     	  }
         }
-        
+
     }
 	$this->is_ok_ = true;	
 }
@@ -67,7 +67,7 @@ private function setField($field, $value) {
 	if (isset($this->fields_[$field])) {
 		$this->fields_[$field][0] = $value;
         return true;
-	} 
+	}
     return false;
 }
 
@@ -87,7 +87,7 @@ public function send() {
   $params['host']='localhost';
   $params['port']='2525';
   $mail_object =& Mail::factory('smtp', $params);
- 
+
   $recipients              = $sysconf_->getPref('analyse_to');
   $headers['From']         = $sysconf_->getPref('summary_from');
   $headers['To']           = $recipients;

@@ -4,17 +4,17 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
- * 
+ *
  * This is the controller for the add address page
  */
 
 if ($_SERVER["REQUEST_METHOD"] == "HEAD") {
   return 200;
 }
- 
+
 /**
  * require valid session
- */ 
+ */
 require_once('objects.php');
 require_once("user/AliasRequest.php");
 require_once("view/Template.php");

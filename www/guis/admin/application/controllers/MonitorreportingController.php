@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * controller for reporting page
  */
 
@@ -39,10 +39,10 @@ class MonitorreportingController extends Zend_Controller_Action
 		$todateO = Zend_Date::now();
 	    $fromdateO = Zend_Date::now();
         $fromdateO->sub('4', Zend_Date::DAY, Zend_Registry::get('Zend_Locale')->getLanguage());
-        
+
         $todate = Zend_Locale_Format::getDate($todateO, ['date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()]);
         $fromdate = Zend_Locale_Format::getDate($fromdateO, ['date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()]);
-       
+
         foreach ( ['fd' => 'day', 'fm' => 'month', 'fy' => 'year') as $tk => $tv] {
         	if  (!isset($params[$tk]) || !$params[$tk]) {
         	    $params[$tk] = $fromdate[$tv];
@@ -59,13 +59,13 @@ class MonitorreportingController extends Zend_Controller_Action
         #	$params['fy']--;
         #}
 
-        if (intval($params['fm']) > $todateO->toValue(Zend_Date::MONTH) || 
-             (intval($params['fm']) == $todateO->toValue(Zend_Date::MONTH) && intval($params['fd']) > $todateO->toValue(Zend_Date::DAY)) && 
+        if (intval($params['fm']) > $todateO->toValue(Zend_Date::MONTH) ||
+             (intval($params['fm']) == $todateO->toValue(Zend_Date::MONTH) && intval($params['fd']) > $todateO->toValue(Zend_Date::DAY)) &&
              intval($params['fy']) >= $todateO->toValue(Zend_Date::YEAR)) {
             $params['fy']--;
         }
         if (intval($params['tm']) > $todateO->toValue(Zend_Date::MONTH) ||
-             (intval($params['tm']) == $todateO->toValue(Zend_Date::MONTH) && intval($params['td']) > $todateO->toValue(Zend_Date::DAY)) && 
+             (intval($params['tm']) == $todateO->toValue(Zend_Date::MONTH) && intval($params['td']) > $todateO->toValue(Zend_Date::DAY)) &&
              intval($params['ty']) >= $todateO->toValue(Zend_Date::YEAR)) {
             $params['ty']--;
         }
@@ -80,7 +80,7 @@ class MonitorreportingController extends Zend_Controller_Action
                   $params['t'.$key] = $tmp['f'.$key];
                }
         }
-        
+
         $params['datefrom'] = sprintf("%04d%02d%02d",$params['fy'],$params['fm'],$params['fd']);
         $params['dateto'] = sprintf("%04d%02d%02d",$params['ty'],$params['tm'],$params['td']);
         if ($params['datefrom'] > $params['dateto']) {
@@ -107,12 +107,12 @@ class MonitorreportingController extends Zend_Controller_Action
     	$main_menus = Zend_Registry::get('main_menu')->findOneBy('id', 'submonitor_Reporting')->class = 'submenuelselected';
     	$view->selectedSubMenu = 'Reporting';
     }
-    
+
     public function indexAction() {
   	    $t = Zend_Registry::get('translate');
 		$layout = Zend_Layout::getMvcInstance();
 		$view=$layout->getView();
-		 
+		
 		$request = $this->getRequest();
 		$form    = new Default_Form_Reporting($this->getSearchParams());
 		$form->setAction(Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'monitorreporting'));
@@ -127,9 +127,9 @@ class MonitorreportingController extends Zend_Controller_Action
 		$layout->disableLayout();
 		$view->addScriptPath(Zend_Registry::get('ajax_script_path'));
 		$view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('index', 'monitorreporting', NULL, []);
-		 
+		
 		$request = $this->getRequest();
-		 
+		
 		$loading = 1;
 		if (! $request->getParam('load')) {
 			sleep(1);
@@ -140,7 +140,7 @@ class MonitorreportingController extends Zend_Controller_Action
 		$view->params = $params;
 		
         $session = new Zend_Session_Namespace('MailCleaner');
-        
+
         $element = new Default_Model_ReportingStats();
         $elements = [];
 
@@ -179,7 +179,7 @@ class MonitorreportingController extends Zend_Controller_Action
 		$view->elements = $elements;
             $view->global_users = $global_users;
     }
-    
+
     public function graphAction() {
 		$this->_helper->viewRenderer->setNoRender();
 		

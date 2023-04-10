@@ -10,7 +10,7 @@ $script_name_no_ext     =~ s/\.[^.]*$//;
 # Timestamp => fichier unique et temps d'exécution
 my $timestamp           = time();
 
-# Fichier PID et pour écrire le résultat 
+# Fichier PID et pour écrire le résultat
 my $PID_FILE   = '/var/mailcleaner/run/watchdog/' . $script_name_no_ext . '.pid';
 my $OUT_FILE   = '/var/mailcleaner/spool/watchdog/' .$script_name_no_ext. '_' .$timestamp. '.out';
 

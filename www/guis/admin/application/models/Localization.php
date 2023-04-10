@@ -4,21 +4,21 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Localization settings
  */
 
 class Default_Model_Localization
 {	
 	protected $_dlglist = [
-	                     'Africa' => 'Africa', 
+	                     'Africa' => 'Africa',
 	                     'America' => 'America',
-	                     'Asia' => 'Asia', 
+	                     'Asia' => 'Asia',
 	                     'Atlantic' => 'Atlantic Ocean',
 	                     'Australia' => 'Australia',
 	                     'Europe' => 'Europe',
 	                     'Indian' => 'Indian Ocean',
-	                     'Pacific' => 'Pacific Ocean', 
+	                     'Pacific' => 'Pacific Ocean',
 			     'Etc' => 'None of the above'
 	];
 	
@@ -29,9 +29,9 @@ class Default_Model_Localization
 	
 	public function __construct() {
 	}
-    
+
 	public function load() {
-	   
+	
 	   if (file_exists($this->_timezonefile)) {
 	   	   $content = file($this->_timezonefile);
 	   	   foreach ($content as $line) {

@@ -32,7 +32,7 @@ class Default_Model_AdministratorMapper
         }
         return $this->_dbTable;
     }
-    
+
     public function find($username, Default_Model_Administrator $administrator)
     {
     	$query = $this->getDbTable()->select();
@@ -54,7 +54,7 @@ class Default_Model_AdministratorMapper
         	}
         }
     }
-   
+
    public function fetchByDomain($domainName)
    {
         if (isset($domainName) && !empty($domainName)) {
@@ -105,11 +105,11 @@ class Default_Model_AdministratorMapper
         foreach ($resultSet as $row) {
           $entry = new Default_Model_Administrator();
           $entry->find($row['username']);
-          $entries[] = $entry;   
+          $entries[] = $entry;
         }
         return $entries;
     }
-    
+
     public function save(Default_Model_Administrator $admin) {
        $data = $admin->getParamArray();
        $res = '';
@@ -124,7 +124,7 @@ class Default_Model_AdministratorMapper
         }
         return $res;
     }
-    
+
     public function delete(Default_Model_Administrator $admin) {
     	$where = $this->getDbTable()->getAdapter()->quoteInto('id = ?', $admin->getId());
     	return $this->getDbTable()->delete($where);   	

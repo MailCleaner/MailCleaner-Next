@@ -81,16 +81,16 @@ sub authenticate {
   my $this = shift;
   my $username = shift;
   my $password = shift;
- 
+
   my $scheme = 'ldap';
-  if ($this->{use_ssl} > 0) { 
+  if ($this->{use_ssl} > 0) {
     $scheme = 'ldaps';
   }
   #print "connecting to $scheme://".$this->{server}.":".$this->{port}."\n";
   my $ldap = Net::LDAP->new ( $this->{server}, port=>$this->{port}, scheme=>$scheme, timeout=>30, debug=>0 );
-  
+
   if (!$ldap) {
-    $this->{'error_text'} = "Cannot contact LDAP/AD server at $scheme://".$this->{server}.":".$this->{port}; 
+    $this->{'error_text'} = "Cannot contact LDAP/AD server at $scheme://".$this->{server}.":".$this->{port};
     return 0;
   }
 
@@ -124,7 +124,7 @@ sub getDN {
   if (! $this->{binduser} eq '') {
     $mesg = $ldap->bind($this->{binduser}, password => $this->{bindpassword}, version => $this->{version});
   } else {
-    $mesg = $ldap->bind ; 
+    $mesg = $ldap->bind ;
   }
   if ( $mesg->code ) {
     $this->{'error_text'} = "Could not search for user DN (bind error)";
@@ -153,7 +153,7 @@ sub fetchLinkedAddressesFromEmail {
 
   my $filter = '(|';
   foreach my $att (@mailattributes) {
-    $filter .= '('.$att.'='.$email.')('.$att.'='.'smtp:'.$email.')'; 
+    $filter .= '('.$att.'='.$email.')('.$att.'='.'smtp:'.$email.')';
   }
   $filter .= ')';
   return $this->fetchLinkedAddressFromFilter($filter);
@@ -174,7 +174,7 @@ sub fetchLinkedAddressFromFilter {
   my @addresses;
 
   my $scheme = 'ldap';
-  if ($this->{use_ssl} > 0) { 
+  if ($this->{use_ssl} > 0) {
     $scheme = 'ldaps';
   }
 
@@ -187,7 +187,7 @@ sub fetchLinkedAddressFromFilter {
   if (! $this->{binduser} eq '') {
     $mesg = $ldap->bind($this->{binduser}, password => $this->{bindpassword}, version => $this->{version});
   } else {
-    $mesg = $ldap->bind ; 
+    $mesg = $ldap->bind ;
   }
   if ( $mesg->code ) {
     $this->{'error_text'} = "Could not bind";
@@ -214,7 +214,7 @@ sub fetchLinkedAddressFromFilter {
     #$this->{'error_text'} = "No data for filter ($filter)";
   }
   $ldap->unbind;   # take down session
-  return @addresses; 
+  return @addresses;
 }
 
 1;

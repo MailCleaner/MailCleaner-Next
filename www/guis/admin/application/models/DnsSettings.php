@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * System DNS settings
  */
 
@@ -53,7 +53,7 @@ class Default_Model_DnsSettings
 	public function getHeloName() {
 		return $this->_heloname;
 	}
-    
+
 	public function load() {
 	   if (file_exists($this->_config_file)) {
 	   	  $content = file($this->_config_file);

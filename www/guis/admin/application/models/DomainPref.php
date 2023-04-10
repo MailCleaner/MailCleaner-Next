@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Domain preferences
  */
 
@@ -60,7 +60,7 @@ class Default_Model_DomainPref
         'require_outgoing_tls' => 0,
         'archive_mail' => 0,
         'copyto_mail' => '',
-        
+
         ### newsl
         'allow_newsletters' => '0',
     ];
@@ -127,12 +127,12 @@ class Default_Model_DomainPref
         $this->getMapper()->find($id, $this);
         return $this;
     }
-   
+
     public function save($global = false)
     {
         return $this->getMapper()->save($this, $global);
     }
- 
+
     public function delete() {
     	return $this->getmapper()->delete($this);
     }

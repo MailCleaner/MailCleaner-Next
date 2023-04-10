@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * File type
  */
 
@@ -71,28 +71,28 @@ class Default_Model_FileType
         $this->getMapper()->find($id, $this);
         return $this;
     }
-   
+
     public function fetchAll() {
     	return $this->getMapper()->fetchAll();
     }
-    
+
     public function save()
     {
         return $this->getMapper()->save($this);
     }
-    
+
     public function delete()
     {
     	return $this->getMapper()->delete($this);
     }
-    
+
     public function getStatus() {
     	if ($this->getParam('status') != 'deny') {
     		return 0;
     	}
     	return 1;
     }
-    
+
    public function disable() {
     	$this->setParam('status', 'allow');
     	$this->save();
@@ -101,8 +101,8 @@ class Default_Model_FileType
     	$this->setParam('status', 'deny');
     	$this->save();
     }
-    
-    
+
+
     public function getComment() {
     	if ($this->getParam('description') != '-') {
           return $this->getParam('description');

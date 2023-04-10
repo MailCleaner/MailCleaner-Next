@@ -42,14 +42,14 @@ class SoapInterface
    */
   /**
    * This function will gather status
-   * 
+   *
    * @param  array
    * @return array
    */
    static public function Status_getStatusValues($params) {
         return MCSoap_Status::Status_getStatusValues($params);
    }
-   
+
   /**
    * This function simply answer with the question
    *
@@ -68,7 +68,7 @@ class SoapInterface
 	}
    /**
     * This function return the current hardware status
-    * 
+    *
     * @return array
     */
 	static public function Status_getHardwareHealth() {
@@ -104,7 +104,7 @@ class SoapInterface
    static public function Config_applyNetworkSettings() {
    	    return MCSoap_Config::Config_applyNetworkSettings();
    }
-   
+
   /**
    * This function simply copy temporary resolv.conf file to system one
    *
@@ -254,7 +254,7 @@ class SoapInterface
 	
    /**
     * This function will set one process's status to be restarted
-    * 
+    *
     * @param  array  services
     * @return string
     */
@@ -264,14 +264,14 @@ class SoapInterface
 	
    /**
     * This function will silently stop a service
-    * 
+    *
     * @param  array  params
     * @return array
     */
     static public function Service_silentStopStart($params) {
     	return  MCSoap_Services::Service_silentStopStart($params);
     }
-    
+
     /**
     * This function will clear the callout cache
     *
@@ -291,20 +291,20 @@ class SoapInterface
     static public function Service_clearSMTPAutCache($params) {
     	return  MCSoap_Services::Service_clearSMTPAutCache($params);
     }
-    
+
    /**
     * This function will silently dump a config file
-    * 
+    *
     * @param  array  params
     * @return array
     */
     static public function Service_silentDump($params) {
         return  MCSoap_Services::Service_silentDump($params);
     }
-    
+
    /**
     * This function will search for quarantined content
-    * 
+    *
     * @param  array  params
     * @return array
     */
@@ -314,7 +314,7 @@ class SoapInterface
 	
    /**
     * This function will fetch information on quarantined content
-    * 
+    *
     * @param  array  params
     * @return array
     */
@@ -324,7 +324,7 @@ class SoapInterface
 	
    /**
     * This function will release a quarantined message
-    * 
+    *
     * @param  array  params
     * @return array
     */
@@ -433,14 +433,14 @@ class SoapInterface
 
 	/**
      * This function will fetch today's stats
-     * 
+     *
      * @param array $params
      * @return array
      */
     static public function Status_getTodayStats($params) {
     	return MCSoap_Status::Status_getTodayStats($params);
     }
-    
+
     /**
      * This function will fetch messages in spool
      *
@@ -450,7 +450,7 @@ class SoapInterface
     static public function Status_getSpool($params) {
     	return MCSoap_Status::Status_getSpool($params);
     }
-    
+
     /**
      * This function will delete messages in spool
      *
@@ -460,7 +460,7 @@ class SoapInterface
     static public function Status_spoolDelete($params) {
         return MCSoap_Status::Status_spoolDelete($params);
     }
-    
+
     /**
      * This function will try to send messages in spool
      *

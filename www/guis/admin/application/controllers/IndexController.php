@@ -4,13 +4,13 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * index page controller
  */
 
 class IndexController extends Zend_Controller_Action
 {
-		    
+		
     public function init()
     {
     	$layout = Zend_Layout::getMvcInstance();
@@ -30,15 +30,15 @@ class IndexController extends Zend_Controller_Action
     	
     }
 
-    public function globalstatsAction() 
+    public function globalstatsAction()
     {
     	$layout = Zend_Layout::getMvcInstance();
         $view=$layout->getView();
         $layout->disableLayout();
         $view->addScriptPath(Zend_Registry::get('ajax_script_path'));
-        
+
         $request = $this->getRequest();
-        
+
         $stats_type = $request->getParam('t');
         if (!isset($stats_type) || !$stats_type || $stats_type == '') {
         	$stats_type = 'global';
@@ -47,12 +47,12 @@ class IndexController extends Zend_Controller_Action
         $what = [];
 		$what['stats'] = $reporting->getTodayStatElements($stats_type);
         $data = $reporting->getTodayValues($what, 0, $stats_type);
-        
+
         $view->graphlink = $view->baseurl.'/index/todaypie/c/1';
         if ($request->getParam('t') != '') {
             $view->graphlink .= '/t/'.$stats_type.'/r/'.uniqid();
         }
-        
+
         $view->stats_type = $stats_type;
         $total = 0;
         foreach ($data as $d) {
@@ -65,19 +65,19 @@ class IndexController extends Zend_Controller_Action
     	include_once(APPLICATION_PATH . '/../public/templates/'.$template.'/css/pieColors.php');
     	$view->colors = $data_colors;
     }
-    
-    public function globalstatusAction() 
+
+    public function globalstatusAction()
     {
     	$layout = Zend_Layout::getMvcInstance();
         $view=$layout->getView();
         $layout->disableLayout();
         $view->addScriptPath(Zend_Registry::get('ajax_script_path'));
-        
+
         $slave = new Default_Model_Slave();
         $slaves = $slave->fetchAll();
-        
+
         $res = [];
-        
+
         foreach (['hardware', 'disk', 'raid', 'load', 'spools') as $service] {
         	$res[$service] = ['status' => 'ok', 'message' => '', 'value' => ''];
             foreach ($slaves as $s) {
@@ -93,7 +93,7 @@ class IndexController extends Zend_Controller_Action
                $res[$service]['value'] = $tmpres['value'];
             }
         }
-        
+
         $users = 0;
         foreach ($slaves as $s) {
            $susers = $s->getTodayStats('users');
@@ -102,14 +102,14 @@ class IndexController extends Zend_Controller_Action
            }
         }
         $view->users = $users;
-        
+
         $domain = new Default_Model_Domain();
         $domains = $domain->fetchAllName();
         $view->domains = count($domains);
         $view->distinctdomains = $domain->getDistinctDomainsCount();
         $view->hosts = (count($slaves));
         $view->status = $res;
-        
+
         $config = new MailCleaner_Config();
         $registered = $config->getOption('REGISTERED');
         if ($registered == "1") {
@@ -134,8 +134,8 @@ class IndexController extends Zend_Controller_Action
 		$usecache = false;
 		if (preg_match('/^[A-Za-z0-9]+$/', $request->getParam('c'))) {
 			$usecache = $request->getParam('c');
-		} 
-        
+		}
+
 		$reporting = new Default_Model_ReportingStats();
 		$what = [];
 		$what['stats'] = $reporting->getTodayStatElements($request->getParam('t'));

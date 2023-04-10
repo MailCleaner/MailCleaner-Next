@@ -20,9 +20,9 @@ class Default_Form_Httpd extends ZendX_JQuery_Form
     	$view=$layout->getView();
     	
 		$this->setMethod('post');
-	           
+	
 		$this->setAttrib('id', 'httpd_form');
-	    
+	
 		$baseurl = new  Zend_Form_Element_Text('servername', [
 	        'label'    => $t->_('Base URL')." :",
                 'title' => $t->_("Base URL to access this we interface"),
@@ -31,7 +31,7 @@ class Default_Form_Httpd extends ZendX_JQuery_Form
 		]);
 	    $baseurl->setValue($this->_httpd->getParam('servername'));
 	    $this->addElement($baseurl);
-	    
+	
 	    require_once('Validate/HostList.php');
 		$allowed_ip = new Zend_Form_Element_Textarea('allowed_ip', [
 		      'label'    =>  $t->_('Allowed IP/ranges')." :",
@@ -44,7 +44,7 @@ class Default_Form_Httpd extends ZendX_JQuery_Form
 	    $allowed_ip->addValidator(new Validate_HostList());
 		$allowed_ip->setValue($this->_firewallrule->getParam('allowed_ip'));
 		$this->addElement($allowed_ip);
-	    
+	
 		$sslenable = new Zend_Form_Element_Checkbox('use_ssl', [
 	        'label'   => $t->_('Enable SSL (HTTPS)'). " :",
             'uncheckedValue' => "0",
@@ -54,7 +54,7 @@ class Default_Form_Httpd extends ZendX_JQuery_Form
             $sslenable->setChecked(true);
 	    }
 	    $this->addElement($sslenable);
-	    
+	
 	    $httpslisten = new  Zend_Form_Element_Text('https_port', [
 	        'label'    => $t->_('HTTPS port')." :",
 		    'required' => false,
@@ -64,7 +64,7 @@ class Default_Form_Httpd extends ZendX_JQuery_Form
 	    $httpslisten->setValue($this->_httpd->getParam('https_port'));
         $httpslisten->addValidator(new Zend_Validate_Int());
 	    $this->addElement($httpslisten);
-	    
+	
 	    $httplisten = new  Zend_Form_Element_Text('http_port', [
 	        'label'    => $t->_('HTTP port')." :",
 		    'required' => true,
@@ -74,7 +74,7 @@ class Default_Form_Httpd extends ZendX_JQuery_Form
 	    $httplisten->setValue($this->_httpd->getParam('http_port'));
         $httplisten->addValidator(new Zend_Validate_Int());
 	    $this->addElement($httplisten);
-	   
+	
         $restrictions = Zend_Registry::get('restrictions');
 
 	    $sslcert = new Zend_Form_Element_Textarea('tls_certificate_data', [
@@ -125,7 +125,7 @@ class Default_Form_Httpd extends ZendX_JQuery_Form
             require_once('Validate/PKICertificate.php');
             $sslchain->addValidator(new Validate_PKICertificate());
         }
-	    
+	
 		if ($this->_httpd->getParam('use_ssl') == 'true') {
 			$this->_urlsheme = 'https';
 		}

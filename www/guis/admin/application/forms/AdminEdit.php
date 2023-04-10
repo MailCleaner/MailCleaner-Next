@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Admin settings form
  */
 
@@ -26,16 +26,16 @@ class Default_Form_AdminEdit extends ZendX_JQuery_Form
     	$view=$layout->getView();
     	
 		$this->setMethod('post');
-	           
+	
 		$this->setAttrib('id', 'admin_edit');
-		        
+		
 		$newusername = new  Zend_Form_Element_Text('newusername', [
 			'required' => false
 		]);
 		require_once('Validate/AdminName.php');
 		$newusername->addValidator(new Validate_AdminName());
 	    $this->addElement($newusername);
-	    
+	
 		$username = new Zend_Form_Element_Hidden('username');
 		$username->setValue($this->_admin->getParam('username'));
 		$this->addElement($username);
@@ -49,7 +49,7 @@ class Default_Form_AdminEdit extends ZendX_JQuery_Form
 	        $password->setValue('_keeppassword1_');
 	    }
 	    $this->addElement($password);
-	    
+	
 	    $confirm = new  Zend_Form_Element_Password('confirm', [
 	        'label'    => $t->_('Confirm')." :",
 	        'renderPassword' => true,
@@ -59,19 +59,19 @@ class Default_Form_AdminEdit extends ZendX_JQuery_Form
 	        $confirm->setValue('_keeppassword2_');
 	    }
 	    $this->addElement($confirm);
-	    
+	
 	    $roleselect = new Zend_Form_Element_Select('role', [
             	'label'      => $t->_('Role')." :",
             	'required'   => false,
 	    	'filters'    => ['StringTrim']
 	    ]);
-        
+
         foreach ($this->_admin->getRoles() as $r) {
         	$roleselect->addMultiOption($r['name'], $t->_($r['name']));
         }
         $roleselect->setValue($this->_admin->getUserType());
         $this->addElement($roleselect);
-        
+
         require_once('Validate/DomainList.php');
         $domains = new Zend_Form_Element_Textarea('domains', [
 		      'label'    =>  $t->_('Manage Domains')." :",
@@ -83,7 +83,7 @@ class Default_Form_AdminEdit extends ZendX_JQuery_Form
 	    $domains->addValidator(new Validate_DomainList());
 		$domains->setValue( implode("\n", $this->_admin->getDomainsArray() ));
 		$this->addElement($domains);
-        
+
 		$allowsubdomains = new Zend_Form_Element_Checkbox('allow_subdomains', [
 			        'label'   => $t->_('Allow access to subdomains'). " :",
 		            'uncheckedValue' => "0",

@@ -1,10 +1,10 @@
-<?php 
+<?php
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * TrustedSources form
  */
 
@@ -39,7 +39,7 @@ class Default_Form_AntiSpam_TrustedSources extends Default_Form_AntiSpam_Default
 	    ]);
 	    $use_alltrusted->setValue($trustedsources->getParam('use_alltrusted'));
 	    $this->addElement($use_alltrusted);
-	    
+	
 	    require_once('Validate/DomainList.php');
 	    $domainstospf = new Zend_Form_Element_Textarea('domainsToSPF', [
 		      'label'    =>  $t->_('Trust SPF validation on these domains')." :",
@@ -71,10 +71,10 @@ class Default_Form_AntiSpam_TrustedSources extends Default_Form_AntiSpam_Default
 	    ]);
 	    $authstring->setValue($trustedsources->getParam('authstring'));
 	    $this->addElement($authstring);
-	    
+	
 	    $rwllist = new Default_Model_DnsLists();
         $rwllist->load();
-        
+
         foreach ($rwllist->getRBLs('IPRWL SPFLIST') as $rwl) {
             $userwl = new Zend_Form_Element_Checkbox('use_rwl_'.$rwl['name'], [
                      'label' => $t->_($rwl['dnsname'])." (".$t->_($rwl['type']).")",
@@ -115,7 +115,7 @@ class Default_Form_AntiSpam_TrustedSources extends Default_Form_AntiSpam_Default
         }
         $rwlstr = preg_replace('/^\s*/', '', $rwlstr);
         $trustedsources->setparam('whiterbls', $rwlstr);
-        
+
 		$trustedsources->save();
 	}
 	

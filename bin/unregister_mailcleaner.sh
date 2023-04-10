@@ -25,7 +25,7 @@
 #           unregister_mailcleaner.sh --no-rsp|resellerpassword [-b]
 
 batch=0
-if [ "$2" = "-b" ];then 
+if [ "$2" = "-b" ];then
   batch=1
 fi
 
@@ -37,12 +37,12 @@ HOSTID=`grep 'HOSTID' $CONFFILE | cut -d ' ' -f3`
 RESELLERID=`grep 'RESELLERID' $CONFFILE | cut -d ' ' -f3`
 MCREPO=`grep 'MCREPO' $CONFFILE | cut -d ' ' -f3`
 
-if [ "$REGISTERED" = "" ];then 
+if [ "$REGISTERED" = "" ];then
   exit 0
 fi
 
 SRCDIR=`grep 'SRCDIR' $CONFFILE | cut -d ' ' -f3`
-if [ "$SRCDIR" = "" ]; then 
+if [ "$SRCDIR" = "" ]; then
   SRCDIR="/opt/mailcleaner"
 fi
 VARDIR=`grep 'VARDIR' $CONFFILE | cut -d ' ' -f3`
@@ -102,7 +102,7 @@ fi
 
 if [ "$batch" = 0 ]; then
 echo -n "invalidating keys..."
-fi 
+fi
 
 # Inform team about unregistration
 URL="http://reselleradmin.mailcleaner.net/hosts/unregister.php"
@@ -201,7 +201,7 @@ if [ "$REGISTERED" = "1" ];then
 	rm -f $VARDIR/spool/spamassassin/bayes_* >/dev/null 2>&1
 	rm -rf $VARDIR/spool/clamspam/* >/dev/null 2>&1
 	rm -rf $VARDIR/spool/clamav/* >/dev/null 2>&1
-	cp -f /root/starters/clamd/* $VARDIR/spool/clamav/ 
+	cp -f /root/starters/clamd/* $VARDIR/spool/clamav/
 	cp -f /root/starters/wordlist.db $VARDIR/spool/bogofilter/database/wordlist.db >/dev/null 2>&1
 	cp -f /root/starters/bayes_toks $VARDIR/spool/spamassassin/bayes_toks >/dev/null 2>&1
 	# Restore CE missing files

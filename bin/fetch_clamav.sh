@@ -56,7 +56,7 @@ done
 
 CONFFILE=/etc/mailcleaner.conf
 SRCDIR=`grep 'SRCDIR' $CONFFILE | cut -d ' ' -f3`
-if [ "$SRCDIR" = "" ]; then 
+if [ "$SRCDIR" = "" ]; then
   SRCDIR="/opt/mailcleaner"
 fi
 VARDIR=`grep 'VARDIR' $CONFFILE | cut -d ' ' -f3`
@@ -123,7 +123,7 @@ cd -
 
 ## restart clamd daemon
 if [[ "$ret" -eq "1" ]]; then
-	kill -USR2 `cat $VARDIR/run/clamav/clamd.pid 2>/dev/null` > /dev/null 2>&1 
+	kill -USR2 `cat $VARDIR/run/clamav/clamd.pid 2>/dev/null` > /dev/null 2>&1
 	log "ClamAV - Database reloaded"
 fi
 

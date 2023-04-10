@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Web server settings mapper
  */
 
@@ -32,7 +32,7 @@ class Default_Model_HttpdConfigMapper
         }
         return $this->_dbTable;
     }
-    
+
     public function find($id, Default_Model_HttpdConfig $config)
     {
         $result = $this->getDbTable()->find($id);
@@ -45,7 +45,7 @@ class Default_Model_HttpdConfigMapper
         	$config->setParam($key, $row[$key]);
         }
     }
-    
+
     public function fetchAll()
     {
         $resultSet = $this->getDbTable()->fetchAll();
@@ -57,7 +57,7 @@ class Default_Model_HttpdConfigMapper
         }
         return $entries;
     }
-    
+
     public function save(Default_Model_HttpdConfig $config) {
        $data = $config->getParamArray();
        $res = '';

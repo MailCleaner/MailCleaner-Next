@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * System registration
  */
 
@@ -16,7 +16,7 @@ class Default_Model_RegistrationManager
                               'resellerid' => 0,
 			      'resellerpwd' => ''
 	];
-    
+
 	public function load() {
 		//TODO: implement
 	}

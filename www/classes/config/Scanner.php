@@ -5,7 +5,7 @@
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
  */
- 
+
 /**
  * this is a preference handler
  */
@@ -66,7 +66,7 @@ public function getInstalledStatus() {
   if ($this->getPref('installed') > 0) {
     return $lang_->print_txt('INSTALLED');
   }
-  return "<pan style=\"font-style:italic;\">".$lang_->print_txt('NOTINSTALLED')."</span>";     
+  return "<pan style=\"font-style:italic;\">".$lang_->print_txt('NOTINSTALLED')."</span>";
 }
 }
 ?>

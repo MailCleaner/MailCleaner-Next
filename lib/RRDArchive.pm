@@ -33,7 +33,7 @@ use Scalar::Util qw(looks_like_number);
 
 #use Log::Log4perl qw(:easy);
 #Log::Log4perl->easy_init({
-#        level    => $INFO, 
+#        level    => $INFO,
 #        category => 'rrdtool',
 #        layout   => '%m%n',
 #    });
@@ -50,24 +50,24 @@ sub New {
   my $name = shift;
   my $type = shift;
   my $hosts_status = shift;
-  
+
   my $conf = ReadConfig::getInstance();
- 
+
   my @elements;
   my @hosts;
   my @databases;
   my %snmp;
   my %dynamic_vars;
-  
+
   my $slave_db = DB::connect('slave', 'mc_config');
   my @hostsa = $slave_db->getListOfHash("SELECT id, hostname FROM slave");
   foreach my $h (@hostsa) {
   	push @hosts, $h->{'hostname'};
   }
-  
+
   my %community = $slave_db->getHashRow("SELECT community FROM snmpd_config");
   my $community = $community{'community'};
-  
+
   my $spooldir = $conf->getOption('VARDIR')."/spool/newrrds/".$name."_".$type;
   if ( ! -d $spooldir ) {
     mkpath($spooldir);
@@ -123,7 +123,7 @@ sub createDatabase {
 	## add elements
 	my @options;
 	foreach my $element (@{$this->{elements}}) {
-    @options = (@options, data_source => { 
+    @options = (@options, data_source => {
                                            name => $element->{'name'},
                                            type => $element->{'type'},
                                            min => $element->{'min'},
@@ -131,13 +131,13 @@ sub createDatabase {
                                            }
                  );
     }
-    
+
     ## add archives
-    
+
     # hourly values, step 1, rows 500
     my $count = 1;
     my $rows = 500;
-#    @options = (@options, 
+#    @options = (@options,
 #                   archive  => { rows      => $rows,
 #                                 cpoints   => $count,
 #                                 cfunc     => 'LAST',
@@ -149,13 +149,13 @@ sub createDatabase {
 #                   archive  => { rows      => $rows,
 #                                 cpoints   => $count,
 #                                 cfunc     => 'MAX',
-#                               },            
+#                               },
 #               );
-               
+
     ## daily values
     $count = 1;
     $rows = 8600;
-    @options = (@options, 
+    @options = (@options,
                    archive  => { rows      => $rows,
                                  cpoints   => $count,
                                  cfunc     => 'LAST',
@@ -167,13 +167,13 @@ sub createDatabase {
                    archive  => { rows      => $rows,
                                  cpoints   => $count,
                                  cfunc     => 'MAX',
-                               },            
+                               },
                );
-               
+
     ## weekly values
     $count = 6;
     $rows = 700;
-    @options = (@options, 
+    @options = (@options,
                    archive  => { rows      => $rows,
                                  cpoints   => $count,
                                  cfunc     => 'LAST',
@@ -185,13 +185,13 @@ sub createDatabase {
                    archive  => { rows      => $rows,
                                  cpoints   => $count,
                                  cfunc     => 'MAX',
-                               },            
+                               },
                );
-               
+
     ## monthly values
     $count = 24;
     $rows = 775;
-    @options = (@options, 
+    @options = (@options,
                    archive  => { rows      => $rows,
                                  cpoints   => $count,
                                  cfunc     => 'LAST',
@@ -203,12 +203,12 @@ sub createDatabase {
                    archive  => { rows      => $rows,
                                  cpoints   => $count,
                                  cfunc     => 'MAX',
-                               },            
+                               },
                );
     ## yearly values
     $count = 288;
     $rows = 797;
-    @options = (@options, 
+    @options = (@options,
                    archive  => { rows      => $rows,
                                  cpoints   => $count,
                                  cfunc     => 'LAST',
@@ -220,17 +220,17 @@ sub createDatabase {
                    archive  => { rows      => $rows,
                                  cpoints   => $count,
                                  cfunc     => 'MAX',
-                               },            
+                               },
                );
-                        
-    ## and create   
+
+    ## and create
     $rrd->create(
               step => $rrdstep,
-              @options         
+              @options
     );
-    
+
     foreach my $element (@{$this->{elements}}) {
-        
+
         if ($element->{'type'} eq 'COUNTER' || $element->{'type'} eq 'DERIVE') {
         	eval {
         	$rrd->tune(dsname => $element->{'name'}, minumum => 0);
@@ -238,7 +238,7 @@ sub createDatabase {
         	}
         }
     }
-    
+
 	return $rrd;
 }
 
@@ -305,7 +305,7 @@ sub getSNMPValue {
         }
         my $result = $this->{snmp}->{$host}->get_request(-varbindlist => [$oid]);
         my $error = $this->{snmp}->{$host}->error();
-        if (defined($error) && ! $error eq "") { 
+        if (defined($error) && ! $error eq "") {
            print "Error found: $error\n";
            $host_failed{$host} = 1;
         } else {
@@ -334,7 +334,7 @@ sub connectSNMP {
     if ($host_failed{$host}) {
     	return 0;
     }
-    my ($session, $error) = Net::SNMP->session( 
+    my ($session, $error) = Net::SNMP->session(
                             -hostname => $host,
                             -community => $this->{'community'},
                             -port => 161,
@@ -367,7 +367,7 @@ sub getDynamicOidsForHost {
 	if (!defined($this->{snmp}->{$host})) {
         $this->connectSNMP($host);
     }
-    
+
     my %partitions = ('OS' => '/', 'DATA' => '/var');
 	foreach my $part (keys %partitions) {
         ## first find out partition devices
@@ -414,7 +414,7 @@ sub getIndexOf {
     if (!defined $search) {
         return undef;
     }
-    
+
     ## first check for data and os parts
     my $baseoid = SNMP::translateObj($givenbaseoid);
     if (! defined $baseoid) {
@@ -442,7 +442,7 @@ sub getValueOfOid {
     my $this = shift;
     my $host = shift;
     my $givenoid = shift;
-    
+
     if (!defined($this->{snmp}->{$host})) {
         $this->connectSNMP($host);
     }

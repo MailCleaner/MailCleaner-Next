@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Antispam global settings form
  */
 
@@ -42,7 +42,7 @@ class Default_Form_AntispamGlobalSettings extends ZendX_JQuery_Form
     	    $view=$layout->getView();
     	
 	    $this->setMethod('post');
-	           
+	
 	    $this->setAttrib('id', 'antispamglobalsettings_form');
 
             $maxsize = new Zend_Form_Element_Text('global_max_size', [
@@ -85,7 +85,7 @@ class Default_Form_AntispamGlobalSettings extends ZendX_JQuery_Form
             	$this->_whitelistenabled = 1;
 	    }
 	    $this->addElement($enablewhitelists);
-	    
+	
 	    $enablewarnlists = new Zend_Form_Element_Checkbox('enable_warnlists', [
 	        'label'   => $t->_('Enable access to warnlists'). " :",
                 'title' => $t->_("Activate globally that warnlist behavior is becoming available, after global warnlist also become availableActivate globally that warnlist behavior is becoming available, after global warnlist also become available"),
@@ -97,7 +97,7 @@ class Default_Form_AntispamGlobalSettings extends ZendX_JQuery_Form
                 $this->_warnlistenabled = 1;
 	    }
 	    $this->addElement($enablewarnlists);
-	    
+	
 	    $tagmodbypasswhitelist = new Zend_Form_Element_Checkbox('tag_mode_bypass_whitelist', [
                 'label'   => $t->_('Ignore whitelist in tag mode'). " :",
                 'title' => $t->_("since tag mode get all messages delivered, one may want to ignore the whitelist in this case"),
@@ -132,8 +132,8 @@ class Default_Form_AntispamGlobalSettings extends ZendX_JQuery_Form
 
 
 
-	    
-	     
+	
+	
 		$submit = new Zend_Form_Element_Submit('submit', [
 			'label'    => $t->_('Submit')
 		]);

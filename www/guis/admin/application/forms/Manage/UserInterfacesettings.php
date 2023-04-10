@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * User interface form
  */
 
@@ -36,13 +36,13 @@ class Default_Form_Manage_UserInterfacesettings extends Zend_Form
 	    ]);
 	    ## TODO: add specific validator
 	    $panellist->addValidator(new Zend_Validate_Alnum());
-        
+
         foreach ($this->_user->getConfigPanels() as $panel => $panelname) {
         	$panellist->addMultiOption($panel, $panelname);
         }
         $panellist->setValue($this->_panelname);
         $this->addElement($panellist);
-        
+
         $panel = new Zend_Form_Element_Hidden('panel');
 		$panel->setValue($this->_panelname);
 		$this->addElement($panel);
@@ -63,7 +63,7 @@ class Default_Form_Manage_UserInterfacesettings extends Zend_Form
 	    'filters'    => ['StringTrim']
 		]);
 	    ## TODO: add specific validator
-        
+
 	    $config = MailCleaner_Config::getInstance();
 	    foreach ($config->getUserGUIAvailableLanguages() as $lk => $lv) {
         	$language->addMultiOption($lk, $t->_($lv));
@@ -81,7 +81,7 @@ class Default_Form_Manage_UserInterfacesettings extends Zend_Form
 		foreach (['language') as $pref] {
             if ($request->getParam($pref)) {
 			    $user->setPref($pref, $request->getParam($pref));
-		    }	    
+		    }	
 		}
 		return true;
 	}

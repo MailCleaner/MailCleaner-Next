@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * File name
  */
 
@@ -87,7 +87,7 @@ class Default_Model_RRDGraphic
 		
 		$slave = new Default_Model_Slave();
         $slaves = $slave->fetchAll();
-        
+
 		if (is_numeric($host)) {
 		    foreach ($slaves as $s) {
 		    	if ($s->getId() == $host) {
@@ -161,7 +161,7 @@ class Default_Model_RRDGraphic
         $this->getMapper()->find($elementid, $this);
         return $this;
     }
-    
+
 	public function fetchAll($params) {
 		return $this->getMapper()->fetchAll($params);
 	}
@@ -174,7 +174,7 @@ class Default_Model_RRDGraphic
 		}
 		return $families;
 	}
-    
+
 	public function addElement($element) {
 		array_push($this->_elements, $element);
 		$element->setGraphic($this);
@@ -260,7 +260,7 @@ class Default_Model_RRDGraphic
 		## Y-axis limits
 		$cmd .= ' --rigid --alt-autoscale-max';
 		$cmd .= ' --lower-limit=0';
-		if (is_numeric($this->_min_yvalue) && $this->_min_yvalue > 0) { 
+		if (is_numeric($this->_min_yvalue) && $this->_min_yvalue > 0) {
      		$cmd .= ' --upper-limit='.$this->_min_yvalue;
 		}
 		

@@ -5,7 +5,7 @@
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
  */
- 
+
 /**
  * This is the class is mainly a data wrapper for the quarantined content objects
  */
@@ -35,7 +35,7 @@ class Content {
        'slave' => 0,
        'content_forced' => 0
   ];
- 
+
 
 /**
  * load the content datas from the given array
@@ -79,8 +79,8 @@ public function getPref($pref) {
  */
 public function getPathToFile() {
   $matches = [];
-  if (!preg_match('/^(\d{4})-(\d{2})-(\d{2})\s.*$/', $this->getPref('timestamp'), $matches)) { 
-    return 'CANNOTFINDFILEPATH'; 
+  if (!preg_match('/^(\d{4})-(\d{2})-(\d{2})\s.*$/', $this->getPref('timestamp'), $matches)) {
+    return 'CANNOTFINDFILEPATH';
   }
   if (!preg_match('/^[a-zA-Z0-9]{6}-[a-zA-Z0-9]{6}-[a-zA-Z0-9]{2}$/', $this->getPref('id'))) {
     return 'BADCONTENTID';
@@ -108,9 +108,9 @@ public function load($id) {
 
   // first some sanity checks
   if (!preg_match('/^[a-zA-Z0-9]{6}-[a-zA-Z0-9]{6}-[a-zA-Z0-9]{2}$/', $id)) {
-    return 'BADSEARCHID'; 
+    return 'BADSEARCHID';
   }
-  
+
   // we have to loop on all slaves to found where the content has been detected and stored
   foreach ($sysconf_->getSlaves() as $s) {
 
@@ -123,14 +123,14 @@ public function load($id) {
       $slave_id = 1;
     }
     $db = DM_Custom :: getInstance($s->getPref('hostname'), $slave[0], 'mailcleaner', $slave[1], 'mc_stats');
-    
+
     $clean_id = $db->sanitize($id);
-    
+
     // build the query
     $query = "SELECT timestamp, to_domain, id, from_address, to_address, subject, isspam, virusinfected, nameinfected, otherinfected, report, date, time, size, sascore, spamreport, headers, content_forced FROM maillog WHERE";
     $query .= " quarantined=1 AND ";
     $query .= " id='".$clean_id."'";
-    
+
     $res = $db->getHash($query);
     if (!is_[$res]) {
       return $res;
@@ -145,7 +145,7 @@ public function load($id) {
   if ($this->getPref('slave') < 1) {
     return "CONTENTIDNOTFOUND";
   }
-  return $ret; 
+  return $ret;
 }
 
 /**
@@ -168,7 +168,7 @@ public function force() {
   if (preg_match('/^[A-Z]+$/', $sid)) {
     return $sid;
   }
-  $res = $soaper->queryParam('forceContent', [$sid, $path]); 
+  $res = $soaper->queryParam('forceContent', [$sid, $path]);
 
   return $res;
 }

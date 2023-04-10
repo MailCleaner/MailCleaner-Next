@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Database service form
  */
 
@@ -25,9 +25,9 @@ class Default_Form_Api extends ZendX_JQuery_Form
     	$view=$layout->getView();
     	
 		$this->setMethod('post');
-	           
+	
 		$this->setAttrib('id', 'api_form');
-	   	    
+	   	
 	    require_once('Validate/HostList.php');
 		$full_admin_ip = new Zend_Form_Element_Textarea('api_fulladmin_ips', [
 		      'label'    =>  $t->_('Grant these IP/ranges with full admin rights')." :",
@@ -50,7 +50,7 @@ class Default_Form_Api extends ZendX_JQuery_Form
         $admin_ip->addValidator(new Validate_HostList());
         $admin_ip->setValue($this->_defaults->getParam('api_admin_ips'));
         $this->addElement($admin_ip);
-	    
+	
 		$submit = new Zend_Form_Element_Submit('submit', [
 			'label'    => $t->_('Submit')
 		]);

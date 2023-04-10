@@ -56,7 +56,7 @@ class Default_Form_Manage_EmailNewslist extends Default_Form_ElementList
 
 	public function setParams($request, $email) {
 		$this->setAddedValues([
-			'recipient' => $email->getParam('address'), 
+			'recipient' => $email->getParam('address'),
 			'type' => 'wnews'
 		]);
 		$this->manageRequest($request);

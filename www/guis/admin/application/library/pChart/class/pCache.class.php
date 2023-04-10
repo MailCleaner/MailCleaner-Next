@@ -250,7 +250,7 @@ class pCache
 		/* Lookup for the picture in the cache */
 		$CacheInfo = $this->isInCache($ID, TRUE, TRUE);
 		/* Not in the cache */
-		if (!$CacheInfo) { 
+		if (!$CacheInfo) {
 			# Momchil: fread returns FALSE on failure. Return FALSE here as well and not NULL
 			return FALSE;
 		}

@@ -26,7 +26,7 @@
 ##         preForkHook: code before threads forking, this will be global for all thread
 ##         postKillHook: code after threads are gone, typically used to clean up global stuff
 ##         statusHook: code expected to log or output some status data.
-##    Threads termination is thrown by a TERM signal. 
+##    Threads termination is thrown by a TERM signal.
 ##    Threads signal handling should be implemented in the mainLoopHook() of the children class.
 #
 
@@ -117,7 +117,7 @@ sub create {
         my $template = ConfigTemplate::create( $tfile, $file );
         my $ret = $template->dump();
     }
-    
+
     # replace with configuration file values
     if ( open CONFFILE, $this->{configfile} ) {
         while (<CONFFILE>) {
@@ -138,9 +138,9 @@ sub create {
     		chown $uid, $gid, $this->{$file};
     	}
     }
-    
+
     $this->{log_prio_level} = $log_prio_levels{ $this->{log_priority} };
-      
+
     $this->{'uid'} =
       $this->{'runasuser'} ? getpwnam( $this->{'runasuser'} ) : 0;
     $this->{'gid'} =
@@ -315,7 +315,7 @@ sub exitDaemon {
     }
 
     if (scalar @running) {
-        push @errors, "Failed to stop all processes (" . join(', ',@running) . ") not stopped."; 
+        push @errors, "Failed to stop all processes (" . join(', ',@running) . ") not stopped.";
     } elsif ($match) {
         $result = "stopped.";
         @errors = ();
@@ -516,7 +516,7 @@ sub statusHook {
         return "not running, but errors found.\n  " . join('\n  ',@errors);
     } else {
         return "not running.";
-    } 
+    }
 }
 
 #### Threads tools

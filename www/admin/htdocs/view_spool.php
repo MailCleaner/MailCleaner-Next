@@ -1,16 +1,16 @@
-<? 
+<?
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
- * 
+ *
  * This is the controller page that will redirect to the spool page of the correct host
  */
 
 /**
  * require administrative access
- */        
+ */
 require_once('admin_objects.php');
 require_once('system/Soaper.php');
 require_once('system/Slave.php');
@@ -22,7 +22,7 @@ global $lang_;
 if (!isset($_GET['h']) || !is_numeric($_GET['h'])) {
   $error = "BADARGS";
 } else {
-  $spool = $_GET['s']; 
+  $spool = $_GET['s'];
   // connect to slave
   $host = $sysconf_->getSlaveName($_GET['h']);
   $soaper = new Soaper();
@@ -49,5 +49,5 @@ if (!isset($_GET['h']) || !is_numeric($_GET['h'])) {
     }
     header("Location: $proto://$hostip/admin/spool.php?".$query);
   }
-} 
+}
 ?>

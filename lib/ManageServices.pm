@@ -29,7 +29,7 @@ our %defaultActions = (
 	#TODO
 	'start'		=> {
 		'desc'		=> 'start service or report if already running',
-		'cmd'		=> sub { 
+		'cmd'		=> sub {
 			my $self = shift;
 			return $self->start();
 		},
@@ -51,7 +51,7 @@ our %defaultActions = (
 	},
 	'status'	=> {
 		'desc'		=> 'get current status',
-		'cmd'		=> sub { 
+		'cmd'		=> sub {
 			my $self = shift;
 			return $self->status(0);
 		},
@@ -97,7 +97,7 @@ our %defaultActions = (
 	}
 );
 
-sub new 
+sub new
 {
 	my $self = shift;
 	my %params = @_;
@@ -105,7 +105,7 @@ sub new
 	my $conf = ReadConfig::getInstance();
 
 	require Proc::ProcessTable;
-	$self = { 
+	$self = {
 		'initDir' 	=> $params{'initDir'} || $initDir,
 		'restartDir' 	=> $params{'restartDir'} || $restartDir,
 		'processTable' 	=> Proc::ProcessTable->new(),
@@ -486,7 +486,7 @@ sub status
   	if (defined($self->{'services'}->{$self->{'service'}})) {
 		if ( -e $self->{'restartDir'}.'/'.$self->{'service'}.".disabled" ) {
 			if ($running) {
-				$running = $self->stop(); 
+				$running = $self->stop();
 				if ( $running =~ /[02]/ ) {
 					return $self->clearFlags(7);
 				} else {
@@ -507,7 +507,7 @@ sub status
 				} elsif ( $i > 3 &&
 					( stat($self->{'restartDir'} .
 					'/' . $self->{'service'} . "." .
-					$self->{'codes'}->{$i}->{'suffix'}))[9] 
+					$self->{'codes'}->{$i}->{'suffix'}))[9]
 					< (time() - 60) )
 				{
 					if ($autoStart) {
@@ -557,7 +557,7 @@ sub start
 		$self->doLog( $self->{'service'} . ' already running.', 'daemon' );
 		$self->clearFlags(1);
 		return 1;
-	} 
+	}
 
 	$self->setup();
 
@@ -575,8 +575,8 @@ sub start
 			my @remaining = ();
 			foreach my $testing ( @pids ) {
 				foreach ( @{ $self->{'processTable'}->table } ) {
-					if ($_->{'pid'} == $testing && 
-						$_->{'cmndline'} =~ m#$self->{'module'}->{'cmndline'}#i ) 
+					if ($_->{'pid'} == $testing &&
+						$_->{'cmndline'} =~ m#$self->{'module'}->{'cmndline'}#i )
 					{
 						if ($_->{'pid'} == $pid) {
 							$self->doLog( 'Started successfully',
@@ -603,23 +603,23 @@ sub start
 			return $self->{'module'}->{'state'};
 		} else {
 			if ( $self->{'module'}->{'gid'} ) {
-				$) = $self->{'module'}->{'gid'} || 
+				$) = $self->{'module'}->{'gid'} ||
 					die "failed to set gid\n";
 				unless ( grep( $), split( ' ', $self->{'module'}->{'gid'} ) ) ) {
-					print STDERR "Can't set GID " . 
-						$self->{'module'}->{'gid'} . 
+					print STDERR "Can't set GID " .
+						$self->{'module'}->{'gid'} .
 						" (" . $( . " " . $) . ")\n";
 					return 0;
 				}
 			}
-			$self->doLog('Set GID to ' . $self->{'module'}->{'group'} . 
+			$self->doLog('Set GID to ' . $self->{'module'}->{'group'} .
 				" (" . $( . ")", 'daemon');
 
 			if ( $self->{'module'}->{'uid'} ) {
 				$> = $self->{'module'}->{'uid'};
 				unless ($> == $self->{'module'}->{'uid'}) {
 					print STDERR "Can't set UID " .
-						$self->{'module'}->{'uid'} . 
+						$self->{'module'}->{'uid'} .
 						" (" . $< . " " . $> . ")\n";
 					return 0;
 				}
@@ -731,8 +731,8 @@ sub restart
 			$self->{'codes'}->{$self->{'module'}->{'state'}}->{'suffix'} )
 		{
 			if ( (stat($self->{'restartDir'} . '/' . $self->{'service'} . "." .
-				$self->{'codes'}->{$self->{'module'}->{'state'}}->{'suffix'} 
-				))[9] < (time() - 60) ) 
+				$self->{'codes'}->{$self->{'module'}->{'state'}}->{'suffix'}
+				))[9] < (time() - 60) )
 			{
 				$self->clearFlags(3);
 			} else {
@@ -987,20 +987,20 @@ sub clearFlags
 	}
 
 	if ( defined($self->{'codes'}->{$status}->{'suffix'}) ) {
-		if ( $status < 3 || 
+		if ( $status < 3 ||
 			$status > 6 ||
 			( !-e $self->{'restartDir'} . '/' .
 			$self->{'service'} . '.' .
 			$self->{'codes'}->{$status}->{'suffix'} ) )
  		{
-			open(my $fh, '>', 
-				$self->{'restartDir'} . '/' . 
+			open(my $fh, '>',
+				$self->{'restartDir'} . '/' .
 				$self->{'service'} . '.' .
 				$self->{'codes'}->{$status}->{'suffix'}
 			);
 			close($fh);
 		}
-	} 
+	}
 	return $status;
 }
 	
@@ -1014,7 +1014,7 @@ sub usage
 		foreach my $action (keys %{$self->{'module'}->{'actions'}}) {
 			if (defined($self->{'module'}->{'actions'}->{$action}->{'cmd'})) {
 				unless (defined($self->{'module'}->{'actions'}->{$action}->{'desc'})) {
-					$self->{'module'}->{'actions'}->{$action}->{'desc'} = 
+					$self->{'module'}->{'actions'}->{$action}->{'desc'} =
 						'No description';
 				}
 				push(@actions,$action);
@@ -1189,7 +1189,7 @@ universal ones, will be loaded into the 'module' member as an 'actions' has
 
 	foreach my $action (keys(%{$manager->{'module'}->{'actions'}) {
 		print "Action: " . $action . "\n";
-		print "Description: " . 
+		print "Description: " .
 			$manager->{'module'}->{'actions'}->{$action}->{'desc'} . "\n";
 	}
 

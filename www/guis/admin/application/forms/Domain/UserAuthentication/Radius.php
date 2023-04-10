@@ -1,10 +1,10 @@
-<?php 
+<?php
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Radius user authentication settings form
  */
 
@@ -37,9 +37,9 @@ class Default_Form_Domain_UserAuthentication_Radius
 	    $server->setValue($this->_domain->getPref('auth_server'));
         $server->addValidator(new Validate_SMTPHostList());
 	    $form->addElement($server);
-	    
+	
 	    $this->_settings = $this->getParams();
-	    
+	
 		$secret = new  Zend_Form_Element_Password('radiussecret', [
 	        'label'    => $t->_('Secret')." :",
 		    'required' => false,
@@ -48,13 +48,13 @@ class Default_Form_Domain_UserAuthentication_Radius
 		]);
 	    $secret->setValue($this->_settings['radiussecret']);
 	    $form->addElement($secret);
-	    
+	
 	    $auth_type = new Zend_Form_Element_Select('radiusauthtype', [
             'label'      => $t->_('Authentication type')." :",
             'required'   => false,
 	    'filters'    => ['StringTrim']
 	    ]);
-        
+
         foreach (['PAP', 'CHAP_MD5', 'MSCHAPv1', 'MSCHAPv2') as $value] {
         	$auth_type->addMultiOption($value, $value);
         }
@@ -92,7 +92,7 @@ class Default_Form_Domain_UserAuthentication_Radius
         $params['auth_server'] = $this->_domain->getPref('auth_server');
         return $params;
     }
-    
+
     public function getParamsString($params) {
        $fields = ['radiussecret', 'radiusauthtype'];
        $str = '';

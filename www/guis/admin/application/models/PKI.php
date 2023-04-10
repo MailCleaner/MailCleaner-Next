@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * File name
  */
 
@@ -32,7 +32,7 @@ class Default_Model_PKI
     public function getPublicKeyNoPem() {
         return $this->removePEMHeaders($this->_publicKey);
     }
-    
+
     public function setPrivateKey($pkey) {
     	if (preg_match('/[^-+\/=|A-Za-z0-9\s\r\n\t]/', $pkey, $matches)) {
     		var_dump($matches);
@@ -54,17 +54,17 @@ class Default_Model_PKI
     	$this->_privateKey = $pkey;
     	$this->getPublicKeyFromPrivateKey();
     }
-    
+
     public function setCertificate($cert) {
     	$this->_certificate = $cert;
     }
-    
+
 	public function createKey($params) {
 		
 	    if (!isset($params)) {
 	    	return false;
 	    }
-	    
+	
 		$type = 'dsa';
 		$length = '1024';
 		
@@ -86,7 +86,7 @@ class Default_Model_PKI
         }
         $res = `$cmd`;
         $this->_privateKey = trim(file_get_contents($tmpfile));
-        
+
         $this->_type = $type;
         $this->getPublicKeyFromPrivateKey();
         unlink($tmpfile);

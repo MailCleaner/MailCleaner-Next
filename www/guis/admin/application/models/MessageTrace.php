@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Message trace
  */
 
@@ -83,7 +83,7 @@ class Default_Model_MessageTrace
 			} else {
 				$ret .= " ".$t->_('bytes');
 			}
-		} 
+		}
 		if (isset($split_fields[$param]) && (strlen($ret) > $split_fields[$param])) {
 			$ret = substr($ret, 0, $split_fields[$param]);
 			$ret .= '...';

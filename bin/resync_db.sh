@@ -98,7 +98,7 @@ sleep 5
 
 check_status
 if [[ $RUN != 1 ]]; then
-  echo "DBs are already in sync. Run with -F to force resync anyways." 
+  echo "DBs are already in sync. Run with -F to force resync anyways."
   exit
 else
   # Clear RUN as it will be used for the post-sync test result as well
@@ -113,7 +113,7 @@ echo "select hostname, password from master;" | $SRCDIR/bin/mc_mysql -s mc_confi
 
 if [ "$MHOST" != "" ]; then
   export MHOST
-else 
+else
   export MHOST=`cat /var/tmp/master.conf | cut -d':' -f1`
 fi
 if [ "$MPASS" != "" ]; then
@@ -125,25 +125,25 @@ fi
 /usr/bin/mariadb-dump -S$VARDIR/run/mysql_slave/mysqld.sock -umailcleaner -p$MYMAILCLEANERPWD mc_config update_patch > /var/tmp/updates.sql
 
 /usr/bin/mariadb-dump -h $MHOST -umailcleaner -p$MPASS --master-data mc_config > /var/tmp/master.sql
-$SRCDIR/etc/init.d/mysql_slave stop 
+$SRCDIR/etc/init.d/mysql_slave stop
 sleep 2
 rm $VARDIR/spool/mysql_slave/master.info  >/dev/null 2>&1
 rm $VARDIR/spool/mysql_slave/mysqld-relay*  >/dev/null 2>&1
 rm $VARDIR/spool/mysql_slave/relay-log.info >/dev/null 2>&1
 $SRCDIR/etc/init.d/mysql_slave start nopass
 sleep 5
-echo "STOP SLAVE;" | $SRCDIR/bin/mc_mysql -s 
+echo "STOP SLAVE;" | $SRCDIR/bin/mc_mysql -s
 sleep 2
 rm $VARDIR/spool/mysql_slave/master.info >/dev/null 2>&1
-rm $VARDIR/spool/mysql_slave/mysqld-relay* >/dev/null 2>&1 
+rm $VARDIR/spool/mysql_slave/mysqld-relay* >/dev/null 2>&1
 rm $VARDIR/spool/mysql_slave/relay-log.info >/dev/null 2>&1
 
 $SRCDIR/bin/mc_mysql -s mc_config < /var/tmp/master.sql
 
 sleep 2
-echo "CHANGE MASTER TO master_host='$MHOST', master_user='mailcleaner', master_password='$MPASS'; " | $SRCDIR/bin/mc_mysql -s 
+echo "CHANGE MASTER TO master_host='$MHOST', master_user='mailcleaner', master_password='$MPASS'; " | $SRCDIR/bin/mc_mysql -s
 $SRCDIR/bin/mc_mysql -s mc_config < /var/tmp/master.sql
-echo "START SLAVE;" | $SRCDIR/bin/mc_mysql -s 
+echo "START SLAVE;" | $SRCDIR/bin/mc_mysql -s
 sleep 5
 
 $SRCDIR/etc/init.d/mysql_slave restart
@@ -153,7 +153,7 @@ $SRCDIR/bin/mc_mysql -s mc_config < /var/tmp/updates.sql
 # Run the check again and record results
 check_status
 if [[ $RUN != 1 ]]; then
-  echo "Resync successful." 
+  echo "Resync successful."
   # If there were previous failures, remove that flag file
   if [[ -e $LOCKFILE ]]; then
     echo "Removing lockfile"

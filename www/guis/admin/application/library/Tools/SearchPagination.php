@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * Help with pagination calculations
  */
 
@@ -15,7 +15,7 @@ class Tools_SearchPagination
     {
        $view->elementscount = count($elements);
        $view->lastpage = ceil($view->elementscount / $nbelperpage);
-       
+
     	
        $page = 1;
        if ($currentpage && is_numeric($currentpage) && $currentpage > 0) {

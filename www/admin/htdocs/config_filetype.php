@@ -4,10 +4,10 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
- * 
+ *
  * This is the controller for the file type protection configuration page
  */
- 
+
  /**
   * require admin session, view and file type settings objects
   */
@@ -29,7 +29,7 @@ $admin_->checkPermissions(['can_configure']);
 $save_msg = "";
 // create and load file type list
 $list_ = new FileTypeList();
-$list_->load(); 
+$list_->load();
 // set selected entry
 if (isset($_GET['s']) and is_numeric($_GET['s'])) {
   $list_->setSelected($_GET['s']);
@@ -47,7 +47,7 @@ if ($eform->shouldSave()) {
   $esaved = $list_->getFileType($list_->getSelected())->save();
   $sysconf_ = SystemConfig::getInstance();
   $sysconf_->setProcessToBeRestarted('ENGINE');
-    
+
   $list_->setSelected(0);
   $list_->load();
   if ($esaved == 'OKSAVED') {

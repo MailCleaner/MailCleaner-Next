@@ -43,16 +43,16 @@ class BaseconfigurationController extends Zend_Controller_Action
     	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Proxies', 'id' => 'proxies', 'action' => 'proxies', 'controller' => 'baseconfiguration']));
     	$this->config_menu->addPage(new Zend_Navigation_Page_Mvc(['label' => 'Registration', 'id' => 'registration', 'action' => 'registration', 'controller' => 'baseconfiguration']));
         $view->config_menu = $this->config_menu;
-        
+
         $view->headScript()->appendFile($view->scripts_path.'/baseconfig.js', 'text/javascript');
         $this->_flashMessenger = $this->_helper->getHelper('FlashMessenger');
-            
+
     }
-    
+
     public function indexAction() {
   	
     }
-    
+
     public function networksettingsAction() {
     	$t = Zend_Registry::get('translate');
     	$this->config_menu->findOneBy('id', 'networksettings')->class = 'generalconfigmenuselected';
@@ -71,7 +71,7 @@ class BaseconfigurationController extends Zend_Controller_Action
     	    $interface->find($request->getParam('interface'));
     	}
     	$interfaces = $interface->fetchAll();
-      
+
         /* Interface form */
         $form    = new Default_Form_NetworkInterface($interfaces, $interface);
         $form->setAction(Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('networksettings', 'baseconfiguration'));
@@ -111,20 +111,20 @@ class BaseconfigurationController extends Zend_Controller_Action
          	$form->getElement('selectinterface')->setValue($interface->getName());
         }
         $view->form = $form;
-        
+
         $flashmessages = $this->_helper->getHelper('FlashMessenger')->getMessages();
         if (isset($flashmessages[0])) {
         	$message = $flashmessages[0];
         }
         $view->message = $message;
-        
+
         $view->interfaces = $interfaces;
         $view->interface = $interface;
     	$this->view->error = '';
         $this->view->errors = [];
-        
+
     }
-    
+
     public function reloadnetworkAction() {
     	$t = Zend_Registry::get('translate');
     	$this->config_menu->findOneBy('id', 'networksettings')->class = 'generalconfigmenuselected';
@@ -188,7 +188,7 @@ class BaseconfigurationController extends Zend_Controller_Action
         $view->form = $dnsform;
         $view->message = $message;
     }
-    
+
     public function localizationAction() {
     	$this->config_menu->findOneBy('id', 'localization')->class = 'generalconfigmenuselected';
     	$layout = Zend_Layout::getMvcInstance();
@@ -221,7 +221,7 @@ class BaseconfigurationController extends Zend_Controller_Action
             } else {
             	$message = "NOK bad settings";
             }
-            
+
     	}
     	$view->form = $localeform;
     	
@@ -230,13 +230,13 @@ class BaseconfigurationController extends Zend_Controller_Action
     		$message = array_pop($this->_helper->getHelper('FlashMessenger')->getMessages());
     		$message = preg_replace('/\n/', '', $message);
     	}
-    
+
     	$view->message = $message;
     	
     	$currenttime = new Zend_Date();
     	$view->currentlocaltime = $currenttime;
     }
-    
+
     public function dateandtimeAction() {
     	$this->config_menu->findOneBy('id', 'dateandtime')->class = 'generalconfigmenuselected';
     	$layout = Zend_Layout::getMvcInstance();
@@ -248,11 +248,11 @@ class BaseconfigurationController extends Zend_Controller_Action
     	
     	$ntp = new Default_Model_NTPSettings();
         $ntp->load();
-        
+
         $locale = new Default_Model_Localization();
         $locale->load();
         $view->locale = $locale;
-        
+
         $form = new Default_Form_DateAndTime($ntp);
         $form->setAction(Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('dateandtime', 'baseconfiguration'));
         $datetimesubmited = $this->getRequest()->getParam('datetimesubmit');
@@ -263,13 +263,13 @@ class BaseconfigurationController extends Zend_Controller_Action
         	    $date->set($this->getRequest()->getParam('hour'), Zend_Date::HOUR);
                 $date->set($this->getRequest()->getParam('minute'), Zend_Date::MINUTE);
                 $date->set($this->getRequest()->getParam('second'), Zend_Date::SECOND);
-                
+
                 $message = Default_Model_Localhost::sendSoapRequest('Config_saveDateTime', $date->toString('MMddHHmmyyyy.ss'));
         	} else {
         		$message = "NOK bad settings";
         	}
         }
-        
+
         if ($this->getRequest()->isPost() && ($this->getRequest()->getParam('saveandsync') || $this->getRequest()->getParam('hsaveandsync') == "1")) {
             if ($form->isValid($this->getRequest()->getPost())) {
               // NTP settings
@@ -293,9 +293,9 @@ class BaseconfigurationController extends Zend_Controller_Action
     	$view->ntp = $ntp;
     	$view->form = $form;
         $view->message = $message;
-        
+
     }
-    
+
     public function proxiesAction() {
     	$this->config_menu->findOneBy('id', 'proxies')->class = 'generalconfigmenuselected';
     	$layout = Zend_Layout::getMvcInstance();
@@ -416,12 +416,12 @@ class BaseconfigurationController extends Zend_Controller_Action
     public function getdateandtimeAction() {
         $layout = Zend_Layout::getMvcInstance();
         $view=$layout->getView();
-        
+
         $layout->disableLayout();
         $view->addScriptPath(Zend_Registry::get('ajax_script_path'));
-       
+
         $now = Zend_Date::now();
-        
+
         $view->date = $now->get(Zend_Date::DATES);
         $view->hour = $now->get(Zend_Date::HOUR);
         $view->minute = $now->get(Zend_Date::MINUTE);

@@ -4,7 +4,7 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * SNMP daemon settings mapper
  */
 
@@ -32,7 +32,7 @@ class Default_Model_SnmpdConfigMapper
         }
         return $this->_dbTable;
     }
-    
+
     public function find($id, Default_Model_SnmpdConfig $config)
     {
         $result = $this->getDbTable()->find($id);
@@ -45,7 +45,7 @@ class Default_Model_SnmpdConfigMapper
         	$config->setParam($key, $row[$key]);
         }
     }
-    
+
     public function fetchAll()
     {
         $resultSet = $this->getDbTable()->fetchAll();
@@ -57,7 +57,7 @@ class Default_Model_SnmpdConfigMapper
         }
         return $entries;
     }
-    
+
     public function save(Default_Model_SnmpdConfig $config) {
        $data = $config->getParamArray();
        $res = '';

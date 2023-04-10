@@ -41,7 +41,7 @@ our $VERSION    = 1.0;
 sub create {
   my $conf = ReadConfig::getInstance();
   my $configfile = $conf->getOption('SRCDIR')."/etc/exim/prefDaemon.conf";
-  
+
   ## default values
   my $pidfile = $conf->getOption('VARDIR')."/run/prefdaemon.pid";
   my $port = 4352;
@@ -67,7 +67,7 @@ sub create {
   my $wwglobalcachemax = 1000;
   my $wwcachepos = 120;
   my $wwcacheneg = 120;
-  
+
   my $this = {
          port => $port,
          server => '',
@@ -100,7 +100,7 @@ sub create {
          wwcachepos => $wwcachepos,
          wwcacheneg => $wwcacheneg
          };
-  
+
   # replace with configuration file values
   if (open CONFFILE, $configfile) {
   	while (<CONFFILE>) {
@@ -114,7 +114,7 @@ sub create {
   	}
   	close CONFFILE;
   }
-  
+
   bless $this, "PrefDaemon";
   return $this;
 }
@@ -122,13 +122,13 @@ sub create {
 sub logMessage {
   my $this = shift;
   my $message = shift;
-  
+
   if ($this->{debug}) {
   	if ( !defined(fileno(LOGGERLOG))) {
   	   open LOGGERLOG, ">>/tmp/".$this->{logfile};
   	   $| = 1;
   	}
-    my $date=`date "+%Y-%m-%d %H:%M:%S"`; 
+    my $date=`date "+%Y-%m-%d %H:%M:%S"`;
     chop($date);
     print LOGGERLOG "$date: $message\n";
   }
@@ -139,7 +139,7 @@ sub logMessage {
 ######
 sub startDaemon {
   my $this = shift;
-  
+
   open LOGGERLOG, ">>".$this->{logfile};
 
   my $pid = fork();
@@ -151,12 +151,12 @@ sub startDaemon {
    } else {
      # Dameonize
      POSIX::setsid();
-          
+
      $this->logMessage("Starting Daemon");
 
      $SIG{INT} = $SIG{TERM} = $SIG{HUP} = $SIG{ALRM} = sub { $this->parentGotSignal(); };
-     
-     
+
+
      #alarm $this->{daemontimeout};
      $0 = "PrefDaemon";
      $this->initDaemon();
@@ -169,14 +169,14 @@ sub startDaemon {
 
 sub parentGotSignal {
   my $this = shift;
-  
+
   $this->{time_to_die} = 1;
 }
 
 
 sub reaper {
    my $this = shift;
-   
+
    $this->logMessage("Got child death...");
    $SIG{CHLD} = sub { $this->reaper(); };
    my $pid = wait;
@@ -188,7 +188,7 @@ sub reaper {
    }
 }
 
-sub huntsMan {  
+sub huntsMan {
 	my $this = shift;
 	local($SIG{CHLD}) = 'IGNORE';
 	$this->{time_to_die} = 1;
@@ -208,7 +208,7 @@ sub initDaemon {
      or die "Couldn't be an udp server on port ".$this->{port}." : $@\n";
 
    $this->logMessage("Listening on port ".$this->{port});
-   
+
    return 0;
 }
 
@@ -222,7 +222,7 @@ sub launchChilds {
   # Install signal handlers
   $SIG{CHLD} = sub { $this->reaper(); };
   $SIG{INT} = sub { $this->huntsMan(); };
-       
+
   while (1) {
 	sleep;
 	$this->logMessage("Child death... still: ".$this->{children});
@@ -241,9 +241,9 @@ sub makeChild {
   $sigset = POSIX::SigSet->new(SIGINT);
   sigprocmask(SIG_BLOCK, $sigset)
         or die "Can't block SIGINT for fork: $!\n";
-    
+
   die "fork: $!" unless defined ($pid = fork);
-    
+
   if ($pid) {
      # Parent records the child's birth and returns.
      sigprocmask(SIG_UNBLOCK, $sigset)
@@ -255,13 +255,13 @@ sub makeChild {
    } else {
      # Child can *not* return from this subroutine.
      $SIG{INT} = 'DEFAULT';
-    
+
      # unblock signals
      sigprocmask(SIG_UNBLOCK, $sigset)
             or die "Can't unblock SIGINT for fork: $!\n";
-    
+
      $this->connectDB();
-   
+
      $this->logMessage("In child listening...");
      $this->listenForQuery();
      exit;
@@ -270,7 +270,7 @@ sub makeChild {
 
 sub connectDB {
    my $this = shift;
-   
+
    $this->{slaveDB} = DB::connect('slave', 'mc_config', 0);
    if ($this->{slaveDB}->ping()) {
   	   $this->logMessage("Connected to configuration database");
@@ -285,7 +285,7 @@ sub listenForQuery {
   my $message;
   my $serv = $this->{server};
   my $MAXLEN = 1024;
-  
+
   $this->{lastcleanup} = time();
   my $datas;
   while (my $cli = $serv->recv($datas, $MAXLEN)) {
@@ -305,14 +305,14 @@ sub manageClient {
   my $cli = shift;
   my $cli_add = shift;
   my $datas = shift;
-     
+
   alarm $this->{daemontimeout};
-     
+
   #if ($cli_add ne "127.0.0.1") {
   #  close($cli);
   #  return;
   #}
-     
+
   $this->logMessage("Accepting connection");   	
   if ($datas =~ /^EXIT/) {
     $this->logMessage("Received EXIT command");
@@ -391,7 +391,7 @@ sub fetchWW {
   my $type = shift;
   my $dest = shift;
   my $sender = shift;
-  
+
   my $atype = 1; # address
   if ($dest =~ /^\@(\S+)$/) {
   	$atype = 2; # domain
@@ -404,7 +404,7 @@ sub fetchWW {
   	$this->logMessage("Using cached value for: $type  /  $dest - $sender");
   	return $cachevalue;
   }
-  
+
   return $this->fetchDatabaseWW($type, $dest, $sender, $atype);
 }
 
@@ -414,7 +414,7 @@ sub fetchDatabaseWW {
   my $recipient = shift;
   my $sender = shift;
   my $atype = shift;
-  
+
   if (!$this->{slaveDB}->ping()) {
   	if (!$this->connectDB()) {
   		return 'NOTFOUND';
@@ -447,13 +447,13 @@ sub fetchAddressPref {
   my $this = shift;
   my $who = shift;
   my $what = shift;
-  
+
   if (!$this->{slaveDB}->ping()) {
   	if (!$this->connectDB()) {
   		return 'NOTFOUND';
   	}
   }
-  
+
   my $query = "SELECT $what FROM user_pref p, email e WHERE p.id=e.pref AND e.address='$who'";
   #$this->logMessage("Using query: $query");
   my %res = $this->{slaveDB}->getHashRow($query);
@@ -474,7 +474,7 @@ sub fetchDomainPref {
   		return 'NOTFOUND';
   	}
   }
-  
+
   if ($what eq 'has_whitelist') {
   	$what = 'enable_whitelists';
   }
@@ -509,7 +509,7 @@ sub fetchDomainPref {
 sub fetchGlobalPref {
   my $this = shift;
   my $what = shift;
-  
+
   if (!$this->{slaveDB}->ping()) {
   	if (!$this->connectDB()) {
   		return 'NOTFOUND';
@@ -531,7 +531,7 @@ sub getCacheValue {
   my $this = shift;
   my $who = shift;
   my $what = shift;
-  
+
   my $timeout = $this->{cacheuser};
   if ($who =~ /^\@/) {
   	$timeout = $this->{cachedomain};
@@ -539,10 +539,10 @@ sub getCacheValue {
   	$timeout = $this->{cachesystem};
   }
   return "NOCACHE" if $timeout < 1;
-  
+
   my $cachekey = getCacheKey($who, $what);
   #$this->dumpCache();
- 
+
   if ( defined($this->{cache}{$cachekey}) && $this->{cache}{$cachekey} =~ /^(\d+)\-(.*)/) {
   	$this->logMessage("Cache key hit for: $cachekey ($1, $2)");
   	my $deltatime = time() - $1;
@@ -568,7 +568,7 @@ sub setCache {
   	   $timeout = $this->{cachesystem};
     }
     return if ($timeout < 1);
-  
+
 	my $cachekey = getCacheKey($who, $what);
 	
 	my $time = time();
@@ -601,7 +601,7 @@ sub getWWCacheValues {
   my $dest = shift;
   my $sender = shift;
   my $atype = shift;
-  
+
   ## purging caches
   my $cachehash = \%{$this->{wwusercache}};
   if ($atype == 2) {
@@ -624,9 +624,9 @@ sub getWWCacheValues {
   	$this->logMessage(" Purged ww user cache, maximum of ".$this->{wwusercachemax}." entries reached");
   	return "NOCACHE";
   }
-  
+
   my $cachekey = getWWCacheKey($type, $dest, $sender);
-   
+
   if ( defined($cachehash->{$cachekey}) && $cachehash->{$cachekey} =~ /^(\d+)\-(.*)/) {
   	$this->logMessage("WW Cache key hit for: $cachekey ($1, $2)");
   	my $deltatime = time() - $1;
@@ -639,13 +639,13 @@ sub getWWCacheValues {
   	  $this->logMessage("WW negative Cache key too old: $deltatime s.");
   	  return "NOCACHE";
   	}
-  	if ($result =~ /^(NOT)?FOUND$/) { 
+  	if ($result =~ /^(NOT)?FOUND$/) {
       return $result;
   	}
   	$this->logMessage(" Illegal WW cache value: $2");
   	return "NOCACHE";
   }
-  
+
   return "NOCACHE";
 }
 
@@ -660,7 +660,7 @@ sub setWWCache {
   return if ($value eq "FOUND" && $this->{wwcachepos} < 1);
   return if ($value eq "NOTFOUND" && $this->{wwcacheneg} < 1);
   return if (! $value eq "FOUND" && ! $value eq "NOTFOUND");
-  
+
   my $cachekey = getWWCacheKey($type, $dest, $sender);
 
   my $cachehash = \%{$this->{wwusercache}};
@@ -669,7 +669,7 @@ sub setWWCache {
   } elsif ($atype == 3) {
   	$cachehash = \%{$this->{wwglobalcache}};
   }
-  
+
   my $time = time();
   $cachehash->{$cachekey} = $time."-".$value;
   $this->logMessage("Saved WW cache for: $cachekey");
@@ -680,8 +680,8 @@ sub getWWCacheKey {
   my $type = shift;
   my $dest = shift;
   my $sender = shift;
-  
-  return $type."/".$dest."/".$sender; 
+
+  return $type."/".$dest."/".$sender;
 }
 
 ###########################
@@ -691,14 +691,14 @@ sub getPref {
   my $this = shift;
   my $type = shift;
   my $pref = shift;
-  
+
   my $res = "NOTFOUND";
   my $t = Mail::SpamAssassin::Timeout->new({ secs => $this->{clienttimeout} });
   $t->run_and_catch( sub { $res = $this->queryDaemon($type, $pref);});
-  
+
   if ($t->timed_out()) { return "TIMEDOUT"; };
- 
-  if (defined($res)) { 
+
+  if (defined($res)) {
     return $res;
   }
   return 'NOTFOUND';
@@ -708,7 +708,7 @@ sub queryDaemon {
   my $this = shift;
   my $type = shift;
   my $pref = shift;
-  
+
   my $socket;
    if ( $socket = IO::Socket::INET->new(
                               PeerAddr => '127.0.0.1',
@@ -725,10 +725,10 @@ sub queryDaemon {
     if ($! !~ /^$/) {
     	return "NODAEMON";
     }
-    my $res = $response;   
+    my $res = $response;
     chop($res);
     return $res;
-   } 
+   }
    return "NODAEMON";
  }
 

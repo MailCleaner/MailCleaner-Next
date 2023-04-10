@@ -4,10 +4,10 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
- * 
+ *
  * This is the controller for the antispam configuration page
  */
- 
+
  /**
   * require admin session, view and AntiSpam objects
   */
@@ -78,7 +78,7 @@ if ($mform->shouldSave()) {
     if (!$pf) {
        continue;
     }
-    
+
     $prefs = ['active', 'neg_decisive', 'pos_decisive'];
     foreach($prefs as $pref) {
       if (isset($mposted[$pref."_".$i])) {
@@ -118,7 +118,7 @@ $replace = [
         "__LINK_EDITBLACKLIST__" => "wwlist.php?t=3&a=0",
         "__LINK_EDITNEWSLIST__" => "wwlist.php?t=4&a=0",
         "__LINK_EDITPREFILTER__" => "edit_prefilter.php?pf=",
-        
+
         "__FORM_BEGIN_MODULES__" => $mform->open(),
         "__FORM_CLOSE_MODULES__" => $mform->close(),
         "__MODULESSAVE_STATUS__" => $msave_msg,

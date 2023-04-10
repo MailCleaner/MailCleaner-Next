@@ -4,10 +4,10 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2006, Olivier Diserens
- * 
+ *
  * This is the controller for the add address confirmation page
  */
- 
+
 /**
  * require base objects, but no session
  */

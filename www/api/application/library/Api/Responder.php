@@ -53,7 +53,7 @@ class Api_Responder
 	
     public function getXMLResponse() {
         $xml = new DOMDocument('1.0', 'utf-8');
-        
+
         $response_el = $xml->appendChild(new domelement('response'));
         $response_el->setAttribute('code', $this->_response['status_code']);
         $response_el->setAttribute('name', $this->_response['status_name']);

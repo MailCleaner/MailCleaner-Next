@@ -11,7 +11,7 @@ class MCSoap_Quarantine
 
   /**
    * This function will fetch information on quarantined message
-   * 
+   *
    * @param  array  params
    * @return array
    */
@@ -29,7 +29,7 @@ class MCSoap_Quarantine
     }
     require_once('MailCleaner/Config.php');
     $mcconfig = MailCleaner_Config::getInstance();
-    
+
     $file = $mcconfig->getOption('VARDIR').'/spam/'.$matches[2].'/'.$params['recipient'].'/'.$id;
 
     $ret['file'] = $file;

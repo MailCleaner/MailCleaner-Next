@@ -4,10 +4,10 @@
  * @package mailcleaner
  * @author Olivier Diserens
  * @copyright 2009, Olivier Diserens
- * 
+ *
  * POP3 user authentication settings form
  */
- 
+
 class Default_Form_Domain_UserAuthentication_Pop3
 {
 	protected $_domain;
@@ -36,15 +36,15 @@ class Default_Form_Domain_UserAuthentication_Pop3
 	    $server->setValue($this->_domain->getPref('auth_server'));
         $server->addValidator(new Validate_SMTPHostList());
 	    $form->addElement($server);
-	    
+	
 	    $this->_settings = $this->getParams();
-	    
+	
 	    $pop3usesslcheck = new Zend_Form_Element_Checkbox('pop3usessl', [
 	        'label'   => $t->_('Use SSL'). " :",
             'uncheckedValue' => "0",
 	        'checkedValue' => "1"
 	    ]);
-	              
+	
 	    if ($this->_settings['use_ssl']) {
             $pop3usesslcheck->setChecked(true);
 	    }
@@ -58,7 +58,7 @@ class Default_Form_Domain_UserAuthentication_Pop3
        ];
        $this->setParamsFromArray($array, $domain);
     }
-    
+
     public function setParamsFromArray($array, $domain) {
        $domain->setPref('auth_type', 'pop3');
        $domain->setPref('auth_server', $array['auth_server']);
@@ -79,7 +79,7 @@ class Default_Form_Domain_UserAuthentication_Pop3
        $params['auth_server'] = $this->_domain->getPref('auth_server');
        return $params;
     }
-    
+
     public function getParamsString($params) {
        $str = implode(':', [$params['use_ssl']]);
        return $str;

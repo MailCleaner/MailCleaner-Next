@@ -66,9 +66,9 @@ foreach my $WHAT (@whats) {
     while (my $day = readdir(HSDIR)) {
         next if $day !~ /^\d+/;
         next if ! -d $CENTERPATH."/stock$WHAT/".$day;
- 
-        my @tens = (0 => 0, 1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, 7 => 0, 8 => 0 , 9 => 0 ); 
-        print "opening: ".$CENTERPATH."/stock$WHAT/".$day."\n"; 
+
+        my @tens = (0 => 0, 1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0, 6 => 0, 7 => 0, 8 => 0 , 9 => 0 );
+        print "opening: ".$CENTERPATH."/stock$WHAT/".$day."\n";
         opendir(LIST, $CENTERPATH."/stock$WHAT/".$day) or next;
         while (my $file = readdir(LIST)) {
             next if ! open(FILE, $CENTERPATH."/stock$WHAT/".$day."/".$file);
@@ -111,12 +111,12 @@ foreach my $WHAT (@whats) {
                     $whatcount++;
                 }
             }
-        } 
+        }
     }
-  
+
     # delete old stocks
     if (opendir(QDIR, $CENTERPATH."/stock$WHAT/")) {
-        while(my $entry = readdir(QDIR)) { 
+        while(my $entry = readdir(QDIR)) {
             next if $entry !~ /^\d+/;
             $entry = $CENTERPATH."/stock$WHAT/$entry";
             system("rm -rf $entry") if -d $entry &&
@@ -124,7 +124,7 @@ foreach my $WHAT (@whats) {
         }
         closedir(QDIR);
     }
-  
+
     if ($action eq "send") {
         # create bayes tar
         my $date=`date +%Y%m%d`;
@@ -132,11 +132,11 @@ foreach my $WHAT (@whats) {
         my $tarfile = "$STOCKDIR/$WHAT-".$conf->getOption('CLIENTID')."-".$conf->getOption('HOSTID')."_$date.tar.gz";
         my $command = "tar -C $STOCKDIR/$WHAT/ -cvzf $tarfile cur";
         system("$command");
-    
+
         my $CVSHOST='cvs.mailcleaner.net';
         $command = "scp -q -o PasswordAuthentication=no -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $tarfile mcscp\@$CVSHOST:/upload/stocks/ >/dev/null 2>&1";
         system($command);
     }
 
-    print "finished with $WHAT: $whatcount messages taken\n"; 
+    print "finished with $WHAT: $whatcount messages taken\n";
 }

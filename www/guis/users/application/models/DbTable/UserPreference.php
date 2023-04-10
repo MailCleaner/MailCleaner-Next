@@ -1,7 +1,7 @@
 <?php
 /**
  * MailCleaner
- * 
+ *
  * @license http://www.mailcleaner.net/open/licence_en.html MailCleaner Public License
  * @copyright 2015 Fastnet SA
  */
@@ -21,7 +21,7 @@ class Default_Model_DbTable_UserPreference extends Zend_Db_Table_Abstract
      * @var array
      */
     protected $_dependentTables = ['user'];
-        
+
     /**
      * Constructor
      */
