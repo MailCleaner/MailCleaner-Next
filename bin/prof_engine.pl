@@ -33,7 +33,7 @@ my $conf = ReadConfig::getInstance();
 
 my $logfile=$conf->getOption('VARDIR')."/log/mailscanner/infolog";
 
-open(LOGFILE, $logfile) or die "cannot open log file: $logfile\n";
+open(my $LOGFILE, '<', $logfile) or die "cannot open log file: $logfile\n";
 
 my %counts = ();
 my %sums = ();
@@ -41,7 +41,7 @@ my %max = ();
 my %min = ();
 my %hourly_counts = ();
 my %hourly_sums = ();
-while (<LOGFILE>) {
+while (<$LOGFILE>) {
   if (/\d+\.\d+s/) {
     my $hour = 0;
     if (/\w+\s+\d+\s+(\d+):\d+:\d+/) {
@@ -64,7 +64,7 @@ while (<LOGFILE>) {
     }
   }
 }
-close LOGFILE;
+close $LOGFILE;
 
 print "-----------------------------------------------------------------------------------------------\n";
 printStat('Prefilters');

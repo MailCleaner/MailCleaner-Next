@@ -90,13 +90,13 @@ my %whats;
 
 my %domains;
 my $domainsfile = $conf->getOption('VARDIR')."/spool/tmp/mailcleaner/domains.list";
-if (open(DOMAINFILE, '<'.$domainsfile)) {
-    while (<DOMAINFILE>) {
+if (open(my $DOMAINFILE, '<', $domainsfile)) {
+    while (<$DOMAINFILE>) {
         if (/^(\S+)\:/) {
             $domains{$1} = 1;
         }
     }
-    close(DOMAINFILE);
+    close($DOMAINFILE);
 }
 
 my @tmpwhats = split /,/, $what;

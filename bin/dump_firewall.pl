@@ -180,47 +180,47 @@ sub get_external_rules
 
 sub do_start_script
 {
-    if ( !open(START, ">$start_script") ) {
+    if ( !open(my $START, '>', $start_script) ) {
          $lasterror = "Cannot open start script";
          return 0;
     }
 
-    print START "#!/bin/sh\n";
+    print $START "#!/bin/sh\n";
 
-    print START "/sbin/modprobe ip_tables\n";
+    print $START "/sbin/modprobe ip_tables\n";
     if ($has_ipv6) {
-        print START "/sbin/modprobe ip6_tables\n";
+        print $START "/sbin/modprobe ip6_tables\n";
     }
 
-    print START "\n# policies\n";
-    print START $iptables." -P INPUT DROP\n";
-    print START $iptables." -P FORWARD DROP\n";
+    print $START "\n# policies\n";
+    print $START $iptables." -P INPUT DROP\n";
+    print $START $iptables." -P FORWARD DROP\n";
     if ($has_ipv6) {
-        print START $ip6tables." -P INPUT DROP\n";
-        print START $ip6tables." -P FORWARD DROP\n";
+        print $START $ip6tables." -P INPUT DROP\n";
+        print $START $ip6tables." -P FORWARD DROP\n";
     }
 
-    print START "\n# bad packets:\n";
-    print START $iptables." -A INPUT -p tcp ! --syn -m state --state NEW -j DROP\n";
+    print $START "\n# bad packets:\n";
+    print $START $iptables." -A INPUT -p tcp ! --syn -m state --state NEW -j DROP\n";
     if ($has_ipv6) {
-        print START $ip6tables." -A INPUT -p tcp ! --syn -m state --state NEW -j DROP\n";
+        print $START $ip6tables." -A INPUT -p tcp ! --syn -m state --state NEW -j DROP\n";
     }
 
-    print START "# local interface\n";
-    print START $iptables." -A INPUT -p ALL -i lo -j ACCEPT\n";
+    print $START "# local interface\n";
+    print $START $iptables." -A INPUT -p ALL -i lo -j ACCEPT\n";
     if ($has_ipv6) {
-        print START $ip6tables." -A INPUT -p ALL -i lo -j ACCEPT\n";
+        print $START $ip6tables." -A INPUT -p ALL -i lo -j ACCEPT\n";
     }
 
-    print START "# accept\n";
-    print START $iptables." -A INPUT -p ALL -m state --state ESTABLISHED,RELATED -j ACCEPT\n";
+    print $START "# accept\n";
+    print $START $iptables." -A INPUT -p ALL -m state --state ESTABLISHED,RELATED -j ACCEPT\n";
     if ($has_ipv6) {
-        print START $ip6tables." -A INPUT -p ALL -m state --state ESTABLISHED,RELATED -j ACCEPT\n";
+        print $START $ip6tables." -A INPUT -p ALL -m state --state ESTABLISHED,RELATED -j ACCEPT\n";
     }
 
-    print START $iptables." -A INPUT -p ICMP --icmp-type 8 -j ACCEPT\n";
+    print $START $iptables." -A INPUT -p ICMP --icmp-type 8 -j ACCEPT\n";
     if ($has_ipv6) {
-        print START $ip6tables." -A INPUT -p ipv6-icmp -j ACCEPT\n";
+        print $START $ip6tables." -A INPUT -p ipv6-icmp -j ACCEPT\n";
     }
 
     foreach my $description (sort keys %rules) {
@@ -231,19 +231,19 @@ sub do_start_script
                 my $host = $rules{$description}[2];
                 if ($host =~ m/\:/) {
                     if ($has_ipv6) {
-                        print START "\n# $description\n";
-                        print START $ip6tables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
+                        print $START "\n# $description\n";
+                        print $START $ip6tables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
                     }
                 } else {
 
-                    print START "\n# $description\n";
+                    print $START "\n# $description\n";
                     my $reply = $dnsres->query($host, "AAAA");
                     if ($reply) {
-                        print START $ip6tables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
+                        print $START $ip6tables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
                     }
-                    print START $iptables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
+                    print $START $iptables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
                     if ($host eq '0.0.0.0/0' && $has_ipv6) {
-                        print START $ip6tables." -A INPUT -p ".$protocol." --dport ".$port." -j ACCEPT\n";
+                        print $START $ip6tables." -A INPUT -p ".$protocol." --dport ".$port." -j ACCEPT\n";
                     }
                 }
             }
@@ -256,60 +256,60 @@ sub do_start_script
     unlink $blacklist_script;
     foreach my $blacklist_file (@blacklist_files) {
         if ( -e $blacklist_file ) {
-            if ( open(BLACK_IP, '<', $blacklist_file) ) {
-                open(BLACKLIST, '>>', $blacklist_script);
+            if ( open(my $BLACK_IP, '<', $blacklist_file) ) {
+                open(my $BLACKLIST, '>>', $blacklist_script);
                 if ( $blacklist == 0 ) {
-                    print BLACKLIST "#! /bin/sh\n\n";
-                    print BLACKLIST "$iptables -N BLACKLIST\n";
-                    print BLACKLIST "$iptables -A BLACKLIST -j RETURN\n";
-                    print BLACKLIST "$iptables -I INPUT 1 -j BLACKLIST\n\n";
+                    print $BLACKLIST "#! /bin/sh\n\n";
+                    print $BLACKLIST "$iptables -N BLACKLIST\n";
+                    print $BLACKLIST "$iptables -A BLACKLIST -j RETURN\n";
+                    print $BLACKLIST "$iptables -I INPUT 1 -j BLACKLIST\n\n";
                 }
                 $blacklist = 1;
                 foreach my $IP (<BLACK_IP>) {
                     chomp($IP);
-                    print BLACKLIST "$iptables -I BLACKLIST 1 -s $IP -j DROP\n";
+                    print $BLACKLIST "$iptables -I BLACKLIST 1 -s $IP -j DROP\n";
                 }
-                close BLACKLIST;
-                close BLACK_IP;
+                close $BLACKLIST;
+                close $BLACK_IP;
             }
         }
     }
     if ( $blacklist == 1 ) {
         chmod 0755, $blacklist_script;
-        print START "\n$blacklist_script\n";
+        print $START "\n$blacklist_script\n";
     }
 
-    close START;
+    close $START;
 
     chmod 0755, $start_script;
 }
 
 sub do_stop_script
 {
-    if ( !open(STOP, ">$stop_script") ) {
+    if ( !open(my $STOP, ">$stop_script") ) {
         $lasterror = "Cannot open stop script";
         return 0;
     }
 
-    print STOP "#!/bin/sh\n";
+    print $STOP "#!/bin/sh\n";
 
-    print STOP $iptables." -P INPUT ACCEPT\n";
-    print STOP $iptables." -P FORWARD ACCEPT\n";
-    print STOP $iptables." -P OUTPUT ACCEPT\n";
+    print $STOP $iptables." -P INPUT ACCEPT\n";
+    print $STOP $iptables." -P FORWARD ACCEPT\n";
+    print $STOP $iptables." -P OUTPUT ACCEPT\n";
     if ($has_ipv6) {
-        print STOP $ip6tables." -P INPUT ACCEPT\n";
-        print STOP $ip6tables." -P FORWARD ACCEPT\n";
-        print STOP $ip6tables." -P OUTPUT ACCEPT\n";
+        print $STOP $ip6tables." -P INPUT ACCEPT\n";
+        print $STOP $ip6tables." -P FORWARD ACCEPT\n";
+        print $STOP $ip6tables." -P OUTPUT ACCEPT\n";
     }
 
-    print STOP $iptables." -F\n";
-    print STOP $iptables." -X\n";
+    print $STOP $iptables." -F\n";
+    print $STOP $iptables." -X\n";
     if ($has_ipv6) {
-        print STOP $ip6tables." -F\n";
-        print STOP $ip6tables." -X\n";
+        print $STOP $ip6tables." -F\n";
+        print $STOP $ip6tables." -X\n";
     }
 
-    close STOP;
+    close $STOP;
     chmod 0755, $stop_script;
 }
 

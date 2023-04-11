@@ -91,46 +91,44 @@ sub dump_snmpd_file
         close($interfaces);
     }
 
-    if ( !open(TEMPLATE, $template_file) ) {
+    if ( !open(my $TEMPLATE, '<', $template_file) ) {
         $lasterror = "Cannot open template file: $template_file";
         return 0;
     }
-    if ( !open(TARGET, ">$target_file") ) {
-                $lasterror = "Cannot open target file: $target_file";
+    if ( !open(my $TARGET, '>', $target_file) ) {
+        $lasterror = "Cannot open target file: $target_file";
         close $template_file;
-                return 0;
-        }
+        return 0;
+    }
 
     my @ips = expand_host_string($snmpd_conf{'__ALLOWEDIP__'}.' 127.0.0.1',('dumper'=>'snmp/allowedip'));
-    my $ip;
-    foreach $ip ( keys %master_hosts) {
-        print TARGET "com2sec local     $ip     $snmpd_conf{'__COMMUNITY__'}\n";
-        print TARGET "com2sec6 local     $ip     $snmpd_conf{'__COMMUNITY__'}\n";
+    foreach my $ip ( keys(%master_hosts) ) {
+        print $TARGET "com2sec local     $ip     $snmpd_conf{'__COMMUNITY__'}\n";
+        print $TARGET "com2sec6 local     $ip     $snmpd_conf{'__COMMUNITY__'}\n";
     }
-    foreach $ip (@ips) {
-        print TARGET "com2sec local     $ip    $snmpd_conf{'__COMMUNITY__'}\n";
+    foreach my $ip (@ips) {
+        print $TARGET "com2sec local     $ip    $snmpd_conf{'__COMMUNITY__'}\n";
         if ($ipv6) {
-            print TARGET "com2sec6 local     $ip     $snmpd_conf{'__COMMUNITY__'}\n";
+            print $TARGET "com2sec6 local     $ip     $snmpd_conf{'__COMMUNITY__'}\n";
         }
     }
 
-    while(<TEMPLATE>) {
+    while(<$TEMPLATE>) {
         my $line = $_;
 
         $line =~ s/__VARDIR__/$config{'VARDIR'}/g;
         $line =~ s/__SRCDIR__/$config{'SRCDIR'}/g;
 
-        print TARGET $line;
+        print $TARGET $line;
     }
 
     my @disks = split(/\:/, $snmpd_conf{'__DISKS__'});
-        my $disk;
-        foreach $disk (@disks) {
-                print TARGET "disk      $disk   100000\n";
-        }
+    foreach my $disk (@disks) {
+        print $TARGET "disk      $disk   100000\n";
+    }
 
-    close TEMPLATE;
-    close TARGET;
+    close $TEMPLATE;
+    close $TARGET;
     
     return 1;
 }

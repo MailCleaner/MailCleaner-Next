@@ -60,14 +60,14 @@ my $for_domain = $2;
 
 my $msg_file = $config{'VARDIR'}."/spam/".$for_domain."/".$for."/".$msg_id;
 
-if ( open(MSG, $msg_file)) {
+if ( open(my $MSG, '<', $msg_file) ) {
     my $start_msg = 0;
     my $msg = "";
     my $has_from = 0;
     my $from = "";
     my $in_dkim = 0;
-    while (<MSG>) {
-        ## just to remove garbage line before the real headers
+    while (<$MSG>) {
+        # remove garbage line before the real headers
         if ($start_msg != 1 && /^[A-Z][a-z]*\:\ .*/) {
             $start_msg = 1;
         }
@@ -86,12 +86,13 @@ if ( open(MSG, $msg_file)) {
             if ($line =~ m/Message-ID: (\S+)\@(\S+)/) {
                 $line = "Message-ID: $1-".int(rand(10000))."\@$2\n";
             }
-            #$line =~ s/Message-ID: (\S+)/\-forced/;
             if (!$in_dkim) {
                 $msg = $msg.$line;
             }
         }
     }
+    close($MSG);
+
     my $smtp;
     unless ($smtp = Net::SMTP->new('localhost:2525')) {
         print "ERRORSENDING $for\n";
@@ -114,7 +115,6 @@ if ( open(MSG, $msg_file)) {
     $smtp->datasend("X-MailCleaner-Forced: message forced\n");
     $smtp->datasend($msg);
     $smtp->dataend();
-    close(MSG);
     %master_conf = get_master_config();
     mark_forced();
 

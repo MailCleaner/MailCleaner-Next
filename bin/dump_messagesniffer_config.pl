@@ -83,15 +83,15 @@ sub dump_file
     my $template_file = "$config{'SRCDIR'}/etc/messagesniffer/".$file."_template";
     my $target_file = "$config{'SRCDIR'}/etc/messagesniffer/".$file;
 
-    if ( !open(TEMPLATE, $template_file) ) {
+    if ( !open(my $TEMPLATE, '<', $template_file) ) {
         $lasterror = "Cannot open template file: $template_file";
         return 0;
     }
-    if ( !open(TARGET, ">$target_file") ) {
-                $lasterror = "Cannot open target file: $target_file";
+    if ( !open(my $TARGET, '>', $target_file) ) {
+        $lasterror = "Cannot open target file: $target_file";
         close $template_file;
-                return 0;
-        }
+        return 0;
+    }
 
     my $proxy_server = "";
     my $proxy_port = "";
@@ -102,7 +102,7 @@ sub dump_file
         }
     }
 
-    while(<TEMPLATE>) {
+    while(<$TEMPLATE>) {
         my $line = $_;
 
         $line =~ s/__VARDIR__/$config{'VARDIR'}/g;
@@ -114,11 +114,11 @@ sub dump_file
         $line =~ s/__LICENSEID__/$messagesniffer_conf{'__LICENSEID__'}/g;
         $line =~ s/__AUTHENTICATION__/$messagesniffer_conf{'__AUTHENTICATION__'}/g;
 
-        print TARGET $line;
+        print $TARGET $line;
     }
 
-    close TEMPLATE;
-    close TARGET;
+    close $TEMPLATE;
+    close $TARGET;
 
     return 1;
 }

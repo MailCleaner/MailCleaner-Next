@@ -49,7 +49,7 @@ require ReadConfig;
 require DB;
 require Email;
 require MailTemplate;
-require 'lib_utils.pl';
+require lib_utils.pl;
 
 use Date::Calc qw(Add_Delta_Days Today Date_to_Text Date_to_Text_Long);
 use DateTime;

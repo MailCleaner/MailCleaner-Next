@@ -97,15 +97,15 @@ sub dumpWWFiles
     createDirs($filepath);
 
     # and write the file down
-    if ( !open(WWFILE, ">$file") ) {
+    if ( !open(my $WWFILE, '>', $file) ) {
       return 0;
     }
 
     foreach my $entry (@list) {
-      print WWFILE "$entry\n";
+      print $WWFILE "$entry\n";
     }
 
-    close WWFILE;
+    close $WWFILE;
     chown 'mailcleaner', $file;
   }
   return 1;

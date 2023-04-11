@@ -174,7 +174,7 @@ if (@messages > 0) {
     if ($batchwithlog && $batchid) {
         $fullogfile = $tmpdir.'/'.$batchid.".full";
     }
-    if (!open(FULLOG, ">>".$fullogfile )) {
+    if (!open(my $FULLOG, '>>', $fullogfile )) {
         print STDERR "Cannot open full log file: $fullogfile\n";
         exit();
     }
@@ -187,60 +187,60 @@ if (@messages > 0) {
         if ($msg_o{'nid'} eq '') {
             $msg_o{'nid'} = $msg_o{'id'};
         }
-        print FULLOG "***********\n";
+        print $FULLOG "***********\n";
         #print " found: ".$msg_o{'id'}." => ".$msg_o{'nid'}."\n";
         foreach my $line (split /\n/, $stage1_ids{$msg_o{'id'}}) {
-            print FULLOG $msg_o{'nid'}.'|' if ($batchwithlog);
-            print FULLOG $line;
-            print FULLOG "\n";
+            print $FULLOG $msg_o{'nid'}.'|' if ($batchwithlog);
+            print $FULLOG $line;
+            print $FULLOG "\n";
         }
-        print FULLOG "\n";
+        print $FULLOG "\n";
         if ($stage2_ids{$msg_o{'nid'}}) {
             foreach my $line (split /\n/, $stage2_ids{$msg_o{'nid'}}) {
-                print FULLOG $msg_o{'nid'}.'|' if ($batchwithlog);
-                print FULLOG $line;
-                print FULLOG "\n";
+                print $FULLOG $msg_o{'nid'}.'|' if ($batchwithlog);
+                print $FULLOG $line;
+                print $FULLOG "\n";
             }
-            print FULLOG "\n";
+            print $FULLOG "\n";
         }
         if ($ms_ids{$msg_o{'nid'}}) {
             foreach my $line (split /\n/, $ms_ids{$msg_o{'nid'}}) {
-                print FULLOG $msg_o{'nid'}.'|' if ($batchwithlog);
-                print FULLOG $line;
-                print FULLOG "\n";
+                print $FULLOG $msg_o{'nid'}.'|' if ($batchwithlog);
+                print $FULLOG $line;
+                print $FULLOG "\n";
             }
-            print FULLOG "\n";
+            print $FULLOG "\n";
         }
         if ($stage4_ids{$msg_o{'nid'}}) {
             foreach my $line (split /\n/, $stage4_ids{$msg_o{'nid'}}) {
-                print FULLOG $msg_o{'nid'}.'|' if ($batchwithlog);
-                print FULLOG $line;
-                print FULLOG "\n";
+                print $FULLOG $msg_o{'nid'}.'|' if ($batchwithlog);
+                print $FULLOG $line;
+                print $FULLOG "\n";
             }
-            print FULLOG "\n";
+            print $FULLOG "\n";
         }
         my $out_id = 0;
         if ($spamhandler_ids{$msg_o{'nid'}}) {
             foreach my $line (split /\n/, $spamhandler_ids{$msg_o{'nid'}}) {
-                print FULLOG $msg_o{'nid'}.'|' if ($batchwithlog);
-                print FULLOG $line;
-                print FULLOG "\n";
+                print $FULLOG $msg_o{'nid'}.'|' if ($batchwithlog);
+                print $FULLOG $line;
+                print $FULLOG "\n";
                 if ($line =~ m/ready to be delivered with new id: (\S{16})/) {
                     $out_id = $1;
                 }
             }
-            print FULLOG "\n";
+            print $FULLOG "\n";
         }
         if ($stage4_ids{$out_id}) {
             foreach my $line (split /\n/, $stage4_ids{$out_id}) {
-                print FULLOG $msg_o{'nid'}.'|' if ($batchwithlog);
-                print FULLOG $line;
-                print FULLOG "\n";
+                print $FULLOG $msg_o{'nid'}.'|' if ($batchwithlog);
+                print $FULLOG $line;
+                print $FULLOG "\n";
             }
-            print FULLOG "\n";
+            print $FULLOG "\n";
         }
     }
-    close FULLOG;
+    close $FULLOG;
 }
 print "STOPTIME ".time()."\n" if $batch;
 print "done.\n";
@@ -355,7 +355,7 @@ sub searchExim
     if ($file =~ /.gz$/) {
         $ffile = "zcat $file |";
     }
-    if (!open $fh, $ffile) {
+    if (!open(my $fh, '<', $ffile)) {
         print "Warning, cannot open file: $file !\n";
         return;
     }
@@ -381,7 +381,7 @@ sub searchMailScanner
     if ($file =~ /.gz$/) {
         $ffile = "zcat $file |";
     }
-    if (!open $fh, $ffile) {
+    if (!open(my $fh, '<', $ffile)) {
         print "Warning, cannot open file: $file !\n";
         return;
     }
@@ -408,7 +408,7 @@ sub searchSpamHandler
     if ($file =~ /.gz$/) {
         $ffile = "zcat $file |";
     }
-    if (!open $fh, $ffile) {
+    if (!open(my $fh, '<', $ffile)) {
         print "Warning, cannot open file: $file !\n";
         return;
     }

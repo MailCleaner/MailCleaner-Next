@@ -20,6 +20,11 @@
 #
 #   This script will output the count of messages/spams/viruses for a domain/user or globaly for a given period
 
+use v5.36;
+use strict;
+use warnings;
+use utf8;
+
 sub usage
 {
     print "\nUsage: $0 [a|aaaa|mx|spf] domain <ip>\n
@@ -31,11 +36,6 @@ sub usage
     ip      (optional) check if given IP is in the list of results\n\n";
     exit();
 }
-
-use v5.36;
-use strict;
-use warnings;
-use utf8;
 
 if ($0 =~ m/(\S*)\/\S+.pl$/) {
     my $path = $1."/../lib";

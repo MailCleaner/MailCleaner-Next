@@ -87,14 +87,14 @@ sub dump_domain_to_avoid
    }
 
    my $file = $conf->getOption('VARDIR')."/spool/tmp/mailcleaner/domains_to_avoid_greylist.list";
-   if ( !open(DOMAINTOAVOID, ">$file") ) {
+   if ( !open(my $DOMAINTOAVOID, '<', $file) ) {
         $lasterror = "Cannot open template file: $file";
         return 0;
     }
    foreach my $adomain (@domains_to_avoid) {
-     print DOMAINTOAVOID $adomain."\n";
+     print $DOMAINTOAVOID $adomain."\n";
    }
-   close DOMAINTOAVOID;
+   close $DOMAINTOAVOID;
    return 1;
 }
 
@@ -109,11 +109,11 @@ sub dump_greylistd_file
     my $template_file = $srcpath."/etc/greylistd/greylistd.conf_template";
     my $target_file = $srcpath."/etc/greylistd/greylistd.conf";
 
-    if ( !open(TEMPLATE, $template_file) ) {
+    if ( !open(my $TEMPLATE, '<', $template_file) ) {
         $lasterror = "Cannot open template file: $template_file";
         return 0;
     }
-    if ( !open(TARGET, ">$target_file") ) {
+    if ( !open(my $TARGET, '>', $target_file) ) {
                 $lasterror = "Cannot open target file: $target_file";
         close $template_file;
                 return 0;
@@ -129,13 +129,13 @@ sub dump_greylistd_file
             $line =~ s/$key/$greylist_conf{$key}/g;
         }
         
-        print TARGET $line;
+        print $TARGET $line;
     }
 
-    close TEMPLATE;
-    close TARGET;
+    close $TEMPLATE;
+    close $TARGET;
 
-        chown $uid, $gid, $target_file;    
+    chown $uid, $gid, $target_file;    
     return 1;
 }
 

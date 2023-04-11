@@ -205,7 +205,7 @@ sub getRefFields
     my $previous = 0;
     my $order = 0;
 
-    open(TABLEFILE, $file) or die("ERROR, cannot open reference database file $file\nABORTED\n");
+    open(my $TABLEFILE, '<', $file) or die("ERROR, cannot open reference database file $file\nABORTED\n");
     my $in_desc = 0;
     while(<TABLEFILE>) {
         chomp;

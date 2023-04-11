@@ -93,11 +93,11 @@ sub dump_file
     my $template_file = "$config{'SRCDIR'}/etc/clamav/".$file."_template";
     my $target_file = "$config{'SRCDIR'}/etc/clamav/".$file;
 
-    if ( !open(TEMPLATE, $template_file) ) {
+    if ( !open(my $TEMPLATE, '<', $template_file) ) {
         $lasterror = "Cannot open template file: $template_file";
         return 0;
     }
-    if ( !open(TARGET, ">$target_file") ) {
+    if ( !open(my $TARGET, '>', $target_file) ) {
         $lasterror = "Cannot open target file: $target_file";
         close $template_file;
         return 0;

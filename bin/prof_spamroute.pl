@@ -33,13 +33,13 @@ my $conf = ReadConfig::getInstance();
 
 my $logfile=$conf->getOption('VARDIR')."/log/exim_stage4/mainlog";
 
-open(LOGFILE, $logfile) or die "cannot open log file: $logfile\n";
+open(my $LOGFILE, '<', $logfile) or die "cannot open log file: $logfile\n";
 
 my %counts = ();
 my %sums = ();
 my %max = ();
 my %min = ();
-while (<LOGFILE>) {
+while (<$LOGFILE>) {
   if (/\d+\.\d+s/) {
     my @fields = split / /,$_;
     foreach my $field (@fields) {
@@ -67,7 +67,7 @@ while (<LOGFILE>) {
     }
   }
 }
-close LOGFILE;
+close $LOGFILE;
 
 print "-----------------------------------------------------------------------------------------------\n";
 printStat('global');

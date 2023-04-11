@@ -60,18 +60,19 @@ sub do_known_hosts
 {
 
     my $dbh;
-    $dbh = DBI->connect("DBI:mysql:database=mc_config;host=localhost;mysql_socket=$config{VARDIR}/run/mysql_master/mysqld.sock",
-            "mailcleaner", "$config{MYMAILCLEANERPWD}", {RaiseError => 0, PrintError => 0})
-                    or return;
+    $dbh = DBI->connect(
+        "DBI:mysql:database=mc_config;host=localhost;mysql_socket=$config{VARDIR}/run/mysql_master/mysqld.sock",
+        "mailcleaner", "$config{MYMAILCLEANERPWD}", {RaiseError => 0, PrintError => 0}
+    ) or return;
 
     my $sth = $dbh->prepare("SELECT hostname, ssh_pub_key FROM slave");
     $sth->execute() or return;
     
+    open(my $KNOWNHOST, '>>', $known_hosts_file);
     while (my $ref = $sth->fetchrow_hashref() ) {
-        open KNOWNHOST, ">> $known_hosts_file";
-        print KNOWNHOST $ref->{'hostname'}." ".$ref->{'ssh_pub_key'}."\n";
-        close KNOWNHOST;    
+        print $KNOWNHOST $ref->{'hostname'}." ".$ref->{'ssh_pub_key'}."\n";
     }
+    close $KNOWNHOST;    
     $sth->finish();
     return;
 }
@@ -79,20 +80,21 @@ sub do_known_hosts
 sub do_authorized_keys
 {
     my $dbh;
-        $dbh = DBI->connect("DBI:mysql:database=mc_config;host=localhost;mysql_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
-                        "mailcleaner", "$config{MYMAILCLEANERPWD}", {RaiseError => 0, PrintError => 0})
-                        or return;
+    $dbh = DBI->connect(
+        "DBI:mysql:database=mc_config;host=localhost;mysql_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
+        "mailcleaner", "$config{MYMAILCLEANERPWD}", {RaiseError => 0, PrintError => 0}
+    ) or return;
 
     my $sth = $dbh->prepare("SELECT ssh_pub_key FROM master");
     $sth->execute() or return;
 
-        while (my $ref = $sth->fetchrow_hashref() ) {
-        open KNOWNHOST, ">> $authorized_file";
-                print KNOWNHOST $ref->{'ssh_pub_key'}."\n";
-                close KNOWNHOST;
+    open(my $KNOWNHOST, '>>', $authorized_file);
+    while (my $ref = $sth->fetchrow_hashref() ) {
+        print $KNOWNHOST $ref->{'ssh_pub_key'}."\n";
     }
+    close $KNOWNHOST;
     $sth->finish();
-        return;
+    return;
 }
 
 

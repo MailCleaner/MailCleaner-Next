@@ -121,7 +121,7 @@ unlink $rules_file if ( -f $rules_file );
 # get list of SpamC exceptions
 my @wwlists = $db->getListOfHash("SELECT * from wwlists where type = 'SpamC' order by comments ASC, sender DESC");
 exit if (!@wwlists);
-if ( ! open(RULEFILE, '>', $rules_file )) {
+if ( ! open(my $RULEFILE, '>', $rules_file )) {
     print STDERR "Cannot open full log file: $rules_file\n";
     exit();
 }
@@ -183,4 +183,4 @@ foreach my $l (@wwlists) {
 }
 print_custom_rule($current_rule, $current_rule_w, $current_sender, @current_rule_domains);
 
-close RULEFILE;
+close $RULEFILE;

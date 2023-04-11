@@ -298,8 +298,8 @@ sub dump_exim_file
     }
     if ($sys_conf{'__WHITELISTBOTHFROM__'}) {
         if ( ! -e '/var/mailcleaner/spool/mailcleaner/mc-wl-on-both-from' ) {
-            open WLFH, '>', '/var/mailcleaner/spool/mailcleaner/mc-wl-on-both-from';
-            close WLFH;
+            open(my $WLFH, '>', '/var/mailcleaner/spool/mailcleaner/mc-wl-on-both-from');
+            close $WLFH;
         }
     } else {
         if ( -e '/var/mailcleaner/spool/mailcleaner/mc-wl-on-both-from' ) {
@@ -400,8 +400,8 @@ sub dump_exim_file
     chown 0, 0, $tmptarget_file;
     my $no_target = 0;
     my $no_tmptarget = 0;
-    if (open(TARGET, $trusted_configs )) {
-        while (<TARGET>) {
+    if (open(my $TARGET, '<', $trusted_configs )) {
+        while (<$TARGET>) {
             if (/^$target_file/) {
                 $no_target = 1;
             }
@@ -409,17 +409,17 @@ sub dump_exim_file
                 $no_tmptarget = 1;
             }
         }
-        close(TARGET);
+        close $TARGET;
     }
     if (!$no_target || !$no_tmptarget) {
-        if (open(TARGET, ">>".$trusted_configs )) {
+        if (open(my $TARGET, '>>', $trusted_configs)) {
             if (!$no_target) {
-                print TARGET $target_file."\n";
+                print $TARGET $target_file."\n";
             }
             if (!$no_tmptarget) {
-                print TARGET $tmptarget_file."\n";
+                print $TARGET $tmptarget_file."\n";
             }
-            close(TARGET);
+            close $TARGET;
         }
     }
 
@@ -473,14 +473,14 @@ sub dump_proxy_file
         }
         $str =~ s/\s*\:\s*$//;
 
-        if ( !open(TARGET, ">$file") ) {
+        if ( !open(my $TARGET, '>', $file) ) {
             $lasterror = "Cannot open proxy file: $file";
             return 0;
         }
 
-        print TARGET $str;
+        print $TARGET $str;
 
-        close TARGET;
+        close $TARGET;
     }
     return 1;
 }
@@ -534,11 +534,11 @@ sub get_system_config
     $sconfig{'__SMTP_PROXY__'} = $row{'smtp_proxy'};
     $sconfig{'__SYSLOG_HOST__'} = $row{'syslog_host'};
     if ( -f '/usr/mailcleaner/etc/mailcleaner/syslog/force_syslog_on_this_host') {
-        if (open(FH, '<', '/usr/mailcleaner/etc/mailcleaner/syslog/force_syslog_on_this_host') ) {
+        if (open(my $FH, '<', '/usr/mailcleaner/etc/mailcleaner/syslog/force_syslog_on_this_host') ) {
             my $line = <FH>;
             chomp $line;
             $sconfig{'__SYSLOG_HOST__'} = $line;
-            close FH;
+            close $FH;
         }
     }
     $sconfig{'__ANTISPAM_SYSLOG__'} = $row{'use_syslog'};
@@ -598,14 +598,14 @@ sub dump_master_file
     my $m_h = shift;
     my %master = %$m_h;
 
-    if (!open MASTERFILE, ">$file") {
+    if (!open(my $MASTERFILE, '>', $file)) {
         return 0;
     }
 
-    print MASTERFILE "HOST ".$master{'host'}."\n";
-    print MASTERFILE "PORT ".$master{'port'}."\n";
-    print MASTERFILE "PASS ".$master{'password'}."\n";
-    close MASTERFILE;
+    print $MASTERFILE "HOST ".$master{'host'}."\n";
+    print $MASTERFILE "PORT ".$master{'port'}."\n";
+    print $MASTERFILE "PASS ".$master{'password'}."\n";
+    close $MASTERFILE;
     return 1;
 }
 
@@ -926,10 +926,9 @@ sub get_exim_config{
     $config{'dkim_default_pkey'} = $row{'dkim_default_pkey'};
     $config{'allow_relay_for_unknown_domains'} = $row{'allow_relay_for_unknown_domains'};
     my $vardir = $conf->getOption('VARDIR');
-    my $fh;
     $config{'__FULL_WHITELIST_HOSTS__'} = '';
     if (-e $vardir.'/spool/mailcleaner/full_whitelisted_hosts.list') {
-        open($fh, '<', $vardir.'/spool/mailcleaner/full_whitelisted_hosts.list');
+        open(my $fh, '<', $vardir.'/spool/mailcleaner/full_whitelisted_hosts.list');
         while (<$fh>) {
             $config{'__FULL_WHITELIST_HOSTS__'} .= $_ . ' ';
         }
@@ -962,13 +961,13 @@ sub dump_ignore_list
     my $file = $tmpdir.'/'.$filename;
 
     my @list = expand_host_string($ignorehosts,('dumper'=>'exim/dump_ignore_list/'.$filename));
-    if (open(RBLFILE, ">$file")) {
+    if (open(my $RBLFILE, '>', $file)) {
         foreach my $host (@list) {
-            print RBLFILE $host."\n";
+            print $RBLFILE $host."\n";
         }
-        close RBLFILE;
+        close $RBLFILE;
     } else {
-        print STDERR "Failed to open $file\n";
+        print $STDERR "Failed to open $file\n";
     }
 }
 
@@ -986,21 +985,21 @@ sub dump_blacklists
     foreach my $file (keys %files) {
         my $filepath = $tmpdir."/".$files{$file};
 
-        if (open(FILE, ">$filepath")) {
+        if (open(my $FILE, '>', $filepath)) {
             if ($incoming_config{$file}) {
                 if ($file =~ /host_reject/) {
                     foreach my $host (expand_host_string($incoming_config{$file},('dumper'=>'exim/dump_blacklists/'.$file))) {
-                        print FILE $host."\n";
+                        print $FILE $host."\n";
                     }
                 } else {
                     foreach my $host (split(/[\n\s:;]/, $incoming_config{$file})) {
-                        print FILE $host."\n";
+                        print $FILE $host."\n";
                     }
                 }
             }
-            close FILE;
+            close $FILE;
         } else {
-            print STDERR "Failed to open $filepath: $!\n";
+            print $STDERR "Failed to open $filepath: $!\n";
         }
     }
 }
@@ -1060,11 +1059,11 @@ sub print_ip_domain_rule
     my $FH_IP_DOM;
 
     if ( ($type eq 'black-ip-dom') || ($type eq 'spam-ip-dom') )  {
-        open $FH_IP_DOM, '>>', $conf->getOption('VARDIR') . '/spool/tmp/exim_stage1/blacklists/ip-domain';
+        open(my $FH_IP_DOM, '>>', $conf->getOption('VARDIR') . '/spool/tmp/exim_stage1/blacklists/ip-domain');
     } elsif ($type eq 'white-ip-dom') {
-        open $FH_IP_DOM, '>>', $conf->getOption('VARDIR') . "/spool/tmp/exim_stage1/rblwhitelists/$domain";
+        open(my $FH_IP_DOM, '>>', $conf->getOption('VARDIR') . "/spool/tmp/exim_stage1/rblwhitelists/$domain");
     } elsif ($type eq 'wh-spamc-ip-dom') {
-        open $FH_IP_DOM, '>>', $conf->getOption('VARDIR') . "/spool/tmp/exim_stage1/spamcwhitelists/$domain";
+        open(my $FH_IP_DOM, '>>', $conf->getOption('VARDIR') . "/spool/tmp/exim_stage1/spamcwhitelists/$domain");
     }
 
     $sender_list = join(' ; ', expand_host_string($sender_list,('dumper'=>'exim/sender_list')));
@@ -1113,9 +1112,9 @@ sub dump_certificate
         `$cmd`;
     } else {
         $cert =~ s/\r\n/\n/g;
-        if ( open(FILE, ">$certfile")) {
-            print FILE $cert."\n";
-            close FILE;
+        if ( open(my $FILE, '>', $certfile)) {
+            print $FILE $cert."\n";
+            close $FILE;
         }
     }
 
@@ -1125,9 +1124,9 @@ sub dump_certificate
         `$cmd`;
     } else {
         $key =~ s/\r\n/\n/g;
-        if ( open(FILE, ">$keyfile")) {
-            print FILE $key."\n";
-            close FILE;
+        if ( open(my $FILE, '>', $keyfile)) {
+            print $FILE $key."\n";
+            close $FILE;
         }
     }
 
@@ -1144,11 +1143,11 @@ sub dump_default_dkim
         mkpath($keypath);
     }
     my $keyfile = $keypath."/default.pkey";
-    if ( open(FILE, ">$keyfile")) {
+    if ( open(my $FILE, '>', $keyfile)) {
         if (defined($stage1_conf{'dkim_default_pkey'})) {
-            print FILE $stage1_conf{'dkim_default_pkey'}."\n";
+            print $FILE $stage1_conf{'dkim_default_pkey'}."\n";
         }
-        close FILE;
+        close $FILE;
     }
 }
 
@@ -1158,9 +1157,9 @@ sub dump_tls_force_files
     foreach my $f ( ('domains_require_tls_from', 'domains_require_tls_to')) {
         my $o = '__'.uc($f).'__';
         my $file = $conf->getOption('VARDIR')."/spool/tmp/mailcleaner/".$f.".list";
-        if ( open(FILE, ">$file")) {
-            print FILE $exim_conf{$o};
-            close FILE;
+        if ( open(my $FILE, '>', $file)) {
+            print $FILE $exim_conf{$o};
+            close $FILE;
             chown $uid, $gid, $file;
         }
     }
@@ -1198,7 +1197,7 @@ sub get_interfaces
     my $interface_file = "/etc/network/interfaces";
     my @interfaces;
 
-    open (my $fh, $interface_file) or die "could not open interface file";
+    open (my $fh, '<', $interface_file) or die "could not open interface file";
     while (my $row = <$fh>){
         chomp $row;
         if($row =~ /^iface\s+(\w+).+$/){

@@ -62,10 +62,10 @@ if (! -d $dir ) {
     exit;
 }
 
-if (!open HFILE, $dir."/".$id."-H") {
+if (!open(my $HFILE, '<', $dir."/".$id."-H")) {
     die("CANNOTFINDHEADERFILE");
 }
-if (!open DHFILE, '>'.$config{VARDIR}."/spool/exim_stage4/input/".$id."-H") {
+if (!open(my $DHFILE, '>', $config{VARDIR}."/spool/exim_stage4/input/".$id."-H")) {}
     die("CANNOTOPENDESTHEADERFILE");
 }
 my $id_header = '';
@@ -75,7 +75,7 @@ my $hlpart;
 my $hrpart;
 my $header;
 my $is_multiline_id = 0;
-while (<HFILE>) {
+while (<$HFILE>) {
     if (/^(\d+)I (\S+):\s*<([^@]+)@([^>]+)>/m) {
         # Do this if the Message ID is on a single line
         $hsize = $1;
@@ -85,7 +85,7 @@ while (<HFILE>) {
 
         $header = $hname.": <".$hlpart.$forced_postfix."@".$hrpart.">";
         $id_header = sprintf('%.3d', length($header)+1)."I ".$header;
-        print DHFILE $id_header."\n";
+        print $DHFILE $id_header."\n";
     } elsif (/^(\d+)I (\S+):\s*$/) {
         # Do this if the Message ID is on two lines
         $is_multiline_id = 1;
@@ -99,13 +99,14 @@ while (<HFILE>) {
             $hrpart = $2;
             $header = $hname.": <".$hlpart.$forced_postfix."@".$hrpart.">";
             my $id_header = sprintf('%.3d', length($header)+1)."I ".$header;
-            print DHFILE $id_header."\n";
+            print $DHFILE $id_header."\n";
         } else {
-            print DHFILE $_;
+            print $DHFILE $_;
         }
     }
 }
-close HFILE;
+close $HFILE;
+close $DHFILE;
 
 if (!copy($dir."/".$id."-D", $config{VARDIR}."/spool/exim_stage4/input/")) {
     die "NOTFORCED: failed to copy file from: ";

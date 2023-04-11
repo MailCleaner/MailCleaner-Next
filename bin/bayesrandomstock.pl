@@ -71,10 +71,10 @@ foreach my $WHAT (@whats) {
         print "opening: ".$CENTERPATH."/stock$WHAT/".$day."\n";
         opendir(LIST, $CENTERPATH."/stock$WHAT/".$day) or next;
         while (my $file = readdir(LIST)) {
-            next if ! open(FILE, $CENTERPATH."/stock$WHAT/".$day."/".$file);
+            next if ! open(my $FILE, '<', $CENTERPATH."/stock$WHAT/".$day."/".$file);
             my $sascore = 0;
             my $nbscore = 0;
-            while (<FILE>) {
+            while (<$FILE>) {
                 last if ($nbscore != 0 && $sascore != 0);
                 if (/score=(-?\d+)/) {
                     $sascore =  $1;

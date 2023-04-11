@@ -86,18 +86,18 @@ sub dump_apache_file
     my $template_file = "$config{'SRCDIR'}${filetmpl}";
     my $target_file = "$config{'SRCDIR'}${filedst}";
 
-    if ( !open(TEMPLATE, $template_file) ) {
+    if ( !open(my $TEMPLATE, '<', $template_file) ) {
         $lasterror = "Cannot open template file: $template_file";
         return 0;
     }
-    if ( !open(TARGET, ">$target_file") ) {
+    if ( !open(my $TARGET, '>', $target_file) ) {
         $lasterror = "Cannot open target file: $target_file";
         close $template_file;
         return 0;
     }
 
     my $inssl = 0;
-    while(<TEMPLATE>) {
+    while(<$TEMPLATE>) {
         my $line = $_;
 
         $line =~ s/__VARDIR__/$config{'VARDIR'}/g;
@@ -113,7 +113,7 @@ sub dump_apache_file
 
         if ($line =~ /^\_\_IFSSLCHAIN\_\_(.*)/) {
             if ($apache_conf{'tls_certificate_chain'} && $apache_conf{'tls_certificate_chain'} ne '') {
-                print TARGET $1."\n";
+                print $TARGET $1."\n";
             }
             next;
         }
@@ -129,12 +129,12 @@ sub dump_apache_file
         }
 
         if ( (! $inssl) || ($apache_conf{'__USESSL__'} =~ /true/) ) {
-            print TARGET $line;
+            print $TARGET $line;
         }
     }
 
-    close TEMPLATE;
-    close TARGET;
+    close $TEMPLATE;
+    close $TARGET;
 
     return 1;
 }
@@ -145,26 +145,26 @@ sub dump_soap_wsdl
     my $template_file = "$config{'SRCDIR'}/www/soap/htdocs/mailcleaner.wsdl_template";
     my $target_file = "$config{'SRCDIR'}/www/soap/htdocs/mailcleaner.wsdl";
 
-    if ( !open(TEMPLATE, $template_file) ) {
+    if ( !open(my $TEMPLATE, '<', $template_file) ) {
         $lasterror = "Cannot open template file: $template_file";
         return 0;
     }
-    if ( !open(TARGET, ">$target_file") ) {
+    if ( !open(my $TARGET, '>', $target_file) ) {
         $lasterror = "Cannot open target file: $target_file";
         close $template_file;
         return 0;
     }
 
     my $inssl = 0;
-    while(<TEMPLATE>) {
+    while(<$TEMPLATE>) {
         my $line = $_;
 
         $line =~ s/__HOST__/$sys_conf{'HOST'}/g;
-        print TARGET $line;
+        print $TARGET $line;
     }
 
-    close TEMPLATE;
-    close TARGET;
+    close $TEMPLATE;
+    close $TARGET;
 
     return 1;
 }
@@ -269,17 +269,17 @@ sub dump_certificate
     } else {
         $cert =~ s/\r\n/\n/g;
         $key =~ s/\r\n/\n/g;
-        if ( open(FILE, ">$path")) {
-            print FILE $cert."\n";
-            print FILE $key."\n";
-            close FILE;
+        if ( open(my $FILE, '>', $path)) {
+            print $FILE $cert."\n";
+            print $FILE $key."\n";
+            close $FILE;
         }
     }
 
     if ( $chain && $chain ne '' ) {
-        if ( open(FILE, ">$chainpath")) {
-            print FILE $chain."\n";
-            close FILE;
+        if ( open(my $FILE, '>', $chainpath)) {
+            print $FILE $chain."\n";
+            close $FILE;
         }
     }
 }

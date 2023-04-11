@@ -65,7 +65,7 @@ my $msg_file = $config{'VARDIR'}."/spam/".$for_domain."/".$for."/".$msg_id;
 
 print $msg_file."\n";
 
-if ( open(MSG, $msg_file)) {
+if ( open(my $MSG, '<', $msg_file)) {
     my $keep_in = 1;
     my $in_it = 0;
     my @hits;
@@ -75,7 +75,7 @@ if ( open(MSG, $msg_file)) {
         my $cmd;
         my $describe_line;
     my $line = "";
-    while (($line=<MSG>) && ($keep_in > 0)) {
+    while (my $line = <$MSG>) && ($keep_in > 0)) {
         if ( $line =~ /^X-MailCleaner-SpamCheck:.*\(.*score=([\-]?[0-9\.]*)\,.*$/) {
             print "TOTAL_SCORE::$1::\n";
             $in_it = 1;
@@ -118,7 +118,7 @@ if ( open(MSG, $msg_file)) {
             }
         }
     }
-    close(MSGFILE);
+    close($MSG);
 }
 else {
     print "MSGFILENOTFOUND\n";

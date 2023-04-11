@@ -22,6 +22,7 @@
 #   This script will output some informations on the status of the system
 #
 
+use v5.36;
 use strict;
 use warnings;
 use utf8;

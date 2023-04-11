@@ -75,9 +75,9 @@ sub dumpArchivedDomains
     my %doms;
     foreach my $d (@adomains) {
         my $domfile = $archive_path."/".$d->{'name'};
-        if ( open(DFILE, ">$domfile") ) {
-            print DFILE "*";
-            close DFILE;
+        if ( open(my $DFILE, '>', $domfile) ) {
+            print $DFILE "*";
+            close $DFILE;
             $doms{$d->{'name'}} = 1;
         }
     }
@@ -89,10 +89,10 @@ sub dumpArchivedDomains
             my $euser = $1;
             if (!defined($doms{$edom})) {
                 my $domfile = $archive_path."/".$edom;
-                if ( open(DFILE, ">>$domfile") ) {
-                    print DFILE $e->{'address'}."\n";
-                    print DFILE $euser."\n";
-                    close DFILE;
+                if ( open(my $DFILE, '>>', $domfile) ) {
+                    print $DFILE $e->{'address'}."\n";
+                    print $DFILE $euser."\n";
+                    close $DFILE;
                 }
             #} else {
                 # print "user ".$e->{'address'}." not added as domain: $edom already fully archived\n";
@@ -116,9 +116,9 @@ sub dumpCopyto
     my %doms;
     foreach my $d (@cdomains) {
         my $domfile = $copyto_path."/".$d->{'name'};
-        if ( open(DFILE, ">$domfile") ) {
-            print DFILE "*:".$d->{'copyto_mail'};
-            close DFILE;
+        if ( open(my $DFILE, '>', $domfile) ) {
+            print $DFILE "*:".$d->{'copyto_mail'};
+            close $DFILE;
             $doms{$d->{'name'}} = 1;
         }
     }
@@ -130,10 +130,10 @@ sub dumpCopyto
             my $euser = $1;
             if (!defined($doms{$edom})) {
                 my $domfile = $copyto_path."/".$edom;
-                if ( open(DFILE, ">>$domfile") ) {
-                    print DFILE $e->{'address'}.":".$e->{'copyto_mail'}."\n";
-                    print DFILE $euser.":".$e->{'copyto_mail'}."\n";
-                    close DFILE;
+                if ( open(my $DFILE, '>>', $domfile) ) {
+                    print $DFILE $e->{'address'}.":".$e->{'copyto_mail'}."\n";
+                    print $DFILE $euser.":".$e->{'copyto_mail'}."\n";
+                    close $DFILE;
                 }
             #} else {
                 # print "user ".$e->{'address'}." not added as domain: $edom already fully archived\n";
@@ -160,9 +160,9 @@ sub dumpBypassFiltering
             my $edom = $2;
             my $euser = $1;
             my $domfile = $bypassfiltering_path."/".$edom;
-            if ( open(DFILE, ">>$domfile") ) {
-                print DFILE $euser."\n";
-                close DFILE;
+            if ( open(my $DFILE, '>>', $domfile) ) {
+                print $DFILE $euser."\n";
+                close $DFILE;
             }
         }
     }

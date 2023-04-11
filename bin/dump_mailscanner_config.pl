@@ -162,12 +162,12 @@ sub get_ms_config
     $config{'__BLOCKUNENCRYPT__'} = $row{'block_unencrypt'};
     if ($row{'allow_passwd_archives'} eq 'yes')   {
         $config{'__ALLOWPWDARCHIVES__'} = 'yes';
-        open FH, '>', '/var/mailcleaner/spool/tmp/mailscanner/whitelist_password_archives';
-        print FH "FromOrTo:\tdefault\tyes";
-        close FH
+        open(my $FH, '>', '/var/mailcleaner/spool/tmp/mailscanner/whitelist_password_archives');
+        print $FH "FromOrTo:\tdefault\tyes";
+        close $FH
     } else {
         $config{'__ALLOWPWDARCHIVES__'} = '/var/mailcleaner/spool/tmp/mailscanner/whitelist_password_archives';
-        open FH, '>', '/var/mailcleaner/spool/tmp/mailscanner/whitelist_password_archives';
+        open(my $FH, '>', '/var/mailcleaner/spool/tmp/mailscanner/whitelist_password_archives');
         if (defined($row{wh_passwd_archives})) {
             my @wh_dom = split('\n', $row{wh_passwd_archives});
             foreach my $wh_dom (@wh_dom) {
@@ -175,8 +175,8 @@ sub get_ms_config
                 print FH "FromOrTo:\t$wh_dom\tyes\n";
             }
         }
-        print FH "FromOrTo:\tdefault\tno";
-        close FH;
+        print $FH "FromOrTo:\tdefault\tno";
+        close $FH;
     }
 
     $config{'__ALLOWPARTIAL__'} = $row{'allow_partial'};

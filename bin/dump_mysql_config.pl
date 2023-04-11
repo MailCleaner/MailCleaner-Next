@@ -66,31 +66,31 @@ sub dump_mysql_file
     my $template_file = "$config{'SRCDIR'}/etc/mysql/my_$stage.cnf_template";
     my $target_file = "$config{'SRCDIR'}/etc/mysql/my_$stage.cnf";
 
-    if ( !open(TEMPLATE, $template_file) ) {
+    if ( !open(my $TEMPLATE, '<', $template_file) ) {
         $lasterror = "Cannot open template file: $template_file";
         return 0;
     }
-    if ( !open(TARGET, ">$target_file") ) {
-                $lasterror = "Cannot open target file: $target_file";
+    if ( !open(my $TARGET, '>', $target_file) ) {
+        $lasterror = "Cannot open target file: $target_file";
         close $template_file;
-                return 0;
-        }
+        return 0;
+    }
 
-    while(<TEMPLATE>) {
+    while(<$TEMPLATE>) {
         my $line = $_;
 
         $line =~ s/__VARDIR__/$config{'VARDIR'}/g;
         $line =~ s/__SRCDIR__/$config{'SRCDIR'}/g;
 
         foreach my $key (keys %config) {
-                        $line =~ s/$key/$config{$key}/g;
-                }
+            $line =~ s/$key/$config{$key}/g;
+        }
 
-        print TARGET $line;
+        print $TARGET $line;
     }
 
-    close TEMPLATE;
-    close TARGET;
+    close $TEMPLATE;
+    close $TARGET;
     
     return 1;
 }

@@ -55,13 +55,13 @@ sub do_htmls_wl
 
         my $count=0;
 
-        open HTML_WL, '>', $file;
+        open(my $HTML_WL, '>', $file);
         while (my $ref = $sth->fetchrow_hashref() ) {
-                print HTML_WL $ref->{'sender'}."\n";
+                print $HTML_WL $ref->{'sender'}."\n";
                 $count++;
         }
         $sth->finish();
-        close HTML_WL;
+        close $HTML_WL;
 
         # Unlink file if it is empty
         unlink $file unless $count;
