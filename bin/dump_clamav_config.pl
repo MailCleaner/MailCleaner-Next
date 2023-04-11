@@ -60,27 +60,27 @@ $cmd = "ln -s $config{'VARDIR'}/spool/clamav/* /opt/clamav/share/clamav/ >/dev/n
 `$cmd`;
 
 if (-e "$config{'VARDIR'}/spool/mailcleaner/clamav-unofficial-sigs") {
-	if (-e "$config{'VARDIR'}/spool/clamav/unofficial-sigs") {
-		my @src = glob("$config{'VARDIR'}/spool/clamav/unofficial-sigs/*");
-		foreach my $s (@src) {
-			my $d = $s;
-			$d =~ s/unofficial-sigs\///;
- 			unless (-e $d) {
-				symlink($s, $d);
-			}
-		}
-	} else {
-		print "$config{'VARDIR'}/spool/clamav/unofficial-sigs does not exist. Run $config{'SRCDIR'}/scripts/cron/update_antivirus.sh then try again\n";
-	}
+    if (-e "$config{'VARDIR'}/spool/clamav/unofficial-sigs") {
+        my @src = glob("$config{'VARDIR'}/spool/clamav/unofficial-sigs/*");
+        foreach my $s (@src) {
+            my $d = $s;
+            $d =~ s/unofficial-sigs\///;
+             unless (-e $d) {
+                symlink($s, $d);
+            }
+        }
+    } else {
+        print "$config{'VARDIR'}/spool/clamav/unofficial-sigs does not exist. Run $config{'SRCDIR'}/scripts/cron/update_antivirus.sh then try again\n";
+    }
 } else {
-	my @dest = glob("$config{'VARDIR'}/spool/clamav/*");
-	foreach my $d (@dest) {
-		my $s = $d;
-		$s =~ s/clamav/clamav\/unofficial-sigs/;
-		if (-l $d && $s eq readlink($d)) {
-			unlink($d);
-		}
-	}
+    my @dest = glob("$config{'VARDIR'}/spool/clamav/*");
+    foreach my $d (@dest) {
+        my $s = $d;
+        $s =~ s/clamav/clamav\/unofficial-sigs/;
+        if (-l $d && $s eq readlink($d)) {
+            unlink($d);
+        }
+    }
 }
 
 print "DUMPSUCCESSFUL\n";
@@ -88,51 +88,51 @@ print "DUMPSUCCESSFUL\n";
 #############################
 sub dump_file
 {
-	my $file = shift;
+    my $file = shift;
 
-	my $template_file = "$config{'SRCDIR'}/etc/clamav/".$file."_template";
-	my $target_file = "$config{'SRCDIR'}/etc/clamav/".$file;
+    my $template_file = "$config{'SRCDIR'}/etc/clamav/".$file."_template";
+    my $target_file = "$config{'SRCDIR'}/etc/clamav/".$file;
 
-	if ( !open(TEMPLATE, $template_file) ) {
-		$lasterror = "Cannot open template file: $template_file";
-		return 0;
-	}
-	if ( !open(TARGET, ">$target_file") ) {
-                $lasterror = "Cannot open target file: $target_file";
-		close $template_file;
-                return 0;
+    if ( !open(TEMPLATE, $template_file) ) {
+        $lasterror = "Cannot open template file: $template_file";
+        return 0;
+    }
+    if ( !open(TARGET, ">$target_file") ) {
+        $lasterror = "Cannot open target file: $target_file";
+        close $template_file;
+        return 0;
+    }
+
+    my $proxy_server = "";
+    my $proxy_port = "";
+    if (defined($config{'HTTPPROXY'})) {
+        if ($config{'HTTPPROXY'} =~ m/http\:\/\/(\S+)\:(\d+)/) {
+            $proxy_server = $1;
+            $proxy_port = $2;
+        }
+    }
+
+    while(<TEMPLATE>) {
+        my $line = $_;
+
+        $line =~ s/__VARDIR__/$config{'VARDIR'}/g;
+        $line =~ s/__SRCDIR__/$config{'SRCDIR'}/g;
+        if ($proxy_server =~ m/\S+/) {
+            $line =~ s/\#HTTPProxyServer __HTTPPROXY__/HTTPProxyServer $proxy_server/g;
+            $line =~ s/\#HTTPProxyPort __HTTPPROXYPORT__/HTTPProxyPort $proxy_port/g;
         }
 
-	my $proxy_server = "";
-	my $proxy_port = "";
-	if (defined($config{'HTTPPROXY'})) {
-		if ($config{'HTTPPROXY'} =~ m/http\:\/\/(\S+)\:(\d+)/) {
-			$proxy_server = $1;
-			$proxy_port = $2;
-		}
-	}
+        print TARGET $line;
+    }
 
-	while(<TEMPLATE>) {
-		my $line = $_;
+    if (($file eq "clamd.conf") && ( -e "/var/mailcleaner/spool/mailcleaner/mc-experimental-macros")) {
+        print TARGET "OLE2BlockMacros yes";
+    }
 
-		$line =~ s/__VARDIR__/$config{'VARDIR'}/g;
-		$line =~ s/__SRCDIR__/$config{'SRCDIR'}/g;
-		if ($proxy_server =~ m/\S+/) {
-			$line =~ s/\#HTTPProxyServer __HTTPPROXY__/HTTPProxyServer $proxy_server/g;
-			$line =~ s/\#HTTPProxyPort __HTTPPROXYPORT__/HTTPProxyPort $proxy_port/g;
-		}
+    close TEMPLATE;
+    close TARGET;
 
-		print TARGET $line;
-	}
-
-	if (($file eq "clamd.conf") && ( -e "/var/mailcleaner/spool/mailcleaner/mc-experimental-macros")) {
-            print TARGET "OLE2BlockMacros yes";
-        }
-
-	close TEMPLATE;
-	close TARGET;
-	
-	return 1;
+    return 1;
 }
 
 #############################

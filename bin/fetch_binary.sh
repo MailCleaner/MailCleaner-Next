@@ -25,7 +25,7 @@
 
 usage()
 {
-  cat << EOF
+    cat << EOF
 usage: $0 options
 
 This script will fetch mailcleaner binary
@@ -39,25 +39,25 @@ randomize=false
 
 while getopts ":r" OPTION
 do
-  case $OPTION in
-    r)
-       randomize=true
-       ;;
-    ?)
-       usage
-       exit
-       ;;
-  esac
+    case $OPTION in
+        r)
+            randomize=true
+            ;;
+        ?)
+            usage
+            exit
+            ;;
+    esac
 done
 
 CONFFILE=/etc/mailcleaner.conf
 SRCDIR=`grep 'SRCDIR' $CONFFILE | cut -d ' ' -f3`
 if [ "$SRCDIR" = "" ]; then
-  SRCDIR="/opt/mailcleaner"
+    SRCDIR="/opt/mailcleaner"
 fi
 VARDIR=`grep 'VARDIR' $CONFFILE | cut -d ' ' -f3`
 if [ "$VARDIR" = "" ]; then
-  VARDIR="/var/mailcleaner"
+    VARDIR="/var/mailcleaner"
 fi
 
 
@@ -66,7 +66,7 @@ FILE_NAME=$(basename -- "$0")
 FILE_NAME="${FILE_NAME%.*}"
 ret=$(createLockFile "$FILE_NAME")
 if [[ "$ret" -eq "1" ]]; then
-        exit 0
+    exit 0
 fi
 
 . $SRCDIR/lib/updates/download_files.sh
@@ -78,13 +78,13 @@ fi
 MC_BINARY_DIR=$SRCDIR/etc/exim/mc_binary
 # Check if directory exists
 if [ ! -d "$MC_BINARY_DIR" ]; then
-	mkdir $MC_BINARY_DIR
+    mkdir $MC_BINARY_DIR
 fi
 
 ret=$(downloadDatas "$SRCDIR/etc/exim/mc_binary/" "mc_binary" $randomize "null" "" "noexit")
 if [[ "$ret" -eq "1" ]]; then
-	$SRCDIR/etc/init.d/exim_stage1 restart &>> /dev/null
-	log "Binary downloaded"
+    $SRCDIR/etc/init.d/exim_stage1 restart &>> /dev/null
+    log "Binary downloaded"
 fi
 
 removeLockFile "$FILE_NAME"

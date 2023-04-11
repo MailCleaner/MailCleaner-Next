@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 CLIENTID=`grep 'CLIENTID' /etc/mailcleaner.conf | sed 's/ //g' | cut -d '=' -f2`
 HOSTID=`grep 'HOSTID' /etc/mailcleaner.conf | sed 's/ //g' | cut -d '=' -f2`
@@ -52,12 +52,12 @@ for i in `ls $REPORTSWRK`; do
     fi
     ENTRY=''
     if [[ "$RC" != '' && "$RC" != 'RC : 0' ]]; then
-    	ENTRY=$ENTRY'<div>
+        ENTRY=$ENTRY'<div>
     <h3 style="display: inline;">'$MODULE
         if [[ "$TYPE" != 'MC' ]]; then
-		ENTRY=$ENTRY' ('$TYPE')'
-	fi
-	ENTRY=$ENTRY'</h3></br>
+        ENTRY=$ENTRY' ('$TYPE')'
+    fi
+    ENTRY=$ENTRY'</h3></br>
     <div>
         '$DETAIL'<br /><br />
     </div>

@@ -111,8 +111,8 @@ foreach my $a (@addresses) {
     #print "doing address: $a\n";
     my $email = Email::create($a);
     if (!$email) {
-  	    #print "bad address: $a\n";
-  	    next;
+        #print "bad address: $a\n";
+        next;
     }
     if ($email->getUserPref('gui_group_quarantines')) {
         $a = $email->getUser()->getMainAddress();
@@ -120,9 +120,9 @@ foreach my $a (@addresses) {
     }
     ## check preference against mode
     if ($mode > 0) {
-  	    next if ($mode==1 && !$email->getPref('monthly_summary'));
-  	    next if ($mode==2 && !$email->getPref('weekly_summary'));
-  	    next if ($mode==3 && !$email->getPref('daily_summary'));
+        next if ($mode==1 && !$email->getPref('monthly_summary'));
+        next if ($mode==2 && !$email->getPref('weekly_summary'));
+        next if ($mode==3 && !$email->getPref('daily_summary'));
     }
     my $domain = $email->getDomainObject();
     my $type = $email->getPref('summary_type');
@@ -258,8 +258,8 @@ sub getAllAddresses
             }
             $query .= "TO_DAYS(NOW())-TO_DAYS(date_in) < $days+1 GROUP BY to_user, to_domain";
             my @res = $db->getListOfHash($query);
-	        foreach my $a_h (@res) {
-	 	        my $a = $a_h->{'to_user'}."@".$a_h->{'to_domain'};
+            foreach my $a_h (@res) {
+                my $a = $a_h->{'to_user'}."@".$a_h->{'to_domain'};
                 if ($addnottoadd{$a}) {
                     next;
                 }
@@ -269,8 +269,8 @@ sub getAllAddresses
                         $addnottoadd{$nottoadd} = 1;
                     }
                 }
-	 	        push @list, $a;
-	        }
+                push @list, $a;
+            }
         }
     }
     return @list;
@@ -329,7 +329,7 @@ sub getFullQuarantine
 # fill the quarantine template with datas and return string
 # @param  $template  MailTemplate  template object
 # @param  $tmpl      string        quarantine list template
-# @param  $spams     array handle  hand	le of spams array
+# @param  $spams     array handle  handle of spams array
 # @param  $type      string        test or html
 # @return            string        filled quarantine template
 ###
@@ -376,10 +376,10 @@ sub getQuarantineTemplate
     foreach my $item (@{$spams}) {
         my $tmp = $tmpl;
         if ($type eq 'html') {
-  	        use HTML::Entities;
-  	        foreach my $key (keys %{$item}) {
-  	            $item->{$key} = encode_entities($item->{$key});
-  	        }
+            use HTML::Entities;
+            foreach my $key (keys %{$item}) {
+                $item->{$key} = encode_entities($item->{$key});
+            }
         } else {
             if ($item->{'is_newsletter'} > 0) {
                 $tmp =~ s/((\_\_|\?\?)ID(\_\_)?)/$1 ($lang_news{$lang})/;
@@ -390,9 +390,9 @@ sub getQuarantineTemplate
         my $score = $item->{'M_globalscore'};
         for (my $i=1; $i < 5; $i++) {
             if ($score >= $i) {
-  	            $gscore .= $bullet_filled;
+                $gscore .= $bullet_filled;
             } else {
-  	            $gscore .= $bullet_empty;
+                $gscore .= $bullet_empty;
             }
         }
         if ($score > 4 || $score < 0) {
@@ -407,7 +407,7 @@ sub getQuarantineTemplate
             $s_domain = $2;
             if ($type eq 'html') {
                 $s_local =~  s/^(\S{20}).*$/\1.../;
-  	            $s_domain =~  s/^(\S{20}).*$/\1.../;
+                $s_domain =~  s/^(\S{20}).*$/\1.../;
             }
         }
 

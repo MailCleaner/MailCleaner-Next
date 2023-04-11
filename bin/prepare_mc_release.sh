@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2017 Florian Billebault <florian.billebault@gmail.com>
@@ -20,17 +20,22 @@
 #
 #
 #   This script prepare MailCleaner structure and datas for a new releases or tests
-#
-#   Usage: prepare_mc_release -i 2017041501 -d '2017-10-04' -t '12:00:00' -r '2017.04 migrated to Jessie' -m true resellerID resellerPwd ClientID dbPassword
-#
-#   Options:
-#   -h, Help: Usage
-#   -i,	MC ID
-#   -d,	Date
-#   -t, Time
-#   -r, Reason
-#   -m, Mode Dev: true or false - delete logs or not and some others things
-#
+
+usage() {
+    cat <<- _EOF_
+    Usage: $PROGNAME -i 2017041501 -d '2017-10-04' -t '12:00:00' -r '2017.04 migrated to Jessie' -m true resellerID resellerPwd ClientID dbPassword
+
+    Options (Not really here...) :
+
+    -h  Help: Usage
+    -i  MC ID
+    -d  Date
+    -t  Time
+    -r  Reason
+    -m  Mode Dev: true OR false OR test - delete logs or not and some others things
+
+_EOF_
+}
 
 
 PROGNAME='prepare_mc_release'
@@ -47,32 +52,15 @@ fi
 
 function cdel {
     if [ "$modeDev" != "false" ]; then
-	echo "Dev Mode On: rm $@"
+        echo "Dev Mode On: rm $@"
     else
-	rm $@
+        rm $@
     fi
-}
-
-usage() {
-  cat <<- _EOF_
-  Usage: $PROGNAME -i 2017041501 -d '2017-10-04' -t '12:00:00' -r '2017.04 migrated to Jessie' -m true resellerID resellerPwd ClientID dbPassword
-
-  Options (Not really here...) :
-
-  -h,   Help: Usage
-  -i,	MC ID
-  -d,	Date
-  -t,   Time
-  -r,   Reason
-  -m,   Mode Dev: true OR false OR test - delete logs or not and some others things
-
-_EOF_
 }
 
 modeDev=true
 
-while getopts ":hd:i:t:r:m:" option
-do
+while getopts ":hd:i:t:r:m:" option; do
     case $option in
         h)
             usage

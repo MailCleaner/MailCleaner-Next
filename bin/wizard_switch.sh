@@ -1,7 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2017 Mentor Reka <reka.mentor@gmail.com>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -22,11 +23,10 @@
 #
 #   Usage:
 #           wizard_switch.sh [-c <true|false>] [-b] [-s]
-#
 
 usage()
 {
-  cat << EOF
+    cat << EOF
 usage: $0 options
 
 This script will enable/disable access to the wizard
@@ -43,18 +43,18 @@ CONFFILE=/etc/mailcleaner.conf
 
 SRCDIR=`grep 'SRCDIR' $CONFFILE | cut -d ' ' -f3`
 if [ "$SRCDIR" = "" ]; then
-  SRCDIR="/opt/mailcleaner"
+    SRCDIR="/opt/mailcleaner"
 fi
 VARDIR=`grep 'VARDIR' $CONFFILE | cut -d ' ' -f3`
 if [ "$VARDIR" = "" ]; then
-  VARDIR="/opt/mailcleaner"
+    VARDIR="/opt/mailcleaner"
 fi
 
 getWizardStatus()
 {
-        req=$(echo "SELECT count(*) FROM external_access WHERE service='configurator' AND port='4242' AND protocol='TCP' \G" | $SRCDIR/bin/mc_mysql -m mc_config | grep -v ". row" | cut -d ':' -f2)
+    req=$(echo "SELECT count(*) FROM external_access WHERE service='configurator' AND port='4242' AND protocol='TCP' \G" | $SRCDIR/bin/mc_mysql -m mc_config | grep -v ". row" | cut -d ':' -f2)
 	[ "$req" -ge "1" ] && req=1
-        return $req
+    return $req
 }
 
 getStatus()
@@ -65,23 +65,22 @@ getStatus()
 }
 
 flagStatus=0
-while getopts "sbc:" OPTION
-do
-  case $OPTION in
-    c)
-       enable=${OPTARG}
-       ;;
-    b)
-       batch=true
-       ;;
-    s)
-       flagStatus=1
-       ;;
-    ?)
-       usage
-       exit
-       ;;
-  esac
+while getopts "sbc:" OPTION; do
+    case $OPTION in
+        c)
+            enable=${OPTARG}
+            ;;
+        b)
+            batch=true
+            ;;
+        s)
+            flagStatus=1
+            ;;
+        ?)
+            usage
+            exit
+            ;;
+    esac
 done
 
 if [ ! -z "$enable" ] && [ "$flagStatus" -eq "1" ]; then
@@ -92,8 +91,7 @@ fi
 
 [ "$flagStatus" -eq "1" ] && getStatus
 
-updateWizardStatus()
-{
+function updateWizardStatus() {
 	getWizardStatus
 	[ "$1" -eq "$?" ] && return 0 # Nothing to do, desired status and current status are the same
 	enableWizard="INSERT INTO external_access VALUES(NULL, 'configurator', '4242', 'TCP', '0.0.0.0/0', NULL);"

@@ -49,13 +49,13 @@ if (! $lang) {
 
 
 if ( (!$msg_id) || !($msg_id =~ /^[a-z,A-Z,0-9]{6}-[a-z,A-Z,0-9]{6}-[a-z,A-Z,0-9]{2}$/)) {
-	print "INCORRECTMSGID\n";
+    print "INCORRECTMSGID\n";
         exit 0;
 }
 
 if ( (!$for) || !($for =~ /^(\S+)\@(\S+)$/)) {
-	print "INCORRECTMSGDEST\n";
-	exit 0;
+    print "INCORRECTMSGDEST\n";
+    exit 0;
 }
 
 my $for_local = $1;
@@ -66,68 +66,62 @@ my $msg_file = $config{'VARDIR'}."/spam/".$for_domain."/".$for."/".$msg_id;
 print $msg_file."\n";
 
 if ( open(MSG, $msg_file)) {
-	my $keep_in = 1;
-	my $in_it = 0;
-	my @hits;
+    my $keep_in = 1;
+    my $in_it = 0;
+    my @hits;
         my $hit;
         my $score_line;
         my $score;
         my $cmd;
         my $describe_line;
-	my $line = "";
-	while (($line=<MSG>) && ($keep_in > 0)) {
-		if ( $line =~ /^X-MailCleaner-SpamCheck:.*\(.*score=([\-]?[0-9\.]*)\,.*$/) {
-                        print "TOTAL_SCORE::$1::\n";
-                        $in_it = 1;
+    my $line = "";
+    while (($line=<MSG>) && ($keep_in > 0)) {
+        if ( $line =~ /^X-MailCleaner-SpamCheck:.*\(.*score=([\-]?[0-9\.]*)\,.*$/) {
+            print "TOTAL_SCORE::$1::\n";
+            $in_it = 1;
+        } elsif ( $line =~ /^X-MailCleaner-SpamScore:.*/) {
+            $keep_in = 0;
+            $in_it = 0;
+        } elsif ($line =~ /^\s+$/) {      # headers are finished
+            exit;
+        } else {
+            if ($in_it) {
+                if ($line =~ /^\s/) {
+                    chomp($line);
+                    @hits = split(/,/, $line);
+                    foreach $hit (@hits) {
+                        chomp($hit);
+                        $hit =~ s/^\s+//;
+                        $hit =~ s/\s+$//;
+                        if ($hit =~ /^([0-9_A-Za-z]*)\s+([\-]?[0-9\.]*)/) {
+                            $hit = $1;
+                            if ($hit =~ /required/) {
+                                    next;
+                            }
+                            print $hit."::".$2."::";
+                            my $textfile;
+                            if ($lang =~ /en/) {
+                                $textfile = "/usr/local/share/spamassassin/*.cf";
+                            } else {
+                                $textfile = "/usr/local/share/spamassassin/30_text_$lang.cf";
+                            }    
+                            $cmd = "grep \'describe $hit\' $textfile";
+                            $describe_line=`$cmd`;
+                            if ($describe_line =~ /.*describe\s+$hit\s+(.*)\s+(.*)/) {
+                                print $1."\n";
+                            } else {
+                                print "$hit\n";
+                            }
+                        }
+                    }
                 }
-		elsif ( $line =~ /^X-MailCleaner-SpamScore:.*/) {
-                                $keep_in = 0;
-                                $in_it = 0;
-                }
-		elsif ($line =~ /^\s+$/) {      # headers are finished
-                                exit;
-                }
-		else {
-			if ($in_it) {
-				if ($line =~ /^\s/) {
-                                        chomp($line);
-                                        @hits = split(/,/, $line);
-                                        foreach $hit (@hits) {
-                                                chomp($hit);
-                                                $hit =~ s/^\s+//;
-                                                $hit =~ s/\s+$//;
-                                                if ($hit =~ /^([0-9_A-Za-z]*)\s+([\-]?[0-9\.]*)/) {
-                                                        $hit = $1;
-							if ($hit =~ /required/) {
-       							  next;
-							}
-                                                        print $hit."::".$2."::";
-
-						 	my $textfile;
-							if ($lang =~ /en/) {
-								$textfile = "/usr/local/share/spamassassin/*.cf";
-							} else {
-								$textfile = "/usr/local/share/spamassassin/30_text_$lang.cf";
-							}	
-
-                                                        #$cmd = "grep \'describe $hit\' /usr/local/share/spamassassin/*";
-							$cmd = "grep \'describe $hit\' $textfile";
-                                                        $describe_line=`$cmd`;
-                                                        if ($describe_line =~ /.*describe\s+$hit\s+(.*)\s+(.*)/) {
-                                                                print $1."\n";
-                                                        } else {
-                                                                print "$hit\n";
-                                                        }
-                                                }
-                                        }
-				}
-			}
-		}
+            }
         }
-	close(MSGFILE);
+    }
+    close(MSGFILE);
 }
 else {
-	print "MSGFILENOTFOUND\n";
+    print "MSGFILENOTFOUND\n";
 }
 
 
@@ -159,7 +153,7 @@ sub readConfig
 ############################################
 sub print_usage
 {
-        print "bad usage...\n";
-        print "Usage: get_reasons.pl message_id destination\@adresse\n";
-        exit 0;
+    print "bad usage...\n";
+    print "Usage: get_reasons.pl message_id destination\@adresse\n";
+    exit 0;
 }

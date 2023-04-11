@@ -1,5 +1,10 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
+
+use v5.36;
 use strict;
+use warnings;
+use utf8;
+
 use File::Basename;
 
 my $script_name         = basename($0);
@@ -32,12 +37,12 @@ sub my_own_exit {
 my $slave_status = `echo 'show slave status\\G' |/usr/mailcleaner/bin/mc_mysql -s`;
 
 if ($slave_status eq '') {
-	# Réparer resync_db.sh
-	print $file "Show slave status : Retour vide, faire un sync_db\n";
+    # Réparer resync_db.sh
+    print $file "Show slave status : Retour vide, faire un sync_db\n";
     my_own_exit(1);
 
 } elsif ( ($slave_status !~ /Slave_SQL_Running: Yes/) || ($slave_status !~ /Slave_IO_Running: Yes/) ) {
-	print $file "Show slave status : au moins un des process retourne No, faire un sync_db\n";
+    print $file "Show slave status : au moins un des process retourne No, faire un sync_db\n";
     my_own_exit(2);
 }
 

@@ -11,7 +11,7 @@
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
@@ -22,7 +22,7 @@
 # This script will dump the firewall script
 #
 # Usage:
-#	dump_firewall.pl
+#   dump_firewall.pl
 
 
 use v5.36;
@@ -45,12 +45,12 @@ my %config = readConfig("/etc/mailcleaner.conf");
 my $start_script = $config{'SRCDIR'}."/etc/firewall/start";
 my $stop_script = $config{'SRCDIR'}."/etc/firewall/stop";
 my %services = (
-	'web' => ['80|443', 'TCP'],
-	'mysql' => ['3306:3307', 'TCP'],
-	'snmp' => ['161', 'UDP'],
-	'ssh' => ['22', 'TCP'],
-	'mail' => ['25', 'TCP'],
-	'soap' => ['5132', 'TCP']
+    'web' => ['80|443', 'TCP'],
+    'mysql' => ['3306:3307', 'TCP'],
+    'snmp' => ['161', 'UDP'],
+    'ssh' => ['22', 'TCP'],
+    'mail' => ['25', 'TCP'],
+    'soap' => ['5132', 'TCP']
 );
 my $iptables = "/sbin/iptables";
 my $ip6tables = "/sbin/ip6tables";
@@ -63,10 +63,10 @@ unlink($stop_script);
 
 my $dbh;
 $dbh = DBI->connect(
-	"DBI:mysql:database=mc_config;host=localhost;mysql_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
-	"mailcleaner",
-	"$config{MYMAILCLEANERPWD}",
-	{RaiseError => 0, PrintError => 0}
+    "DBI:mysql:database=mc_config;host=localhost;mysql_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
+    "mailcleaner",
+    "$config{MYMAILCLEANERPWD}",
+    {RaiseError => 0, PrintError => 0}
 ) or fatal_error("CANNOTCONNECTDB", $dbh->errstr);
 
 my %masters_slaves = get_masters_slaves();
@@ -75,13 +75,13 @@ my $dnsres = Net::DNS::Resolver->new;
 
 # do we have ipv6 ?
 if (open(my $interfaces, '<', '/etc/network/interfaces')) {
-	while (<$interfaces>) {
-		if ($_ =~ m/iface \S+ inet6/) {
-			$has_ipv6 = 1;
-			last;
-		}
-	}
-	close($interfaces);
+    while (<$interfaces>) {
+        if ($_ =~ m/iface \S+ inet6/) {
+            $has_ipv6 = 1;
+            last;
+        }
+    }
+    close($interfaces);
 }
 
 
@@ -97,241 +97,241 @@ print "DUMPSUCCESSFUL";
 ############################
 sub get_masters_slaves
 {
-	my %hosts;
+    my %hosts;
 
-	my $sth = $dbh->prepare("SELECT hostname from master");
-	$sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
+    my $sth = $dbh->prepare("SELECT hostname from master");
+    $sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
 
-	while (my $ref = $sth->fetchrow_hashref() ) {
-		 $hosts{$ref->{'hostname'}} = 1;
-	}
-	$sth->finish();
+    while (my $ref = $sth->fetchrow_hashref() ) {
+         $hosts{$ref->{'hostname'}} = 1;
+    }
+    $sth->finish();
 
-	$sth = $dbh->prepare("SELECT hostname from slave");
-	$sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
+    $sth = $dbh->prepare("SELECT hostname from slave");
+    $sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
 
-	while (my $ref = $sth->fetchrow_hashref() ) {
-		$hosts{$ref->{'hostname'}} = 1;
-	}
-	$sth->finish();
-	return %hosts;
+    while (my $ref = $sth->fetchrow_hashref() ) {
+        $hosts{$ref->{'hostname'}} = 1;
+    }
+    $sth->finish();
+    return %hosts;
 
 }
 
 sub get_default_rules
 {
-	foreach my $host (keys %masters_slaves) {
-		next if ($host =~ /127\.0\.0\.1/ || $host =~ /^\:\:1$/);
+    foreach my $host (keys %masters_slaves) {
+        next if ($host =~ /127\.0\.0\.1/ || $host =~ /^\:\:1$/);
 
-		$rules{"$host mysql TCP"} = [ $services{'mysql'}[0], $services{'mysql'}[1], $host];
-		$rules{"$host snmp UDP"} = [ $services{'snmp'}[0], $services{'snmp'}[1], $host];
-		$rules{"$host ssh TCP"} = [ $services{'ssh'}[0], $services{'ssh'}[1], $host];
-		$rules{"$host soap TCP"} = [ $services{'soap'}[0], $services{'soap'}[1], $host];
-	}
-	my @subs = getSubnets();
-	foreach my $sub (@subs) {
-		$rules{"$sub ssh TCP"} = [ $services{'ssh'}[0], $services{'ssh'}[1], $sub ];
-	}
+        $rules{"$host mysql TCP"} = [ $services{'mysql'}[0], $services{'mysql'}[1], $host];
+        $rules{"$host snmp UDP"} = [ $services{'snmp'}[0], $services{'snmp'}[1], $host];
+        $rules{"$host ssh TCP"} = [ $services{'ssh'}[0], $services{'ssh'}[1], $host];
+        $rules{"$host soap TCP"} = [ $services{'soap'}[0], $services{'soap'}[1], $host];
+    }
+    my @subs = getSubnets();
+    foreach my $sub (@subs) {
+        $rules{"$sub ssh TCP"} = [ $services{'ssh'}[0], $services{'ssh'}[1], $sub ];
+    }
 }
 
 sub get_external_rules
 {
-	my $sth = $dbh->prepare("SELECT service, port, protocol, allowed_ip FROM external_access");
-	$sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
+    my $sth = $dbh->prepare("SELECT service, port, protocol, allowed_ip FROM external_access");
+    $sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
 
-	while (my $ref = $sth->fetchrow_hashref() ) {
-		 #next if ($ref->{'allowed_ip'} !~ /^(\d+.){3}\d+\/?\d*$/);
-		 next if ($ref->{'port'} !~ /^\d+[\:\|]?\d*$/);
-		 next if ($ref->{'protocol'} !~ /^(TCP|UDP|ICMP)$/i);
-		 foreach my $ip (expand_host_string($ref->{'allowed_ip'},('dumper'=>'snmp/allowedip'))) {
-			 # IPs already validated and converted to CIDR in expand_host_string, just remove non-CIDR entries
-			 if ($ip =~ m#/\d+$#) {
-				 $rules{$ip." ".$ref->{'service'}." ".$ref->{'protocol'}} = [ $ref->{'port'}, $ref->{'protocol'}, $ip];
-			 }
-		 }
-	}
+    while (my $ref = $sth->fetchrow_hashref() ) {
+         #next if ($ref->{'allowed_ip'} !~ /^(\d+.){3}\d+\/?\d*$/);
+         next if ($ref->{'port'} !~ /^\d+[\:\|]?\d*$/);
+         next if ($ref->{'protocol'} !~ /^(TCP|UDP|ICMP)$/i);
+         foreach my $ip (expand_host_string($ref->{'allowed_ip'},('dumper'=>'snmp/allowedip'))) {
+             # IPs already validated and converted to CIDR in expand_host_string, just remove non-CIDR entries
+             if ($ip =~ m#/\d+$#) {
+                 $rules{$ip." ".$ref->{'service'}." ".$ref->{'protocol'}} = [ $ref->{'port'}, $ref->{'protocol'}, $ip];
+             }
+         }
+    }
 
-	## check snmp UDP
-	foreach my $rulename (keys %rules) {
-		if ($rulename =~ m/([^,]+) snmp/) {
-			$rules{$1." snmp UDP"} = [ 161, 'UDP', $rules{$rulename}[2]];
-		}
-	}
+    ## check snmp UDP
+    foreach my $rulename (keys %rules) {
+        if ($rulename =~ m/([^,]+) snmp/) {
+            $rules{$1." snmp UDP"} = [ 161, 'UDP', $rules{$rulename}[2]];
+        }
+    }
 
-	## enable submission port
-	foreach my $rulename (keys %rules) {
-		if ($rulename =~ m/([^,]+) mail/) {
-			$rules{$1." submission TCP"} = [ 587, 'TCP', $rules{$rulename}[2]];
-		}
-	}
-	## do we need obsolete SMTP SSL port ?
-	$sth = $dbh->prepare("SELECT tls_use_ssmtp_port FROM mta_config where stage=1");
-	$sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
-	while (my $ref = $sth->fetchrow_hashref() ) {
-		if ($ref->{'tls_use_ssmtp_port'} > 0) {
-			foreach my $rulename (keys %rules) {
-				if ($rulename =~ m/([^,]+) mail/) {
-					$rules{$1." smtps TCP"} = [ 465, 'TCP', $rules{$rulename}[2] ];
-				}
-			}
-		}
-	}
+    ## enable submission port
+    foreach my $rulename (keys %rules) {
+        if ($rulename =~ m/([^,]+) mail/) {
+            $rules{$1." submission TCP"} = [ 587, 'TCP', $rules{$rulename}[2]];
+        }
+    }
+    ## do we need obsolete SMTP SSL port ?
+    $sth = $dbh->prepare("SELECT tls_use_ssmtp_port FROM mta_config where stage=1");
+    $sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
+    while (my $ref = $sth->fetchrow_hashref() ) {
+        if ($ref->{'tls_use_ssmtp_port'} > 0) {
+            foreach my $rulename (keys %rules) {
+                if ($rulename =~ m/([^,]+) mail/) {
+                    $rules{$1." smtps TCP"} = [ 465, 'TCP', $rules{$rulename}[2] ];
+                }
+            }
+        }
+    }
 }
 
 sub do_start_script
 {
-	if ( !open(START, ">$start_script") ) {
-		 $lasterror = "Cannot open start script";
-		 return 0;
-	}
+    if ( !open(START, ">$start_script") ) {
+         $lasterror = "Cannot open start script";
+         return 0;
+    }
 
-	print START "#!/bin/sh\n";
+    print START "#!/bin/sh\n";
 
-	print START "/sbin/modprobe ip_tables\n";
-	if ($has_ipv6) {
-		print START "/sbin/modprobe ip6_tables\n";
-	}
+    print START "/sbin/modprobe ip_tables\n";
+    if ($has_ipv6) {
+        print START "/sbin/modprobe ip6_tables\n";
+    }
 
-	print START "\n# policies\n";
-	print START $iptables." -P INPUT DROP\n";
-	print START $iptables." -P FORWARD DROP\n";
-	if ($has_ipv6) {
-		print START $ip6tables." -P INPUT DROP\n";
-		print START $ip6tables." -P FORWARD DROP\n";
-	}
+    print START "\n# policies\n";
+    print START $iptables." -P INPUT DROP\n";
+    print START $iptables." -P FORWARD DROP\n";
+    if ($has_ipv6) {
+        print START $ip6tables." -P INPUT DROP\n";
+        print START $ip6tables." -P FORWARD DROP\n";
+    }
 
-	print START "\n# bad packets:\n";
-	print START $iptables." -A INPUT -p tcp ! --syn -m state --state NEW -j DROP\n";
-	if ($has_ipv6) {
-		print START $ip6tables." -A INPUT -p tcp ! --syn -m state --state NEW -j DROP\n";
-	}
+    print START "\n# bad packets:\n";
+    print START $iptables." -A INPUT -p tcp ! --syn -m state --state NEW -j DROP\n";
+    if ($has_ipv6) {
+        print START $ip6tables." -A INPUT -p tcp ! --syn -m state --state NEW -j DROP\n";
+    }
 
-	print START "# local interface\n";
-	print START $iptables." -A INPUT -p ALL -i lo -j ACCEPT\n";
-	if ($has_ipv6) {
-		print START $ip6tables." -A INPUT -p ALL -i lo -j ACCEPT\n";
-	}
+    print START "# local interface\n";
+    print START $iptables." -A INPUT -p ALL -i lo -j ACCEPT\n";
+    if ($has_ipv6) {
+        print START $ip6tables." -A INPUT -p ALL -i lo -j ACCEPT\n";
+    }
 
-	print START "# accept\n";
-	print START $iptables." -A INPUT -p ALL -m state --state ESTABLISHED,RELATED -j ACCEPT\n";
-	if ($has_ipv6) {
-		print START $ip6tables." -A INPUT -p ALL -m state --state ESTABLISHED,RELATED -j ACCEPT\n";
-	}
+    print START "# accept\n";
+    print START $iptables." -A INPUT -p ALL -m state --state ESTABLISHED,RELATED -j ACCEPT\n";
+    if ($has_ipv6) {
+        print START $ip6tables." -A INPUT -p ALL -m state --state ESTABLISHED,RELATED -j ACCEPT\n";
+    }
 
-	print START $iptables." -A INPUT -p ICMP --icmp-type 8 -j ACCEPT\n";
-	if ($has_ipv6) {
-		print START $ip6tables." -A INPUT -p ipv6-icmp -j ACCEPT\n";
-	}
+    print START $iptables." -A INPUT -p ICMP --icmp-type 8 -j ACCEPT\n";
+    if ($has_ipv6) {
+        print START $ip6tables." -A INPUT -p ipv6-icmp -j ACCEPT\n";
+    }
 
-	foreach my $description (sort keys %rules) {
-		my @ports = split '\|', $rules{$description}[0];
-		my @protocols = split '\|', $rules{$description}[1];
-		foreach my $port (@ports) {
-			foreach my $protocol (@protocols) {
-				my $host = $rules{$description}[2];
-				if ($host =~ m/\:/) {
-					if ($has_ipv6) {
-						print START "\n# $description\n";
-						print START $ip6tables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
-					}
-				} else {
+    foreach my $description (sort keys %rules) {
+        my @ports = split '\|', $rules{$description}[0];
+        my @protocols = split '\|', $rules{$description}[1];
+        foreach my $port (@ports) {
+            foreach my $protocol (@protocols) {
+                my $host = $rules{$description}[2];
+                if ($host =~ m/\:/) {
+                    if ($has_ipv6) {
+                        print START "\n# $description\n";
+                        print START $ip6tables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
+                    }
+                } else {
 
-					print START "\n# $description\n";
-					my $reply = $dnsres->query($host, "AAAA");
-					if ($reply) {
-						print START $ip6tables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
-					}
-					print START $iptables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
-					if ($host eq '0.0.0.0/0' && $has_ipv6) {
-						print START $ip6tables." -A INPUT -p ".$protocol." --dport ".$port." -j ACCEPT\n";
-					}
-				}
-			}
-		}
-	}
+                    print START "\n# $description\n";
+                    my $reply = $dnsres->query($host, "AAAA");
+                    if ($reply) {
+                        print START $ip6tables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
+                    }
+                    print START $iptables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
+                    if ($host eq '0.0.0.0/0' && $has_ipv6) {
+                        print START $ip6tables." -A INPUT -p ".$protocol." --dport ".$port." -j ACCEPT\n";
+                    }
+                }
+            }
+        }
+    }
 
-	my @blacklist_files = ('/usr/mailcleaner/etc/firewall/blacklist.txt', '/usr/mailcleaner/etc/firewall/blacklist_custom.txt');
-	my $blacklist = 0;
-	my $blacklist_script = '/usr/mailcleaner/etc/firewall/blacklist';
-	unlink $blacklist_script;
-	foreach my $blacklist_file (@blacklist_files) {
-		if ( -e $blacklist_file ) {
-			if ( open(BLACK_IP, '<', $blacklist_file) ) {
-				open(BLACKLIST, '>>', $blacklist_script);
-				if ( $blacklist == 0 ) {
-					print BLACKLIST "#! /bin/sh\n\n";
-					print BLACKLIST "$iptables -N BLACKLIST\n";
-					print BLACKLIST "$iptables -A BLACKLIST -j RETURN\n";
-					print BLACKLIST "$iptables -I INPUT 1 -j BLACKLIST\n\n";
-				}
-				$blacklist = 1;
-				foreach my $IP (<BLACK_IP>) {
-					chomp($IP);
-					print BLACKLIST "$iptables -I BLACKLIST 1 -s $IP -j DROP\n";
-				}
-				close BLACKLIST;
-				close BLACK_IP;
-			}
-		}
-	}
-	if ( $blacklist == 1 ) {
-		chmod 0755, $blacklist_script;
-		print START "\n$blacklist_script\n";
-	}
+    my @blacklist_files = ('/usr/mailcleaner/etc/firewall/blacklist.txt', '/usr/mailcleaner/etc/firewall/blacklist_custom.txt');
+    my $blacklist = 0;
+    my $blacklist_script = '/usr/mailcleaner/etc/firewall/blacklist';
+    unlink $blacklist_script;
+    foreach my $blacklist_file (@blacklist_files) {
+        if ( -e $blacklist_file ) {
+            if ( open(BLACK_IP, '<', $blacklist_file) ) {
+                open(BLACKLIST, '>>', $blacklist_script);
+                if ( $blacklist == 0 ) {
+                    print BLACKLIST "#! /bin/sh\n\n";
+                    print BLACKLIST "$iptables -N BLACKLIST\n";
+                    print BLACKLIST "$iptables -A BLACKLIST -j RETURN\n";
+                    print BLACKLIST "$iptables -I INPUT 1 -j BLACKLIST\n\n";
+                }
+                $blacklist = 1;
+                foreach my $IP (<BLACK_IP>) {
+                    chomp($IP);
+                    print BLACKLIST "$iptables -I BLACKLIST 1 -s $IP -j DROP\n";
+                }
+                close BLACKLIST;
+                close BLACK_IP;
+            }
+        }
+    }
+    if ( $blacklist == 1 ) {
+        chmod 0755, $blacklist_script;
+        print START "\n$blacklist_script\n";
+    }
 
-	close START;
+    close START;
 
-	chmod 0755, $start_script;
+    chmod 0755, $start_script;
 }
 
 sub do_stop_script
 {
-	if ( !open(STOP, ">$stop_script") ) {
-		$lasterror = "Cannot open stop script";
-		return 0;
-	}
+    if ( !open(STOP, ">$stop_script") ) {
+        $lasterror = "Cannot open stop script";
+        return 0;
+    }
 
-	print STOP "#!/bin/sh\n";
+    print STOP "#!/bin/sh\n";
 
-	print STOP $iptables." -P INPUT ACCEPT\n";
-	print STOP $iptables." -P FORWARD ACCEPT\n";
-	print STOP $iptables." -P OUTPUT ACCEPT\n";
-	if ($has_ipv6) {
-		print STOP $ip6tables." -P INPUT ACCEPT\n";
-		print STOP $ip6tables." -P FORWARD ACCEPT\n";
-		print STOP $ip6tables." -P OUTPUT ACCEPT\n";
-	}
+    print STOP $iptables." -P INPUT ACCEPT\n";
+    print STOP $iptables." -P FORWARD ACCEPT\n";
+    print STOP $iptables." -P OUTPUT ACCEPT\n";
+    if ($has_ipv6) {
+        print STOP $ip6tables." -P INPUT ACCEPT\n";
+        print STOP $ip6tables." -P FORWARD ACCEPT\n";
+        print STOP $ip6tables." -P OUTPUT ACCEPT\n";
+    }
 
-	print STOP $iptables." -F\n";
-	print STOP $iptables." -X\n";
-	if ($has_ipv6) {
-		print STOP $ip6tables." -F\n";
-		print STOP $ip6tables." -X\n";
-	}
+    print STOP $iptables." -F\n";
+    print STOP $iptables." -X\n";
+    if ($has_ipv6) {
+        print STOP $ip6tables." -F\n";
+        print STOP $ip6tables." -X\n";
+    }
 
-	close STOP;
-	chmod 0755, $stop_script;
+    close STOP;
+    chmod 0755, $stop_script;
 }
 
 sub getSubnets
 {
-	my $ifconfig = `/sbin/ifconfig`;
-	my @subs = ();
-	foreach my $line (split("\n", $ifconfig)) {
-		if ($line =~ m/\s+inet\ addr:([0-9.]+)\s+Bcast:[0-9.]+\s+Mask:([0-9.]+)/) {
-			my $ip = $1;
-			my $mask = $2;
-			if ($mask && $mask =~ m/\d/) {
-				my $ipcalc = `/usr/bin/ipcalc $ip $mask`;
-				foreach my $subline (split("\n", $ipcalc)) {
-					 if ($subline =~ m/Network:\s+([0-9.]+\/\d+)/) {
-						push @subs, $1;
-					 }
-				}
-			}
-		}
-	}
-	return @subs;
+    my $ifconfig = `/sbin/ifconfig`;
+    my @subs = ();
+    foreach my $line (split("\n", $ifconfig)) {
+        if ($line =~ m/\s+inet\ addr:([0-9.]+)\s+Bcast:[0-9.]+\s+Mask:([0-9.]+)/) {
+            my $ip = $1;
+            my $mask = $2;
+            if ($mask && $mask =~ m/\d/) {
+                my $ipcalc = `/usr/bin/ipcalc $ip $mask`;
+                foreach my $subline (split("\n", $ipcalc)) {
+                     if ($subline =~ m/Network:\s+([0-9.]+\/\d+)/) {
+                        push @subs, $1;
+                     }
+                }
+            }
+        }
+    }
+    return @subs;
 }
 
 #############################
@@ -360,20 +360,20 @@ sub readConfig
 #############################
 sub fatal_error
 {
-	my $msg = shift;
-	my $full = shift;
+    my $msg = shift;
+    my $full = shift;
 
-	print $msg;
-	if ($DEBUG) {
-		print "\n Full information: $full \n";
-	}
-	exit(0);
+    print $msg;
+    if ($DEBUG) {
+        print "\n Full information: $full \n";
+    }
+    exit(0);
 }
 
 sub expand_host_string
 {
-	my $string = shift;
-	my %args = @_;
-	my $dns = GetDNS->new();
-	return $dns->dumper($string,%args);
+    my $string = shift;
+    my %args = @_;
+    my $dns = GetDNS->new();
+    return $dns->dumper($string,%args);
 }

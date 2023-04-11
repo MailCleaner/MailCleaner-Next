@@ -170,7 +170,7 @@ sub parseDestinations
 
             if (defined($2) && $2 !~ /::\d+$/) {
                 $dest_str = $2;
-      	        next;
+                next;
             }
         }
 
@@ -182,28 +182,28 @@ sub parseDestinations
         }
         my $name = $domain->{'name'};
         $domain_dest{$name} = {
-    	    id => $domain->{'id'},
-    	    callout => $domain->{'callout'} ,
-    	    altcallout => $domain->{'altcallout'} ,
-    	    ldapcalloutserver => $domain->{'ldapcalloutserver'},
-    	    ldapcalloutparam => $domain->{'ldapcalloutparam'},
-    	    adcheck => $domain->{'adcheck'} ,
+            id => $domain->{'id'},
+            callout => $domain->{'callout'} ,
+            altcallout => $domain->{'altcallout'} ,
+            ldapcalloutserver => $domain->{'ldapcalloutserver'},
+            ldapcalloutparam => $domain->{'ldapcalloutparam'},
+            adcheck => $domain->{'adcheck'} ,
             addlistcallout => $domain->{'addlistcallout'},
             addlist_posters => $domain->{'addlist_posters'},
             extcallout => $domain->{'extcallout'} ,
             extcallout_type => $domain->{'extcallout_type'} ,
             extcallout_param => $domain->{'extcallout_param'} ,
-    	    forward_by_mx => $domain->{'forward_by_mx'} ,
-    	    greylist => $domain->{'greylist'} ,
-    	    destinations =>  [ @dest_hosts ],
+            forward_by_mx => $domain->{'forward_by_mx'} ,
+            greylist => $domain->{'greylist'} ,
+            destinations =>  [ @dest_hosts ],
             destination => $domain->{'destination'},
-    	    destinations_smarthost =>  [ @dest_hosts ],
+            destinations_smarthost =>  [ @dest_hosts ],
             destination_smarthost => $domain->{'destination_smarthost'},
             batv_check => $domain->{'batv_check'},
             batv_secret => $domain->{'batv_secret'},
             prevent_spoof => $domain->{'prevent_spoof'},
             dkim_domain => $domain->{'dkim_domain'},
-		    reject_capital_domain => $domain->{'reject_capital_domain'},
+            reject_capital_domain => $domain->{'reject_capital_domain'},
             dkim_selector => $domain->{'dkim_selector'},
             dkim_pkey => $domain->{'dkim_pkey'},
             require_incoming_tls => $domain->{'require_incoming_tls'},
@@ -304,14 +304,14 @@ sub dumpDomainsFile
 
     my @list;
     foreach my $domain_name ( keys %domains) {
-  	    next if ($domain_name =~ m/^\*$/);
+        next if ($domain_name =~ m/^\*$/);
         push @list, $domain_name;
     }
     my @sorted_list = sort @list;
     if ( defined($domains{'*'}) ) {
         push @sorted_list, '*';
     }
-   	
+
     foreach my $domain_name (@sorted_list) {
         # add domain name
         my $line = $domain_name.":\t\t";
@@ -336,11 +336,11 @@ sub dumpDomainsFile
         print DOMAINSFILE $rule."\n";
 
         if ($domains{$domain_name}{relay_smarthost} eq 1) {
-	        my $rule_smarthost = $domain_name.":\t\t";
-	        my $dest_smarthost = $domains{$domain_name}{destination_smarthost};
-	        $dest_smarthost =~ s/\//::/;
-	        $rule_smarthost .= $dest_smarthost;
-	        print DOMAINSFILESMARTHOST $rule_smarthost."\n";
+            my $rule_smarthost = $domain_name.":\t\t";
+            my $dest_smarthost = $domains{$domain_name}{destination_smarthost};
+            $dest_smarthost =~ s/\//::/;
+            $rule_smarthost .= $dest_smarthost;
+            print DOMAINSFILESMARTHOST $rule_smarthost."\n";
         }
 
         print SNMPDOMAINSFILE $domains{$domain_name}{'id'}.":".$domain_name."\n";
@@ -389,13 +389,13 @@ sub dumpDomainsFile
             print ADCHECKFILE $domain_name."\n";
 
             if (! -d "$filepath/ldap_callouts") {
-      	        mkdir "$filepath/ldap_callouts";
+                mkdir "$filepath/ldap_callouts";
             }
             if ( open(LDAPCALLOUTDATA, ">$filepath/ldap_callouts/$domain_name")) {
-      	        if ($domains{$domain_name}{ldapcalloutserver}) {
-         	        print LDAPCALLOUTDATA "server: ".$domains{$domain_name}{ldapcalloutserver}."\n";
-      	        }
-    	        if ($domains{$domain_name}{ldapcalloutparam} && $domains{$domain_name}{ldapcalloutparam} =~ m/([^:]+):([^:]+):([^:]+)(?:\:([^:]*))?(?:\:([01]))?/) {
+                if ($domains{$domain_name}{ldapcalloutserver}) {
+                    print LDAPCALLOUTDATA "server: ".$domains{$domain_name}{ldapcalloutserver}."\n";
+                }
+                if ($domains{$domain_name}{ldapcalloutparam} && $domains{$domain_name}{ldapcalloutparam} =~ m/([^:]+):([^:]+):([^:]+)(?:\:([^:]*))?(?:\:([01]))?/) {
                     my $user = $2;
                     my $basedn = $1;
                     my $pass = $3;
@@ -406,17 +406,17 @@ sub dumpDomainsFile
                         $group = '';
                     }
                     $pass =~ s/__C__/:/g;
-    		        print LDAPCALLOUTDATA "user: ".$user."\n";
-    		        print LDAPCALLOUTDATA "pass: ".$pass."\n";
-    		        print LDAPCALLOUTDATA "basedn: ".$basedn."\n";
+                    print LDAPCALLOUTDATA "user: ".$user."\n";
+                    print LDAPCALLOUTDATA "pass: ".$pass."\n";
+                    print LDAPCALLOUTDATA "basedn: ".$basedn."\n";
                     if ($usessl && $usessl eq '1') {
                         print LDAPCALLOUTDATA "usessl: 1\n";
                     }
                     if ($group && $group ne '') {
                         print LDAPCALLOUTDATA "group: ".$group;
                     }
-    	        }
-      	        close LDAPCALLOUTDATA;
+                }
+                close LDAPCALLOUTDATA;
             }
         }
         $value = $domains{$domain_name}{forward_by_mx};
@@ -432,7 +432,7 @@ sub dumpDomainsFile
             print BATVCHECKFILE $domain_name.": ";
             my $secret = $domains{$domain_name}{batv_secret};
             if (!defined($secret) || $secret eq '') {
-      	        $secret = 'no secret provided';
+                $secret = 'no secret provided';
             }
             print BATVCHECKFILE "$secret\n";
         }
@@ -459,23 +459,23 @@ sub dumpDomainsFile
         }
         $value = $domains{$domain_name}{dkim_domain};
         if (defined($value) && $value ne "" && $value ne 'none') {
-    	    print DKIMFILE $domain_name.": ";
+            print DKIMFILE $domain_name.": ";
 
             if ($value eq 'default') {
                 print DKIMFILE $exim_conf{'dkim_default_domain'}.";".$exim_conf{'dkim_default_selector'}."\n";
             } else {
-        	    print DKIMFILE $value.";";
-        	    if (defined($domains{$domain_name}{dkim_selector})) {
-        		    print DKIMFILE $domains{$domain_name}{dkim_selector}."\n";
-        	    } else {
-        		    print DKIMFILE "mailcleaner\n";
-        	    }
-        	    if (defined($domains{$domain_name}{dkim_pkey}) && $domains{$domain_name}{dkim_pkey} ne '') {
-        		    if (open DKIMPKEY, ">$dkim_pkey_file") {
-        			    print DKIMPKEY $domains{$domain_name}{dkim_pkey}."\n";
-        			    close DKIMPKEY;
-        		    }
-        	    }
+                print DKIMFILE $value.";";
+                if (defined($domains{$domain_name}{dkim_selector})) {
+                    print DKIMFILE $domains{$domain_name}{dkim_selector}."\n";
+                } else {
+                    print DKIMFILE "mailcleaner\n";
+                }
+                if (defined($domains{$domain_name}{dkim_pkey}) && $domains{$domain_name}{dkim_pkey} ne '') {
+                    if (open DKIMPKEY, ">$dkim_pkey_file") {
+                        print DKIMPKEY $domains{$domain_name}{dkim_pkey}."\n";
+                        close DKIMPKEY;
+                    }
+                }
             }
         }
     }
@@ -531,7 +531,7 @@ sub dumpDomainsFile
 
 sub print_time
 {
-	my $what = shift;
-	
-	print "Time for: $what: ".( int( $time_in{$what} * 10000 ) / 10000 )."s.\n";
+    my $what = shift;
+
+    print "Time for: $what: ".( int( $time_in{$what} * 10000 ) / 10000 )."s.\n";
 }

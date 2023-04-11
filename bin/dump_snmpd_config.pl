@@ -51,9 +51,10 @@ my $mc_mib_file = $config{'SRCDIR'}.'/www/guis/admin/public/downloads/MAILCLEANE
 my $lasterror = "";
 
 my $dbh;
-$dbh = DBI->connect("DBI:mysql:database=mc_config;host=localhost;mysql_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
-			"mailcleaner", "$config{MYMAILCLEANERPWD}", {RaiseError => 0, PrintError => 0})
-		or fatal_error("CANNOTCONNECTDB", $dbh->errstr);
+$dbh = DBI->connect(
+    "DBI:mysql:database=mc_config;host=localhost;mysql_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
+    "mailcleaner", "$config{MYMAILCLEANERPWD}", {RaiseError => 0, PrintError => 0}
+) or fatal_error("CANNOTCONNECTDB", $dbh->errstr);
 
 my %snmpd_conf;
 %snmpd_conf = get_snmpd_config() or fatal_error("NOSNMPDCONFIGURATIONFOUND", "no snmpd configuration found");
@@ -66,7 +67,7 @@ dump_snmpd_file() or fatal_error("CANNOTDUMPSNMPDFILE", $lasterror);
 $dbh->disconnect();
 
 if (-f $system_mibs_file) {
-	unlink($system_mibs_file);
+    unlink($system_mibs_file);
 }
 symlink($mc_mib_file,$system_mibs_file);
 print "DUMPSUCCESSFUL";
@@ -74,83 +75,83 @@ print "DUMPSUCCESSFUL";
 #############################
 sub dump_snmpd_file
 {
-	my $stage = shift;
+    my $stage = shift;
 
-	my $template_file = "$config{'SRCDIR'}/etc/snmp/snmpd.conf_template";
-	my $target_file = "$config{'SRCDIR'}/etc/snmp/snmpd.conf";
+    my $template_file = "$config{'SRCDIR'}/etc/snmp/snmpd.conf_template";
+    my $target_file = "$config{'SRCDIR'}/etc/snmp/snmpd.conf";
 
-	my $ipv6 = 0;
-	if (open(my $interfaces, '<', '/etc/network/interfaces')) {
-		while (<$interfaces>) {
-			if ($_ =~ m/iface \S+ inet6/) {
-				$ipv6 = 1;
-				last;
-			}
-		}
-		close($interfaces);
-	}
+    my $ipv6 = 0;
+    if (open(my $interfaces, '<', '/etc/network/interfaces')) {
+        while (<$interfaces>) {
+            if ($_ =~ m/iface \S+ inet6/) {
+                $ipv6 = 1;
+                last;
+            }
+        }
+        close($interfaces);
+    }
 
-	if ( !open(TEMPLATE, $template_file) ) {
-		$lasterror = "Cannot open template file: $template_file";
-		return 0;
-	}
-	if ( !open(TARGET, ">$target_file") ) {
+    if ( !open(TEMPLATE, $template_file) ) {
+        $lasterror = "Cannot open template file: $template_file";
+        return 0;
+    }
+    if ( !open(TARGET, ">$target_file") ) {
                 $lasterror = "Cannot open target file: $target_file";
-		close $template_file;
+        close $template_file;
                 return 0;
         }
 
- 	my @ips = expand_host_string($snmpd_conf{'__ALLOWEDIP__'}.' 127.0.0.1',('dumper'=>'snmp/allowedip'));
-	my $ip;
-	foreach $ip ( keys %master_hosts) {
-		print TARGET "com2sec local     $ip     $snmpd_conf{'__COMMUNITY__'}\n";
-		print TARGET "com2sec6 local     $ip     $snmpd_conf{'__COMMUNITY__'}\n";
-	}
-	foreach $ip (@ips) {
-		print TARGET "com2sec local     $ip	$snmpd_conf{'__COMMUNITY__'}\n";
-		if ($ipv6) {
-			print TARGET "com2sec6 local     $ip     $snmpd_conf{'__COMMUNITY__'}\n";
-		}
-	}
+    my @ips = expand_host_string($snmpd_conf{'__ALLOWEDIP__'}.' 127.0.0.1',('dumper'=>'snmp/allowedip'));
+    my $ip;
+    foreach $ip ( keys %master_hosts) {
+        print TARGET "com2sec local     $ip     $snmpd_conf{'__COMMUNITY__'}\n";
+        print TARGET "com2sec6 local     $ip     $snmpd_conf{'__COMMUNITY__'}\n";
+    }
+    foreach $ip (@ips) {
+        print TARGET "com2sec local     $ip    $snmpd_conf{'__COMMUNITY__'}\n";
+        if ($ipv6) {
+            print TARGET "com2sec6 local     $ip     $snmpd_conf{'__COMMUNITY__'}\n";
+        }
+    }
 
-	while(<TEMPLATE>) {
-		my $line = $_;
+    while(<TEMPLATE>) {
+        my $line = $_;
 
-		$line =~ s/__VARDIR__/$config{'VARDIR'}/g;
-		$line =~ s/__SRCDIR__/$config{'SRCDIR'}/g;
+        $line =~ s/__VARDIR__/$config{'VARDIR'}/g;
+        $line =~ s/__SRCDIR__/$config{'SRCDIR'}/g;
 
-		print TARGET $line;
-	}
+        print TARGET $line;
+    }
 
-	my @disks = split(/\:/, $snmpd_conf{'__DISKS__'});
+    my @disks = split(/\:/, $snmpd_conf{'__DISKS__'});
         my $disk;
         foreach $disk (@disks) {
                 print TARGET "disk      $disk   100000\n";
         }
 
-	close TEMPLATE;
-	close TARGET;
-	
-	return 1;
+    close TEMPLATE;
+    close TARGET;
+    
+    return 1;
 }
 
 #############################
 sub get_snmpd_config{
-	my %config;
-	
-	my $sth = $dbh->prepare("SELECT allowed_ip, community, disks FROM snmpd_config");
-	$sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
+    my %config;
+    
+    my $sth = $dbh->prepare("SELECT allowed_ip, community, disks FROM snmpd_config");
+    $sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
 
-	if ($sth->rows < 1) {
+    if ($sth->rows < 1) {
                 return;
         }
         my $ref = $sth->fetchrow_hashref() or return;
 
-	$config{'__ALLOWEDIP__'} = join(' ',expand_host_string($ref->{'allowed_ip'},('dumper'=>'snmp/allowedip')));
-	$config{'__COMMUNITY__'} = $ref->{'community'};
-	$config{'__DISKS__'} = $ref->{'disks'};
+    $config{'__ALLOWEDIP__'} = join(' ',expand_host_string($ref->{'allowed_ip'},('dumper'=>'snmp/allowedip')));
+    $config{'__COMMUNITY__'} = $ref->{'community'};
+    $config{'__DISKS__'} = $ref->{'disks'};
 
-	$sth->finish();
+    $sth->finish();
         return %config;
 }
 
@@ -158,40 +159,40 @@ sub get_snmpd_config{
 sub get_master_config
 {
 
-	my %masters;
+    my %masters;
 
-	my $sth = $dbh->prepare("SELECT hostname FROM master");
-	$sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
+    my $sth = $dbh->prepare("SELECT hostname FROM master");
+    $sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
 
         if ($sth->rows < 1) {
                 return;
         }
-	while (my $ref = $sth->fetchrow_hashref()) {
-		$masters{$ref->{'hostname'}} = 1;
-	}
+    while (my $ref = $sth->fetchrow_hashref()) {
+        $masters{$ref->{'hostname'}} = 1;
+    }
 
-	$sth->finish();
+    $sth->finish();
         return %masters;
 }
 
 #############################
 sub fatal_error
 {
-	my $msg = shift;
-	my $full = shift;
+    my $msg = shift;
+    my $full = shift;
 
-	print $msg;
-	if ($DEBUG) {
-		print "\n Full information: $full \n";
-	}
-	exit(0);
+    print $msg;
+    if ($DEBUG) {
+        print "\n Full information: $full \n";
+    }
+    exit(0);
 }
 
 #############################
 sub print_usage
 {
-	print "Bad usage: dump_exim_config.pl [stage-id]\n\twhere stage-id is an integer between 0 and 4 (0 or null for all).\n";
-	exit(0);
+    print "Bad usage: dump_exim_config.pl [stage-id]\n\twhere stage-id is an integer between 0 and 4 (0 or null for all).\n";
+    exit(0);
 }
 
 #############################

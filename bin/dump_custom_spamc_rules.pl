@@ -42,12 +42,12 @@ my $sender_id = 0;
 sub set_current_rule
 {
     my ($current_rule) = @_;
-        my $current_rule_w = $current_rule;
-        $current_rule_w =~ s/\s+/_/;
-        $current_rule_w =~ s/-/_/;
-        $current_rule_w =~ s/\./_/;
+    my $current_rule_w = $current_rule;
+    $current_rule_w =~ s/\s+/_/;
+    $current_rule_w =~ s/-/_/;
+    $current_rule_w =~ s/\./_/;
 
-	return ($current_rule, $current_rule_w);
+    return ($current_rule, $current_rule_w);
 }
 
 # rules to detect if the wanted rule did hit for those recipients (/senders)
@@ -63,10 +63,10 @@ sub print_custom_rule
     my $global = 0;
     my $rcpt_string = "&& (";
     foreach (@current_rule_domains) {
-	if (!defined($_)) {
-            $rcpt_string = '';
-            last;
-	}
+    if (!defined($_)) {
+        $rcpt_string = '';
+        last;
+    }
         $rcpt_string .= "__RCPT_$_ || "
     }
     if ($rcpt_string) {
@@ -152,7 +152,7 @@ foreach my $l (@wwlists) {
         $rule{'comments'} =~ s/\s*$//;
     }
     if ( $rule{'comments'} !~ m/[^\s]+ -?\d+\.?\d*/ ) {
-	next;
+        next;
     }
 
     # Set current variables (rules and senders) to keep track of a change in order to write the rules when needed
@@ -171,12 +171,12 @@ foreach my $l (@wwlists) {
     # If we changed rule, in this script rule means SpamC rule name + score
     if ( ($rule{'comments'} ne $current_rule) || ($rule{'sender'} ne $current_sender) ) {
 
-	print_custom_rule($current_rule, $current_rule_w, $current_sender, @current_rule_domains);
+        print_custom_rule($current_rule, $current_rule_w, $current_sender, @current_rule_domains);
 
         ($current_rule, $current_rule_w) = set_current_rule($rule{'comments'});
         $current_sender = $rule{'sender'};
-	@current_rule_domains = ();
-	push @current_rule_domains, $domain_id;
+        @current_rule_domains = ();
+        push @current_rule_domains, $domain_id;
     } else {
         push @current_rule_domains, $domain_id;
     }

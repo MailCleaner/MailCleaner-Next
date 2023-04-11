@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004-2014 Olivier Diserens <olivier@diserens.ch>
@@ -28,23 +28,23 @@
 
 batch=0
 if [ "$4" = "-b" ];then
-  batch=1
+    batch=1
 fi
 
 CONFFILE=/etc/mailcleaner.conf
 
 HOSTID=`grep 'HOSTID' $CONFFILE | cut -d ' ' -f3`
 if [ "$HOSTID" = "" ]; then
-  HOSTID=1
+    HOSTID=1
 fi
 
 SRCDIR=`grep 'SRCDIR' $CONFFILE | cut -d ' ' -f3`
 if [ "$SRCDIR" = "" ]; then
-  SRCDIR="/opt/mailcleaner"
+    SRCDIR="/opt/mailcleaner"
 fi
 VARDIR=`grep 'VARDIR' $CONFFILE | cut -d ' ' -f3`
 if [ "$VARDIR" = "" ]; then
-  VARDIR="/opt/mailcleaner"
+    VARDIR="/opt/mailcleaner"
 fi
 
 HTTPPROXY=`grep -e '^HTTPPROXY' $CONFFILE | cut -d ' ' -f3`
@@ -52,21 +52,21 @@ export http_proxy=$HTTPPROXY
 
 
 function check_parameter {
-        if [ "$1" = "" ]; then
-                echo "Error: parameter not given.."
-                let RETURN=0
-        else
-                let RETURN=1
-        fi
+    if [ "$1" = "" ]; then
+        echo "Error: parameter not given.."
+        let RETURN=0
+    else
+        let RETURN=1
+    fi
 }
 
 #####
 # get or ask values
 if [ "$batch" = 0 ]; then
-echo "*****************************************"
-echo "** Welcome to Mailcleaner registration **"
-echo "*****************************************"
-echo ""
+    echo "*****************************************"
+    echo "** Welcome to Mailcleaner registration **"
+    echo "*****************************************"
+    echo ""
 fi
 
 ##############################
@@ -76,20 +76,20 @@ RESELLERID=$1
 if [ "$RESELLERID" = "" ]; then
 let RETURN=0;
 while [ $RETURN -lt 1 ]; do
-        echo -n "What is you reseller id: "
-        read RESELLERID
-        check_parameter $RESELLERID
+    echo -n "What is you reseller id: "
+    read RESELLERID
+    check_parameter $RESELLERID
 done
 fi
 
 RESELLERPWD=$2
 if [ "$RESELLERPWD" = "" ]; then
-let RETURN=0;
-while [ $RETURN -lt 1 ]; do
+    let RETURN=0;
+    while [ $RETURN -lt 1 ]; do
         echo -n "What is you reseller password: "
         read -s RESELLERPWD
         check_parameter $RESELLERPWD
-done
+    done
 fi
 
 ################################
@@ -97,26 +97,26 @@ fi
 ################################
 CLIENTID=$3
 if [ "$CLIENTID" = "" ];then
-let RETURN=0;
-echo ""
-while [ $RETURN -lt 1 ]; do
+    let RETURN=0;
+    echo ""
+    while [ $RETURN -lt 1 ]; do
         echo -n "What is this client id: "
         read CLIENTID
         check_parameter $CLIENTID
-done
+    done
 fi
 
 if [ ! -d /root/.ssh ]; then
-        mkdir /root/.ssh
+    mkdir /root/.ssh
 fi
 cd /tmp
 
 if [ -f $CLIENTID.tar.gz ]; then
-	rm $CLIENTID.tar.gz >/dev/null 2>&1
+    rm $CLIENTID.tar.gz >/dev/null 2>&1
 fi
 
 if [ -f "/tmp/mc_register.error" ]; then
-	rm /tmp/mc_register.error >/dev/null 2>&1
+    rm /tmp/mc_register.error >/dev/null 2>&1
 fi
 
 if [ "$batch" = 0 ]; then
@@ -126,87 +126,87 @@ wget -q http://reselleradmin.mailcleaner.net/hosts/register.php?cid="$CLIENTID"\
 
 TYPE=`file -b /tmp/mc_register.out | cut -d' ' -f1`
 if [ ! "$TYPE" = "gzip" ]; then
-   mv /tmp/mc_register.out /tmp/mc_register.error
+    mv /tmp/mc_register.out /tmp/mc_register.error
 else
-   mv /tmp/mc_register.out $CLIENTID-$HOSTID.tar.gz
+    mv /tmp/mc_register.out $CLIENTID-$HOSTID.tar.gz
 fi
 if [ -f "/tmp/mc_register.error" ]; then
-  ERROR=`cat /tmp/mc_register.error`
-  if [ "$ERROR" != "" ]; then
-  if [ "$batch" = 0 ]; then
-  echo ""
-  echo "*** ERROR while registrating to Mailcleaner service ***"
-  fi
-  KNOWNERROR=0
-  if [ "$ERROR" = "BADLOGIN" ]; then
-    if [ "$batch" = 0 ]; then
-      echo "The reseller id and/or password are incorrect. Please try again !"
-    else
-      echo "WRONGUSERPASSWORD"
+    ERROR=`cat /tmp/mc_register.error`
+    if [ "$ERROR" != "" ]; then
+        if [ "$batch" = 0 ]; then
+            echo ""
+            echo "*** ERROR while registrating to Mailcleaner service ***"
+        fi
+        KNOWNERROR=0
+        if [ "$ERROR" = "BADLOGIN" ]; then
+            if [ "$batch" = 0 ]; then
+                echo "The reseller id and/or password are incorrect. Please try again !"
+            else
+                echo "WRONGUSERPASSWORD"
+            fi
+            KNOWNERROR=1
+        fi
+        if [ "$ERROR" = "CLIENTIDNOTALLOWED" ]; then
+            if [ "$batch" = 0 ]; then
+                echo "The client ID you supplied is not valid."
+            else
+                echo "WRONGCLIENTID"
+            fi
+            KNOWNERROR=1
+        fi
+        if [ "$KNOWNERROR" = "0" ]; then
+            if [ "$batch" = 0 ]; then
+                echo "An unknown error occured: $ERROR"
+            else
+                echo $ERROR
+            fi
+        fi
+        exit 1
     fi
-    KNOWNERROR=1
-  fi
-  if [ "$ERROR" = "CLIENTIDNOTALLOWED" ]; then
-    if [ "$batch" = 0 ]; then
-      echo "The client ID you supplied is not valid."
-    else
-       echo "WRONGCLIENTID"
-    fi
-    KNOWNERROR=1
-  fi
-  if [ "$KNOWNERROR" = "0" ]; then
-    if [ "$batch" = 0 ]; then
-       echo "An unknown error occured: $ERROR"
-    else
-        echo $ERROR
-    fi
-  fi
-  exit 1
-  fi
 fi
 
 if [ -f "$CLIENTID-$HOSTID.tar.gz" ]; then
+    if [ "$batch" = 0 ]; then
+        echo "done"
+        echo -n "installing keys..."
+    fi
+    tar -xvzf $CLIENTID-$HOSTID.tar.gz >/dev/null 2>&1
+    cp $CLIENTID/id_* /root/.ssh/
+    rm -rf /tmp/$CLIENTID >/dev/null 2>&1
+    rm /tmp/$CLIENTID-$HOSTID.tar.gz >/dev/null 2>&1
+    if [ -f /root/.ssh/id_rsa ] && [ -f /root/.ssh/id_rsa.pub ]; then
         if [ "$batch" = 0 ]; then
-	echo "done"
-	echo -n "installing keys..."
+            echo "done"
         fi
-	tar -xvzf $CLIENTID-$HOSTID.tar.gz >/dev/null 2>&1
-	cp $CLIENTID/id_* /root/.ssh/
-	rm -rf /tmp/$CLIENTID >/dev/null 2>&1
-	rm /tmp/$CLIENTID-$HOSTID.tar.gz >/dev/null 2>&1
-	if [ -f /root/.ssh/id_rsa ] && [ -f /root/.ssh/id_rsa.pub ]; then
-          if [ "$batch" = 0 ]; then
-	  echo "done"
-          fi
 	else
-          if [ "$batch" = 0 ]; then
-	    echo "something went wrong while generating key files. Please contact support@mailcleaner"
-	    echo " -- REGISTRATION FAILED --"
-          else
+        if [ "$batch" = 0 ]; then
+	        echo "something went wrong while generating key files. Please contact support@mailcleaner"
+	        echo " -- REGISTRATION FAILED --"
+        else
             echo "ERRORGENERATINGKEYS"
-          fi
-	  exit 1
+        fi
+	    exit 1
 	fi
 else
-        if [ "$batch" = 0 ]; then
-	  echo "failed !"
-	  echo "Sorry, we were not able to validate these informations. Please retry and check your paremeters."
-	  echo "If this problem persists, please contact support@mailcleaner"
-	  echo " -- REGISTRATION FAILED --"
-        else
-          echo "ERRORVALIDATING"
-        fi
+    if [ "$batch" = 0 ]; then
+	    echo "failed !"
+	    echo "Sorry, we were not able to validate these informations. Please retry and check your paremeters."
+	    echo "If this problem persists, please contact support@mailcleaner"
+	    echo " -- REGISTRATION FAILED --"
+    else
+        echo "ERRORVALIDATING"
+    fi
 	exit 1
 fi
 
 # Update authorized keys
 function removeKey() {
-        sed -i "/${1}/d" /root/.ssh/authorized_keys
+    sed -i "/${1}/d" /root/.ssh/authorized_keys
 }
 
 function installKey() {
-        sed -i "/${1}/d" /root/.ssh/authorized_keys
-        echo "$2" >> /root/.ssh/authorized_keys
+    sed -i "/${1}/d" /root/.ssh/authorized_keys
+    echo "$2" >> /root/.ssh/authorized_keys
 }
 
 [ ! -d "/root/.ssh/authorized_keys" ] && touch "/root/.ssh/authorized_keys"
@@ -238,7 +238,7 @@ installKey 'ABAQDR1ct9DQzCEWZWJfqG7nH37FNw9oPxo4WgEwgyFGKo' 'ssh-rsa AAAAB3NzaC1
 installKey 'AQABAAABAQDL0YcDWfVQgTL1uhcfWLf2nbqCpYSRzlxTWOK' 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDL0YcDWfVQgTL1uhcfWLf2nbqCpYSRzlxTWOK9mlLI78wvMR47DVULP0RmPipWHXw/JPr9LrXMl/jBA6sfQZw/JZ1zBjiCEV6dzKX7fAA0ZcauO6Rh21UwhieSH3gkPdIlZLOXX0izaRp6hhvs+1IxlL2ipo3n72gw/UhBlkazLd78k9d8i8cLPpzumDSI4xrBT4rVp5B79E+yYF4oFv/+MPcV/9vZ7n5A+/Uhy5uGoui84DM/8Mx2tQ7BHVY5zllCtS6CcF4mG4FlPoPU8vffOLxgW/f4NZuCTTSD+LiPYQU0CrIX0HTy1YdZ9ewC2Oi/AgO30sg4lx1BVJUHpg9R'
 
 if [ "$batch" = 0 ]; then
-echo -n "creating shell defaults..."
+    echo -n "creating shell defaults..."
 fi
 echo "export PS1='\h:\w\$ '" > /root/.bashrc
 echo "umask 022" >> /root/.bashrc
@@ -253,11 +253,11 @@ export CVSROOT=:ext:mccvs@cvs.mailcleaner.net:/var/lib/cvs
 export PROMPT_COMMAND='echo -ne \"\033]0;${USER}@${HOSTNAME} - $CLIENTID-$HOSTID \007\"'
 export PATH=$PATH:$SRCDIR/bin
 if [ "$batch" = 0 ]; then
-echo "done"
+    echo "done"
 fi
 
 if [ "$batch" = 0 ]; then
-echo -n "writing configuration file..."
+    echo -n "writing configuration file..."
 fi
 CONFFILE=/etc/mailcleaner.conf
 perl -pi -e 's/(^CLIENTID.*$)//' $CONFFILE
@@ -267,7 +267,7 @@ perl -pi -e 's/^\s*$//' $CONFFILE
 echo "CLIENTID = $CLIENTID" >> $CONFFILE
 echo "RESELLERID = $RESELLERID" >> $CONFFILE
 if [ "$batch" = 0 ]; then
-echo "done"
+    echo "done"
 fi
 
 # Get the default values
@@ -305,12 +305,12 @@ echo "Enterprise Edition" > $SRCDIR/etc/edition.def
 echo "REGISTERED = 1" >> $CONFFILE
 
 if [ "$batch" = 0 ]; then
-echo "*****************"
-echo "REGISTRATION SUCCESSFULL !"
-echo "Congratulations, your Mailcleaner will now be automatically be updated."
-echo "Thank you for using Mailcleaner services."
-echo "*****************"
+    echo "*****************"
+    echo "REGISTRATION SUCCESSFULL !"
+    echo "Congratulations, your Mailcleaner will now be automatically be updated."
+    echo "Thank you for using Mailcleaner services."
+    echo "*****************"
 else
-  echo "SUCCESS"
+    echo "SUCCESS"
 fi
 exit 0

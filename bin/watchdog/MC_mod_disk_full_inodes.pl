@@ -1,5 +1,10 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
+
+use v5.36;
 use strict;
+use warnings;
+use utf8;
+
 use File::Basename;
 
 my $alarm_limit = 85;
@@ -8,7 +13,7 @@ my $script_name         = basename($0);
 my $script_name_no_ext  = $script_name;
 $script_name_no_ext     =~ s/\.[^.]*$//;
 my $timestamp           = time();
-my $rc			= 0;
+my $rc            = 0;
 
 my $PID_FILE   = '/var/mailcleaner/run/watchdog/' . $script_name_no_ext . '.pid';
 my $OUT_FILE   = '/var/mailcleaner/spool/watchdog/' .$script_name_no_ext. '_' .$timestamp. '.out';
@@ -35,15 +40,15 @@ sub my_own_exit {
 my @df = `df -i`;
 chomp(@df);
 foreach my $line (@df) {
-	my (undef, $size, $used, undef, $pc, $mount) = split(' ', $line, 6);
-	$pc =~ s/%//;
+    my (undef, $size, $used, undef, $pc, $mount) = split(' ', $line, 6);
+    $pc =~ s/%//;
 
-	if ( ($mount eq '/') || ($mount eq '/var') ) {
-		if ( $pc >= $alarm_limit ) {
-			print $file "$mount : $used / $size => $pc\n";
-			$rc = 1;
-		}
-	}
+    if ( ($mount eq '/') || ($mount eq '/var') ) {
+        if ( $pc >= $alarm_limit ) {
+            print $file "$mount : $used / $size => $pc\n";
+            $rc = 1;
+        }
+    }
 }
 
 my_own_exit($rc);

@@ -88,9 +88,9 @@ sub dump_domain_to_avoid
 
    my $file = $conf->getOption('VARDIR')."/spool/tmp/mailcleaner/domains_to_avoid_greylist.list";
    if ( !open(DOMAINTOAVOID, ">$file") ) {
-		$lasterror = "Cannot open template file: $file";
-		return 0;
-	}
+        $lasterror = "Cannot open template file: $file";
+        return 0;
+    }
    foreach my $adomain (@domains_to_avoid) {
      print DOMAINTOAVOID $adomain."\n";
    }
@@ -101,63 +101,63 @@ sub dump_domain_to_avoid
 #############################
 sub dump_greylistd_file
 {
-	my $href = shift;
-	my %greylist_conf = %$href;
-	my $srcpath = $conf->getOption('SRCDIR');
-	my $varpath = $conf->getOption('VARDIR');
-	
-	my $template_file = $srcpath."/etc/greylistd/greylistd.conf_template";
-	my $target_file = $srcpath."/etc/greylistd/greylistd.conf";
+    my $href = shift;
+    my %greylist_conf = %$href;
+    my $srcpath = $conf->getOption('SRCDIR');
+    my $varpath = $conf->getOption('VARDIR');
+    
+    my $template_file = $srcpath."/etc/greylistd/greylistd.conf_template";
+    my $target_file = $srcpath."/etc/greylistd/greylistd.conf";
 
-	if ( !open(TEMPLATE, $template_file) ) {
-		$lasterror = "Cannot open template file: $template_file";
-		return 0;
-	}
-	if ( !open(TARGET, ">$target_file") ) {
+    if ( !open(TEMPLATE, $template_file) ) {
+        $lasterror = "Cannot open template file: $template_file";
+        return 0;
+    }
+    if ( !open(TARGET, ">$target_file") ) {
                 $lasterror = "Cannot open target file: $target_file";
-		close $template_file;
+        close $template_file;
                 return 0;
         }
 
-	while(<TEMPLATE>) {
-		my $line = $_;
+    while(<TEMPLATE>) {
+        my $line = $_;
 
-		$line =~ s/__VARDIR__/$varpath/g;
-		$line =~ s/__SRCDIR__/$srcpath/g;
+        $line =~ s/__VARDIR__/$varpath/g;
+        $line =~ s/__SRCDIR__/$srcpath/g;
 
         foreach my $key (keys %greylist_conf) {
-			$line =~ s/$key/$greylist_conf{$key}/g;
-		}
-		
-		print TARGET $line;
-	}
+            $line =~ s/$key/$greylist_conf{$key}/g;
+        }
+        
+        print TARGET $line;
+    }
 
-	close TEMPLATE;
-	close TARGET;
+    close TEMPLATE;
+    close TARGET;
 
-        chown $uid, $gid, $target_file;	
-	return 1;
+        chown $uid, $gid, $target_file;    
+    return 1;
 }
 
 
 #############################
 sub fatal_error
 {
-	my $msg = shift;
-	my $full = shift;
+    my $msg = shift;
+    my $full = shift;
 
-	print $msg;
-	if ($DEBUG) {
-		print "\n Full information: $full \n";
-	}
-	exit(0);
+    print $msg;
+    if ($DEBUG) {
+        print "\n Full information: $full \n";
+    }
+    exit(0);
 }
 
 #############################
 sub print_usage
 {
-	print "Bad usage: dump_exim_config.pl [stage-id]\n\twhere stage-id is an integer between 0 and 4 (0 or null for all).\n";
-	exit(0);
+    print "Bad usage: dump_exim_config.pl [stage-id]\n\twhere stage-id is an integer between 0 and 4 (0 or null for all).\n";
+    exit(0);
 }
 
 #############################

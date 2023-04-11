@@ -26,7 +26,7 @@
 
 usage()
 {
-  cat << EOF
+    cat << EOF
 usage: $0 options
 
 This script will fetch the current ruleset
@@ -40,25 +40,25 @@ randomize=false
 
 while getopts ":r" OPTION
 do
-  case $OPTION in
-    r)
-       randomize=true
-       ;;
-    ?)
-       usage
-       exit
-       ;;
-  esac
+    case $OPTION in
+        r)
+            randomize=true
+            ;;
+        ?)
+            usage
+            exit
+            ;;
+    esac
 done
 
 CONFFILE=/etc/mailcleaner.conf
 SRCDIR=`grep 'SRCDIR' $CONFFILE | cut -d ' ' -f3`
 if [ "$SRCDIR" = "" ]; then
-  SRCDIR="/opt/mailcleaner"
+    SRCDIR="/opt/mailcleaner"
 fi
 VARDIR=`grep 'VARDIR' $CONFFILE | cut -d ' ' -f3`
 if [ "$VARDIR" = "" ]; then
-  VARDIR="/var/mailcleaner"
+    VARDIR="/var/mailcleaner"
 fi
 
 
@@ -78,9 +78,9 @@ fi
 ret=$(downloadDatas "$SRCDIR/share/newsld/siteconfig/" "newsl_rules" $randomize "null" "" "noexit")
 
 if [[ "$ret" -eq "1" ]]; then
-	$SRCDIR/etc/init.d/newsld stop >/dev/null 2>&1
-	sleep 3
-	$SRCDIR/etc/init.d/newsld start >/dev/null 2>&1
+    $SRCDIR/etc/init.d/newsld stop >/dev/null 2>&1
+    sleep 3
+    $SRCDIR/etc/init.d/newsld start >/dev/null 2>&1
 fi
 
 removeLockFile "$FILE_NAME"

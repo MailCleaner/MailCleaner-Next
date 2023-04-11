@@ -105,7 +105,7 @@ sub readConfig
 
 sub err
 {
-	my $err = shift || "UNKNOWNERROR";
-	print $err . "\n";
+    my $err = shift || "UNKNOWNERROR";
+    print $err . "\n";
     exit(1);
 }

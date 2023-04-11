@@ -24,7 +24,7 @@
 
 usage()
 {
-  cat << EOF
+    cat << EOF
 usage: $0 options
 
 This script will fetch the latest patches
@@ -38,15 +38,15 @@ randomize=false
 
 while getopts ":r" OPTION
 do
-  case $OPTION in
-    r)
-       randomize=true
-       ;;
-    ?)
-       usage
-       exit
-       ;;
-  esac
+    case $OPTION in
+        r)
+            randomize=true
+            ;;
+        ?)
+            usage
+            exit
+            ;;
+    esac
 done
 
 
@@ -65,7 +65,7 @@ FILE_NAME=$(basename -- "$0")
 FILE_NAME="${FILE_NAME%.*}"
 ret=$(createLockFile "$FILE_NAME")
 if [[ "$ret" -eq "1" ]]; then
-        exit 0
+    exit 0
 fi
 
 . $SRCDIR/lib/updates/download_files.sh
@@ -73,7 +73,7 @@ fi
 ret=$(downloadDatas "$SRCDIR/updates/" "patches" $randomize "null" "" "noexit")
 
 if [[ "$ret" -eq "1" ]]; then
-	log "Patches update"
+    log "Patches update"
 fi
 
 removeLockFile "$FILE_NAME"

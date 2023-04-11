@@ -26,7 +26,7 @@
 
 usage()
 {
-  cat << EOF
+    cat << EOF
 usage: $0 options
 
 This script will fetch the last magic.mgc
@@ -40,25 +40,25 @@ randomize=false
 
 while getopts ":r" OPTION
 do
-  case $OPTION in
-    r)
-       randomize=true
-       ;;
-    ?)
-       usage
-       exit
-       ;;
-  esac
+    case $OPTION in
+        r)
+            randomize=true
+            ;;
+        ?)
+            usage
+            exit
+            ;;
+    esac
 done
 
 CONFFILE=/etc/mailcleaner.conf
 SRCDIR=`grep 'SRCDIR' $CONFFILE | cut -d ' ' -f3`
 if [ "$SRCDIR" = "" ]; then
-  SRCDIR="/opt/mailcleaner"
+    SRCDIR="/opt/mailcleaner"
 fi
 VARDIR=`grep 'VARDIR' $CONFFILE | cut -d ' ' -f3`
 if [ "$VARDIR" = "" ]; then
-  VARDIR="/var/mailcleaner"
+    VARDIR="/var/mailcleaner"
 fi
 
 . $SRCDIR/lib/lib_utils.sh
@@ -74,7 +74,7 @@ fi
 MC_FILE_DIR=/opt/file/share/misc/
 ret=$(downloadDatas "$MC_FILE_DIR" "magic" $randomize "null" "" "noexit")
 if [[ "$ret" -eq "1" ]]; then
-	log "Magic downloaded"
+    log "Magic downloaded"
 fi
 
 removeLockFile "$FILE_NAME"

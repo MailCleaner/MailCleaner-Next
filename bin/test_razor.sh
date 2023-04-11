@@ -1,7 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004 Olivier Diserens <olivier@diserens.ch>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -23,11 +24,10 @@
 #   Usage:
 #           test_razor.sh
 
-
 TIMEOUT=10
 
 if [ "$1" != "" ]; then
-  TIMEOUT=$1
+    TIMEOUT=$1
 fi
 
 echo "testing" | /usr/bin/razor-check &  >/dev/null 2>&1
@@ -35,7 +35,7 @@ echo "testing" | /usr/bin/razor-check &  >/dev/null 2>&1
 i=0
 while pgrep razor-check >/dev/null; do
 	sleep 1
-        i=`expr $i + 1`
+    i=`expr $i + 1`
 	if [ "$i" = "$TIMEOUT" ]; then
 		echo "RAZORTIMEDOUT"
 		killall -TERM razor-check >/dev/null 2>&1

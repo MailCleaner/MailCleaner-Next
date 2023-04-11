@@ -24,7 +24,7 @@
 
 usage()
 {
-  cat << EOF
+    cat << EOF
 usage: $0 options
 
 This script will fetch the current ruleset
@@ -38,25 +38,25 @@ randomize=false
 
 while getopts ":r" OPTION
 do
-  case $OPTION in
-    r)
-       randomize=true
-       ;;
-    ?)
-       usage
-       exit
-       ;;
-  esac
+    case $OPTION in
+        r)
+            randomize=true
+            ;;
+        ?)
+            usage
+            exit
+            ;;
+    esac
 done
 
 CONFFILE=/etc/mailcleaner.conf
 SRCDIR=`grep 'SRCDIR' $CONFFILE | cut -d ' ' -f3`
 if [ "$SRCDIR" = "" ]; then
-  SRCDIR="/opt/mailcleaner"
+    SRCDIR="/opt/mailcleaner"
 fi
 VARDIR=`grep 'VARDIR' $CONFFILE | cut -d ' ' -f3`
 if [ "$VARDIR" = "" ]; then
-  VARDIR="/var/mailcleaner"
+    VARDIR="/var/mailcleaner"
 fi
 
 . $SRCDIR/lib/lib_utils.sh
@@ -74,11 +74,11 @@ fi
 ##
 ret=$(downloadDatas "$SRCDIR/etc/firewall/" "firewall" $randomize "null" "" "noexit")
 if [[ "$ret" -eq "1" ]]; then
-        /usr/mailcleaner/bin/dump_firewall.pl
-	sleep 3
-	if [ -f "/usr/mailcleaner/etc/firewall/blacklist" ]; then
-	        /usr/mailcleaner/etc/firewall/blacklist
-	fi
+    /usr/mailcleaner/bin/dump_firewall.pl
+    sleep 3
+    if [ -f "/usr/mailcleaner/etc/firewall/blacklist" ]; then
+        /usr/mailcleaner/etc/firewall/blacklist
+    fi
 fi
 
 removeLockFile "$FILE_NAME"

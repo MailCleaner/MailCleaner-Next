@@ -78,49 +78,49 @@ print "DUMPSUCCESSFUL";
 #############################
 sub dump_file
 {
-	my $file = shift;
+    my $file = shift;
 
-	my $template_file = "$config{'SRCDIR'}/etc/messagesniffer/".$file."_template";
-	my $target_file = "$config{'SRCDIR'}/etc/messagesniffer/".$file;
+    my $template_file = "$config{'SRCDIR'}/etc/messagesniffer/".$file."_template";
+    my $target_file = "$config{'SRCDIR'}/etc/messagesniffer/".$file;
 
-	if ( !open(TEMPLATE, $template_file) ) {
-		$lasterror = "Cannot open template file: $template_file";
-		return 0;
-	}
-	if ( !open(TARGET, ">$target_file") ) {
+    if ( !open(TEMPLATE, $template_file) ) {
+        $lasterror = "Cannot open template file: $template_file";
+        return 0;
+    }
+    if ( !open(TARGET, ">$target_file") ) {
                 $lasterror = "Cannot open target file: $target_file";
-		close $template_file;
+        close $template_file;
                 return 0;
         }
 
-	my $proxy_server = "";
-	my $proxy_port = "";
-	if (defined($config{'HTTPPROXY'})) {
-		if ($config{'HTTPPROXY'} =~ m/http\:\/\/(\S+)\:(\d+)/) {
-			$proxy_server = $1;
-			$proxy_port = $2;
-		}
-	}
+    my $proxy_server = "";
+    my $proxy_port = "";
+    if (defined($config{'HTTPPROXY'})) {
+        if ($config{'HTTPPROXY'} =~ m/http\:\/\/(\S+)\:(\d+)/) {
+            $proxy_server = $1;
+            $proxy_port = $2;
+        }
+    }
 
-	while(<TEMPLATE>) {
-		my $line = $_;
+    while(<TEMPLATE>) {
+        my $line = $_;
 
-		$line =~ s/__VARDIR__/$config{'VARDIR'}/g;
-		$line =~ s/__SRCDIR__/$config{'SRCDIR'}/g;
-		if ($proxy_server =~ m/\S+/) {
-			$line =~ s/\#HTTPProxyServer __HTTPPROXY__/HTTPProxyServer $proxy_server/g;
-			$line =~ s/\#HTTPProxyPort __HTTPPROXYPORT__/HTTPProxyPort $proxy_port/g;
-		}
-		$line =~ s/__LICENSEID__/$messagesniffer_conf{'__LICENSEID__'}/g;
-		$line =~ s/__AUTHENTICATION__/$messagesniffer_conf{'__AUTHENTICATION__'}/g;
+        $line =~ s/__VARDIR__/$config{'VARDIR'}/g;
+        $line =~ s/__SRCDIR__/$config{'SRCDIR'}/g;
+        if ($proxy_server =~ m/\S+/) {
+            $line =~ s/\#HTTPProxyServer __HTTPPROXY__/HTTPProxyServer $proxy_server/g;
+            $line =~ s/\#HTTPProxyPort __HTTPPROXYPORT__/HTTPProxyPort $proxy_port/g;
+        }
+        $line =~ s/__LICENSEID__/$messagesniffer_conf{'__LICENSEID__'}/g;
+        $line =~ s/__AUTHENTICATION__/$messagesniffer_conf{'__AUTHENTICATION__'}/g;
 
-		print TARGET $line;
-	}
+        print TARGET $line;
+    }
 
-	close TEMPLATE;
-	close TARGET;
-	
-	return 1;
+    close TEMPLATE;
+    close TARGET;
+
+    return 1;
 }
 
 #############################

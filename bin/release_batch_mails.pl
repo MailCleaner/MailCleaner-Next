@@ -32,6 +32,43 @@ if ($0 =~ m/(\S*)\/\S+.pl$/) {
 
 use Term::ReadKey;
 
+sub usage
+{
+    my ($year,$month,$day) = split(/-/,`date +%Y-%m-%d`);
+    chomp $day;
+    my $today = sprintf("%04d-%02d-%02d",$year,$month,$day);
+    my $previous;
+    if ($day ne '01') {
+        $previous = sprintf("%04d-%02d-%02d",$year,$month,$day-1);
+    } elsif ($month ne '01') {
+        $previous = sprintf("%04d-%02d-28",$year,$month-1);
+    } else {
+        $previous = sprintf("%04d-12-31",$year-1);
+    }
+
+    print <<EOF;
+
+Bulk Release of Quarantined Messages
+
+Requires at least one of the following:
+
+-s address      Sender address. Full address or domain accepted.
+-r address      Recipient address. Full address or domain accepted.
+-f YYYY-MM-DD   From date. Requires at least one more option.
+-t YYYY-MM-DD   To date. Requires at least one more option.
+
+Additional options:
+
+-n          Restrict to newsletters only.
+-m N        Restrict to messages with a maximum score of N.
+-R          Re-send messages that have already been forced.
+-y          Automatically confirm all realeased messages.
+-h --help ? Print this menu.
+
+EOF
+    exit(1);
+}
+
 sub check_and_split
 {
     my $addr = shift;
@@ -61,53 +98,16 @@ sub check_date
     }
 }
 
-sub usage
-{
-    my ($year,$month,$day) = split(/-/,`date +%Y-%m-%d`);
-    chomp $day;
-    my $today = sprintf("%04d-%02d-%02d",$year,$month,$day);
-    my $previous;
-    if ($day ne '01') {
-        $previous = sprintf("%04d-%02d-%02d",$year,$month,$day-1);
-    } elsif ($month ne '01') {
-        $previous = sprintf("%04d-%02d-28",$year,$month-1);
-    } else {
-        $previous = sprintf("%04d-12-31",$year-1);
-    }
-
-    print <<EOF;
-
-Bulk Release of Quarantined Messages
-
-Requires at least one of the following:
-
--s address      Sender address. Full address or domain accepted.
--r address      Recipient address. Full address or domain accepted.
--f YYYY-MM-DD   From date. Requires at least one more option.
--t YYYY-MM-DD   To date. Requires at least one more option.
-
-Additional options:
-
--n		Restrict to newsletters only.
--m N		Restrict to messages with a maximum score of N.
--R              Re-send messages that have already been forced.
--y              Automatically confirm all realeased messages.
--h --help ?	Print this menu.
-
-EOF
-    exit(1);
-}
-
 my %args = (
-    'sender'    	=> undef,
-    'to_user'   	=> undef,
-    'to_domain' 	=> undef,
-    'from'      	=> undef,
-    'to'        	=> undef,
-    'M_score'		=> undef,
-    'is_newsletter'	=> undef,
-    'forced'    	=> 0,
-    'agree'     	=> undef
+    'sender'        => undef,
+    'to_user'       => undef,
+    'to_domain'     => undef,
+    'from'          => undef,
+    'to'            => undef,
+    'M_score'       => undef,
+    'is_newsletter' => undef,
+    'forced'        => 0,
+    'agree'         => undef
 );
 
 while (@ARGV) {
@@ -129,12 +129,12 @@ while (@ARGV) {
     } elsif ($arg eq '-y' && !$args{agree}) {
         $args{agree} = 1;
     } elsif ($arg eq '-m' && !$args{M_score}) {
-	$args{M_score} = shift;
-	die "Maximum score must be a number.\n" unless ($args{M_score} =~ m/[0-9]+(\.[0-9]+)?/);
+        $args{M_score} = shift;
+        die "Maximum score must be a number.\n" unless ($args{M_score} =~ m/[0-9]+(\.[0-9]+)?/);
     } elsif ($arg eq '-n' && !$args{is_newsletter}) {
-	$args{is_newsletter} = 1;
+        $args{is_newsletter} = 1;
     } elsif ($arg eq '-h' || $arg eq '--help' || $arg eq '?') {
-	usage();
+        usage();
     } else {
         die "Invalid or redundant argument $_\n";
     }
@@ -147,13 +147,13 @@ unless (defined $args{from_domain} || defined $args{to_domain} || (defined $args
 my $VARDIR=`grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3`;
 chomp $VARDIR;
 if ( $VARDIR eq '') {
-  $VARDIR="/var/mailcleaner";
+    $VARDIR="/var/mailcleaner";
 }
 
 my $SRCDIR=`grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3`;
 chomp $SRCDIR;
 if ( $SRCDIR eq '' ) {
-  $SRCDIR="/usr/mailcleaner";
+    $SRCDIR="/usr/mailcleaner";
 }
 
 my $MYMAILCLEANERPWD=`grep '^MYMAILCLEANERPWD' /etc/mailcleaner.conf | cut -d ' ' -f3`;
@@ -205,16 +205,16 @@ for (my $i = 0; $i < (scalar @lines); $i++) {
     my @cols = split('\t',$lines[$i]);
     my $col = 0;
     foreach (@columns) {
-	if ($_ eq 'to_domain') {
-	    $messages[$i]{to_user} .= '@' . $cols[$col];
-	} else {
-	    $messages[$i]{$_} = $cols[$col];
-	}
-	$col++;
+        if ($_ eq 'to_domain') {
+            $messages[$i]{to_user} .= '@' . $cols[$col];
+        } else {
+            $messages[$i]{$_} = $cols[$col];
+        }
+        $col++;
     }
 }
 my @table;
-push @table, { name => 'exim_id', length => 16,	heading => 'Exim ID' };
+push @table, { name => 'exim_id', length => 16, heading => 'Exim ID' };
 push @table, { name => 'to_user', length => 20, heading => 'Recipient' };
 push @table, { name => 'sender', length => 20, heading => 'Sender' };
 push @table, { name => 'M_subject', length => 15, heading => 'Subject' };
@@ -226,15 +226,15 @@ foreach (@table) {
 }
 print "\n";
 foreach (1..80) {
-	print '-';
+    print '-';
 }
 print "\n";
 foreach my $msg (@messages) {
     if ($msg->{M_subject} =~ m/^\ ?=\?/) {
-	$msg->{M_subject} = substr($msg->{M_subject},1);
+        $msg->{M_subject} = substr($msg->{M_subject},1);
     }
     foreach (@table) {
-       printf("%-$_->{length}s ", substr($msg->{$_->{name}},0,$_->{length}));
+        printf("%-$_->{length}s ", substr($msg->{$_->{name}},0,$_->{length}));
     }
     print "\n";
 }
@@ -244,10 +244,10 @@ while (! (defined $args{agree}) ) {
     print "\nWould you like to release these messages? [Y/n] ";
     $args{agree} = ReadKey(0);
     if ($args{agree} eq 'n' || $args{agree} eq 'N') {
-	ReadMode('normal');
-	die "\nAborting\n";
+        ReadMode('normal');
+        die "\nAborting\n";
     } elsif ($args{agree} ne 'y' && $args{agree} ne 'Y') {
-	$args{agree} = undef;
+        $args{agree} = undef;
     }
 }
 ReadMode('normal');
@@ -259,5 +259,3 @@ foreach (@messages) {
     `echo \"$UPDATE\" | $COMMAND -S $SOCKET -umailcleaner -p$MYMAILCLEANERPWD -N mc_spool`;
 }
 printf "\nFinished\n";
-
-exit(0);

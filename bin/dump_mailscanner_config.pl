@@ -73,17 +73,17 @@ exit 0;
 #############################
 sub get_system_config
 {
-	my %config = ();
-	my %row = $db->getHashRow("SELECT hostname, organisation, sysadmin, clientid, default_language, summary_from FROM system_conf");
-	$config{'__HOSTNAME__'} = $row{'hostname'};
-	$config{'__SYSADMIN__'} = $row{'summary_from'};
-	if (defined($row{'sysadmin'}) && $row{'sysadmin'} ne '') {
+    my %config = ();
+    my %row = $db->getHashRow("SELECT hostname, organisation, sysadmin, clientid, default_language, summary_from FROM system_conf");
+    $config{'__HOSTNAME__'} = $row{'hostname'};
+    $config{'__SYSADMIN__'} = $row{'summary_from'};
+    if (defined($row{'sysadmin'}) && $row{'sysadmin'} ne '') {
         $config{'__SYSADMIN__'} = $row{'sysadmin'};
-	}
-	$config{'__ORGNAME__'} = $row{'organisation'};
-	$config{'__LANG__'} = $row{'default_language'};
-	
-	return %config;
+    }
+    $config{'__ORGNAME__'} = $row{'organisation'};
+    $config{'__LANG__'} = $row{'default_language'};
+    
+    return %config;
 }
 
 #############################
@@ -108,10 +108,10 @@ sub get_ms_config
     return unless %row;
 
     foreach my $key (keys %row) {
-  	    if (!defined($row{$key}) || $row{$key} eq "") {
+        if (!defined($row{$key}) || $row{$key} eq "") {
             #print " changin $key to no\n";
-  	        $row{$key} = "no";
-  	    }
+            $row{$key} = "no";
+        }
     }
 
     my %config;
@@ -152,11 +152,11 @@ sub get_ms_config
     return unless %row;
 
     foreach my $key (keys %row) {
-	    if (defined($row{$key})) {
-  		    if ($row{$key} eq "") {
-	  	        $row{$key} = "no";
-  		    }
-	    }
+        if (defined($row{$key})) {
+            if ($row{$key} eq "") {
+                $row{$key} = "no";
+            }
+        }
     }
     $config{'__BLOCKENCRYPT__'} = $row{'block_encrypt'};
     $config{'__BLOCKUNENCRYPT__'} = $row{'block_unencrypt'};
@@ -171,7 +171,7 @@ sub get_ms_config
         if (defined($row{wh_passwd_archives})) {
             my @wh_dom = split('\n', $row{wh_passwd_archives});
             foreach my $wh_dom (@wh_dom) {
-			    next if ( ! ($wh_dom =~ /\./) );
+                next if ( ! ($wh_dom =~ /\./) );
                 print FH "FromOrTo:\t$wh_dom\tyes\n";
             }
         }
@@ -231,7 +231,7 @@ sub get_sa_config
         "SELECT use_bayes, bayes_autolearn, ok_languages, ok_locales, use_rbls, rbls_timeout,
         use_dcc, dcc_timeout, use_razor, razor_timeout, use_pyzor, pyzor_timeout, trusted_ips,
         sa_rbls, spf_timeout, use_spf, dkim_timeout, use_dkim, dmarc_follow_quarantine_policy,
-		use_fuzzyocr, use_imageinfo, use_pdfinfo, use_botnet FROM antispam WHERE set_id=1"
+        use_fuzzyocr, use_imageinfo, use_pdfinfo, use_botnet FROM antispam WHERE set_id=1"
     );
     return unless %row;
 
@@ -286,8 +286,8 @@ sub get_active_scanners
 
     my $ret = "";
     foreach my $elh (@list) {
-  	    my %el = %{$elh};
-  	    $ret .= $el{'name'}." ";
+        my %el = %{$elh};
+        $ret .= $el{'name'}." ";
     }
     return $ret;
 }
@@ -351,11 +351,11 @@ sub dump_sa_file
         }
     }
     foreach my $list (@dnslists) {
-  	    my %l = %{$list};
-  	    my $lname = $l{'name'};
-  	    if ($sa_conf{'__SA_RBLS__'} =~ /\b$lname\b/ && !$sa_conf{'__SKIP_RBLS__'}) {
-  	        $template->setCondition($lname, 1);
-  	    }
+        my %l = %{$list};
+        my $lname = $l{'name'};
+        if ($sa_conf{'__SA_RBLS__'} =~ /\b$lname\b/ && !$sa_conf{'__SKIP_RBLS__'}) {
+            $template->setCondition($lname, 1);
+        }
     }
     return 0 unless $template->dump();
 
@@ -380,7 +380,7 @@ sub dump_sa_file
 sub dump_prefilter_files
 {
     my $basedir=$conf->getOption('SRCDIR')."/etc/mailscanner/prefilters";
-	
+
     return 1 if ( ! -d $basedir) ;
     opendir(QDIR, $basedir) or die "Couldn't read directory $basedir";
     while(my $entry = readdir(QDIR)) {
@@ -397,7 +397,7 @@ sub dump_prefilter_files
             }
             #if (defined($prefilter->{'name'})) {
             my $template = ConfigTemplate::create($templatefile, $destfile);
-      	
+
             my %replace = ();
             $replace{'__HEADER__'} = $prefilter->{'header'} || 'X-'.$pfname;
             $replace{'__PREFILTERNAME__'} = $prefilter->{'name'} || $pfname;
@@ -411,10 +411,10 @@ sub dump_prefilter_files
             $replace{'__NEG_DECISIVE__'} = $prefilter->{'neg_decisive'} || '0';
             $template->setReplacements(\%replace);
 
-	        my %spec_replace = ();
-	        if (getPrefilterSpecConfig($prefilter->{'name'}, \%spec_replace)) {
-	            $template->setReplacements(\%spec_replace);
-	        }
+            my %spec_replace = ();
+            if (getPrefilterSpecConfig($prefilter->{'name'}, \%spec_replace)) {
+                $template->setReplacements(\%spec_replace);
+            }
 
             my $specmodule = "dumpers::$pfname";
             my $specmodfile = "dumpers/$pfname.pm";
@@ -513,7 +513,7 @@ sub getModuleStatus
     my $module = shift;
 
     if (defined($sa_conf{$module}) && $sa_conf{$module} < 1) {
-  	    return "#";
+        return "#";
     }
     return "";
 }
@@ -530,19 +530,19 @@ sub dump_filename_config
     my $res = "";
     my @list = $db->getListOfHash('SELECT status, rule, name, description FROM filename where status="deny"');
     foreach my $element (@list) {
-  	    my %el = %{$element};
-  	    my $sub = $subtmpl;
+        my %el = %{$element};
+        my $sub = $subtmpl;
         if ( ( ! defined( $el{'name'} ) ) || $el{'name'} eq '') {
             $el{'name'} = '+';
         }
         if ($el{'description'} eq '') {
             $el{'description'} = '-';
         }
-  	    $sub =~ s/__STATUS__/$el{'status'}/g;
-  	    $sub =~ s/__RULE__/$el{'rule'}/g;
-  	    $sub =~ s/__NAME__/$el{'name'}/g;
-  	    $sub =~ s/__DESCRIPTION__/$el{'description'}/g;
-  	    $res .= "$sub";
+        $sub =~ s/__STATUS__/$el{'status'}/g;
+        $sub =~ s/__RULE__/$el{'rule'}/g;
+        $sub =~ s/__NAME__/$el{'name'}/g;
+        $sub =~ s/__DESCRIPTION__/$el{'description'}/g;
+        $res .= "$sub";
     }
 
     my %replace = (
@@ -564,13 +564,13 @@ sub dump_filetype_config
     my $res = "";
     my @list = $db->getListOfHash('SELECT status, type, name, description FROM filetype');
     foreach my $element (@list) {
-  	    my %el = %{$element};
-  	    my $sub = $subtmpl;
-  	    $sub =~ s/__STATUS__/$el{'status'}/g;
-  	    $sub =~ s/__TYPE__/$el{'type'}/g;
-  	    $sub =~ s/__NAME__/$el{'name'}/g;
-  	    $sub =~ s/__DESCRIPTION__/$el{'description'}/g;
-  	    $res .= "$sub";
+        my %el = %{$element};
+        my $sub = $subtmpl;
+        $sub =~ s/__STATUS__/$el{'status'}/g;
+        $sub =~ s/__TYPE__/$el{'type'}/g;
+        $sub =~ s/__NAME__/$el{'name'}/g;
+        $sub =~ s/__DESCRIPTION__/$el{'description'}/g;
+        $res .= "$sub";
     }
 
     my %replace = (
@@ -609,14 +609,14 @@ sub dump_dnsblacklists_conf
 #############################
 sub fatal_error
 {
-	my $msg = shift;
-	my $full = shift;
+    my $msg = shift;
+    my $full = shift;
 
-	print $msg;
-	if ($DEBUG) {
-		print "\n Full information: $full \n";
-	}
-	exit(0);
+    print $msg;
+    if ($DEBUG) {
+        print "\n Full information: $full \n";
+    }
+    exit(0);
 }
 
 sub log_dns
