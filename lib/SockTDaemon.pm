@@ -1,7 +1,8 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004 Olivier Diserens <olivier@diserens.ch>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -10,12 +11,12 @@
 #
 #   This program is distributed in the hope that it will be useful,
 #   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 #   GNU General Public License for more details.
 #
 #   You should have received a copy of the GNU General Public License
 #   along with this program; if not, write to the Free Software
-#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 ##  SockTDaemon:
 ##    Provides implementation of a socket base multithreaded daemon, relying on PreForkTDaemon
@@ -24,14 +25,16 @@
 ##         initThreadHook: thread initialization implementation
 ##         exitThreadHook: thread exiting implementation. Cleanup on TERM signal.
 ##         dataRead: action on data received by socket. Expect answer to send back to client.
-##
-#
 
+package SockTDaemon;
 
-package          SockTDaemon;
+use v5.36;
+use strict;
+use warnings;
+use utf8;
+
 use threads;
 use threads::shared;
-use strict;
 use IO::Socket;
 use IO::Select;
 use Time::HiRes qw(gettimeofday tv_interval);
@@ -42,8 +45,7 @@ require PreForkTDaemon;
 our @ISA = "PreForkTDaemon";
 
 my %global_shared : shared;
-my %daemoncounts_ : shared =
-  ( 'starttime' => 0, 'stoptime' => 0, 'queries' => 0 );
+my %daemoncounts_ : shared = ( 'starttime' => 0, 'stoptime' => 0, 'queries' => 0 );
 my $server : shared;
 
 sub new {
@@ -76,8 +78,7 @@ sub new {
         $sockspec_this->{$sk} = $spec_this{$sk};
     }
 
-    my $this =
-      $class->SUPER::create( $daemonname, $conffilepath, $sockspec_this );
+    my $this = $class->SUPER::create( $daemonname, $conffilepath, $sockspec_this );
 
     $daemoncounts_{'realstarttime'} = time;
 
@@ -101,9 +102,7 @@ sub preForkHook() {
         Local  => $this->{socketpath},
         Type   => SOCK_STREAM,
         Listen => 50,
-      )
-      or die(
-        "Cannot listen on socket: " . $this->{socketpath} . ": " . $@ . "\n" );
+    ) or die( "Cannot listen on socket: $this->{socketpath}: " . $@ . "\n" );
 
     $this->{server}->autoflush(1);
     chmod 0777, $this->{socketpath};
@@ -164,8 +163,8 @@ sub mainLoopHook {
     while ( my $client = $this->{server}->accept() ) {
         $this->{socks_status}{$client} = 'connected';
 
-    	if (\$client =~ m/REF(0x[a-f0-9]+)/  ) {
-        	print STDERR "Got conenction from: ".$1."\n";
+        if (\$client =~ m/REF(0x[a-f0-9]+)/  ) {
+            print STDERR "Got conenction from: ".$1."\n";
         }
         my $client_on = 1;
         $SIG{'PIPE'} = sub {
@@ -282,4 +281,5 @@ sub exitThreadHook {
         'socket' );
     return;
 }
+
 1;

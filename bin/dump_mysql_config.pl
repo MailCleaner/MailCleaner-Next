@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004 Olivier Diserens <olivier@diserens.ch>
@@ -91,7 +91,7 @@ sub dump_mysql_file
 
     close $TEMPLATE;
     close $TARGET;
-    
+
     return 1;
 }
 

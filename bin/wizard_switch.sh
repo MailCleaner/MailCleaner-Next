@@ -84,7 +84,7 @@ while getopts "sbc:" OPTION; do
 done
 
 if [ ! -z "$enable" ] && [ "$flagStatus" -eq "1" ]; then
-	[ "$batch" != "true" ] && echo "You can't set and get a status at same time." 
+	[ "$batch" != "true" ] && echo "You can't set and get a status at same time."
 	usage
 	exit 0
 fi

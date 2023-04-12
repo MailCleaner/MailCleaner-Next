@@ -1,7 +1,8 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004 Olivier Diserens <olivier@diserens.ch>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -10,57 +11,61 @@
 #
 #   This program is distributed in the hope that it will be useful,
 #   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 #   GNU General Public License for more details.
 #
 #   You should have received a copy of the GNU General Public License
 #   along with this program; if not, write to the Free Software
-#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
-#
+#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-package          User;
-require          Exporter;
+package User;
+
+use v5.36;
+use strict;
+use warnings;
+use utf8;
+
 require          ReadConfig;
 require          SystemPref;
 require          Domain;
 require          PrefClient;
-use strict;
+require          Exporter;
 
 our @ISA        = qw(Exporter);
 our @EXPORT     = qw(create);
 our $VERSION    = 1.0;
 
+sub create
+{
+    my %prefs;
+    my %addresses;
+    my $username = shift;
+    my $domain = shift;
 
-sub create {
-  my %prefs;
-  my %addresses;
-  my $username = shift;
-  my $domain = shift;
+    my $this = {
+        id          => 0,
+        username    => '',
+        domain      => '',
+        prefs       => \%prefs,
+        addresses   => \%addresses,
+        d           => undef,
+        db          => undef
+    };
 
-  my $this = {
-       id => 0,
-       username => '',
-       domain => '',
-       prefs => \%prefs,
-       addresses => \%addresses,
-       d => undef,
-       db => undef
-       };
+    bless $this, "User";
 
-  bless $this, "User";
-
-  if (defined($username) && defined($domain)) {
-      $this->loadFromUsername($username, $domain);
-  } elsif (defined($username) && $username =~ m/^\d+$/) {
-      $this->loadFromId($username);
-  } elsif (defined($username) && $username =~ m/^\S+\@\S+$/) {
-      $this->loadFromLinkedAddress($username);
-  }
-  return $this;
+    if (defined($username) && defined($domain)) {
+        $this->loadFromUsername($username, $domain);
+    } elsif (defined($username) && $username =~ m/^\d+$/) {
+        $this->loadFromId($username);
+    } elsif (defined($username) && $username =~ m/^\S+\@\S+$/) {
+        $this->loadFromLinkedAddress($username);
+    }
+    return $this;
 }
 
-sub loadFromId {
+sub loadFromId
+{
     my $this = shift;
     my $id = shift;
 
@@ -72,7 +77,8 @@ sub loadFromId {
     $this->load($query);
 }
 
-sub loadFromUsername {
+sub loadFromUsername
+{
     my $this = shift;
     my $username = shift;
     my $domain = shift;
@@ -81,7 +87,8 @@ sub loadFromUsername {
     $this->load($query);
 }
 
-sub loadFromLinkedAddress {
+sub loadFromLinkedAddress
+{
     my $this = shift;
     my $email = shift;
 
@@ -95,13 +102,14 @@ sub loadFromLinkedAddress {
     $this->load($query);
 }
 
-sub load {
+sub load
+{
     my $this = shift;
     my $query = shift;
 
     if (!$this->{db}) {
-      require DB;
-      $this->{db} = DB::connect('slave', 'mc_config', 0);
+        require DB;
+        $this->{db} = DB::connect('slave', 'mc_config', 0);
     }
     my %userdata = $this->{db}->getHashRow($query);
     if (keys %userdata) {
@@ -112,27 +120,28 @@ sub load {
     return 0;
 }
 
-sub getAddresses {
+sub getAddresses
+{
     my $this = shift;
 
     if ($this->{id}) {
-      ## get registered addresses
-      if (!$this->{db}) {
-        require DB;
-        $this->{db} = DB::connect('slave', 'mc_config', 0);
-      }
-
-      my $query = "SELECT e.address, e.is_main FROM email e WHERE e.user=".$this->{'id'};
-      my @addresslist = $this->{db}->getListOfHash($query);
-      foreach my $regadd (@addresslist) {
-        $this->{addresses}->{$regadd->{'address'}} = 1;
-        if ($regadd->{is_main}) {
-            foreach my $add (keys %{$this->{addresses}}) {
-                $this->{addresses}->{$add} = 1;
-            }
-            $this->{addresses}->{$regadd->{'address'}} = 2;
+        ## get registered addresses
+        if (!$this->{db}) {
+            require DB;
+            $this->{db} = DB::connect('slave', 'mc_config', 0);
         }
-      }
+
+        my $query = "SELECT e.address, e.is_main FROM email e WHERE e.user=".$this->{'id'};
+        my @addresslist = $this->{db}->getListOfHash($query);
+        foreach my $regadd (@addresslist) {
+            $this->{addresses}->{$regadd->{'address'}} = 1;
+            if ($regadd->{is_main}) {
+                foreach my $add (keys %{$this->{addresses}}) {
+                    $this->{addresses}->{$add} = 1;
+                }
+                $this->{addresses}->{$regadd->{'address'}} = 2;
+            }
+        }
     }
 
     ## adding connector addresses
@@ -140,40 +149,41 @@ sub getAddresses {
         $this->{d} = Domain::create($this->{domain});
     }
     if ($this->{d}) {
-       if ($this->{d}->getPref('address_fetcher') eq 'ldap') {
-          require SMTPAuthenticator::LDAP;
-          my $serverstr =  $this->{d}->getPref('auth_server');
-          my $server = $serverstr;
-          my $port = 0;
-          if ($serverstr =~ /^(\S+):(\d+)$/) {
-            $server = $1;
-            $port = $2;
-          }
-          my $auth = SMTPAuthenticator::LDAP::create($server, $port, $this->{d}->getPref('auth_param'));
-          my @ldap_addesses;
-          if ($this->{username} ne '') {
-            @ldap_addesses = $auth->fetchLinkedAddressesFromUsername($this->{username});
-          } elsif (scalar(keys %{$this->{addresses}})) {
-            my @keys = keys %{$this->{addresses}};
-            @ldap_addesses = $auth->fetchLinkedAddressesFromEmail(pop(@keys));
-          }
-          if (!@ldap_addesses ) {
-              ## check for errors
-              if ($auth->{'error_text'} ne '') {
-                 #print STDERR "Got ldap error: ".$auth->{'error_text'}."\n";
-              }
-          } else {
-              foreach my $add (@ldap_addesses) {
-                  $this->{addresses}->{$add} = 1;
-              }
-          }
-       }
+        if ($this->{d}->getPref('address_fetcher') eq 'ldap') {
+            require SMTPAuthenticator::LDAP;
+            my $serverstr =  $this->{d}->getPref('auth_server');
+            my $server = $serverstr;
+            my $port = 0;
+            if ($serverstr =~ /^(\S+):(\d+)$/) {
+                $server = $1;
+                $port = $2;
+            }
+            my $auth = SMTPAuthenticator::LDAP::create($server, $port, $this->{d}->getPref('auth_param'));
+            my @ldap_addesses;
+            if ($this->{username} ne '') {
+                @ldap_addesses = $auth->fetchLinkedAddressesFromUsername($this->{username});
+            } elsif (scalar(keys %{$this->{addresses}})) {
+                my @keys = keys %{$this->{addresses}};
+                @ldap_addesses = $auth->fetchLinkedAddressesFromEmail(pop(@keys));
+            }
+            if (!@ldap_addesses ) {
+                ## check for errors
+                if ($auth->{'error_text'} ne '') {
+                    #print STDERR "Got ldap error: ".$auth->{'error_text'}."\n";
+                }
+            } else {
+                foreach my $add (@ldap_addesses) {
+                    $this->{addresses}->{$add} = 1;
+                }
+            }
+        }
     }
 
     return keys %{$this->{addresses}};
 }
 
-sub getMainAddress {
+sub getMainAddress
+{
     my $this = shift;
 
     if (!keys %{$this->{addresses}}) {
@@ -205,7 +215,8 @@ sub getMainAddress {
     return undef;
 }
 
-sub getPref {
+sub getPref
+{
     my $this = shift;
     my $pref = shift;
 
@@ -220,7 +231,7 @@ sub getPref {
     if (!$this->{d} && $this->{domain}) {
         $this->{d} = Domain::create($this->{domain});
         if ($this->{d}) {
-          return $this->{d}->getPref($pref);
+            return $this->{d}->getPref($pref);
         }
     }
     if ($this->{d}) {
@@ -229,7 +240,8 @@ sub getPref {
     return undef;
 }
 
-sub loadPrefs {
+sub loadPrefs
+{
     my $this = shift;
 
     if (!$this->{id}) {
@@ -252,3 +264,4 @@ sub loadPrefs {
     }
 }
 
+1;

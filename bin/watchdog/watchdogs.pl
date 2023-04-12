@@ -1,5 +1,27 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
+#
+#   Mailcleaner - SMTP Antivirus/Antispam Gateway
+#   Copyright (C) 2004 Olivier Diserens <olivier@diserens.ch>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+use v5.36;
 use strict;
+use warnings;
+use utf8;
 
 use File::Basename;
 use POSIX;
@@ -25,7 +47,8 @@ my $WATCHDOG_OUTFILE                = WATCHDOG_TMP . $script_name. '___' .$mode.
 # SUBS
 ######
 # Définition de valeurs par défaut pour tous les paramètres configurables
-sub valeur_par_defaut {
+sub valeur_par_defaut
+{
     my ($current_process) = @_;
 
     $current_process->{TIMEOUT}         = 0;
@@ -38,18 +61,19 @@ sub valeur_par_defaut {
 
 ###
 # Retourne 0 si ne peut pas ouvrir le fichier (1, @contenu_du_fichier) sinon
-sub Slurp_file {
+sub Slurp_file
+{
     my ($file) = @_;
     my @contains = ();
 
     ###
     # lecture totale du fichier avant de l'analyser
-    if ( ! open(FILE, '<', $file) ) {
+    if ( ! open(my $FILE, '<', $file) ) {
         return (0, @contains);
     }
 
-    @contains = <FILE>;
-    close(FILE);
+    @contains = <$FILE>;
+    close($FILE);
     chomp(@contains);
 
     return(1, @contains)
@@ -58,7 +82,8 @@ sub Slurp_file {
 ###
 # Charge la configuration depuis le fichier $fichier_params.
 # Chaque ligne du type cle=valeur ajoute ce couple cle/valeur au hash %$current_process
-sub chargement_params {
+sub chargement_params
+{
     my ($fichier_params, $current_process) = @_;
 
     my @return;
@@ -89,8 +114,8 @@ sub chargement_params {
         chomp($cle);chomp($valeur);
 
         # partie ds cles generiques
-        if ( $cle eq 'TIMEOUT' ) { 
-            $current_process->{TIMEOUT} = $valeur 
+        if ( $cle eq 'TIMEOUT' ) {
+            $current_process->{TIMEOUT} = $valeur
         }
         if ( $cle eq 'EXEC_MODE' ) {
             $current_process->{EXEC_MODE} = $valeur
@@ -112,11 +137,10 @@ sub chargement_params {
 
 ###
 # Rajoute une ligne au fichier $MYOUTFILE
-sub MC_log {
-    my $MYOUTFILE;
-
+sub MC_log
+{
     # Fichier de sortie pour Watchdog
-    open($MYOUTFILE, '>>', $WATCHDOG_OUTFILE);
+    open(my $MYOUTFILE, '>>', $WATCHDOG_OUTFILE);
 
     my ($data) = @_;
     print $MYOUTFILE $data ."\n";
@@ -241,9 +265,9 @@ foreach my $current_process (@processes) {
 
             $current_process->{pid} = $pid;
             # créer le fichier process.pid
-            open(OUTFILE, '>', $current_process->{pid_file});
-            print OUTFILE $pid;
-            close(OUTFILE);
+            open(my $OUTFILE, '>', $current_process->{pid_file});
+            print $OUTFILE $pid;
+            close($OUTFILE);
         # Execution séquentielle
         } else {
             system($commande);

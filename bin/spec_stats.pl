@@ -87,7 +87,7 @@ sub get_stats {
         $sql{4} = "SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL $days DAY), '%e %M %Y') d, COUNT(*) c FROM maillog WHERE date > DATE_SUB(NOW(), INTERVAL $days+1 DAY) AND isspam=0 AND virusinfected=0 AND nameinfected=0 AND otherinfected=0";
     } else {
         $sql{1} = "SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL $days DAY), '%e %M %Y') d, COUNT(*) c FROM maillog WHERE date=DATE_SUB(NOW(), INTERVAL $days DAY)";
-        $sql{2} = "SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL $days DAY), '%e %M %Y') d, COUNT(*) c FROM maillog WHERE date=DATE_SUB(NOW(), INTERVAL $days DAY) AND isspam=1";    
+        $sql{2} = "SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL $days DAY), '%e %M %Y') d, COUNT(*) c FROM maillog WHERE date=DATE_SUB(NOW(), INTERVAL $days DAY) AND isspam=1";
         $sql{3} = "SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL $days DAY), '%e %M %Y') d, COUNT(*) c FROM maillog WHERE date=DATE_SUB(NOW(), INTERVAL $days DAY) AND virusinfected=1";
         $sql{4} = "SELECT DATE_FORMAT(DATE_SUB(NOW(), INTERVAL $days DAY), '%e %M %Y') d, COUNT(*) c FROM maillog WHERE date=DATE_SUB(NOW(), INTERVAL $days DAY) AND isspam=0 AND virusinfected=0 AND nameinfected=0 AND otherinfected=0";
     }

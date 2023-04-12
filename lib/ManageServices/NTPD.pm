@@ -1,7 +1,7 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
-#   Copyright (C) 2021 John Mertz <git@john.me.tz>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -16,78 +16,78 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program; if not, write to the Free Software
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
 
 package ManageServices::NTPD;
 
+use v5.36;
 use strict;
 use warnings;
+use utf8;
 
 our @ISA = "ManageServices";
 
 sub init
 {
-	my $module = shift;
-	my $class = shift;
-	my $self = $class->SUPER::createModule( config($class) );
-	bless $self, 'ManageServices::NTPD';
+    my $module = shift;
+    my $class = shift;
+    my $self = $class->SUPER::createModule( config($class) );
+    bless $self, 'ManageServices::NTPD';
 
-	return $self;
+    return $self;
 }
 
 sub config
 {
-	my $class = shift;
+    my $class = shift;
 
-	my $config = {
-		'name' 		=> 'ntpd',
-		'cmndline'	=> '/usr/sbin/ntpd',
-		'cmd'		=> '/usr/sbin/ntpd',
-		'pidfile'	=> '/var/run/ntpd.pid',
-		'user'		=> 'ntp',
-		'group'		=> 'ntp',
-		'daemonize'	=> 'no',
-		'forks'		=> 0,
-		'syslog_facility' => 'local1',
-		'debug'		=> 0,
-		'log_sets'	=> 'all',
-		'loglevel'	=> 'info',
-		'timeout'	=> 5,
-		'actions'	=> {},
-	};
-	
-	return $config;
+    my $config = {
+        'name'              => 'ntpd',
+        'cmndline'          => '/usr/sbin/ntpd',
+        'cmd'               => '/usr/sbin/ntpd',
+        'pidfile'           => '/var/run/ntpd.pid',
+        'user'              => 'ntp',
+        'group'             => 'ntp',
+        'daemonize'         => 'no',
+        'forks'             => 0,
+        'syslog_facility'   => 'local1',
+        'debug'             => 0,
+        'log_sets'          => 'all',
+        'loglevel'          => 'info',
+        'timeout'           => 5,
+        'actions'           => {},
+    };
+
+    return $config;
 }
 
 sub setup
 {
-	my $self = shift;
-	my $class = shift;
+    my $self = shift;
+    my $class = shift;
 
-	$self->{'cmd'} .= ' -p ' . $self->{'pidfile'} . ' -g -u ' .
-		$self->{'uid'} . ':' . $self->{'gid'};
+    $self->{'cmd'} .= " -p $self->{'pidfile'} -g -u $self->{'uid'}:$self->{'gid'}";
 
-	return 1;
+    return 1;
 }
 
 sub preFork
 {
-	my $self = shift;
-	my $class = shift;
+    my $self = shift;
+    my $class = shift;
 
-	return 0;
+    return 0;
 }
 
 sub mainLoop
 {
-	my $self = shift;
-	my $class = shift;
-	
-	my $cmd = $self->{'cmd'};
-	$self->doLog("Running $cmd", 'daemon');
-	system("$cmd");
+    my $self = shift;
+    my $class = shift;
 
-	return 1;
+    my $cmd = $self->{'cmd'};
+    $self->doLog("Running $cmd", 'daemon');
+    system("$cmd");
+
+    return 1;
 }
 
 1;

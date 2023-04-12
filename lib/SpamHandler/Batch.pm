@@ -1,7 +1,8 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004 Olivier Diserens <olivier@diserens.ch>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -19,20 +20,24 @@
 #
 #
 #   This module will just read the configuration file
-#
 
-package          SpamHandler::Batch;
+package SpamHandler::Batch;
+
+use v5.36;
+use strict;
+use warnings;
+use utf8;
+
 require Exporter;
 require SpamHandler::Message;
 use Time::HiRes qw(gettimeofday tv_interval);
-
-use strict;
 
 our @ISA     = qw(Exporter);
 our @EXPORT  = qw(new);
 our $VERSION = 1.0;
 
-sub new {
+sub new
+{
 	my $dir    = shift;
 	my $daemon = shift;
 	my %timers;
@@ -54,7 +59,8 @@ sub new {
 	return $this;
 }
 
-sub prepareRun {
+sub prepareRun
+{
 	my $this = shift;
 
 	#generate a random id
@@ -63,7 +69,8 @@ sub prepareRun {
 	return 1;
 }
 
-sub getMessagesToProcess {
+sub getMessagesToProcess
+{
 	my $this = shift;
 
 	$this->{daemon}->profile_start('BATCHLOAD');
@@ -119,7 +126,8 @@ sub getMessagesToProcess {
 	return 1;
 }
 
-sub addMessage {
+sub addMessage
+{
 	my $this = shift;
 	my $id   = shift;
 
@@ -127,7 +135,8 @@ sub addMessage {
 	$this->{messages}{$id} = $id;
 }
 
-sub run {
+sub run
+{
 	my $this = shift;
 
 	$this->{daemon}->profile_start('BATCHRUN');
@@ -185,7 +194,8 @@ sub run {
 	);
 }
 
-sub addTimers {
+sub addTimers
+{
 	my $this      = shift;
 	my $msgtimers = shift;
 
@@ -201,14 +211,16 @@ sub addTimers {
 #######
 ## profiling timers
 
-sub startTimer {
+sub startTimer
+{
 	my $this  = shift;
 	my $timer = shift;
 
 	$this->{'timers'}{$timer} = [gettimeofday];
 }
 
-sub endTimer {
+sub endTimer
+{
 	my $this  = shift;
 	my $timer = shift;
 
@@ -216,12 +228,14 @@ sub endTimer {
 	$this->{'timers'}{ 'd_' . $timer } = ( int( $interval * 10000 ) / 10000 );
 }
 
-sub getTimers {
+sub getTimers
+{
 	my $this = shift;
 	return $this->{'timers'};
 }
 
-sub logTimers {
+sub logTimers
+{
 	my $this = shift;
 
 	foreach my $t ( keys %{ $this->{'timers'} } ) {

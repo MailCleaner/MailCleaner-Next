@@ -1,7 +1,8 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004 Olivier Diserens <olivier@diserens.ch>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -19,16 +20,20 @@
 #
 #
 #   This module will just read the configuration file
-#
 
 package          Email;
+
+use v5.36;
+use strict;
+use warnings;
+use utf8;
+
 require          Exporter;
 require          ReadConfig;
 require			 SystemPref;
 require          Domain;
 require          PrefClient;
 require          User;
-use strict;
 
 our @ISA        = qw(Exporter);
 our @EXPORT     = qw(create getPref);

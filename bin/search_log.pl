@@ -401,7 +401,7 @@ sub searchSpamHandler
 {
     my $file = shift;
     my $store = shift;
-    
+
     my $fh;
     my $ffile = $file;
     return if ! -f $file;
@@ -550,7 +550,7 @@ sub printBatchResult
         }
         if ($line =~ m/to\ \S+\ is\ (not spam|spam).*Newsl \(score=([^,]*), required=([^,]*)/) {
             if ( int($2) >= int($3) ) {
-        
+
                 if ($_spam eq 1) {
                     $_spam = 3;
                 } else {
@@ -578,7 +578,7 @@ sub printBatchResult
         if ($line =~ m/(Saved entire message to|Saved infected)/ ) {
             $_content = 'Quarantined';
         }
-    
+
         if ($line =~ m/::INFECTED:: (\S+) :: .\/\S+\/(\S+)/ ) {
             $_contentreport = "Virus found: ".$1." in file ".$2;
             $_content = 'Deleted';

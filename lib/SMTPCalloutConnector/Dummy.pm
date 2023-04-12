@@ -1,7 +1,8 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004 Olivier Diserens <olivier@diserens.ch>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -16,18 +17,23 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program; if not, write to the Free Software
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
 
-package          SMTPCalloutConnector::Dummy;
-require          Exporter;
+package SMTPCalloutConnector::Dummy;
+
+use v5.36;
 use strict;
+use warnings;
+use utf8;
+
+require Exporter;
 
 our @ISA        = qw(Exporter);
 our @EXPORT     = qw(create authenticate);
 our $VERSION    = 1.0;
 
 
-sub new {
+sub new
+{
    my $class = shift;
    my $paramsh = shift;
    my @params = @{$paramsh};
@@ -42,7 +48,8 @@ sub new {
   return $this;
 }
 
-sub verify {
+sub verify
+{
 	my $this = shift;
 	my $address = shift;
 
@@ -50,13 +57,15 @@ sub verify {
     return 1;
 }
 
-sub isUseable {
+sub isUseable
+{
 	my $this = shift;
 	
 	return $this->{useable};
 }
 
-sub lastMessage {
+sub lastMessage
+{
 	my $this = shift;
 	
 	return $this->{last_message};

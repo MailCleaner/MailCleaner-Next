@@ -38,11 +38,11 @@ my_own_exit()
 DEADLINE=7
 # First, check if Kaspersky is installed
 if dpkg-query -s kaspersky-64-2.0 | grep "Status: install ok installed"; then
-   if ! ls /opt/kaspersky-updater/bin/*.key >/dev/null 2>&1; then 
+   if ! ls /opt/kaspersky-updater/bin/*.key >/dev/null 2>&1; then
         echo "License key not found" > $OUT_FILE
         my_own_exit "1"
    fi
-   if /opt/kaspersky-updater/bin/keepup2date8.sh --licinfo --simplelic | grep "0x00000000. Success"; then 
+   if /opt/kaspersky-updater/bin/keepup2date8.sh --licinfo --simplelic | grep "0x00000000. Success"; then
      expirationDate=`/opt/kaspersky-updater/bin/keepup2date8.sh --licinfo --simplelic | sed  -n '8p' | awk -F': ' '{print $2}'`
      expirationTime=`echo $expirationDate | sed -re 's/(.*)\/(.*)\/(.*)/\2\/\1\/\3/g' | xargs date +"%s" -d`
      currentTime=`date +"%s"`

@@ -67,7 +67,7 @@ my @hosts = $slave_db->getListOfHash("SELECT id, hostname FROM slave");
 ## main hosts loops
 foreach my $host (@hosts) {
     my $hostname = $host->{'hostname'};
-    my $host_stats = RRDStats::New($host->{'hostname'});
+    my $host_stats = RRDStats::new($host->{'hostname'});
     #print "processing: $hostname\n";
 
     for my $stattype (@stats) {
@@ -88,7 +88,7 @@ my %collections;
 my @collections_list = $slave_db->getListOfHash("SELECT id, name, type FROM rrd_stats");
 my %dynamic_oids;
 foreach my $collection (@collections_list) {
-    my $c = RRDArchive::New($collection->{'id'}, $collection->{'name'}, $collection->{'type'});
+    my $c = RRDArchive::new($collection->{'id'}, $collection->{'name'}, $collection->{'type'});
     if (keys %dynamic_oids < 1) {
         $c->getDynamicOids(\%dynamic_oids);
 

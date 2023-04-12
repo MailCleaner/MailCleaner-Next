@@ -1,10 +1,10 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004-2014 Olivier Diserens <olivier@diserens.ch>
 #   Copyright (C) 2015-2017 Florian Billebault <florian.billebault@gmail.com>
 #   Copyright (C) 2015-2017 Mentor Reka <reka.mentor@gmail.com>
-#   Copyright (C) 2020 John Mertz <git@john.me.tz>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -22,9 +22,14 @@
 #
 #
 #   This module will just read the configuration file
-#
 
 package SpamHandler::Message;
+
+use v5.36;
+use strict;
+use warnings;
+use utf8;
+
 require Exporter;
 require Email;
 require ReadConfig;
@@ -32,15 +37,14 @@ require Net::SMTP;
 use File::Path qw(mkpath);
 use Time::HiRes qw(gettimeofday tv_interval);
 
-use strict;
-
 use threads;
 
 our @ISA     = qw(Exporter);
 our @EXPORT  = qw(new load process purge);
 our $VERSION = 1.0;
 
-sub new {
+sub new
+{
     my $id      = shift;
     my $daemon  = shift;
     my $batchid = shift;
@@ -110,7 +114,8 @@ sub new {
     return $this;
 }
 
-sub load {
+sub load
+{
     my $this = shift;
 
     $this->startTimer('Message load');
@@ -151,7 +156,8 @@ sub load {
     $this->endTimer('Message load');
 }
 
-sub process {
+sub process
+{
     my $this = shift;
 
     $this->startTimer('Message processing');
@@ -438,7 +444,8 @@ sub process {
     return 1;
 }
 
-sub loadEnvFile() {
+sub loadEnvFile
+{
     my $this = shift;
 
     open( ENV, $this->{envfile} ) or return 0;
@@ -464,7 +471,8 @@ sub loadEnvFile() {
     }
 }
 
-sub loadMsgFile() {
+sub loadMsgFile
+{
     my $this = shift;
 
     my $has_subject = 0;
@@ -555,7 +563,8 @@ sub loadMsgFile() {
     $this->loadScores();
 }
 
-sub loadScores {
+sub loadScores
+{
     my $this = shift;
     my $line;
 
@@ -661,7 +670,8 @@ sub loadScores {
     return 1;
 }
 
-sub deleteFiles {
+sub deleteFiles
+{
     my $this = shift;
 
     unlink( $this->{envfile} );
@@ -670,7 +680,8 @@ sub deleteFiles {
     return 1;
 }
 
-sub purge {
+sub purge
+{
     my $this = shift;
 
     delete( $this->{fullheaders} );
@@ -683,7 +694,8 @@ sub purge {
     }
 }
 
-sub manageUncheckeable {
+sub manageUncheckeable
+{
     my $this   = shift;
     my $status = shift;
 
@@ -698,7 +710,8 @@ sub manageUncheckeable {
     return 1;
 }
 
-sub manageWhitelist {
+sub manageWhitelist
+{
     my $this       = shift;
     my $whitelevel = shift;
     my $newslevel  = shift || undef;
@@ -725,7 +738,8 @@ sub manageWhitelist {
     return 1;
 }
 
-sub manageBlacklist {
+sub manageBlacklist
+{
     my $this       = shift;
     my $blacklevel = shift;
 
@@ -742,7 +756,8 @@ sub manageBlacklist {
     return 1;
 }
 
-sub manageTagMode {
+sub manageTagMode
+{
     my $this = shift;
     my $tag  = shift;
 
@@ -754,7 +769,8 @@ sub manageTagMode {
     return 1;
 }
 
-sub sendMeAnyway {
+sub sendMeAnyway
+{
     my $this = shift;
 
     $this->{daemon}->doLog(
@@ -904,7 +920,8 @@ sub sendMeAnyway {
     return 1;
 }
 
-sub getRawMessage {
+sub getRawMessage
+{
     my $this = shift;
 
     my $msg = $this->{fullheaders};
@@ -914,7 +931,8 @@ sub getRawMessage {
     return $msg;
 }
 
-sub quarantine {
+sub quarantine
+{
     my $this = shift;
 
     $this->startTimer('Message quarantining');
@@ -991,7 +1009,8 @@ sub quarantine {
     return 1;
 }
 
-sub log {
+sub log
+{
     my $this      = shift;
     my $dbname    = shift;
     my $inmasterh = shift;
@@ -1068,7 +1087,8 @@ sub log {
     return $loggedonce;
 }
 
-sub decisiveModule {
+sub decisiveModule
+{
     my $this = shift;
     my ($module, $line) = @_;
 
@@ -1117,14 +1137,16 @@ sub decisiveModule {
 #######
 ## profiling timers
 
-sub startTimer {
+sub startTimer
+{
     my $this  = shift;
     my $timer = shift;
 
     $this->{'timers'}{$timer} = [gettimeofday];
 }
 
-sub endTimer {
+sub endTimer
+{
     my $this  = shift;
     my $timer = shift;
 
@@ -1133,7 +1155,8 @@ sub endTimer {
     $this->{'timers'}{ 'd_' . $timer } = ( int( $interval * 10000 ) / 10000 );
 }
 
-sub getTimers {
+sub getTimers
+{
     my $this = shift;
     return $this->{'timers'};
 }

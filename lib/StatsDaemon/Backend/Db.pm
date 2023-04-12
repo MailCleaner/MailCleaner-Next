@@ -1,7 +1,8 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004 Olivier Diserens <olivier@diserens.ch>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -16,13 +17,15 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this program; if not, write to the Free Software
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
-#
 
 package StatsDaemon::Backend::Db;
 
-require Exporter;
+use v5.36;
 use strict;
+use warnings;
+use utf8;
+
+require Exporter;
 use threads;
 use threads::shared;
 require DB;
@@ -35,20 +38,21 @@ my $_current_table : shared = '';
 my $_current_table_exists : shared = 0;
 my $_current_table_creating : shared = 0;
 
-sub new {
+sub new
+{
     my $class = shift;
     my $daemon = shift;
 
-    my $this = {	
-    	'class' => $class,
-    	'daemon' => $daemon
+    my $this = {
+        'class' => $class,
+        'daemon' => $daemon
     };
     bless $this, $class;
 
-   foreach my $option (keys %{ $this->{daemon} }) {
-       if (defined($this->{$option})) {
-           $this->{$option} = $this->{daemon}->{$option};
-       }
+    foreach my $option (keys %{ $this->{daemon} }) {
+        if (defined($this->{$option})) {
+            $this->{$option} = $this->{daemon}->{$option};
+        }
     }
 
     $this->doLog("backend loaded", 'statsdaemon');
@@ -57,35 +61,35 @@ sub new {
     return $this;
 }
 
-sub threadInit {
-	my $this = shift;
-	
-	$this->doLog("backend thread initialization", 'statsdaemon');
-	$this->connectBackend();
+sub threadInit
+{
+    my $this = shift;
+
+    $this->doLog("backend thread initialization", 'statsdaemon');
+    $this->connectBackend();
 }
 
-sub accessFlatElement {
-	my $this = shift;
-	my $element = shift;
-	
-	my $value = 0;
-	
-	if ( $_current_table_exists ) {
+sub accessFlatElement
+{
+    my $this = shift;
+    my $element = shift;
+
+    my $value = 0;
+
+    if ( $_current_table_exists ) {
             my $query =
-                "SELECT s.id as id, d.value as value FROM "
-              . $_current_table
-              . " d, stats_subject s WHERE s.id=d.subject AND s.subject='"
-              . $element
-              . "' AND d.day="
-              . $this->{daemon}->getCurrentDate()->{'day'};
+                "SELECT s.id as id, d.value as value FROM " .
+                $_current_table .
+                " d, stats_subject s WHERE s.id=d.subject AND s.subject='" .
+                $element .
+                "' AND d.day=" .
+                $this->{daemon}->getCurrentDate()->{'day'};
             $this->{daemon}->addStat( 'backend_read', 1 );
             return '_NOBACKEND' if ( !$this->connectBackend() );
             my %res = $this->{db}->getHashRow($query);
             $this->doLog( 'Query executed: '.$query, 'statsdaemon', 'debug');
             if ( $res{'id'} && $res{'value'} ) {
-            	
                 $this->{data}->{$element}->{'stable_id'} = $res{'id'};
-
                 $value = $res{'value'};
             }
             $this->doLog( 'loaded data for ' . $element . ' from backend',
@@ -94,11 +98,12 @@ sub accessFlatElement {
      return $value;
 }
 
-sub stabilizeFlatElement {
-	my $this = shift;
-	my $element = shift;
+sub stabilizeFlatElement
+{
+    my $this = shift;
+    my $element = shift;
 
-	my $table = '';
+    my $table = '';
     if ( $_current_table_exists ) {
         $table = $_current_table;
     }
@@ -174,15 +179,15 @@ sub stabilizeFlatElement {
 
     ## update or insert the value
     my $query =
-        "INSERT INTO " . $table
-      . " SET day="
-      . $day
-      . ", subject="
-      . $this->{daemon}->getElementValueByName($element, 'stable_id')
-      . ", value="
-      . $this->{daemon}->getElementValueByName($element, 'value')
-      . " ON DUPLICATE KEY UPDATE value="
-      . $this->{daemon}->getElementValueByName($element, 'value');
+        "INSERT INTO " . $table .
+        " SET day=" .
+        $day .
+        ", subject=" .
+        $this->{daemon}->getElementValueByName($element, 'stable_id') .
+        ", value=" .
+        $this->{daemon}->getElementValueByName($element, 'value') .
+        " ON DUPLICATE KEY UPDATE value=" .
+        $this->{daemon}->getElementValueByName($element, 'value');
     return '_NOBACKEND' if ( !$this->connectBackend() );
     if ( !$this->{db}->execute($query) ) {
         $this->doLog( "Could not stabilize statistic with query: '$query'",
@@ -195,17 +200,18 @@ sub stabilizeFlatElement {
     return 'STABILIZED';
 }
 
-sub getStats {
-	my $this = shift;
-	my $start = shift;
-	my $stop = shift;
-	my $what = shift;
-	my $data = shift;
-	
-	## defs
+sub getStats
+{
+    my $this = shift;
+    my $start = shift;
+    my $stop = shift;
+    my $what = shift;
+    my $data = shift;
+
+    ## defs
     my $base_subject = '---';
-	
-	if ( $start !~ /(\d{4})(\d{2})(\d{2})/ ) {
+
+    if ( $start !~ /(\d{4})(\d{2})(\d{2})/ ) {
         return '_BADSTARTDATE';
     }
     my $start_table = $1 . $2;
@@ -241,18 +247,12 @@ sub getStats {
         my %sub;
         if ( $what !~ /\*/ ) {
             if ( $what =~ /^(\S+)@(\S+)/ ) {
-            #    $sub{'sub'} = $base_subject . ':' . $2 . ':' . $1 . ':%';
-            #    $sub{'neg'} = $sub{'sub'} . ':%';
                  $sub{'sub'} = 'user:'.$2.':'.$1.':%';
             }
             elsif ( $what eq "_global" ) {
-            #    $sub{'sub'} = $base_subject . ":%";
-            #    $sub{'neg'} = $sub{'sub'} . ':%';
                  $sub{'sub'} ='global:%';
             }
             else {
-            #    $sub{'sub'} = $base_subject . ':' . $what . ":%";
-            #    $sub{'neg'} = $sub{'sub'} . ':%';
                  $sub{'sub'} = 'domain:'.$what.":%";
             }
         }
@@ -261,30 +261,18 @@ sub getStats {
             # find all subjects for * queries
             if ( $what =~ /^\*@(\S+)/ ) {
                 my $dom = $1;
-                ## push domain itself
                 my %dsub;
-                #$dsub{'sub'} = $base_subject . ':' . $dom . ':%';
-                #$dsub{'neg'} = $dsub{'sub'} . ':%';
                 $dsub{'sub'} = 'domain:'.$dom.':%';
 
                 push @subjects, \%dsub;
 
-                ## then subject
-                #$sub{'sub'} = $base_subject . ':' . $dom . ':%:%';
-                #$sub{'neg'} = $sub{'sub'} . ':%';
                 $sub{'sub'} = 'user:'.$dom.":%";
             }
             else {
-                ## push global
                 my %gsub;
-                #$gsub{'sub'} = $base_subject . ":%";
-                #$gsub{'neg'} = $gsub{'sub'} . ':%';
                 $gsub{'sub'} = 'global:%';
                 push @subjects, \%gsub;
 
-                ## then subject
-                #$sub{'sub'} = $base_subject . ':%:%';
-                #$sub{'neg'} = $sub{'sub'} . ':%';
                 $sub{'sub'} = 'domain:%';
             }
         }
@@ -311,28 +299,15 @@ sub getStats {
             }
 
             foreach my $func ( 'SUM', 'MAX' ) {
-                my $query =
-                    "SELECT s.subject, " . $func
-                  . "(d.value) sm FROM stats_subject s LEFT JOIN stats_$table d ON ";
+                my $query = "SELECT s.subject, $func (d.value) sm FROM stats_subject s LEFT JOIN stats_$table d ON ";
                 $query .= "d.subject=s.id ";
-                $query .= $day_where
-                  ;    ## thanks Raf for this one ! Major speed improvement
-                #$query .= " WHERE ( s.subject NOT LIKE '" . $sub{'neg'} . "' ";
-                #$query .= "AND s.subject LIKE '" . $sub{'sub'} . "' ";
-                #if ( $func eq 'SUM' ) {
-                #    $query .=
-#"AND s.subject NOT LIKE '%domain' AND s.subject NOT LIKE '%user' ) ";
-#                }
-#                else {
-#                    $query .=
-#"AND ( s.subject LIKE '%domain' OR s.subject LIKE '%user' ) ) ";
-#                }
+                $query .= $day_where;
 
                 $query .= " WHERE s.subject LIKE '" . $sub{'sub'} . "' ";
                 if ( $func eq 'SUM' ) {
-                     $query .= 	"AND s.subject NOT LIKE '%domain' AND s.subject NOT LIKE '%user' ";
+                     $query .= "AND s.subject NOT LIKE '%domain' AND s.subject NOT LIKE '%user' ";
                 } else {
-                	 $query .=  "AND ( s.subject LIKE '%domain' OR s.subject LIKE '%user' ) ";
+                     $query .= "AND ( s.subject LIKE '%domain' OR s.subject LIKE '%user' ) ";
                 }
 
                 $query .= " group by d.subject";
@@ -365,19 +340,22 @@ sub getStats {
     return 'OK';
 }
 
-sub announceMonthChange {
-	my $this = shift;
-	
-	$_current_table_exists = 0;
+sub announceMonthChange
+{
+    my $this = shift;
+
+    $_current_table_exists = 0;
 }
 
-sub announceDayChange {
-	my $this = shift;
-	
+sub announceDayChange
+{
+    my $this = shift;
+
 }
 
 ## Database management
-sub connectBackend {
+sub connectBackend
+{
     my $this = shift;
 
     return 1 if ( defined( $this->{db} ) && $this->{db}->ping() );
@@ -400,7 +378,8 @@ sub connectBackend {
     return 1;
 }
 
-sub createCurrentTable() {
+sub createCurrentTable
+{
     my $this = shift;
 
     if ( $_current_table_creating == 1 ) {
@@ -452,12 +431,13 @@ sub createCurrentTable() {
     return 1;
 }
 
-sub doLog {
-	my $this = shift;
+sub doLog
+{
+    my $this = shift;
     my $message   = shift;
     my $given_set = shift;
     my $priority  = shift;
-	
+
     my $msg = $this->{class}." ".$message;
     if ($this->{daemon}) {
         $this->{daemon}->doLog($msg, $given_set, $priority);

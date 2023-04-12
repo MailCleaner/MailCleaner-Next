@@ -153,7 +153,7 @@ sub send_message
         Type => 'application/text',
         Path => $msg_file,
         Filename => 'message.txt'
-    ) or die "ERRORSENDING $for\n";    
+    ) or die "ERRORSENDING $for\n";
     my $message_body = $mime_msg->body_as_string();
 
     if ($mime_msg->send()) {

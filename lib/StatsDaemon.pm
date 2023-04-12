@@ -1,7 +1,8 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004 Olivier Diserens <olivier@diserens.ch>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -10,31 +11,32 @@
 #
 #   This program is distributed in the hope that it will be useful,
 #   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 #   GNU General Public License for more details.
 #
 #   You should have received a copy of the GNU General Public License
 #   along with this program; if not, write to the Free Software
-#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
-#
+#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 package StatsDaemon;
+
+use v5.36;
+use strict;
+use warnings;
+use utf8;
 
 use threads;
 use threads::shared;
 
-require Exporter;
 use Time::HiRes qw(gettimeofday tv_interval);
 require ReadConfig;
 require DB;
 use Digest::MD5 qw(md5_hex);
-use strict;
 use Data::Dumper;
 use Date::Calc qw(Add_Delta_Days Today);
 use Devel::Size qw(size total_size);
-
 require SockTDaemon;
+require Exporter;
 
 our @ISA = "SockTDaemon";
 
@@ -63,7 +65,8 @@ my $changing_day_ : shared        = 0;
 my $last_stable_ : shared         = 0;
 my $set_socks_available_ : shared = 0;
 
-sub new {
+sub new
+{
     my $class        = shift;
     my $myspec_thish = shift;
     my %myspec_this;
@@ -121,13 +124,14 @@ sub new {
     return $this;
 }
 
-sub preForkHook {
+sub preForkHook
+{
    my $this = shift;
 
    my $backend_class = 'StatsDaemon::Backend::'.ucfirst($this->{backend_type});
 
    if (! eval "require $backend_class") {
-     die('Backend type does not exists: '.$backend_class);
+       die('Backend type does not exists: '.$backend_class);
    }
    $this->{backend_object} = $backend_class->new($this);
 
@@ -135,7 +139,8 @@ sub preForkHook {
 }
 
 ### define specific hooks
-sub exitHook {
+sub exitHook
+{
    my $this = shift;
 
    $this->SUPER::exitHook();
@@ -146,7 +151,8 @@ sub exitHook {
 
 }
 
-sub initThreadHook {
+sub initThreadHook
+{
     my $this = shift;
 
     $this->doLog( 'StatsDaemon thread initialization...', 'statsdaemon' );
@@ -157,19 +163,22 @@ sub initThreadHook {
     return;
 }
 
-sub exitThreadHook {
+sub exitThreadHook
+{
     my $this = shift;
 
     $this->doLog( 'StatsDaemon thread exiting hook...', 'statsdaemon' );
     return;
 }
 
-sub postKillHook {
+sub postKillHook
+{
     my $this = shift;
     return;
 }
 
-sub statusHook {
+sub statusHook
+{
     my $this = shift;
 
     my $res = '-------------------'."\n";
@@ -190,14 +199,17 @@ sub statusHook {
 }
 
 ####### Main processing
-sub dataRead {
+sub dataRead
+{
     my $this = shift;
     my $data = shift;
 
     my $data_ = $this->{data_};
 
-    $this->doLog( 'Got ' . $set_socks_available_ . " available set sockets",
-        'statsdaemon', 'debug' );
+    $this->doLog(
+        "Got $set_socks_available_ available set sockets",
+        'statsdaemon', 'debug'
+    );
 
     $this->doLog( "Received datas: $data", 'statsdaemon', 'debug' );
     my $ret = 'NOTHINGDONE';
@@ -210,7 +222,7 @@ sub dataRead {
     $year += 1900;
     $mon  += 1;
     if ( $year != $current_date_{'year'} || $mon != $current_date_{'month'} ) {
-    	$this->{backend_object}->announceMonthChange();
+        $this->{backend_object}->announceMonthChange();
     }
     if ( $mday != $current_date_{'day'} ) {
         if ( !$changing_day_ ) {
@@ -218,7 +230,8 @@ sub dataRead {
             ## stabilize all and reset full %data_
             $this->doLog(
                 'Day change initialized, stabilizing and clearing data...',
-                'statsdaemon' );
+                'statsdaemon'
+            );
             $this->stabilizeFlatAll();
             $this->clearAllData();
             $current_date_{'day'} = $mday;
@@ -247,7 +260,7 @@ sub dataRead {
         ## check if its time to stabilize all
         my $time = time();
         if ( $time - $last_stable_ > $this->{'stabilize_every'} ) {
-           $this->stabilizeFlatAll();
+            $this->stabilizeFlatAll();
         }
 
         return "ADDED " . $valh->{'value'};
@@ -300,7 +313,7 @@ sub dataRead {
 
     ## DUMP data
     if ( $data =~ m/^DUMP/i ) {
-    	return $this->dumpData();
+        return $this->dumpData();
     }
 
     ## CLEAR command
@@ -320,13 +333,14 @@ sub dataRead {
 
 ## stats data management
 
-sub createElement {
-	my $this    = shift;
+sub createElement
+{
+    my $this    = shift;
     my $element = shift;
 
     my $data_ = $this->{data_};
 
-	if ( !defined( $data_->{$element} ) ) {
+    if ( !defined( $data_->{$element} ) ) {
 
         $data_->{$element} = &share( {} );
         $data_->{$element}->{'stable'}      = 0;
@@ -334,9 +348,11 @@ sub createElement {
         $data_->{$element}->{'last_stable'} = time();
         $data_->{$element}->{'stable_id'}   = 0;
         $data_->{$element}->{'last_access'} = time();
-	}
+    }
 }
-sub setElementValue {
+
+sub setElementValue
+{
     my $this    = shift;
     my $element = shift;
     my $key     = shift;
@@ -346,26 +362,29 @@ sub setElementValue {
     $element->{$key} = $value;
 }
 
-sub setElementValueByName {
-	my $this    = shift;
-	my $element = shift;
-	my $key     = shift;
+sub setElementValueByName
+{
+    my $this    = shift;
+    my $element = shift;
+    my $key     = shift;
     my $value   = shift;
 
     my $data_ = $this->{data_};
     $this->setElementValue($data_->{$element}, $key, $value);
 }
 
-sub getElementValueByName {
-	my $this     = shift;
-	my $element  = shift;
-	my $key      = shift;
-	
-	my $data_ = $this->{data_};
-	return $data_->{$element}->{$key};
+sub getElementValueByName
+{
+    my $this     = shift;
+    my $element  = shift;
+    my $key      = shift;
+
+    my $data_ = $this->{data_};
+    return $data_->{$element}->{$key};
 }
 
-sub addElementValue {
+sub addElementValue
+{
     my $this    = shift;
     my $element = shift;
     my $value   = shift;
@@ -374,7 +393,8 @@ sub addElementValue {
     $element->{'value'} += $value;
 }
 
-sub accessFlatElement {
+sub accessFlatElement
+{
     my $this    = shift;
     my $element = shift;
 
@@ -399,7 +419,8 @@ sub accessFlatElement {
     return $data_->{$element};
 }
 
-sub checkForStabilization {
+sub checkForStabilization
+{
     my $this    = shift;
     my $element = shift;
 
@@ -407,17 +428,18 @@ sub checkForStabilization {
 
     my $time = time();
     if (defined($data_->{$element}->{'last_stable'})) {
-      if ( $time - $data_->{$element}->{'last_stable'} >
-          $this->{'max_unstable_time'} )
-      {
-          $this->stabilizeFlatElement($element);
-          return 1;
-      }
+        if ( $time - $data_->{$element}->{'last_stable'} >
+            $this->{'max_unstable_time'} )
+        {
+            $this->stabilizeFlatElement($element);
+            return 1;
+        }
     }
     return 0;
 }
 
-sub stabilizeFlatElement {
+sub stabilizeFlatElement
+{
     my $this    = shift;
     my $element = shift;
 
@@ -435,7 +457,7 @@ sub stabilizeFlatElement {
     $this->addStat( 'stabilize_element', 1 );
 
     if ( defined($data_->{$element}->{'stable'}) && $data_->{$element}->{'stable'} > 0 && !$changing_day_) {
-    	$this->setElementValue( $data_->{$element}, 'stable_id',      1 );
+        $this->setElementValue( $data_->{$element}, 'stable_id',      1 );
         $this->setElementValue( $data_->{$element}, 'last_stable', time() );
         $this->setElementValue( $data_->{$element}, 'last_access', time() );
 
@@ -450,7 +472,7 @@ sub stabilizeFlatElement {
     my $stret = $this->{backend_object}->stabilizeFlatElement($element);
 
     if ($stret =~ /^_/) {
-    	return $stret;
+        return $stret;
     }
 
     $this->setElementValue( $data_->{$element}, 'stable',      1 );
@@ -460,7 +482,8 @@ sub stabilizeFlatElement {
     return $stret;
 }
 
-sub stabilizeFlatAll {
+sub stabilizeFlatAll
+{
     my $this = shift;
 
     my $data_ = $this->{data_};
@@ -478,7 +501,7 @@ sub stabilizeFlatAll {
     $this->addStat( 'stabilize_all', 1 );
     my $more = '';
     if ($changing_day_ > 0) {
-      $more = ' (changing day)';
+        $more = ' (changing day)';
     }
     $this->doLog( 'Started stabilization of all data'.$more.'...',
         'statsdaemon' );
@@ -496,32 +519,32 @@ sub stabilizeFlatAll {
               || (defined($data_->{$el}->{'stable'}) && !$data_->{$el}->{'stable'} )) {
             my $stret = $this->stabilizeFlatElement($el);
             if ($stret eq 'STABILIZED') {
-              $stcount++;
+                $stcount++;
             } elsif ($stret eq 'ALREADYSTABLE') {
-              $stablecount++;
+                $stablecount++;
             } elsif ($stret eq 'UNWANTED') {
-               $unwantedcount++;
+                $unwantedcount++;
             } elsif ($stret =~ /^_/) {
-               $errorcount++;
+                $errorcount++;
             }
         } else {
-           $stablecount++;
-           if (defined($data_->{$el}->{'last_access'})) {
-               lock(%{$data_->{$el}});
-               my $delta = time() - $data_->{$el}->{'last_access'};
-               if ($this->{purge_limit} && $delta > $this->{purge_limit} && $data_->{$el}->{'stable'}) {
-                   $this->doLog('Purging element '.$el, 'statsdaemon', 'debug');
-                   my $stret = $this->stabilizeFlatElement($el);
-                   if ($stret !~ /^_/) {
-                       my $fret = $this->freeElement($el);
-                       if ($fret eq 'OK') {
-                           $purgedcount++;
-                       } else {
-                           $errorcount++;
-                       }
-                   }
-               }
-           }
+            $stablecount++;
+            if (defined($data_->{$el}->{'last_access'})) {
+                lock(%{$data_->{$el}});
+                my $delta = time() - $data_->{$el}->{'last_access'};
+                if ($this->{purge_limit} && $delta > $this->{purge_limit} && $data_->{$el}->{'stable'}) {
+                    $this->doLog('Purging element '.$el, 'statsdaemon', 'debug');
+                    my $stret = $this->stabilizeFlatElement($el);
+                    if ($stret !~ /^_/) {
+                        my $fret = $this->freeElement($el);
+                        if ($fret eq 'OK') {
+                            $purgedcount++;
+                        } else {
+                            $errorcount++;
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -534,7 +557,8 @@ sub stabilizeFlatAll {
     return 'ALLSTABILIZED';
 }
 
-sub clearAllData {
+sub clearAllData
+{
     my $this = shift;
     if ( $clearing_ > 0 ) {
         return;
@@ -554,7 +578,8 @@ sub clearAllData {
     return 'CLEARED';
 }
 
-sub freeElement {
+sub freeElement
+{
     my $this = shift;
     my $el = shift;
 
@@ -566,8 +591,8 @@ sub freeElement {
 
     lock %{$data_->{$el}};
     foreach my $key (keys %{$data_->{$el}}) {
-    	undef($data_->{$el}->{$key});
-    	delete($data_->{$el}->{$key});
+        undef($data_->{$el}->{$key});
+        delete($data_->{$el}->{$key});
     }
     lock %{$data_};
     $data_->{$el} = ();
@@ -577,16 +602,18 @@ sub freeElement {
     return 'OK';
 }
 
-sub dumpData {
-	my $this = shift;
-	
-	my $data_ = $this->{data_};
-	
-	while( my ($el, $value) = each(%{$data_})) {
-      $this->doLog(' - '.$el, 'statsdaemon');
+sub dumpData
+{
+    my $this = shift;
+
+    my $data_ = $this->{data_};
+
+    while( my ($el, $value) = each(%{$data_})) {
+        $this->doLog(' - '.$el, 'statsdaemon');
     }
 }
-sub calcStats {
+sub calcStats
+{
     my $this  = shift;
     my $what  = shift;
     my $begin = shift;
@@ -643,12 +670,12 @@ sub calcStats {
 
     my $ret = $this->{backend_object}->getStats($start, $stop, $what, \%data);
     if ($ret ne 'OK') {
-    	return $ret;
+        return $ret;
     }
 
 ## return results
    if (keys %data < 1) {
-   	 return '_NODATA';
+        return '_NODATA';
    }
     my $res = '';
     foreach my $sub ( keys %data ) {
@@ -661,27 +688,31 @@ sub calcStats {
 
 }
 
-sub increaseLongRead {
+sub increaseLongRead
+{
     my $this = shift;
 
     lock %backend_infos_;
     $backend_infos_{'long_read'}++;
     return;
 }
-sub decreaseLongRead {
+sub decreaseLongRead
+{
     my $this = shift;
 
     lock %backend_infos_;
     $backend_infos_{'long_read'}--;
     return;
 }
-sub getLongReadCount {
+sub getLongReadCount
+{
     my $this = shift;
 
     return $backend_infos_{'long_read'};
 }
 
-sub addDate {
+sub addDate
+{
     my $in  = shift;
     my $add = shift;
 
@@ -701,17 +732,20 @@ sub addDate {
     return $enddate;
 }
 
-sub getCurrentDate {
-	my $this = shift;
-	
-	return \%current_date_;
+sub getCurrentDate
+{
+    my $this = shift;
+
+    return \%current_date_;
 }
 
-sub isChangingDay {
-	return $changing_day_;
+sub isChangingDay
+{
+    return $changing_day_;
 }
 ####### Internal stats management
-sub addStat {
+sub addStat
+{
     my $this   = shift;
     my $what   = shift;
     my $amount = shift;
@@ -724,7 +758,8 @@ sub addStat {
     return 1;
 }
 
-sub getStats {
+sub getStats
+{
     my $this = shift;
 
     lock %stats_;
@@ -744,22 +779,24 @@ sub getStats {
     return $res;
 }
 
-sub logStats {
+sub logStats
+{
     my $this = shift;
 
     return $this->getStats();
 }
 
-sub getDataSize {
-  my $this = shift;
+sub getDataSize
+{
+    my $this = shift;
 
-  my $data_ = $this->{data_};
-  my $size = 0;
-  while( my ($el, $value) = each(%{$data_})) {
-      $size += total_size($el);
-  }
+    my $data_ = $this->{data_};
+    my $size = 0;
+    while( my ($el, $value) = each(%{$data_})) {
+        $size += total_size($el);
+    }
 
-  return $size;
+    return $size;
 }
 
 1;

@@ -105,7 +105,7 @@ sub dump_greylistd_file
     my %greylist_conf = %$href;
     my $srcpath = $conf->getOption('SRCDIR');
     my $varpath = $conf->getOption('VARDIR');
-    
+
     my $template_file = $srcpath."/etc/greylistd/greylistd.conf_template";
     my $target_file = $srcpath."/etc/greylistd/greylistd.conf";
 
@@ -128,14 +128,14 @@ sub dump_greylistd_file
         foreach my $key (keys %greylist_conf) {
             $line =~ s/$key/$greylist_conf{$key}/g;
         }
-        
+
         print $TARGET $line;
     }
 
     close $TEMPLATE;
     close $TARGET;
 
-    chown $uid, $gid, $target_file;    
+    chown $uid, $gid, $target_file;
     return 1;
 }
 

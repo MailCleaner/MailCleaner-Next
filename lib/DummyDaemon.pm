@@ -1,7 +1,8 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004 Olivier Diserens <olivier@diserens.ch>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -20,24 +21,25 @@
 ##  DummyDaemon:
 ##    Provides a barebone and useless implementation of a socket base multithreaded daemon,
 ##    relying on SockTDaemon. Can be used as a started for more useful daemons.
-##
-#
 
 package DummyDaemon;
 
-use threads;
-use threads::shared;
+use v5.36;
+use strict;
+use warnings;
+use utf8;
 
 require Exporter;
-use Time::HiRes qw(gettimeofday tv_interval);
 require ReadConfig;
 require DB;
+require SockTDaemon2;
+
+use threads;
+use threads::shared;
+use Time::HiRes qw(gettimeofday tv_interval);
 use Digest::MD5 qw(md5_hex);
-use strict;
 use Data::Dumper;
 use Date::Calc qw(Add_Delta_Days Today);
-
-require SockTDaemon2;
 
 our @ISA = "SockTDaemon2";
 
@@ -53,9 +55,9 @@ sub new {
     ## all options (expect name) can be overriden by config file though.
     ## the option name is mandatory.
     my $spec_this = {
-    	name              => 'DummySocketDaemon',
-        profile           => 0,
-        daemonize         => 1
+        name        => 'DummySocketDaemon',
+        profile     => 0,
+        daemonize   => 1
     };
 
     # add specific options of child object
@@ -71,17 +73,17 @@ sub new {
 
 ### define specific hooks
 sub initThreadHook {
-  my $this = shift;
+    my $this = shift;
 
-  $this->doLog('DummyDaemon thread initialization hook...', 'dummy');
-  return;
+    $this->doLog('DummyDaemon thread initialization hook...', 'dummy');
+    return;
 }
 
 sub exitThreadHook {
-  my $this = shift;
+    my $this = shift;
 
-  $this->doLog('DummyDaemon thread exiting hook...', 'dummy');
-  return;
+    $this->doLog('DummyDaemon thread exiting hook...', 'dummy');
+    return;
 }
 
 ####### Main processing

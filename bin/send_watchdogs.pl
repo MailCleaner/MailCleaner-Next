@@ -158,7 +158,7 @@ my %replace = (
     '__BASEURL__' => "$https://$baseurl$port",
     '__VERSION_MESSAGE__' => $version
 );
-    
+
 $template->setReplacements(\%replace);
 my $result = $template->send($recipient, 10);
 if ($result) {

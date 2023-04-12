@@ -101,7 +101,7 @@ if (open(my $DOMAINFILE, '<', $domainsfile)) {
 
 my @tmpwhats = split /,/, $what;
 foreach my $what ( @tmpwhats ) {
-    $what = lc($what);    
+    $what = lc($what);
     if ($what !~ /\*/) {
         if ($what =~ /^(\S+)@(\S+)/) {
             $dir = $basedir."/$2/$1";
@@ -179,7 +179,7 @@ if ($debug) {
 my $day = $start;
 foreach my $dir (@dirs) {
     clearStats();
-    
+
     my $tday = $day;
     while ($tday <= $stop) {
         my $file = $dir."/".$tday."_counts";

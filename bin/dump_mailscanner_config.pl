@@ -82,7 +82,7 @@ sub get_system_config
     }
     $config{'__ORGNAME__'} = $row{'organisation'};
     $config{'__LANG__'} = $row{'default_language'};
-    
+
     return %config;
 }
 

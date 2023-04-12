@@ -1,8 +1,8 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004 Olivier Diserens <olivier@diserens.ch>
-#   Copyright (C) 2020 John Mertz <git@john.me.tz>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -30,11 +30,15 @@
 ##    Threads signal handling should be implemented in the mainLoopHook() of the children class.
 #
 
-package          PreForkTDaemon;
+package PreForkTDaemon;
+
+use v5.36;
+use strict;
+use warnings;
+use utf8;
 
 use threads ();
 use threads::shared;
-use strict;
 use POSIX;
 use Sys::Syslog;
 require ReadConfig;
@@ -132,11 +136,11 @@ sub create {
 
     ## make sure we have the correct owners for critical files:
     foreach my $file (('pidfile', 'logfile', 'socketpath')) {
-    	if (defined($this->{$file}) && -f $this->{$file}) {
-    		my $uid = getpwnam( $this->{'runasuser'});
-    		my $gid = getgrnam( $this->{'runasgroup'});
-    		chown $uid, $gid, $this->{$file};
-    	}
+        if (defined($this->{$file}) && -f $this->{$file}) {
+            my $uid = getpwnam( $this->{'runasuser'});
+            my $gid = getgrnam( $this->{'runasgroup'});
+            chown $uid, $gid, $this->{$file};
+        }
     }
 
     $this->{log_prio_level} = $log_prio_levels{ $this->{log_priority} };
@@ -487,7 +491,7 @@ sub statusHook {
             } elsif (scalar(grep(/$p->{'pid'}/,@pids))) {
                 push @match, $p->{'pid'};
             } else {
-             	push @errors, "Orphaned process detected ($p->{'pid'})";
+                push @errors, "Orphaned process detected ($p->{'pid'})";
             }
         }
     }

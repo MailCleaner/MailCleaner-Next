@@ -104,7 +104,7 @@ if ( open(my $MSG, '<', $msg_file)) {
                                 $textfile = "/usr/local/share/spamassassin/*.cf";
                             } else {
                                 $textfile = "/usr/local/share/spamassassin/30_text_$lang.cf";
-                            }    
+                            }
                             $cmd = "grep \'describe $hit\' $textfile";
                             $describe_line=`$cmd`;
                             if ($describe_line =~ /.*describe\s+$hit\s+(.*)\s+(.*)/) {
