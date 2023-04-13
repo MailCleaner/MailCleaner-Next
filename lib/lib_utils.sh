@@ -1,7 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004-2014 Olivier Diserens <olivier@diserens.ch>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -22,32 +23,32 @@
 CONFFILE=/etc/mailcleaner.conf
 SRCDIR=`grep 'SRCDIR' $CONFFILE | cut -d ' ' -f3`
 if [ "$SRCDIR" = "" ]; then
-  SRCDIR="/usr/mailcleaner"
+    SRCDIR="/usr/mailcleaner"
 fi
 VARDIR=`grep 'VARDIR' $CONFFILE | cut -d ' ' -f3`
 if [ "$VARDIR" = "" ]; then
-  VARDIR="/var/mailcleaner"
+    VARDIR="/var/mailcleaner"
 fi
 
 LOCKFILEDIRECTORY=${VARDIR}/spool/tmp/
 
 function createLockFile()
 {
-	find ${LOCKFILEDIRECTORY} -type f -name "${1}" -mtime +1 -exec rm {} \;
-	LOCKFILE=${LOCKFILEDIRECTORY}${1}
-	if [ -f ${LOCKFILE} ]; then
-		echo 1
-	else
-		echo $$ > ${LOCKFILE}
-		echo 0
-	fi
+    find ${LOCKFILEDIRECTORY} -type f -name "${1}" -mtime +1 -exec rm {} \;
+    LOCKFILE=${LOCKFILEDIRECTORY}${1}
+    if [ -f ${LOCKFILE} ]; then
+        echo 1
+    else
+        echo $$ > ${LOCKFILE}
+        echo 0
+    fi
 }
 
 function removeLockFile()
 {
-	LOCKFILE=${LOCKFILEDIRECTORY}${1}
-	rm -f ${LOCKFILE}
-	echo $?
+    LOCKFILE=${LOCKFILEDIRECTORY}${1}
+    rm -f ${LOCKFILE}
+    echo $?
 }
 
 function slaveSynchronized()

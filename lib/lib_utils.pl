@@ -50,12 +50,12 @@ sub Slurp_file
     my ($file) = @_;
     my @contains = ();
 
-    if ( ! open(FILE, '<', $file) ) {
+    if ( ! open(my $FILE, '<', $file) ) {
         return (0, @contains);
     }
 
-    @contains = <FILE>;
-    close(FILE);
+    @contains = <$FILE>;
+    close($FILE);
     chomp(@contains);
 
     return(1, @contains)
@@ -66,10 +66,10 @@ sub create_lock_file
 {
         my ($fullpathname, $timeout, $process_name) = @_;
 
-        return 0 if ( ! open(FILE, '>', $fullpathname) );
-        print FILE "$$\n";
-        print FILE "$timeout\n$process_name\n"          if ( defined($timeout) && defined($process_name) );
-        close FILE;
+        return 0 if ( ! open(my $FILE, '>', $fullpathname) );
+        print $FILE "$$\n";
+        print $FILE "$timeout\n$process_name\n"          if ( defined($timeout) && defined($process_name) );
+        close $FILE;
 
         return 1;
 }

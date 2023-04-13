@@ -25,8 +25,6 @@ my_own_exit()
     exit $1
 }
 
-
-
 #### MAIN
 #### Lorsque le module a trouvé une erreur, il est censé sortir avec my_own_exit "#ERREUR" (avec #ERREUR : chiffre : retour de la commande)
 BLOCK25AUTH=`echo "SELECT block_25_auth FROM mta_config WHERE stage = 1;" | mc_mysql -s mc_config | tail -n 1`

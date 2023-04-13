@@ -96,7 +96,7 @@ sub mainLoopHook()
     while ($this->{server}->recv($data, 1024)) {
         my($port, $ipaddr) = sockaddr_in($this->{server}->peername);
         my $hishost = gethostbyaddr($ipaddr, AF_INET);
-        chop($data);
+        chomp($data);
         my $result =  $this->dataRead($data, $this->{server});
         $this->{server}->send($result."\n");
     }

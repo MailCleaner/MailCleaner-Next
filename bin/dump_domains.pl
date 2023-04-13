@@ -368,7 +368,7 @@ sub dumpDomainsFile
             if (defined($domains{$domain_name}{addlist_posters})) {
                 my @posters = split /[\s,;]/, $domains{$domain_name}{addlist_posters};
 
-                if ( open(ADDLISTPOSTERS, '>', "$postersfile")) {
+                if ( open(my $ADDLISTPOSTERS, '>', "$postersfile")) {
                     foreach my $p (@posters) {
                         print $ADDLISTPOSTERS $p."\n";
                     }

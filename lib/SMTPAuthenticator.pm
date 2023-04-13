@@ -213,7 +213,7 @@ sub authenticate {
         my $interval = tv_interval( $start_time );
         my $time     = ( int( $interval * 10000 ) / 10000 );
         my $error = $this->{auth}->{error_text};
-        chop($error);
+        chomp($error);
         ::Auth_log("Authentication failed for user ".$this->{username}." on domain ".$this->{domain}->{name}." ($error) [$ip] in $time s.");
         return 0;
     }

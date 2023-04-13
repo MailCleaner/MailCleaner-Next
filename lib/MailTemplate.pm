@@ -383,7 +383,7 @@ sub send {
     if ($err >= 500) {
         print $err;
         my $errmsg = $smtp->message();
-        chop $errmsg;
+        chomp $errmsg;
         print "ERRORSENDING ".$to." (".$errmsg.")\n";
         return 0;
     }

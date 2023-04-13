@@ -106,7 +106,7 @@ sub create {
     # replace with configuration file values
     if (open(my $CONFFILE, '<', $configfile)) {
         while (<$CONFFILE>) {
-            chop;
+            chomp;
             next if /^\#/;
             if (/^(\S+)\ ?\=\ ?(.*)$/) {
                 if (defined($this->{$1})) {
@@ -131,7 +131,7 @@ sub logMessage {
              $| = 1;
         }
         my $date=`date "+%Y-%m-%d %H:%M:%S"`;
-        chop($date);
+        chomp($date);
         print $LOGGERLOG "$date: $message\n";
     }
 }
@@ -710,7 +710,7 @@ sub queryDaemon {
             return "NODAEMON";
         }
         my $res = $response;
-        chop($res);
+        chomp($res);
         return $res;
     }
     return "NODAEMON";

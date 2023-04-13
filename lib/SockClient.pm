@@ -108,7 +108,7 @@ sub query {
 
 
     if (defined($rv) && length $data) {
-        chop($data);
+        chomp($data);
         return $data;
     }
     close($sock);

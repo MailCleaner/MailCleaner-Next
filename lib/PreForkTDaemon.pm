@@ -50,8 +50,10 @@ my $PROFILE = 1;
 my ( %prof_start, %prof_res ) = ();
 my $daemoncounts_ = &share( {} );
 my %log_prio_levels = ( 'error' => 0, 'info' => 1, 'debug' => 2 );
+our $LOGGERLOG;
 
-sub create {
+sub create
+{
     my $class        = shift;
     my $daemonname   = shift;
     my $conffilepath = shift;
@@ -123,15 +125,15 @@ sub create {
     }
 
     # replace with configuration file values
-    if ( open CONFFILE, $this->{configfile} ) {
-        while (<CONFFILE>) {
+    if ( open($CONFFILE, '<', $this->{configfile}) ) {
+        while (<$CONFFILE>) {
             chomp;
             next if /^\#/;
             if (/^(\S+)\s*\=\s*(.*)$/) {
                 $this->{$1} = $2;
             }
         }
-        close CONFFILE;
+        close $CONFFILE;
     }
 
     ## make sure we have the correct owners for critical files:
@@ -145,10 +147,8 @@ sub create {
 
     $this->{log_prio_level} = $log_prio_levels{ $this->{log_priority} };
 
-    $this->{'uid'} =
-      $this->{'runasuser'} ? getpwnam( $this->{'runasuser'} ) : 0;
-    $this->{'gid'} =
-      $this->{'runasgroup'} ? getgrnam( $this->{'runasgroup'} ) : 0;
+    $this->{'uid'} = $this->{'runasuser'} ? getpwnam( $this->{'runasuser'} ) : 0;
+    $this->{'gid'} = $this->{'runasgroup'} ? getgrnam( $this->{'runasgroup'} ) : 0;
 
     ## set our process name
     $0 = $this->{name};
@@ -165,7 +165,8 @@ sub create {
     return $this;
 }
 
-sub initDaemon {
+sub initDaemon
+{
     my $this = shift;
     my $result = 'not started';
     my @errors;
@@ -231,7 +232,7 @@ sub initDaemon {
         my $pid = fork;
         if ($pid) {
             # parent
-            open my $fh, ">>", $this->{pidfile};
+            open(my $fh, '>>', $this->{pidfile});
             print $fh $pid;
             close $fh;
             $this->doLog( 'Deamonized with PID ' . $pid, 'daemon' );
@@ -253,7 +254,7 @@ sub initDaemon {
         }
     } else {
         my $pid = $$;
-        open my $fh, ">>", $this->{pidfile};
+        open(my $fh, '>>', $this->{pidfile});
         print $fh $pid;
         close $fh;
     }
@@ -262,7 +263,8 @@ sub initDaemon {
     $this->forkChildren();
 }
 
-sub exitDaemon {
+sub exitDaemon
+{
     my $this = shift;
     my $result = 'not stopped';
     my $time_before_hardkill = $this->{time_before_hardkill};
@@ -330,32 +332,37 @@ sub exitDaemon {
     return output($result,@errors);
 }
 
-sub status {
+sub status
+{
     my $this = shift;
     $this->statusHook();
 }
 
-sub getDaemonCounts {
+sub getDaemonCounts
+{
     my $this = shift;
 
     return $daemoncounts_;
 }
 
-sub readPidFile {
+sub readPidFile
+{
     my $this = shift;
 
     my @pids;
-    if ( open( PIDFILE, $this->{pidfile} ) ) {
-        while (<PIDFILE>) {
+    if ( open(my $PIDFILE, '<', $this->{pidfile}) ) {
+        while (<$PIDFILE>) {
             if (/(\d+)/) {
                 push @pids, $1;
             }
         }
+        close $PIDFILE;
     }
     return @pids;
 }
 
-sub forkChildren {
+sub forkChildren
+{
     my $this = shift;
 
     $SIG{'TERM'} = sub {
@@ -428,7 +435,8 @@ sub forkChildren {
     $this->doLog( "Error, in main thread neverland !", 'daemon', 'error' );
 }
 
-sub makeNewChild {
+sub makeNewChild
+{
     my $this = shift;
     my $pid;
     my $sigset;
@@ -442,7 +450,8 @@ sub makeNewChild {
 }
 
 #### Available Hooks
-sub mainLoopHook {
+sub mainLoopHook
+{
     my $this = shift;
 
     while (1) {
@@ -451,28 +460,32 @@ sub mainLoopHook {
     }
 }
 
-sub preForkHook {
+sub preForkHook
+{
     my $this = shift;
 
     $this->doLog( 'No preForkHook redefined, using default one...', 'daemon' );
     return 1;
 }
 
-sub exitHook {
+sub exitHook
+{
     my $this = shift;
 
     $this->doLog( 'No exitHook redefined, using default one...', 'daemon' );
     return 1;
 }
 
-sub postKillHook {
+sub postKillHook
+{
     my $this = shift;
 
     $this->doLog( 'No postKillHook redefined, using default one...', 'daemon' );
     return 1;
 }
 
-sub statusHook {
+sub statusHook
+{
     my $this = shift;
     my @errors;
 
@@ -524,7 +537,8 @@ sub statusHook {
 }
 
 #### Threads tools
-sub getNbThreads {
+sub getNbThreads
+{
     my $this = shift;
 
     my @tlist = threads->list;
@@ -535,7 +549,8 @@ sub getNbThreads {
     return 0;
 }
 
-sub getThreadID {
+sub getThreadID
+{
     my $this = shift;
 
     my $t = threads->self;
@@ -543,7 +558,8 @@ sub getThreadID {
 }
 
 ##### Log management
-sub doLog {
+sub doLog
+{
     my $this      = shift;
     my $message   = shift;
     my $given_set = shift;
@@ -563,7 +579,8 @@ sub doLog {
     }
 }
 
-sub doEffectiveLog {
+sub doEffectiveLog
+{
     my $this    = shift;
     my $message = shift;
 
@@ -577,7 +594,8 @@ sub doEffectiveLog {
     }
 }
 
-sub writeLogToFile {
+sub writeLogToFile
+{
     my $this    = shift;
     my $message = shift;
     chomp($message);
@@ -592,10 +610,12 @@ sub writeLogToFile {
     my $LOCK_UN = 8;
     $| = 1;
 
-    if ( !defined( fileno(LOGGERLOG) ) || !-f $this->{logfile} ) {
-        open LOGGERLOG, ">>" . $this->{logfile};
-        if ( !defined( fileno(LOGGERLOG) ) ) {
-            open LOGGERLOG, ">>/tmp/" . $this->{logfile};
+    if ( !defined( fileno($LOGGERLOG) ) ) {
+
+        if ( -f $this->{logfile} ) {
+            open($LOGGERLOG, '>>', $this->{logfile});
+        } else {}
+            open($LOGGERLOG, '>>', "/tmp/$this->{logfile}");
             $| = 1;
         }
         $this->doLog( 'Log file has been opened, hello !', 'daemon' );
@@ -606,20 +626,22 @@ sub writeLogToFile {
     $year += 1900;
     my $date = sprintf( "%d-%.2d-%.2d %.2d:%.2d:%.2d",
         $year, $mon, $mday, $hour, $min, $sec );
-    flock( LOGGERLOG, $LOCK_EX );
-    print LOGGERLOG "$date (" . $this->getThreadID() . ") " . $message . "\n";
-    flock( LOGGERLOG, $LOCK_UN );
+    flock( $LOGGERLOG, $LOCK_EX );
+    print $LOGGERLOG "$date (" . $this->getThreadID() . ") " . $message . "\n";
+    flock( $LOGGERLOG, $LOCK_UN );
 }
 
-sub closeLog {
+sub closeLog
+{
     my $this = shift;
 
     $this->doLog( 'Closing log file now.', 'daemon' );
-    close LOGGERLOG;
+    close $LOGGERLOG;
     exit;
 }
 
-sub format_time {
+sub format_time
+{
     my $this = shift;
     my $time = shift;
 
@@ -634,7 +656,8 @@ sub format_time {
 }
 
 ##### profiling
-sub profile_start {
+sub profile_start
+{
     my $this = shift;
 
     return unless $PROFILE;
@@ -643,7 +666,8 @@ sub profile_start {
 
 }
 
-sub profile_stop {
+sub profile_stop
+{
     my $this = shift;
 
     return unless $PROFILE;
@@ -655,7 +679,8 @@ sub profile_stop {
     return $time;
 }
 
-sub profile_output {
+sub profile_output
+{
     my $this = shift;
 
     return unless $PROFILE;
@@ -666,7 +691,8 @@ sub profile_output {
     $this->doLog($out);
 }
 
-sub output {
+sub output
+{
     my ($result,@errors) = @_;
     if (scalar @errors) {
         print STDOUT "$result\n  " . join("\n  ",@errors) . "\n";

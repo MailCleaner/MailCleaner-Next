@@ -87,8 +87,8 @@ sub accessFlatElement
     my $value = 0;
 
     my ($path, $file, $base, $el_key) = $this->getPathFileBaseAndKeyFromElement($element);
-    if ( open(FILE,$file)) {
-        while (<FILE>) {
+    if ( open(my $FILE, '<', $file)) {
+        while (<$FILE>) {
             if (/^([^:\s]+)\s*:\s*(\d+)/) {
                 my $newkey = $1;
                 my $v = $2;
@@ -100,6 +100,7 @@ sub accessFlatElement
                 }
             }
         }
+        close $FILE;
     }
 
     return $value;
@@ -117,13 +118,13 @@ sub stabilizeFlatElement
 
     if ($this->{daemon}->isChangingDay()) {
         my $sfile = $path."/".$this->{history_filename};
-        if (! open(FILE, ">>".$sfile)) {
+        if (! open(my $FILE, '>>', $sfile)) {
             return '_CANNOTWRITEHISTORYFILE';
         }
         my $cdate = $this->{daemon}->getCurrentDate();
-        print FILE sprintf('%.4u%.2u%.2u' ,$cdate->{'year'},$cdate->{'month'},$cdate->{'day'}).":";
-        print FILE $el_key.":".$this->{daemon}->getElementValueByName($element, 'value')."\n";
-        close FILE;
+        print $FILE sprintf('%.4u%.2u%.2u' ,$cdate->{'year'},$cdate->{'month'},$cdate->{'day'}).":";
+        print $FILE $el_key.":".$this->{daemon}->getElementValueByName($element, 'value')."\n";
+        close $FILE;
 
         if (-f $file) {
             unlink($file);
@@ -132,8 +133,8 @@ sub stabilizeFlatElement
     }
 
     my %els = ();
-    if ( open(FILE,$file)) {
-        while (<FILE>) {
+    if ( open(my $FILE, '<', $file)) {
+        while (<$FILE>) {
             if (/^([^:\s]+)\s*:\s*(\d+)/) {
                 my $key = $1;
                 my $val = $2;
@@ -142,17 +143,17 @@ sub stabilizeFlatElement
                 }
             }
         }
+        close $FILE;
     }
-    close (FILE);
 
-    if ( open(FILE,">".$file)) {
-        flock FILE, LOCK_EX;
+    if ( open(my $FILE, '>', $file)) {
+        flock $FILE, LOCK_EX;
         foreach my $key (keys %els) {
-            print FILE $key.":".$els{$key}."\n";
+            print $FILE $key.":".$els{$key}."\n";
         }
-        print FILE $el_key.":".$this->{daemon}->getElementValueByName($element, 'value')."\n";
-        flock FILE, LOCK_UN;
-        close(FILE);
+        print $FILE $el_key.":".$this->{daemon}->getElementValueByName($element, 'value')."\n";
+        flock $FILE, LOCK_UN;
+        close $FILE;
     }
 
     return 'STABILIZED';

@@ -448,10 +448,10 @@ sub loadEnvFile
 {
     my $this = shift;
 
-    open( ENV, $this->{envfile} ) or return 0;
+    open(my $ENV, '<', $this->{envfile}) or return 0;
 
     my $fromfound = 0;
-    while (<ENV>) {
+    while (<$ENV>) {
         if ( !$fromfound ) {
             $fromfound = 1;
             $this->{env_sender} = lc($_);
@@ -463,7 +463,7 @@ sub loadEnvFile
                 }
         }
     }
-    close ENV;
+    close $ENV;
 
     if ( $this->{env_rcpt} =~ m/^(\S+)@(\S+)$/ ) {
         $this->{env_tolocal} = $1;
@@ -482,8 +482,8 @@ sub loadMsgFile
     my $last_hvalue = '';
     my $uriscount   = 0;
 
-    open( BODY, $this->{msgfile} ) or return 0;
-    while (<BODY>) {
+    open(my $BODY, '<', $this->{msgfile}) or return 0;
+    while (<$BODY>) {
 
         ## check for end of headers
         if ( $in_header && /^\s*$/ ) {
@@ -538,7 +538,7 @@ sub loadMsgFile
         # store full message
         # $this->{fullmsg} .= $_;
     }
-    close BODY;
+    close $BODY;
 
     ## check if message is a bounce
     if ( defined( $this->{headers}{'x-mailcleaner-bounce'} ) ) {
@@ -979,7 +979,7 @@ sub quarantine
             . $this->{env_rcpt} . "/"
             . $this->{exim_id};
 
-    if ( !open( MSGFILE, ">" . $filename ) ) {
+    if ( !open(my $MSGFILE, ">", $filename) ) {
         print " cannot open quarantine file $filename for writing";
         $this->{daemon}->doLog(
             "Cannot open quarantine file $filename for writing",
@@ -987,24 +987,11 @@ sub quarantine
         );
         return 0;
     }
-    print MSGFILE $this->getRawMessage();
-    close MSGFILE;
+    print $MSGFILE $this->getRawMessage();
+    close $MSGFILE;
 
     $this->{quarantined} = 1;
     $this->endTimer('Message quarantining');
-
-#    my $hostid = $config->getOption('HOSTID');
-#    if ( $hostid < 0 ) {
-#        print " error, store id less than 0 ";
-#        return 0;
-#    }
-
-#    my $logger = SpamLogger->new("Client", "etc/exim/spamlogger.conf");
-#    my $res = $logger->logSpam($this->{exim_id}, $this->{env_tolocal}, $this->{env_domain}, $this->{env_sender}, $this->{headers}{subject}, $this->{sc_spamc}, $this->{sc_prerbls}, $this->{prefilters}, $this->{sc_global});
-#    chomp($res);
-#    if ($res !~ /LOGGED BOTH/) {
-#        print " WARNING, logging is weird ($res)";
-#    }
 
     return 1;
 }
