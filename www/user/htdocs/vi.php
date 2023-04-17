@@ -52,9 +52,9 @@ if (! $spam->loadHeadersAndBody()) {
 
 // create view
 $template_ = new Template('vi.tmpl');
-if ($spam->getData('M_score') == "0.000")
+if ($spam->getData('M_score') == "0.000") {
   $template_->setCondition('SCORENOTNULL', 0);
-else {
+} else {
   $template_->setCondition('SCORENOTNULL', 1);
 }
 if ($viewrules) {

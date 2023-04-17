@@ -135,13 +135,11 @@ sub logInMaster {
 
     my $table = "misc";
     if ( $message{tolocal} =~ /^([a-z,A-Z])/ ) {
-    $table = lc($1);
-    }
-    elsif ( $message{tolocal}    =~ /^[0-9]/ ) {
-    $table = 'num';
-    }
-    else {
-    $table = 'misc';
+        $table = lc($1);
+    } elsif ( $message{tolocal}    =~ /^[0-9]/ ) {
+        $table = 'num';
+    } else {
+        $table = 'misc';
     }
     my $query = "INSERT IGNORE INTO spam_$table (date_in, time_in, to_domain, to_user, sender, exim_id, M_score, M_rbls, M_prefilter, M_subject, M_globalscore, forced, in_master, store_slave) ".
         "VALUES (NOW(), NOW(), '".$message{todomain}."', '".$message{tolocal}."', ".

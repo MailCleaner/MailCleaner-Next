@@ -486,8 +486,7 @@ sub check_dns {
                         "$prelog list $r disabled time exceeded, rehabilitating this RBL."
                     );
                     $rblsfailure{$r}{'disabled'} = 0;
-                }
-                else {
+                } else {
                     if ( $this->{debug} ) {
                         &{ $this->{logfunction} }(
                             $prelog . " list $r disabled."
@@ -544,12 +543,10 @@ sub check_dns {
                             print $pipe "Hit $RBLEntry\n";
                             if ( $this->{rbls}{$r}{'type'} eq 'BSRBL' ) {
                                 $bshitcount++;
-                            }
-                            else {
+                            } else {
                                 $hitcount++;
                             }
-                        }
-                        else {
+                        } else {
                             print $pipe $r . "\n";
                             print $pipe "Miss\n";
                         }
@@ -642,8 +639,7 @@ sub check_dns {
     $temp = $temp + 0;
     if ( !$HitList[0] ) {
         $temp = 0;
-    }
-    else {
+    } else {
         $temp = 0 unless $HitList[0] =~ /[a-z]/i;
     }
     return ( $value, $temp, join( ',', @HitList ) );

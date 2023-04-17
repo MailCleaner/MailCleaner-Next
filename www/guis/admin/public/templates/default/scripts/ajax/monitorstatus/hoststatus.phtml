@@ -110,10 +110,12 @@
           <span class="diskused" style="width: <?php echo ceil($memusage / 2);?>px;background-image:url(<?php
              echo $this->images_path."/";
                       if ($memusage <= 60) { 
-                         echo 'clean.png'; }
-                         elseif ($memusage <= 90) {
-                         	echo 'spam.png';
-                         } else { echo 'virus.png'; }?>)">
+                        echo 'clean.png';
+                      } elseif ($memusage <= 90) {
+                        echo 'spam.png';
+                      } else {
+                        echo 'virus.png';
+                      }?>)">
              </span>
        </span>
        <br />

@@ -237,8 +237,7 @@ sub dataRead
             $current_date_{'day'} = $mday;
             $this->doLog( 'Day change done', 'statsdaemon' );
             $changing_day_ = 0;
-        }
-        else {
+        } else {
             return '_RETRY';
         }
     }
@@ -291,8 +290,7 @@ sub dataRead
             my $ret = $this->calcStats( $element, $fromdate, $todate );
             $set_socks_available_++;
             return $ret;
-        }
-        else {
+        } else {
             return '_NOSOCKAVAILABLE '.$set_socks_available_." <=> ".$this->{reserve_set_socks};
         }
     }
@@ -305,8 +303,7 @@ sub dataRead
         $element = lc($element);
         if ($element) {
             return $this->stabilizeFlatElement($element);
-        }
-        else {
+        } else {
             return $this->stabilizeFlatAll();
         }
     }

@@ -147,8 +147,7 @@ if ($is_enterprise) {
                                 $content = $result2;
                         }
                 }
-        }
-        else {
+        } else {
                 if (isset($result))
                         $content = $result;
         }

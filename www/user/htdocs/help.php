@@ -93,8 +93,7 @@ function getHelpContent($carray) {
 	if ($top == 'USERMANUAL') {
 	  $ret .= file_get_contents('http://cdn.mailcleaner.net/downloads/documentations/'.$lang_->getLanguage().'/body.html');
 ##http://www.mailcleaner.net/downloads/documentations/en/body.html');
-	}
-        else {
+	} else {
   	  $ret .= $htxt[$top];
         }
   }

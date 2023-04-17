@@ -119,8 +119,7 @@ if ( open(my $MSG, '<', $msg_file) ) {
     mark_forced();
 
     print("MSGFORCED\n");
-}
-else {
+} else {
     print "MSGFILENOTFOUND\n";
 }
 

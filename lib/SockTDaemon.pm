@@ -225,8 +225,7 @@ sub mainLoopHook {
                 $this->doLog( 'response sent, client socket closed ',
                     'socket', 'debug' );
             }
-        }
-        else {
+        } else {
             $this->{socks_status}{$client} .= ',end of data';
             if (defined($this->{sock_timer}{$client})) {
                my $interval = tv_interval($this->{sock_timer}{$client});

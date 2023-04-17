@@ -106,8 +106,7 @@ sub stabilizeFlatElement
     my $table = '';
     if ( $_current_table_exists ) {
         $table = $_current_table;
-    }
-    else {
+    } else {
         if ( $this->createCurrentTable() ) {
             $table = $_current_table;
         }
@@ -133,8 +132,7 @@ sub stabilizeFlatElement
         if ( defined( $res{'id'} ) ) {
             $this->{daemon}->setElementValueByName( $element, 'stable_id',
                 $res{'id'} );
-        }
-        else {
+        } else {
             $query = "INSERT INTO stats_subject SET subject='" . $element . "'";
             return '_NOBACKEND' if ( !$this->connectBackend() );
             if ( $this->{db}->execute($query) ) {
@@ -149,14 +147,12 @@ sub stabilizeFlatElement
                           . $id,
                         'statsdaemon', 'debug'
                     );
-                }
-                else {
+                } else {
                     $this->doLog(
                         "Could not get subject ID for element: $element",
                         'statsdaemon', 'error' );
                 }
-            }
-            else {
+            } else {
                 ## maybe inserted meanwhile, so search again...
                 my $query =
                     "SELECT id FROM stats_subject WHERE subject='" . $element
@@ -167,8 +163,7 @@ sub stabilizeFlatElement
                 if ( defined( $res{'id'} ) ) {
                     $this->{daemon}->setElementValueByName( $element, 'stable_id',
                         $res{'id'} );
-                }
-                else {
+                } else {
                     $this->doLog(
                         "Could not insert subject for element: $element",
                         'statsdaemon', 'error' );
@@ -248,15 +243,12 @@ sub getStats
         if ( $what !~ /\*/ ) {
             if ( $what =~ /^(\S+)@(\S+)/ ) {
                  $sub{'sub'} = 'user:'.$2.':'.$1.':%';
-            }
-            elsif ( $what eq "_global" ) {
+            } elsif ( $what eq "_global" ) {
                  $sub{'sub'} ='global:%';
-            }
-            else {
+            } else {
                  $sub{'sub'} = 'domain:'.$what.":%";
             }
-        }
-        else {
+        } else {
 
             # find all subjects for * queries
             if ( $what =~ /^\*@(\S+)/ ) {
@@ -267,8 +259,7 @@ sub getStats
                 push @subjects, \%dsub;
 
                 $sub{'sub'} = 'user:'.$dom.":%";
-            }
-            else {
+            } else {
                 my %gsub;
                 $gsub{'sub'} = 'global:%';
                 push @subjects, \%gsub;
@@ -329,8 +320,7 @@ sub getStats
                         if ( $res->{'sm'} > $data->{$subject_key}{$value_key} ) {
                             $data->{$subject_key}{$value_key} = $res->{'sm'};
                         }
-                    }
-                    else {
+                    } else {
                         $data->{$subject_key}{$value_key} += $res->{'sm'};
                     }
                 }
@@ -421,8 +411,7 @@ sub createCurrentTable
             'error' );
         $_current_table_creating = 0;
         return 0;
-    }
-    else {
+    } else {
         $this->doLog( 'Table ' . $table . " created", 'statsdaemon' );
     }
     $_current_table_exists = 1;

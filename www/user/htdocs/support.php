@@ -23,8 +23,7 @@ if (isset($_POST['send']) && $_POST['send'] > 0) {
   $sup_form = new SupportForm();
   if ($sup_form->is_ok() == true) {
     $res = $lang_->print_txt($sup_form->send());
-  }
-  else {
+  } else {
     $res = $lang_->print_txt('BADFORMFIELDS')." (".$lang_->print_txt($sup_form->get_badfield()).")";
   }
 }

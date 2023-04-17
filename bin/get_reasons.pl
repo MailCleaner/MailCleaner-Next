@@ -119,8 +119,7 @@ if ( open(my $MSG, '<', $msg_file)) {
         }
     }
     close($MSG);
-}
-else {
+} else {
     print "MSGFILENOTFOUND\n";
 }
 

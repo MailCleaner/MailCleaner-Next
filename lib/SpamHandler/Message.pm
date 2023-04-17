@@ -124,8 +124,7 @@ sub load
         $this->startTimer('Message envelope load');
         $this->loadEnvFile();
         $this->endTimer('Message envelope load');
-    }
-    else {
+    } else {
         $this->{daemon}->doLog(
             $this->{batchid} . ": "
                 . $this->{id}
@@ -140,8 +139,7 @@ sub load
         $this->startTimer('Message body load');
         $this->loadMsgFile();
         $this->endTimer('Message body load');
-    }
-    else {
+    } else {
         $this->{daemon}->doLog(
             $this->{batchid} . ": " . $this->{id} . " No message file found !",
             'spamhandler', 'debug'
@@ -502,9 +500,8 @@ sub loadMsgFile
                 $this->{headers}{$last_header} .= $1;
             }
             $this->{fullheaders} .= $_;
-        }
         ## parse for body
-        else {
+        } else {
             $this->{fullbody} .= $_;
 
             ## try to find bounced address if this is a bounce
@@ -546,12 +543,12 @@ sub loadMsgFile
     }
     ## check for standard (but untrusted) headers
     if ( defined( $this->{headers}{'from'} ) ) {
-	if ( $this->{headers}{'from'} =~ m/<.*>/ ) {
-		$this->{msg_from} = $this->{headers}{'from'};
-		$this->{msg_from} =~ s/.*<([^>]*)>/$1/;
-	} else {
-		$this->{msg_from} = $this->{headers}{'from'};
-	}
+	    if ( $this->{headers}{'from'} =~ m/<.*>/ ) {
+		    $this->{msg_from} = $this->{headers}{'from'};
+		    $this->{msg_from} =~ s/.*<([^>]*)>/$1/;
+	    } else {
+		    $this->{msg_from} = $this->{headers}{'from'};
+	    }
     }
     if ( defined( $this->{headers}{'date'} ) ) {
         $this->{msg_date} = $this->{headers}{'date'};
@@ -942,8 +939,7 @@ sub quarantine
     $this->{fullheaders} =~ s/Subject:\s+\{(MC_SPAM|MC_HIGHSPAM)\}/Subject:/i;
     if ( $this->{headers}{subject} ) {
         $this->{headers}{subject} =~ s/^\S*\{(MC_SPAM|MC_HIGHSPAM)\}//i;
-    }
-    else {
+    } else {
         $this->{headers}{subject} = "";
     }
     if ( !-d $config->getOption('VARDIR') . "/spam/" . $this->{env_domain} ) {

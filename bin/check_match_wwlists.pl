@@ -127,14 +127,11 @@ sub get_wlist_level
     my $entry_with_level = $entry;
     if ($entry->{recipient} =~ m/^.+@.+\..+$/){
         $entry_with_level->{level} = "user";
-    }
-    elsif ($entry->{recipient} =~ m/^@.+\..+$/){
+    } elsif ($entry->{recipient} =~ m/^@.+\..+$/){
         $entry_with_level->{level} = "domain";
-    }
-    elsif ($entry->{recipient} =~ m/^$/){
+    } elsif ($entry->{recipient} =~ m/^$/){
         $entry_with_level->{level} = "global";
-    }
-    else {
+    } else {
         print("Error getting the type of the entry, exiting...");
         exit 1;
     }

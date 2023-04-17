@@ -184,20 +184,17 @@ function getWWListHeader() {
       return  $lang_->print_txt('WARNLISTFORGLOBAL');
     }
   	return $lang_->print_txt_param('WARNLISTFOR', $address);
-  }
-  else if($type_get == 1 | $type_get == 'white') {
+  } else if($type_get == 1 | $type_get == 'white') {
 	if ($address == '0') {
     		return  $lang_->print_txt('WHITELISTFORGLOBAL');
 	}
   	return $lang_->print_txt_param('WHITELISTFOR', $address);
-  }
-  else if ($type_get == 3 | $type_get == 'black') {
+  } else if ($type_get == 3 | $type_get == 'black') {
 	if ($address == '0') {
                 return  $lang_->print_txt('BLACKLISTFORGLOBAL');
         }
         return $lang_->print_txt_param('BLACKLISTFOR', $address);
-  }
-  else if ($type_get == 4 | $type_get == 'wnews') {
+  } else if ($type_get == 4 | $type_get == 'wnews') {
 	if ($address == '0') {
                 return  $lang_->print_txt('NEWSLISTFORGLOBAL');
         }

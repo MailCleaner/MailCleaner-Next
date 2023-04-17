@@ -376,8 +376,7 @@ sub forkChildren
                     'daemon' );
                 $t->kill('TERM')
                   ; ## does not always work, TERM signal cannot interrupt accept() call in thread
-            }
-            else {
+            } else {
                 $t->detach();
             }
         }

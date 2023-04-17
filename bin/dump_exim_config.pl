@@ -63,15 +63,13 @@ my $eximid = shift;
 my @eximids;
 if (! $eximid ) {
     @eximids = (1, 2, 4);
-}
-else {
+} else {
     if ( $eximid =~ /\D/ ) {
         print_usage();
     }
     if ( $eximid > 4) {
         print_usage();
-    }
-    else {
+    } else {
         @eximids = ($eximid);
     }
 }
@@ -204,13 +202,15 @@ sub dump_exim_file
     my $template;
     if ( ! $include ) {
         if (-e "$srcdir/etc/exim/exim_stage$stage.conf_template") {
-        $template = ConfigTemplate::create(
-                          "$srcdir/etc/exim/exim_stage$stage.conf_template",
-                          "$srcdir/etc/exim/exim_stage$stage.conf");
+            $template = ConfigTemplate::create(
+                "$srcdir/etc/exim/exim_stage$stage.conf_template",
+                "$srcdir/etc/exim/exim_stage$stage.conf"
+            );
         } else {
-        $template = ConfigTemplate::create(
-                          "$srcdir/etc/exim/exim_stage$stage.conf_template",
-                          "$srcdir/etc/exim/exim_stage$stage.conf");
+            $template = ConfigTemplate::create(
+                "$srcdir/etc/exim/exim_stage$stage.conf_template",
+                "$srcdir/etc/exim/exim_stage$stage.conf"
+            );
         }
     } else {
         my $dest_file = $include_file;
@@ -218,11 +218,13 @@ sub dump_exim_file
         if (-e "$srcdir/etc/exim/${include_file}") {
             $template = ConfigTemplate::create(
                           "$srcdir/etc/exim/${include_file}",
-                          "$srcdir/etc/exim/$dest_file");
+                          "$srcdir/etc/exim/$dest_file"
+            );
         } else {
-        $template = ConfigTemplate::create(
+            $template = ConfigTemplate::create(
                           "$srcdir/etc/exim/$include_file",
-                          "$srcdir/etc/exim/$dest_file");
+                          "$srcdir/etc/exim/$dest_file"
+            );
         }
     }
 

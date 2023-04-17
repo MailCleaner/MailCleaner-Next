@@ -182,16 +182,14 @@ sub hasInWhiteWarnList {
   	   return 0;
   	 }
      $filename = 'warn.list';
-  }
-  elsif ($type =~ /^whitelist$/)  {
+  } elsif ($type =~ /^whitelist$/)  {
     if (! $sysprefs->getPref('enable_whitelists')) {
   	 	return 0;
   	}
   	if (! $this->{d}->getPref('enable_whitelists') && ! $this->getPref('has_whitelist')) {
   	   return 0;
   	 }
-  }
-  elsif ($type =~ /^blacklist$/) {
+  } elsif ($type =~ /^blacklist$/) {
     $filename = 'black.list';
   }
 
