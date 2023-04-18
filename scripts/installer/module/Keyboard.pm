@@ -1,7 +1,8 @@
-#!/usr/bin/perl -w
+#!/usr/bin/env perl
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004 Olivier Diserens <olivier@diserens.ch>
+#   Copyright (C) 2023 John Mertz <git@john.me.tz>
 #
 #   This program is free software; you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -10,67 +11,74 @@
 #
 #   This program is distributed in the hope that it will be useful,
 #   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 #   GNU General Public License for more details.
 #
 #   You should have received a copy of the GNU General Public License
 #   along with this program; if not, write to the Free Software
-#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#
+#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
-package          module::Keyboard;
+package module::RootPassword;
 
-require          Exporter;
-require          DialogFactory;
-use Storable;
+use v5.36;
 use strict;
+use warnings;
+use utf8;
+
+package module::Keyboard;
+
+require Exporter;
+require DialogFactory;
+use Storable;
 
 our @ISA        = qw(Exporter);
 our @EXPORT     = qw(get ask do);
 our $VERSION    = 1.0;
 
-sub get {
+sub get
+{
+    my $this = {
+        dlg => '',
+        mapfile => "/usr/share/console/lists/keymaps/console-data.keymaps",
+        mapdir => '/usr/share/keymaps/i386'
+    };
 
- my $this = {
-   dlg => '',
-   mapfile => "/usr/share/console/lists/keymaps/console-data.keymaps",
-   mapdir => '/usr/share/keymaps/i386'
- };
-
- bless $this, 'module::Keyboard';
- return $this;
+    bless $this, 'module::Keyboard';
+    return $this;
 }
 
-sub do {
-  my $this = shift;
+sub do
+{
+    my $this = shift;
 
-  require $this->{mapfile};
-  my $dfact = DialogFactory::get('InLine');
-  $this->{dlg} = $dfact->getListDialog();
+    require $this->{mapfile};
+    my $dfact = DialogFactory::get('InLine');
+    $this->{dlg} = $dfact->getListDialog();
 
-  my %list = %{$::keymaps->{pc}};
-  my $file = $this->dolist(\%list, 'pc');
+    my %list = %{$::keymaps->{pc}};
+    my $file = $this->dolist(\%list, 'pc');
 
-  `install-keymap $file 2>&1 > /dev/null`;
+    `install-keymap $file 2>&1 > /dev/null`;
 }
 
 
-sub dolist {
-  my $this = shift;
-  my $listh = shift;
-  my $parent = shift;
-  return $listh unless ref($listh) eq 'HASH';
-  my %list = %{$listh};
+sub dolist
+{
+    my $this = shift;
+    my $listh = shift;
+    my $parent = shift;
+    return $listh unless ref($listh) eq 'HASH';
+    my %list = %{$listh};
 
-  my @dlglist;
-  foreach my $key (keys %list) {
-    next if $key eq 'default';
-    push @dlglist, $key;
-  }
-  my $dlg = $this->{dlg};
-  $dlg->build('Make your choice ('.$parent.')', \@dlglist, 1);
-  my $res = $dlg->display();
-  return $this->dolist($list{$res}, $res);
+    my @dlglist;
+    foreach my $key (keys %list) {
+        next if $key eq 'default';
+        push @dlglist, $key;
+    }
+    my $dlg = $this->{dlg};
+    $dlg->build('Make your choice ('.$parent.')', \@dlglist, 1);
+    my $res = $dlg->display();
+    return $this->dolist($list{$res}, $res);
 }
 
 1;
