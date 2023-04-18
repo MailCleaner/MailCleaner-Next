@@ -20,11 +20,10 @@
 
 package MailScanner::UriRBLs;
 
-use strict 'vars';
-use strict 'refs';
-no strict 'subs';    # Allow bare words for parameter %'s
-
-#use English; # Needed for $PERL_VERSION to work in all versions of Perl
+use v5.36;
+use strict;
+use warnings;
+use utf8;
 
 use IO;
 use POSIX qw(:signal_h);    # For Solaris 9 SIG bug workaround
@@ -345,4 +344,5 @@ sub processPart
     }
     return 1;
 }
+
 1;

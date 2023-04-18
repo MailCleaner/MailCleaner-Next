@@ -22,7 +22,7 @@
 
 package MailScanner::Commtouch;
 
-use v5.32;
+use v5.36;
 use strict;
 use warnings;
 use utf8;

@@ -47,9 +47,9 @@ sub readFile {
     my $c_users = 0;
     my $c_domains = 0;
 
-    if (open COUNTFILE, $file) {
+    if (open(my $COUNTFILE, '<', $file)) {
 
-        while (<COUNTFILE>) {
+        while (<$COUNTFILE>) {
             if (/^MSGS\ (\d+)$/) {
                 $c_msgs = $1;
             }
@@ -81,7 +81,7 @@ sub readFile {
                 $c_domains = $1;
             }
         }
-        close COUNTFILE;
+        close $COUNTFILE;
         return ($c_msgs, $c_spams, $c_highspams, $c_viruses, $c_names, $c_others, $c_cleans, $c_bytes, $c_users, $c_domains);
     }
 }

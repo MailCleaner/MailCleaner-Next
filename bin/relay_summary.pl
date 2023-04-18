@@ -21,7 +21,7 @@
 #   This script will generate outbound relaying summaries to assist in the
 #   diagnosing of outbound blacklisting or other unexpected relaying behaviour
 #
-#   See Usage mene below or by running with the --help option
+#   See Usage menu below or by running with the --help option
 
 use v5.36;
 use strict;

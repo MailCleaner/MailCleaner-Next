@@ -46,6 +46,7 @@ my $log_priority = 'info';
 my @logged_sets;
 my $syslog_progname = '';
 my $syslog_facility = '';
+our $LOGGERLOG;
 
 my %mib = ();
 
@@ -275,10 +276,10 @@ sub writeLogToFile {
     my $LOCK_UN = 8;
     $| = 1;
 
-    if ( !defined( fileno(LOGGERLOG) ) || !-f $logfile ) {
-        open LOGGERLOG, ">>" . $logfile;
-        if ( !defined( fileno(LOGGERLOG) ) ) {
-            open LOGGERLOG, ">>/tmp/" . $logfile;
+    if ( !defined( fileno($LOGGERLOG) ) || !-f $logfile ) {
+        open $LOGGERLOG, ">>" . $logfile;
+        if ( !defined( fileno($LOGGERLOG) ) ) {
+            open $LOGGERLOG, ">>/tmp/" . $logfile;
             $| = 1;
         }
         doLog( 'Log file has been opened, hello !', 'daemon' );
@@ -287,16 +288,16 @@ sub writeLogToFile {
     $mon++;
     $year += 1900;
     my $date = sprintf( "%d-%.2d-%.2d %.2d:%.2d:%.2d", $year, $mon, $mday, $hour, $min, $sec );
-    flock( LOGGERLOG, $LOCK_EX );
-    print LOGGERLOG "$date " . $message . "\n";
-    flock( LOGGERLOG, $LOCK_UN );
+    flock( $LOGGERLOG, $LOCK_EX );
+    print $LOGGERLOG "$date " . $message . "\n";
+    flock( $LOGGERLOG, $LOCK_UN );
 }
 
 sub closeLog {
     my $this = shift;
 
     doLog( 'Closing log file now.', 'daemon' );
-    close LOGGERLOG;
+    close $LOGGERLOG;
     exit;
 }
 
