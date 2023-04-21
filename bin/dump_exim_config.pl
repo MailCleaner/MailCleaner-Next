@@ -170,7 +170,7 @@ if ($conf->getOption('SMTPPROXY') ne '') {
 }
 
 ## dump DKIM
-dump_default_dkim();
+dump_default_dkim(\%stage1_conf);
 
 ## dump TLS access files
 dump_tls_force_files();
@@ -925,6 +925,7 @@ sub get_exim_config{
     $config{'dmarc_follow_reject_policy'} = $row{'dmarc_follow_reject_policy'};
     $config{'dmarc_enable_reports'} = $row{'dmarc_enable_reports'};
     $config{'forbid_clear_auth'} = $row{'forbid_clear_auth'};
+    $config{'dkim_default_domain'} = $row{'dkim_default_domain'};
     $config{'dkim_default_pkey'} = $row{'dkim_default_pkey'};
     $config{'allow_relay_for_unknown_domains'} = $row{'allow_relay_for_unknown_domains'};
     my $vardir = $conf->getOption('VARDIR');
@@ -1137,6 +1138,7 @@ sub dump_certificate
 #############################
 sub dump_default_dkim
 {
+    my $stage1_conf = shift;
     if ($stage != 1) {
         return;
     }
@@ -1147,7 +1149,15 @@ sub dump_default_dkim
     my $keyfile = $keypath."/default.pkey";
     if ( open(my $FILE, '>', $keyfile)) {
         if (defined($stage1_conf{'dkim_default_pkey'})) {
-            print $FILE $stage1_conf{'dkim_default_pkey'}."\n";
+            if ( -e $keypath."/".$stage1_conf{'dkim_default_domain'}.".pkey" ) {
+                open(my $DEFAULT, '<', $keypath."/".$stage1_conf{'dkim_default_domain'}.".pkey");
+                while (<$DEFAULT>) {}
+                    print $FILE $_;
+                }
+                close $DEFAULT;
+            } else {
+                print $FILE $stage1_conf{'dkim_default_pkey'}."\n";
+            }
         }
         close $FILE;
     }
