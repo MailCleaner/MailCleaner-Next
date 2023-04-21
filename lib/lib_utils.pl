@@ -31,9 +31,8 @@ use File::Path qw/make_path/;
 sub is_into
 {
         my ($what, @list) = @_;
-        my $c;
 
-        foreach $c (@list) {
+        foreach my $c (@list) {
                 if ($c eq $what) {
                         return(1);
                 }
@@ -89,7 +88,7 @@ sub create_lockfile
         }
 
         $path .= '/' if ($path  !~ /\/$/);
-        make_path($path, {mode => 0777});
+        make_path($path, {mode => '0777'});
 
         $fullpathname = $path . $filename;
 

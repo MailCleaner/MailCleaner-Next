@@ -112,13 +112,13 @@ sub create {
     $this->{headers}->{Subject} =~ s/\?\?ADDRESS/$to/;
     # then parse other parte if needed
     if ($type eq 'html' && -d $path."_parts") {
-        if ( opendir(DIR, $path."_parts")) {
-            while (defined(my $file = readdir(DIR))) {
+        if ( opendir(my $DIR, $path."_parts")) {
+            while (defined(my $file = readdir($DIR))) {
                 chomp($file);
                 next if ($file !~ /\.(txt|html)$/);
                 $this->preParseTemplate($path."_parts/".$file);
             }
-        close(DIR);
+        close($DIR);
         }
     } else {
         $this->{type} = 'text';
@@ -438,31 +438,31 @@ sub getUseableParts {
 
     my @ret = ();
     # first add html parts
-    if ( opendir(DIR, $this->{path}."_parts")) {
-        while (defined(my $file = readdir(DIR))) {
+    if ( opendir(my $DIR, $this->{path}."_parts")) {
+        while (defined(my $file = readdir($DIR))) {
             chomp($file);
             next if ($file !~ /\.(htm|html)$/i);
             push @ret, $file;
         }
-        close(DIR);
+        close($DIR);
     }
     # next add text part
-    if ( opendir(DIR, $this->{path}."_parts")) {
-        while (defined(my $file = readdir(DIR))) {
+    if ( opendir(my $DIR, $this->{path}."_parts")) {
+        while (defined(my $file = readdir($DIR))) {
             chomp($file);
             next if ($file !~ /\.(txt|text)$/i);
             push @ret, $file;
         }
-        close(DIR);
+        close($DIR);
     }
     # finally add pictures
-    if ( opendir(DIR, $this->{path}."_parts")) {
-        while (defined(my $file = readdir(DIR))) {
+    if ( opendir(my $DIR, $this->{path}."_parts")) {
+        while (defined(my $file = readdir($DIR))) {
             chomp($file);
             next if ($file !~ /\.(gif|jpg|jpeg|png)$/i);
             push @ret, $file;
         }
-        close(DIR);
+        close($DIR);
     }
     return @ret;
 }

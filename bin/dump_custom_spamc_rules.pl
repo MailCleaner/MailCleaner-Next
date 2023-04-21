@@ -38,6 +38,7 @@ my %senders;
 my $rules_file = '/usr/mailcleaner/share/spamassassin/98_mc_custom.cf';
 my $rcpt_id = 0;
 my $sender_id = 0;
+our $RULEFILE;
 
 sub set_current_rule
 {
@@ -56,9 +57,9 @@ sub print_custom_rule
     my ($current_rule, $current_rule_w, $current_sender, @current_rule_domains) = @_;
 
     my ($rule, $score) = split(' ', $current_rule);
-    print RULEFILE "meta RCPT_CUSTOM_$current_rule_w ( $rule ";
+    print $RULEFILE "meta RCPT_CUSTOM_$current_rule_w ( $rule ";
     if ($current_sender ne '') {
-        print RULEFILE '&& __SENDER_' .$senders{$current_sender}. ' ';
+        print $RULEFILE '&& __SENDER_' .$senders{$current_sender}. ' ';
     }
     my $global = 0;
     my $rcpt_string = "&& (";
@@ -72,8 +73,8 @@ sub print_custom_rule
     if ($rcpt_string) {
         $rcpt_string =~ s/\ \|\|\ $/\) /;
     }
-    print RULEFILE "$rcpt_string)\n";
-    print RULEFILE "score RCPT_CUSTOM_$current_rule_w $score\n\n";
+    print $RULEFILE "$rcpt_string)\n";
+    print $RULEFILE "score RCPT_CUSTOM_$current_rule_w $score\n\n";
 }
 
 # Rules to identify domains
@@ -89,10 +90,10 @@ sub print_recipient_rules
     $recipient =~ s/\./\\\./g;
     $recipient =~ s/\@/\\\@/g;
 
-    print RULEFILE "header __RCPT_TO_$rcpt_id  To =~ /$recipient/i\n";
-    print RULEFILE "header __RCPT_CC_$rcpt_id  Cc =~ /$recipient/i\n";
-    print RULEFILE "header __RCPT_BCC_$rcpt_id Bcc =~ /$recipient/i\n";
-    print RULEFILE "meta   __RCPT_$rcpt_id     ( __RCPT_TO_$rcpt_id || __RCPT_CC_$rcpt_id || __RCPT_BCC_$rcpt_id )\n\n";
+    print $RULEFILE "header __RCPT_TO_$rcpt_id  To =~ /$recipient/i\n";
+    print $RULEFILE "header __RCPT_CC_$rcpt_id  Cc =~ /$recipient/i\n";
+    print $RULEFILE "header __RCPT_BCC_$rcpt_id Bcc =~ /$recipient/i\n";
+    print $RULEFILE "meta   __RCPT_$rcpt_id     ( __RCPT_TO_$rcpt_id || __RCPT_CC_$rcpt_id || __RCPT_BCC_$rcpt_id )\n\n";
 
     $rcpt_id++;
 }
@@ -109,7 +110,7 @@ sub print_sender_rules
     $sender =~ s/\./\\\./g;
     $sender =~ s/\@/\\\@/g;
 
-    print RULEFILE "header __SENDER_$sender_id  From =~ /$sender/i\n";
+    print $RULEFILE "header __SENDER_$sender_id  From =~ /$sender/i\n";
 
     $sender_id++;
 }
@@ -121,7 +122,7 @@ unlink $rules_file if ( -f $rules_file );
 # get list of SpamC exceptions
 my @wwlists = $db->getListOfHash("SELECT * from wwlists where type = 'SpamC' order by comments ASC, sender DESC");
 exit if (!@wwlists);
-if ( ! open(my $RULEFILE, '>', $rules_file )) {
+if ( ! open($RULEFILE, '>', $rules_file )) {
     print STDERR "Cannot open full log file: $rules_file\n";
     exit();
 }

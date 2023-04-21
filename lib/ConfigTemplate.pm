@@ -196,6 +196,9 @@ sub dump
             next;
         }
 
+	# TODO: Unsafe use of `eval`. See PerlCritic severity 5
+	# Currently we don't use any EVAL blocks in the default config, so this is a "Use at your
+	# own risk" advanced feature for admins.
         if ($line =~    /__EVAL__\s+(.*)$/) {
             if (! eval "$1") {
                 $ev_hidden = 1;

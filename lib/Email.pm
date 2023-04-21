@@ -127,7 +127,7 @@ sub getUserPref {
     if ($this->{user}) {
         return $this->{user}->getPref($pref);
     }
-    return undef;
+    return;
 }
 
 sub loadPrefs {

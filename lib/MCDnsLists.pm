@@ -446,7 +446,7 @@ sub check_dns {
 
     my ( @HitList, $Checked, $HitOrMiss );
 
-    my $pipe = new IO::Pipe;
+    my $pipe = IO::Pipe->new();
     if ( !$pipe ) {
         &{ $this->{logfunction} }(
             'Failed to create pipe, %s, try reducing the maximum number of unscanned messages ' .

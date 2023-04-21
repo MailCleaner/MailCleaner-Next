@@ -37,6 +37,7 @@ our $debug = 0;
 
 sub new
 {
+    my $class = shift || "GetDNS";
     my $resolver = Net::DNS::Resolver->new;
     my $validator = Data::Validate::IP->new;
 
@@ -45,7 +46,7 @@ sub new
         'validator' => $validator,
         'recursion' => 1
     };
-    bless $self;
+    bless $self, $class;
 
     return $self;
 }
@@ -604,10 +605,10 @@ sub dectoip4
 {
     my $decimal = shift;
     my @bytes;
-    push @bytes, ($decimal & 0xff000000) >> 24;
-    push @bytes, ($decimal & 0x00ff0000) >> 16;
-    push @bytes, ($decimal & 0x0000ff00) >>  8;
-    push @bytes, ($decimal & 0x000000ff);
+    push @bytes, (0+$decimal & 0xff000000) >> 24;
+    push @bytes, (0+$decimal & 0x00ff0000) >> 16;
+    push @bytes, (0+$decimal & 0x0000ff00) >>  8;
+    push @bytes, (0+$decimal & 0x000000ff);
     return join '.', @bytes;
 }
 

@@ -67,13 +67,13 @@ sub connect {
         my $host;
         my $port;
         my $password;
-        if (open MASTERFILE, $masterfile) {
-            while (<MASTERFILE>) {
+        if (open(my $MASTERFILE, '<', $masterfile)) {
+            while (<$MASTERFILE>) {
                 if (/HOST (\S+)/) { $host = $1; }
                 if (/PORT (\S+)/) { $port = $1; }
                 if (/PASS (\S+)/) { $password = $1; }
             }
-            close MASTERFILE;
+            close $MASTERFILE;
         }
         if ($type =~ /custom/) {
             $host = $db->{'host'};
