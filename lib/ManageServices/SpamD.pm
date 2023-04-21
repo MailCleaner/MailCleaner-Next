@@ -43,7 +43,7 @@ sub config
     my $config = {
         'name'              => 'spamd',
         'cmndline'          => 'spamd.pid',
-        'cmd'               => '/usr/local/bin/spamd',
+        'cmd'               => '/usr/sbin/spamd',
         'conffile'          => $class->{'conf'}->getOption('SRCDIR').'/etc/mailscanner/spamd.conf',
         'pidfile'           => $class->{'conf'}->getOption('VARDIR').'/run/spamassassin.pid',
         'logfile'           => $class->{'conf'}->getOption('VARDIR').'/log/mailscanner/spamd.log',

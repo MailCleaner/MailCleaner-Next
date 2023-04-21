@@ -34,6 +34,7 @@ use Sys::Syslog;
 require ReadConfig;
 require ConfigTemplate;
 
+our $LOGGERLOG;
 our $initDir = '/usr/mailcleaner/etc/init.d';
 our $restartDir = '/var/mailcleaner/run';
 our $logLevels = { 'error' => 0, 'info' => 1, 'debug' => 2 };
@@ -114,20 +115,20 @@ our %defaultActions = (
             foreach my $key (keys(%{$self->{'module'}})) {
                 print "$key = $self->{'module'}->{$key}\n";
             }
-            return undef;
+            return;
         },
     }
 );
 
 sub new
 {
-    my $self = shift;
+    my $class = shift;
     my %params = @_;
 
     my $conf = ReadConfig::getInstance();
 
     require Proc::ProcessTable;
-    $self = {
+    my $self = {
         'initDir'       => $params{'initDir'}           || $initDir,
         'restartDir'    => $params{'restartDir'}        || $restartDir,
         'processTable'  => Proc::ProcessTable->new(),
@@ -137,7 +138,7 @@ sub new
         'timeout'       => 5,
     };
     $self->{'services'} = getServices($self->{'initDir'});
-    bless $self;
+    bless $self, $class;
 }
 
 sub getCodes
@@ -305,9 +306,9 @@ sub loadModule
     my $module = $self->{'services'}->{$self->{'service'}}->{'module'} ||
         die "$self->{'service'} has no declared 'module'\n";
 
-    require "ManageServices/" . $module . ".pm";
+    require "ManageServices/${module}.pm";
     $module = "ManageServices::".$module;
-    $self->{'module'} = init $module $self;
+    $self->{'module'} = $module->init($self);
     $self->getConfig() || return 0;
     $self->getActions() || return 0;
 
@@ -478,7 +479,7 @@ sub createModule
         my $ret = $template->dump();
     }
 
-    if ( open(my $CONFFILE, '>', $file) ) {
+    if ( open(my $CONFFILE, '<', $file) ) {
         while (<$CONFFILE>) {
                 chomp;
                 next if /^\#/;
@@ -649,9 +650,9 @@ sub start
             $self->doLog('Set UID to ' . $self->{'module'}->{'user'} .
                 " (" . $< . ")", 'daemon');
 
-            open STDIN,  '/dev/null';
-            open STDOUT, '>>/dev/null';
-            open STDERR, '>>/dev/null';
+            open STDIN, '<', '/dev/null';
+            open STDOUT, '>>', '/dev/null';
+            open STDERR, '>>', '/dev/null';
             setsid();
             umask 0;
         }
@@ -1105,23 +1106,32 @@ sub writeLog
     my $message = shift;
     chomp($message);
 
-    if ( $self->{'module'}->{'logfile'} eq '' ) {
-        return;
-    }
-
     my $LOCK_SH = 1;
     my $LOCK_EX = 2;
     my $LOCK_NB = 4;
     my $LOCK_UN = 8;
     $| = 1;
 
-    if ( !defined( fileno(LOGGERLOG) ) || !-f $self->{'module'}->{'logfile'} ) {
-        open(my $LOGGERLOG, '>>', $self->{'module'}->{'logfile'});
-        if ( !defined( fileno($LOGGERLOG) ) ) {
-            open $LOGGERLOG, ">>/tmp/" . $self->{'module'}->{'logfile'};
+    if ( !defined($LOGGERLOG) || !fileno($LOGGERLOG) ) {
+    	if ( !defined( $self->{'module'}->{'logfile'}) || $self->{'module'}->{'logfile'} eq '' ) {
+	    print STDERR "Module does not have a log file\n";
+	    open($LOGGERLOG, '>>', &STDERR);
+        } else {
+            unless (open($LOGGERLOG, '>>', $self->{'module'}->{'logfile'})) {
+		# Use temporary log
+		my @path = split(/\//, $self->{'module'}->{'logfile'});
+		shift(@path);
+		my $file = pop(@path);
+		my $d = '/tmp';
+		foreach my $dir (@path) {
+		    $d .= "/$dir";
+		    mkdir($d) if ( !-e $d );
+	        }
+            	open $LOGGERLOG, '>>', $d.'/'.$file;
+            }
             $| = 1;
         }
-        $self->doLog( 'Log file has been opened, hello !', 'daemon' );
+        print $LOGGERLOG 'Log file has been opened, hello !', 'daemon';
     }
     my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) = localtime(time);
     $mon++;
@@ -1130,7 +1140,6 @@ sub writeLog
     flock( $LOGGERLOG, $LOCK_EX );
     print $LOGGERLOG "$date (" . $self->getThreadID() . ") " . $message . "\n";
     flock( $LOGGERLOG, $LOCK_UN );
-    close $LOGGERLOG;
 }
 
 sub getThreadID

@@ -167,16 +167,19 @@ sub get_ms_config
         close $FH
     } else {
         $config{'__ALLOWPWDARCHIVES__'} = '/var/mailcleaner/spool/tmp/mailscanner/whitelist_password_archives';
-        open(my $FH, '>', '/var/mailcleaner/spool/tmp/mailscanner/whitelist_password_archives');
-        if (defined($row{wh_passwd_archives})) {
-            my @wh_dom = split('\n', $row{wh_passwd_archives});
-            foreach my $wh_dom (@wh_dom) {
-                next if ( ! ($wh_dom =~ /\./) );
-                print FH "FromOrTo:\t$wh_dom\tyes\n";
+        if (open(my $FH, '>', '/var/mailcleaner/spool/tmp/mailscanner/whitelist_password_archives')) {
+            if (defined($row{wh_passwd_archives})) {
+                my @wh_dom = split('\n', $row{wh_passwd_archives});
+                foreach my $wh_dom (@wh_dom) {
+                    next if ( ! ($wh_dom =~ /\./) );
+                    print $FH "FromOrTo:\t$wh_dom\tyes\n";
+                }
             }
-        }
-        print $FH "FromOrTo:\tdefault\tno";
-        close $FH;
+            print $FH "FromOrTo:\tdefault\tno";
+            close $FH;
+	} else {
+	    die("Failed to open /var/mailcleaner/spool/tmp/mailscanner/whitelist_password_archives\n");
+	}
     }
 
     $config{'__ALLOWPARTIAL__'} = $row{'allow_partial'};
@@ -589,7 +592,7 @@ sub dump_dnsblacklists_conf
     );
     my $subtmpl = $template->getSubTemplate('DNSLIST');
     my $res = "";
-    my $dnslists = new MCDnsLists(\&log_dns, 1);
+    my $dnslists = MCDnsLists->new(\&log_dns, 1);
     $dnslists->loadRBLs( $conf->getOption('SRCDIR')."/etc/rbls", '', 'IPRBL', '', '', '', 'dump_dnslists');
     my $rbls = $dnslists->getAllRBLs();
     foreach my $r (keys %{$rbls}) {
