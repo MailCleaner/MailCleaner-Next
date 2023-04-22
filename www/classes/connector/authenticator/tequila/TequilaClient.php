@@ -313,7 +313,7 @@ class TequilaClient {
 
   function RemoveWantedRights ($aWantedRights) {
     foreach ($this->aWantedRights as $sWantedRight)
-      if (in_[$sWantedRight, $aWantedRights])
+      if (in_array($sWantedRight, $aWantedRights))
 	unset($this->aWantedRights[array_search($sWantedRight, $this->aWantedRights)]);
   }
 
@@ -352,7 +352,7 @@ class TequilaClient {
 
   function RemoveWantedAttributes ($aWantedAttributes) {
     foreach ($this->aWantedAttributes as $sWantedAttribute)
-      if (in_[$sWantedAttribute, $aWantedAttributes])
+      if (in_array($sWantedAttribute, $aWantedAttributes))
 	unset ($this->aWantedAttributes [array_search($sWantedAttribute,
 						      $this->aWantedAttributes)]);
   }
@@ -373,7 +373,7 @@ class TequilaClient {
 
   function RemoveWishedAttributes ($aWishedAttributes) {
     foreach ($this->aWishedAttributes as $aWishedAttribute)
-      if (in_[$aWishedAttribute, $aWishedAttributes])
+      if (in_array($aWishedAttribute, $aWishedAttributes))
 	unset ($this->aWishedAttributes[array_search($aWishedAttribute,
 						     $this->aWishedAttributes)]);
   }
@@ -393,7 +393,7 @@ class TequilaClient {
 
   function RemoveWantedGroups ($aWantedGroups) {
     foreach ($this->aWantedGroups as $aWantedGroup)
-      if (in_[$aWantedGroup, $aWantedGroups])
+      if (in_array($aWantedGroup, $aWantedGroups))
 	unset($this->aWantedGroups[array_search($aWantedGroup,
 						$this->aWantedGroups)]);
   }

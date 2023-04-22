@@ -209,7 +209,7 @@
    <tr class="showmorerow">
      <?php foreach ($this->more_content as $type => $c) {?>
      <td>
-         <a class="host_<?php echo $this->slave->getId()?>_graph_<?php echo $type?>_link <?php if ( in_[$type, $this->more_to_show) ] { echo ' hidden'; }?>" href="javascript:showGraph('host_<?php echo $this->slave->getId()?>_graph_<?php echo $type?>');"><?php echo $this->t->_('show more...')?></a>
+         <a class="host_<?php echo $this->slave->getId()?>_graph_<?php echo $type?>_link <?php if ( in_array($type, $this->more_to_show) ) { echo ' hidden'; }?>" href="javascript:showGraph('host_<?php echo $this->slave->getId()?>_graph_<?php echo $type?>');"><?php echo $this->t->_('show more...')?></a>
      </td>
      <?php }?>
      <td><a class="notprocadvanced" href="javascript:showAdvancedProcs();"><?php echo $this->t->_('show advanced...')?></a>
@@ -219,7 +219,7 @@
    
    
    <?php foreach ($this->more_content as $type => $c) { ?> 
-   <tr class="graphisrow <?php if ( !in_[$type, $this->more_to_show) ] { echo 'hidden '; }?> host_<?php echo $this->slave->getId();?>_graph_<?php echo $type; ?>">
+   <tr class="graphisrow <?php if ( !in_array($type, $this->more_to_show) ) { echo 'hidden '; }?> host_<?php echo $this->slave->getId();?>_graph_<?php echo $type; ?>">
       <td class="graprowresc">
          <p class="graprowrescp"><?php echo $this->t->_($type)?> : </p>
         <?php ## graph type 

@@ -112,7 +112,7 @@ class Default_Model_Administrator
 	}
 	
 	public function canManageDomain($domain) {
-		if (in_['*', $this->_domains]) {
+		if (in_array('*', $this->_domains)) {
 			return 1;
 		}
 		foreach ($this->_domains as $d) {
@@ -153,7 +153,7 @@ class Default_Model_Administrator
 	  foreach ($this->_roles as $role) {
 	  	 if ($role['name'] == $r) {
 	  	 	foreach ($this->getRights() as $right) {
-	  	 		if (in_[$right, $role['rights']]) {
+	  	 		if (in_array($right, $role['rights'])) {
 	  	 			$this->setRight($right, 1);
 	  	 		} else {
 	  	 			$this->setRight($right, 0);

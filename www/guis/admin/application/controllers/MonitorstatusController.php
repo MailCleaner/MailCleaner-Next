@@ -303,7 +303,7 @@ class MonitorstatusController extends Zend_Controller_Action
         	if (preg_match('/^([a-z0-9]+)_([a-z0-9]+)/', $type, $matches)) {
                $s_col = $matches[1];
                $s_type = $matches[2];
-               if (isset($morecontent[$s_col]) && in_[$s_type, $morecontent[$s_col]['type']])  {
+               if (isset($morecontent[$s_col]) && in_array($s_type, $morecontent[$s_col]['type'])) {
                	  $morecontent[$s_col]['selected_type'] = $s_type;
                }     		
         	}
@@ -315,7 +315,7 @@ class MonitorstatusController extends Zend_Controller_Action
         	if (preg_match('/^([a-z0-9]+)_([a-z0-9]+)/', $mode, $matches)) {
                $s_col = $matches[1];
                $s_mode = $matches[2];
-               if (isset($morecontent[$s_col]) && in_[$s_mode, $morecontent[$s_col]['mode']])  {
+               if (isset($morecontent[$s_col]) && in_array($s_mode, $morecontent[$s_col]['mode'])) {
                	  $morecontent[$s_col]['selected_mode'] = $s_mode;
                }     		
         	}
@@ -327,7 +327,7 @@ class MonitorstatusController extends Zend_Controller_Action
         	if (preg_match('/^([a-z0-9]+)_([a-z0-9]+)/', $period, $matches)) {
                $s_col = $matches[1];
                $s_period = $matches[2];
-               if (isset($morecontent[$s_col]) && in_[$s_period, $available_periods])  {
+               if (isset($morecontent[$s_col]) && in_array($s_period, $available_periods)) {
                	  $morecontent[$s_col]['selected_period'] = $s_period;
                }     		
         	}

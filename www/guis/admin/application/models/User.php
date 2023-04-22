@@ -261,7 +261,7 @@ class Default_Model_User
 	    ]);
 
             foreach ($emails as $e) {
-                if (!in_[$e, $this->_addresses]) {
+                if (!in_array($e, $this->_addresses)) {
                     $this->_addresses[$e] = $e;
                 }
             }

@@ -227,11 +227,11 @@ class pScatter
 						$Value = $this->pChartObject->scaleFormat($AxisSettings["ScaleMin"] + $AxisSettings["RowHeight"] * $i, $AxisSettings["Display"], $AxisSettings["Format"], $AxisSettings["Unit"]);
 						$BGColor = ($i % 2 == 1) ? $BG1 : $BG2;
 
-						if ($LastX != NULL && $CycleBackground && ($DrawXLines == ALL || in_[$AxisID, $DrawXLines))] {
+						if ($LastX != NULL && $CycleBackground && ($DrawXLines == ALL || in_array($AxisID, $DrawXLines))) {
 							$this->pChartObject->drawFilledRectangle($LastX, $this->pChartObject->GraphAreaY1 + $FloatingOffset, $XPos, $this->pChartObject->GraphAreaY2 - $FloatingOffset, $BGColor);
 						}
 
-						if ($DrawXLines == ALL || in_[$AxisID, $DrawXLines)] {
+						if ($DrawXLines == ALL || in_array($AxisID, $DrawXLines)) {
 							$this->pChartObject->drawLine($XPos, $this->pChartObject->GraphAreaY1 + $FloatingOffset, $XPos, $this->pChartObject->GraphAreaY2 - $FloatingOffset, ["R" => $GridR,"G" => $GridG,"B" => $GridB,"Alpha" => $GridAlpha,"Ticks" => $GridTicks]);
 						}
 
@@ -301,11 +301,11 @@ class pScatter
 						$Value = $this->pChartObject->scaleFormat($AxisSettings["ScaleMin"] + $AxisSettings["RowHeight"] * $i, $AxisSettings["Display"], $AxisSettings["Format"], $AxisSettings["Unit"]);
 						$BGColor = ($i % 2 == 1) ? $BG1 : $BG2;
 
-						if ($LastX != NULL && $CycleBackground && ($DrawXLines == ALL || in_[$AxisID, $DrawXLines))] {
+						if ($LastX != NULL && $CycleBackground && ($DrawXLines == ALL || in_array($AxisID, $DrawXLines))) {
 							$this->pChartObject->drawFilledRectangle($LastX, $this->pChartObject->GraphAreaY1 + $FloatingOffset, $XPos, $this->pChartObject->GraphAreaY2 - $FloatingOffset, $BGColor);
 						}
 
-						if ($DrawXLines == ALL || in_[$AxisID, $DrawXLines)] {
+						if ($DrawXLines == ALL || in_array($AxisID, $DrawXLines)) {
 							$this->pChartObject->drawLine($XPos, $this->pChartObject->GraphAreaY1 + $FloatingOffset, $XPos, $this->pChartObject->GraphAreaY2 - $FloatingOffset, ["R" => $GridR,"G" => $GridG,"B" => $GridB,"Alpha" => $GridAlpha,"Ticks" => $GridTicks]);
 						}
 
@@ -356,11 +356,11 @@ class pScatter
 						$Value = $this->pChartObject->scaleFormat($AxisSettings["ScaleMin"] + $AxisSettings["RowHeight"] * $i, $AxisSettings["Display"], $AxisSettings["Format"], $AxisSettings["Unit"]);
 						$BGColor = ($i % 2 == 1) ? $BG1 : $BG2;
 
-						if ($LastY != NULL && $CycleBackground && ($DrawYLines == ALL || in_[$AxisID, $DrawYLines))] {
+						if ($LastY != NULL && $CycleBackground && ($DrawYLines == ALL || in_array($AxisID, $DrawYLines))) {
 							$this->pChartObject->drawFilledRectangle($this->pChartObject->GraphAreaX1 + $FloatingOffset, $LastY, $this->pChartObject->GraphAreaX2 - $FloatingOffset, $YPos, $BGColor);
 						}
 
-						if (($YPos != $this->pChartObject->GraphAreaY1 && $YPos != $this->pChartObject->GraphAreaY2) && ($DrawYLines == ALL || in_[$AxisID, $DrawYLines))] {
+						if (($YPos != $this->pChartObject->GraphAreaY1 && $YPos != $this->pChartObject->GraphAreaY2) && ($DrawYLines == ALL || in_array($AxisID, $DrawYLines))) {
 							$this->pChartObject->drawLine($this->pChartObject->GraphAreaX1 + $FloatingOffset, $YPos, $this->pChartObject->GraphAreaX2 - $FloatingOffset, $YPos, ["R" => $GridR,"G" => $GridG,"B" => $GridB,"Alpha" => $GridAlpha,"Ticks" => $GridTicks]);
 						}
 
@@ -408,11 +408,11 @@ class pScatter
 						$Value = $this->pChartObject->scaleFormat($AxisSettings["ScaleMin"] + $AxisSettings["RowHeight"] * $i, $AxisSettings["Display"], $AxisSettings["Format"], $AxisSettings["Unit"]);
 						$BGColor = ($i % 2 == 1) ? $BG1 : $BG2;
 
-						if ($LastY != NULL && $CycleBackground && ($DrawYLines == ALL || in_[$AxisID, $DrawYLines))] {
+						if ($LastY != NULL && $CycleBackground && ($DrawYLines == ALL || in_array($AxisID, $DrawYLines))) {
 							$this->pChartObject->drawFilledRectangle($this->pChartObject->GraphAreaX1 + $FloatingOffset, $LastY, $this->pChartObject->GraphAreaX2 - $FloatingOffset, $YPos, $BGColor);
 						}
 
-						if (($YPos != $this->pChartObject->GraphAreaY1 && $YPos != $this->pChartObject->GraphAreaY2) && ($DrawYLines == ALL || in_[$AxisID, $DrawYLines))] {
+						if (($YPos != $this->pChartObject->GraphAreaY1 && $YPos != $this->pChartObject->GraphAreaY2) && ($DrawYLines == ALL || in_array($AxisID, $DrawYLines))) {
 							$this->pChartObject->drawLine($this->pChartObject->GraphAreaX1 + $FloatingOffset, $YPos, $this->pChartObject->GraphAreaX2 - $FloatingOffset, $YPos, ["R" => $GridR,"G" => $GridG,"B" => $GridB,"Alpha" => $GridAlpha,"Ticks" => $GridTicks]);
 						}
 

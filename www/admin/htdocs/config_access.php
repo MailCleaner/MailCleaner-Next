@@ -45,7 +45,7 @@ $aposted = $aform->getResult();
 if ($aform->shouldSave()) {
   // get ip settings
   foreach($aposted as $k => $v) {
-    if (preg_match('/(\S+)\_(\S+)/', $k, $tmp) && in_[$tmp[1], $services_name]) {
+    if (preg_match('/(\S+)\_(\S+)/', $k, $tmp) && in_array($tmp[1], $services_name)) {
       if ($tmp[2] == "ips") {
 	    $services[$tmp[1]]->setIPS($v);
         $services[$tmp[1]]->save();

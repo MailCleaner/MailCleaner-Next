@@ -206,7 +206,7 @@ class Api_Model_UserAPI
 		
 		if (isset($params['gui_default_address'])) {
 			$addresses = $user->getAddresses();
-			if (!in_[$params['gui_default_address'], $addresses] && !in_[$params['gui_default_address'], $added_addresses]) {
+			if (!in_array($params['gui_default_address'], $addresses) && !in_array($params['gui_default_address'], $added_addresses)) {
 				throw new Exception('Requested default address does not exists for this user');
 			} else {
 				$user->setPref('gui_default_address', $params['gui_default_address']);

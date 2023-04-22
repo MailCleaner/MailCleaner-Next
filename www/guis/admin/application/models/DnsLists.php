@@ -55,7 +55,7 @@ class Default_Model_DnsLists
 		$ret = [];
 		$types = preg_split("/\s/", $type);
 		foreach ($this->_all_lists as $listname => $list) {
-			if (in_[$list['type'], $types]) {
+			if (in_array($list['type'], $types)) {
 				$ret[$listname] = $list;
 			}
 		}

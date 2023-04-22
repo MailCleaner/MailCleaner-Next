@@ -50,11 +50,11 @@ class Default_Model_NetworkInterface
 	}
 	protected function setTypedParam(&$type_array, $param, $value) {
 		if ($param == 'pre-up') {
-			if (!in_[$value, $type_array['pre-up']] && !preg_match('/(disable_ipv6|accept_ra|autoconf)$/', $value)) {
+			if (!in_array($value, $type_array['pre-up']) && !preg_match('/(disable_ipv6|accept_ra|autoconf)$/', $value)) {
     			array_push($type_array['pre-up'], $value);
 			}
 		} elseif ($param == 'post-up') {
-			if (!in_[$value, $type_array['post-up']] && !preg_match('/(disable_ipv6|accept_ra|autoconf)$/', $value)) {
+			if (!in_array($value, $type_array['post-up']) && !preg_match('/(disable_ipv6|accept_ra|autoconf)$/', $value)) {
 			    array_push($type_array['post-up'], $value);
 			}
 		} elseif ($param == 'virtual_addresses') {
@@ -69,7 +69,7 @@ class Default_Model_NetworkInterface
 	}
 	
 	public function addIPv4VirtualAddress($address) {
-		if (!in_[$address, $this->_ipv4_params['virtual_addresses']]) {
+		if (!in_array($address, $this->_ipv4_params['virtual_addresses'])) {
     		array_push($this->_ipv4_params['virtual_addresses'], $address);
 		}
 	}

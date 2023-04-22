@@ -244,7 +244,7 @@ class MCSoap_Status
 
        $available_spools = [1, 2, 4];
        $spool = 1;
-       if (isset($params['spool']) && in_[$params['spool'], $available_spools]) {
+       if (isset($params['spool']) && in_array($params['spool'], $available_spools)) {
        	 $spool = $params['spool'];
        }
        $cmd = "/opt/exim4/bin/exipick --spool ".$config->getOption('VARDIR')."/spool/exim_stage".$spool." -flatq --show-vars deliver_freeze,dont_deliver,first_delivery,warning_count,shown_message_size,message_age";
@@ -368,7 +368,7 @@ class MCSoap_Status
     	
         $available_spools = [1, 2, 4];
         $spool = 1;
-        if (isset($params['spool']) && in_[$params['spool'], $available_spools]) {
+        if (isset($params['spool']) && in_array($params['spool'], $available_spools)) {
           $spool = $params['spool'];
         }
 
@@ -407,7 +407,7 @@ class MCSoap_Status
 
         $available_spools = [1, 2, 4];
         $spool = 1;
-        if (isset($params['spool']) && in_[$params['spool'], $available_spools]) {
+        if (isset($params['spool']) && in_array($params['spool'], $available_spools)) {
           $spool = $params['spool'];
         }
 

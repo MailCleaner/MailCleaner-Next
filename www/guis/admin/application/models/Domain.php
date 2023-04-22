@@ -317,7 +317,7 @@ class Default_Model_Domain
 			if ($domain->getParam('name') && $domain->getParam('prefs') != $this->getParam('prefs')) {
 				throw new Exception("Domain already configured ($alias)");
 			}
-			if (! in_[$alias, $this->_aliases]) {
+			if (! in_array($alias, $this->_aliases)) {
 				$this->_aliases[] = $alias;
 			}
 		}
@@ -340,7 +340,7 @@ class Default_Model_Domain
 		## delete removed aliases
 		$listed = $this->getMapper()->getAliases($this);
 		foreach ($listed as $l) {
-			if (!in_[$l, $this->_aliases] && $l != $this->getParam('name')) {
+			if (!in_array($l, $this->_aliases) && $l != $this->getParam('name')) {
 				$domain = new Default_Model_Domain();
 				$domain->findByName($l);
 				$domain->delete();
@@ -482,7 +482,7 @@ class Default_Model_Domain
 	public function setDestinationOption($option) {
                 foreach ($this->_destination_action_options as $key => $value) {
                    if ($value == $option || $key == $option) {
-                        if (!in_[$value, $this->_destination_options]) {
+                        if (!in_array($value, $this->_destination_options)) {
                             $this->_destination_options = [];
 			    $this->_destination_options[$value] = $value;
                         }
@@ -492,7 +492,7 @@ class Default_Model_Domain
 	public function setDestinationOption_smarthost($option) {
                 foreach ($this->_destination_action_options_smarthost as $key => $value) {
                    if ($value == $option || $key == $option) {
-                        if (!in_[$value, $this->_destination_options_smarthost]) {
+                        if (!in_array($value, $this->_destination_options_smarthost)) {
                             $this->_destination_options_smarthost = [];
 			    $this->_destination_options_smarthost[$value] = $value;
                         }

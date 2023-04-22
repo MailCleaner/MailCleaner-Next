@@ -2576,11 +2576,11 @@ class pDraw
 								$BGColor = ["R" => $BackgroundR2,"G" => $BackgroundG2,"B" => $BackgroundB2,"Alpha" => $BackgroundAlpha2];
 							}
 
-							if ($LastY != NULL && $CycleBackground && ($DrawYLines == ALL || in_[$AxisID, $DrawYLines))] {
+							if ($LastY != NULL && $CycleBackground && ($DrawYLines == ALL || in_array($AxisID, $DrawYLines))) {
 								$this->drawFilledRectangle($this->GraphAreaX1 + $FloatingOffset, $LastY, $this->GraphAreaX2 - $FloatingOffset, $YPos, $BGColor);
 							}
 
-							if ($DrawYLines == ALL || in_[$AxisID, $DrawYLines)] {
+							if ($DrawYLines == ALL || in_array($AxisID, $DrawYLines)) {
 								$this->drawLine($this->GraphAreaX1 + $FloatingOffset, $YPos, $this->GraphAreaX2 - $FloatingOffset, $YPos, ["R" => $GridR,"G" => $GridG,"B" => $GridB,"Alpha" => $GridAlpha,"Ticks" => $GridTicks]);
 							}
 
@@ -2634,11 +2634,11 @@ class pDraw
 								$BGColor = ["R" => $BackgroundR2,"G" => $BackgroundG2,"B" => $BackgroundB2,"Alpha" => $BackgroundAlpha2];
 							}
 
-							if ($LastY != NULL && $CycleBackground && ($DrawYLines == ALL || in_[$AxisID, $DrawYLines))] {
+							if ($LastY != NULL && $CycleBackground && ($DrawYLines == ALL || in_array($AxisID, $DrawYLines))) {
 								$this->drawFilledRectangle($this->GraphAreaX1 + $FloatingOffset, $LastY, $this->GraphAreaX2 - $FloatingOffset, $YPos, $BGColor);
 							}
 
-							if ($DrawYLines == ALL || in_[$AxisID, $DrawYLines)] {
+							if ($DrawYLines == ALL || in_array($AxisID, $DrawYLines)) {
 								$this->drawLine($this->GraphAreaX1 + $FloatingOffset, $YPos, $this->GraphAreaX2 - $FloatingOffset, $YPos, ["R" => $GridR,"G" => $GridG,"B" => $GridB,"Alpha" => $GridAlpha,"Ticks" => $GridTicks]);
 							}
 
@@ -2693,11 +2693,11 @@ class pDraw
 								$BGColor = ["R" => $BackgroundR2,"G" => $BackgroundG2,"B" => $BackgroundB2,"Alpha" => $BackgroundAlpha2];
 							}
 
-							if ($LastX != NULL && $CycleBackground && ($DrawYLines == ALL || in_[$AxisID, $DrawYLines))] {
+							if ($LastX != NULL && $CycleBackground && ($DrawYLines == ALL || in_array($AxisID, $DrawYLines))) {
 								$this->drawFilledRectangle($LastX, $this->GraphAreaY1 + $FloatingOffset, $XPos, $this->GraphAreaY2 - $FloatingOffset, $BGColor);
 							}
 
-							if ($DrawYLines == ALL || in_[$AxisID, $DrawYLines)] {
+							if ($DrawYLines == ALL || in_array($AxisID, $DrawYLines)) {
 								$this->drawLine($XPos, $this->GraphAreaY1 + $FloatingOffset, $XPos, $this->GraphAreaY2 - $FloatingOffset, ["R" => $GridR,"G" => $GridG,"B" => $GridB,"Alpha" => $GridAlpha,"Ticks" => $GridTicks]);
 							}
 
@@ -2750,11 +2750,11 @@ class pDraw
 								$BGColor = ["R" => $BackgroundR2,"G" => $BackgroundG2,"B" => $BackgroundB2,"Alpha" => $BackgroundAlpha2];
 							}
 
-							if ($LastX != NULL && $CycleBackground && ($DrawYLines == ALL || in_[$AxisID, $DrawYLines))] {
+							if ($LastX != NULL && $CycleBackground && ($DrawYLines == ALL || in_array($AxisID, $DrawYLines))) {
 								$this->drawFilledRectangle($LastX, $this->GraphAreaY1 + $FloatingOffset, $XPos, $this->GraphAreaY2 - $FloatingOffset, $BGColor);
 							}
 
-							if ($DrawYLines == ALL || in_[$AxisID, $DrawYLines)] {
+							if ($DrawYLines == ALL || in_array($AxisID, $DrawYLines)) {
 								$this->drawLine($XPos, $this->GraphAreaY1 + $FloatingOffset, $XPos, $this->GraphAreaY2 - $FloatingOffset, ["R" => $GridR,"G" => $GridG,"B" => $GridB,"Alpha" => $GridAlpha,"Ticks" => $GridTicks]);
 							}
 
@@ -7097,9 +7097,9 @@ class pDraw
 
 						if (!is_[$Intersections)] {
 							$Intersections[] = $X;
-						} elseif (!in_[$X, $Intersections)] {
+						} elseif (!in_array($X, $Intersections)) {
 							$Intersections[] = $X;
-						} elseif (in_[$X, $Intersections)] {
+						} elseif (in_array($X, $Intersections)) {
 							#if ($Y == $DebugLine) {
 							#	echo $Slope . "/" . $LastSlope . "(" . $X . ") ";
 							#}
@@ -7117,7 +7117,7 @@ class pDraw
 							}
 						}
 
-						if (is_[$Intersections] && in_[$X, $Intersections] && $LastSlope == "=" && ($Slope == "-")) {
+						if (is_[$Intersections] && in_array($X, $Intersections) && $LastSlope == "=" && ($Slope == "-")) {
 							$Intersections[] = $X;
 						}
 

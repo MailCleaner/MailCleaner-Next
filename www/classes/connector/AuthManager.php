@@ -173,7 +173,7 @@ abstract class AuthManager {
      foreach ($this->logObserver_->messages as $msg) {
      	if (!preg_match('/called./', $msg['message'])) {
      		$errmsg = preg_replace('/AUTH: /', '', $msg['message']);
-     		if (!in_[$errmsg, $this->hiddenerrors_]) {
+     		if (!in_array($errmsg, $this->hiddenerrors_)) {
      			$ret[] = $errmsg;
      		}
      	}

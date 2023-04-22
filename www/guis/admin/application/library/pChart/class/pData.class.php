@@ -796,19 +796,19 @@ class pData
 				if ($Buffer != "") {
 					if ($GotHeader && !$HeaderParsed) {
 						foreach($Values as $Key => $Name) {
-							(!in_[$Key, $SkipColumns)] AND $SerieNames[$Key] = $Name;
+							(!in_array($Key, $SkipColumns)) AND $SerieNames[$Key] = $Name;
 						}
 
 						$HeaderParsed = TRUE;
 					} else {
 						if (count($SerieNames) == 0) {
 							foreach($Values as $Key => $Name) {
-								(!in_[$Key, $SkipColumns)] AND $SerieNames[$Key] = $DefaultSerieName . $Key;
+								(!in_array($Key, $SkipColumns)) AND $SerieNames[$Key] = $DefaultSerieName . $Key;
 							}
 						}
 
 						foreach($Values as $Key => $Value) {
-							(!in_[$Key, $SkipColumns)] AND $this->addPoints($Value, $SerieNames[$Key]);
+							(!in_array($Key, $SkipColumns)) AND $this->addPoints($Value, $SerieNames[$Key]);
 						}
 					}
 				} # $Buffer != ""
@@ -849,7 +849,7 @@ class pData
 
 				$return = ($return == "!") ? VOID : $this->right($return, strlen($return) - 1);
 				
-				if (in_[$return, ["NAN", "INF", "-INF"])]{
+				if (in_array($return, ["NAN", "INF", "-INF"])) {
 					$return = VOID;
 				}
 			}

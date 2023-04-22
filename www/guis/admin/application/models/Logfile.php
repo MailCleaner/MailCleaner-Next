@@ -44,7 +44,7 @@ class Default_Model_Logfile
 	public function getCategories() {
 		$ret = [];
 		foreach ($this->_available_types as $type => $t) {
-			if (!in_[$t['cat'], $ret]) {
+			if (!in_array($t['cat'], $ret)) {
 				array_push($ret, $t['cat']);
 			}
 		}
