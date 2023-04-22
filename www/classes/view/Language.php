@@ -116,22 +116,22 @@ class Language
         foreach ($language_codes as $l_code => $l_title) {
                 $ll = basename($l);
 		// Ignore duplicates
-		if (array_key_exists($ll, $this->available_languages_) || in_[$l_title, $this->available_languages_) ] {
+		if (array_key_exists($ll, $this->available_languages_) || in_array($l_title, $this->available_languages_) ) {
 			continue;
 		}
 		if (array_key_exists($ll, $currLangs)) {
-			if ( in_[$language_codes[$currLangs[$ll]], $this->available_languages_) ] {
+			if ( in_array($language_codes[$currLangs[$ll]], $this->available_languages_) ) {
 				continue;
 			}
 		}
 
                 if ($ISENTERPRISE) {
-                        if (array_key_exists($ll, $currLangs) && in_[$ll, $ee_languages]) {
+                        if (array_key_exists($ll, $currLangs) && in_array($ll, $ee_languages)) {
                                 $this->available_languages_[$ll] = $language_codes[$currLangs[$ll]];
                                 $this->inversed_languages_[$language_codes[$currLangs[$ll]]] = $ll;
                                 break;
                         } else {
-                                if (preg_match("/^${ll}/", $l_code) == 1 && in_[$ll, $ee_languages]) {
+                                if (preg_match("/^${ll}/", $l_code) == 1 && in_array($ll, $ee_languages)) {
                                         $this->available_languages_[$ll] = $l_title;
                                         $this->inversed_languages_[$l_title] = $ll;
                                         break;

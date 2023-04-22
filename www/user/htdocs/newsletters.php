@@ -90,7 +90,7 @@ function send_SOAP_request($host, $request, $params, $allowed_response) {
         return False;
     } else {
         $res = $soaper->queryParam($request, $params);
-        if (! in_[$res, $allowed_response]) {
+        if (! in_array($res, $allowed_response)) {
             return False;
         }
         return True;
