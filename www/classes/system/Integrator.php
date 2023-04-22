@@ -34,7 +34,7 @@ class Integrator extends PrefHandler
     $sysconf = SystemConfig::getInstance();
 
     $values = @file($sysconf->VARDIR_."/spool/mailcleaner/integrator.txt");
-    if (!$values || ! is_[$values]) {
+    if (!$values || ! is_array($values)) {
       return;
     }
     $matches = [];

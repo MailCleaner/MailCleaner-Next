@@ -132,7 +132,7 @@ public function load($id) {
     $query .= " id='".$clean_id."'";
 
     $res = $db->getHash($query);
-    if (!is_[$res]) {
+    if (!is_array($res)) {
       return $res;
     }
     if (!empty($res)) {

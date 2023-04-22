@@ -136,7 +136,7 @@ public function getAllData() {
  * @return         bool   true on success, false on failure
  */
 public function loadFromArray($datas) {
-  if (!is_[$datas])  {
+  if (!is_array($datas))  {
     return false;
   }
   foreach ($datas as $key => $value) {
@@ -171,7 +171,7 @@ public function loadDatas($id, $dest) {
   }
   $query = "SELECT * FROM $table WHERE exim_id='$id'";
   $res = $db->getHash($query);
-  if (!$res || ! is_[$res]) {
+  if (!$res || ! is_array($res)) {
   	return false;
   }
 
@@ -211,7 +211,7 @@ public function loadHeadersAndBody() {
   }
 
   $soap_res = $soaper->queryParam('getHeaders', [$this->getData('exim_id'), $dest, 30]);
-  if (!is_object($soap_res) || !is_[$soap_res->text]) {
+  if (!is_object($soap_res) || !is_array($soap_res->text)) {
     echo "CANNOTLOADMESSAGEHEADERS";
     return false;
   } else {
@@ -219,7 +219,7 @@ public function loadHeadersAndBody() {
   }
 
   $soap_res = $soaper->queryParam('getBody', [$this->getData('exim_id'), $dest, 30]);
-  if (is_object($soap_res) && is_[$soap_res->text]) {
+  if (is_object($soap_res) && is_array($soap_res->text)) {
     $body = $soap_res->text;
     foreach ($body as $line) {
       $line = utf8_decode($line);
@@ -278,7 +278,7 @@ public function loadHeadersAndBody() {
   }
 
   $soap_res = $soaper->queryParam('getMIMEPart', [$this->getData('exim_id'), $this->getData('to'), 0]);
-  if (is_object($soap_res) && is_[$soap_res->text]) {
+  if (is_object($soap_res) && is_array($soap_res->text)) {
     $this->parts_type_ = preg_split('/\-/', $soap_res->text[0]);
   }
   if (count($this->parts_type_) > 0) {
@@ -392,7 +392,7 @@ private function getMIMEPartAsText($part, $soaper) {
   $ret = "";
 
   $soap_res = $soaper->queryParam('getMIMEPart', [$this->getData('exim_id'), $this->getData('to'), $part]);
-  if (is_object($soap_res) && is_[$soap_res->text]) {
+  if (is_object($soap_res) && is_array($soap_res->text)) {
     foreach ($soap_res->text as $l) {
       $tab = str_split($l, 72);
       foreach ($tab as $line) {

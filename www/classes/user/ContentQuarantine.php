@@ -246,7 +246,7 @@ public function getHTMLList($t) {
  * @return           bool   true on success, false on failure
  */
 public function setImages($images) {
-   if (is_[$images]) {
+   if (is_array($images)) {
      $this->images_ = $images;
      return true;
    }

@@ -107,7 +107,7 @@ class Default_Model_DomainMapper
     		$query->order('name ASC');
     	}
     	
-    	if (isset($params['limit']) && is_[$params['limit']]) {
+    	if (isset($params['limit']) && is_array($params['limit'])) {
     		$query->limit($params['limit'][0], $params['limit'][1]);
     	}
     	

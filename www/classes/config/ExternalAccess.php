@@ -46,7 +46,7 @@ public function load($service) {
   $query = "SELECT id FROM external_access WHERE service='".$this->service_."'";
 
   $list = $db_slaveconf->getList($query);
-  if (!is_[$list]) {
+  if (!is_array($list)) {
     return false;
   }
 

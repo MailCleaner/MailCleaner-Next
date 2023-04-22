@@ -116,7 +116,7 @@ public function canManageDomain($domain) {
   $d = [];
   if (is_string($domain)) {
     array_push($d, $domain);
-  } elseif (!is_[$domain]) {
+  } elseif (!is_array($domain)) {
     return false;
   } else {
     $d = $domain;

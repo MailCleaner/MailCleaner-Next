@@ -140,7 +140,7 @@ class PrefHandler
    * @return        bool    true on success, false on failure
    */
    public function setIDField($tables) {
-    if (is_[$tables]) {
+    if (is_array($tables)) {
        $this->id_fields_ = $tables;
     }
    }
@@ -220,7 +220,7 @@ class PrefHandler
     $db_masterconf = DM_MasterConfig :: getInstance();
     $this->last_query_ = $query;
     $res = $db_masterconf->getHash($query);
-    if (!is_[$res] || empty($res)) {
+    if (!is_array($res) || empty($res)) {
         return false;
     }
     $matches = [];
@@ -332,7 +332,7 @@ class PrefHandler
             // get last_id
             $id_query = "SELECT LAST_INSERT_ID() as id";
             $res = $db_masterconf->getHash($id_query);
-            if (is_[$res]) {
+            if (is_array($res)) {
                $this->record_ids_[$this->tables_shortcuts_[$q_table]] = $res['id'];
             }
         }

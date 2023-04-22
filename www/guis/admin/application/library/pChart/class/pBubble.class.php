@@ -30,8 +30,8 @@ class pBubble
 	/* Prepare the scale */
 	function bubbleScale($DataSeries, $WeightSeries)
 	{
-		(!is_[$DataSeries]) AND $DataSeries = [$DataSeries];
-		(!is_[$WeightSeries]) AND $WeightSeries = [$WeightSeries];
+		(!is_array($DataSeries)) AND $DataSeries = [$DataSeries];
+		(!is_array($WeightSeries)) AND $WeightSeries = [$WeightSeries];
 		
 		/* Parse each data series to find the new min & max boundaries to scale */
 		$NewPositiveSerie = [];
@@ -129,8 +129,8 @@ class pBubble
 		/* Override defaults */
 		extract($Format);
 		
-		(!is_[$DataSeries]) AND $DataSeries = [$DataSeries];
-		(!is_[$WeightSeries]) AND $WeightSeries = [$WeightSeries];
+		(!is_array($DataSeries)) AND $DataSeries = [$DataSeries];
+		(!is_array($WeightSeries)) AND $WeightSeries = [$WeightSeries];
 		
 		$Data = $this->pDataObject->getData();
 		$Palette = $this->pDataObject->getPalette();
@@ -277,7 +277,7 @@ class pBubble
 		
 		$OverrideTitle = isset($Format["OverrideTitle"]) ? $Format["OverrideTitle"] : NULL;
 		$DrawPoint = isset($Format["DrawPoint"]) ? $Format["DrawPoint"] : LABEL_POINT_BOX;
-		(!is_[$Points]) AND $Points = [$Points];
+		(!is_array($Points)) AND $Points = [$Points];
 		
 		list($XMargin, $XDivs) = $this->pChartObject->scaleGetXSettings();
 		$AxisID = $Data["Series"][$SerieName]["Axis"];

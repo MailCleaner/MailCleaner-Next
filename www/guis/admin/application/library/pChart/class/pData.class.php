@@ -85,7 +85,7 @@ class pData
 			$this->initialise($SerieName);
 		}
 		
-		if (is_[$Values)] {
+		if (is_array($Values)) {
 			foreach($Values as $Key => $Value) {
 				$this->Data["Series"][$SerieName]["Data"][] = $Value;
 			}
@@ -108,7 +108,7 @@ class pData
 	/* Strip VOID values */
 	function stripVOID($Values)
 	{
-		if (!is_[$Values)] {
+		if (!is_array($Values)) {
 			return [];
 		}
 
@@ -933,7 +933,7 @@ class pData
 	/* Convert a string to a single elements array */
 	function convertToArray($Value)
 	{
-		return (is_[$Value)] ? $Value : [$Value];
+		return (is_array($Value)) ? $Value : [$Value];
 	}
 
 	/* Class string wrapper */

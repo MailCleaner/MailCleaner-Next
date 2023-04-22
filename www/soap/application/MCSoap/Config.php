@@ -170,7 +170,7 @@ class MCSoap_Config
 		$starter = '/etc/init.d/ntp';
         $full = '';
 
-	        if (is_[$sync] && defined($sync['sync'])) {
+	        if (is_array($sync) && defined($sync['sync'])) {
                   $sync = $sync['sync'];
                 }
 	    if (! file_exists($tmpconfigfile)) {

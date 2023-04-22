@@ -9,7 +9,7 @@
 /**
  * this mainly use the PEAR DB package
  */
-require_once("DB.php");
+require_once("Pear/DB.php");
 require_once('system/SystemConfig.php');
 
 /**
@@ -286,7 +286,7 @@ class DataManager {
     if (is_string($value)) {
     	return $this->db_handle->escapeSimple($value);
     }
-    if (is_[$value]) {
+    if (is_array($value)) {
 	$value[0] = $this->db_handle->escapeSimple($value[0]);
     }
     return $value;

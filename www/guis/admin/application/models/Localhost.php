@@ -18,7 +18,7 @@ class Default_Model_Localhost
     	$client = new Zend_Soap_Client($url);
         try {
             ini_set('default_socket_timeout', 5);
-            if (is_[$params] && isset($params['timeout'])) {
+            if (is_array($params) && isset($params['timeout'])) {
                   ini_set('default_socket_timeout', $params['timeout']);
                   unset($params['timeout']);
             }

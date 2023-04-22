@@ -132,7 +132,7 @@ class User extends PrefHandler {
   	$query = "SELECT alias FROM pending_alias WHERE user=".$this->getID();
     $db_slaveconf = DM_SlaveConfig :: getInstance();
     $res = $db_slaveconf->getList($query);
-    if (is_[$res]) {
+    if (is_array($res)) {
       foreach($res as $add) {
         $list[$add] = 1;
       }
@@ -244,7 +244,7 @@ private function addRegisteredAddresses() {
   $query .= "AND u.domain='".$db_slaveconf->sanitize($this->getPref('domain'))."' AND e.user=u.id";
 
   $res = $db_slaveconf->getListOfHash($query);
-  if (is_[$res]) {
+  if (is_array($res)) {
     foreach($res as $add_record) {
       $this->addAddress($add_record['address']);
       if ($add_record['is_main']) {
@@ -312,7 +312,7 @@ private function getLocalUserDatas() {
   $db_slaveconf = DM_SlaveConfig :: getInstance();
   $query = "SELECT realname, username, email from mysql_auth WHERE username='".$db_slaveconf->sanitize($this->getPref('username'))."' AND domain='".$db_slaveconf->sanitize($this->getPref('domain'))."'";
   $res = $db_slaveconf->getHash($query);
-  if (!is_[$res] || empty($res)) {
+  if (!is_array($res) || empty($res)) {
     return false;
   }
   foreach ($res as $key => $value) {

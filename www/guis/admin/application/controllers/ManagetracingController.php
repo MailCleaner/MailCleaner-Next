@@ -240,7 +240,7 @@ class ManagetracingController extends Zend_Controller_Action
                 if ($slave) {
                     $res = $slave->sendSoap('Logs_ExtractLog', $params);
                 }
-                if (is_[$res] && isset($res['full_log'])) {
+                if (is_array($res) && isset($res['full_log'])) {
                     $log = $res['full_log'];
                 }
                 $view->logs = $res;
@@ -289,7 +289,7 @@ class ManagetracingController extends Zend_Controller_Action
                     if ($slave) {
                       $res = $slave->sendSoap('Logs_ExtractLog', $params);
                     }
-                    if (is_[$res] && isset($res['full_log'])) {
+                    if (is_array($res) && isset($res['full_log'])) {
                       array_push($traces, $res);
                     }
                   }
@@ -307,7 +307,7 @@ class ManagetracingController extends Zend_Controller_Action
                    fwrite($handle, $separator);
                    foreach (['log_stage1', 'log_stage2', 'log_engine', 'log_stage4', 'log_spamhandler') as $c] {
                        $str = '';
-                       if ( is_[$t[$c]] && count($t[$c]) > 0) {
+                       if ( is_array($t[$c]) && count($t[$c]) > 0) {
                            $sstr = implode("\r\n", $t[$c]);
                            $str .= "\r\n".$sstr;
                        }

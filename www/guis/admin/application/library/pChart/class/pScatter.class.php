@@ -482,10 +482,10 @@ class pScatter
 				}
 
 				$PosArrayX = $this->getPosArray($SerieValuesX, $SerieXAxis);
-				(!is_[$PosArrayX)] AND $PosArrayX = [0 => $PosArrayX];
+				(!is_array($PosArrayX)) AND $PosArrayX = [0 => $PosArrayX];
 
 				$PosArrayY = $this->getPosArray($SerieValuesY, $SerieYAxis);
-				(!is_[$PosArrayY)] AND $PosArrayY = [0 => $PosArrayY];
+				(!is_array($PosArrayY)) AND $PosArrayY = [0 => $PosArrayY];
 	
 				$Color = ["R" => $Series["Color"]["R"],"G" => $Series["Color"]["G"],"B" => $Series["Color"]["B"],"Alpha" => $Series["Color"]["Alpha"]];
 				
@@ -538,10 +538,10 @@ class pScatter
 				$Description = ($ImageMapTitle == NULL) ? $Data["Series"][$Series["X"]]["Description"] . " / " . $Data["Series"][$Series["Y"]]["Description"] : $ImageMapTitle;
 
 				$PosArrayX = $this->getPosArray($SerieValuesX, $SerieXAxis);
-				(!is_[$PosArrayX)] AND $PosArrayX = [0 => $PosArrayX];
+				(!is_array($PosArrayX)) AND $PosArrayX = [0 => $PosArrayX];
 	
 				$PosArrayY = $this->getPosArray($SerieValuesY, $SerieYAxis);
-				(!is_[$PosArrayY)] AND $PosArrayY = [0 => $PosArrayY];
+				(!is_array($PosArrayY)) AND $PosArrayY = [0 => $PosArrayY];
 
 				$Color = ["R" => $Series["Color"]["R"],"G" => $Series["Color"]["G"],"B" => $Series["Color"]["B"],"Alpha" => $Series["Color"]["Alpha"]];
 				($Ticks != 0) AND $Color["Ticks"] = $Ticks;
@@ -592,14 +592,14 @@ class pScatter
 				$Description = ($ImageMapTitle == NULL) ? $Data["Series"][$Series["X"]]["Description"] . " / " . $Data["Series"][$Series["Y"]]["Description"] : $ImageMapTitle;
 
 				$PosArrayX = $this->getPosArray($SerieValuesX, $SerieXAxis);
-				if (!is_[$PosArrayX)] {
+				if (!is_array($PosArrayX)) {
 					$Value = $PosArrayX;
 					$PosArrayX = [];
 					$PosArrayX[0] = $Value;
 				}
 
 				$PosArrayY = $this->getPosArray($SerieValuesY, $SerieYAxis);
-				if (!is_[$PosArrayY)] {
+				if (!is_array($PosArrayY)) {
 					$Value = $PosArrayY;
 					$PosArrayY = [0 => $Value];
 				}
@@ -651,7 +651,7 @@ class pScatter
 		$Data = $this->pDataObject->getData();
 		$ScaleHeight = $Data["Axis"][$AxisID]["ScaleMax"] - $Data["Axis"][$AxisID]["ScaleMin"];
 		
-		(!is_[$Values)] AND $Values = [$Values];
+		(!is_array($Values)) AND $Values = [$Values];
 		$Result = [];
 
 		if ($Data["Axis"][$AxisID]["Identity"] == AXIS_X) {
@@ -961,7 +961,7 @@ class pScatter
 			return 0;
 		}
 		
-		(!is_[$Points)] AND $Points = [$Points];
+		(!is_array($Points)) AND $Points = [$Points];
 		$OverrideTitle = isset($Format["OverrideTitle"]) ? $Format["OverrideTitle"] : NULL;
 		$DrawPoint = isset($Format["DrawPoint"]) ? $Format["DrawPoint"] : LABEL_POINT_BOX;
 		$Decimals = isset($Format["Decimals"]) ? $Format["Decimals"] : NULL;
@@ -975,10 +975,10 @@ class pScatter
 		$SerieYAxis = $Data["Series"][$SerieY]["Axis"];
 		
 		$PosArrayX = $this->getPosArray($SerieValuesX, $SerieXAxis);
-		(!is_[$PosArrayX)] AND $PosArrayX = [0 => $PosArrayX];
+		(!is_array($PosArrayX)) AND $PosArrayX = [0 => $PosArrayX];
 
 		$PosArrayY = $this->getPosArray($SerieValuesY, $SerieYAxis);
-		(!is_[$PosArrayY)] AND $PosArrayY = [0 => $PosArrayY];
+		(!is_array($PosArrayY)) AND $PosArrayY = [0 => $PosArrayY];
 
 		foreach($Points as $Key => $Point) {
 			if (isset($PosArrayX[$Point]) && isset($PosArrayY[$Point])) {

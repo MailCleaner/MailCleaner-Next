@@ -29,7 +29,7 @@ class MailCleaner_View_Helper_FormatEmail extends Zend_View_Helper_Abstract
 			$tmpparams[$k] = $v;
 		}
 
-		if (is_[$string]) {
+		if (is_array($string)) {
 			$emails = $string;
 		} else {
     		$emails = preg_split('/[,:; ]/', $string);

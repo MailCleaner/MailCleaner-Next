@@ -58,7 +58,7 @@ class Default_Model_NetworkInterface
 			    array_push($type_array['post-up'], $value);
 			}
 		} elseif ($param == 'virtual_addresses') {
-			if (is_[$value]) {
+			if (is_array($value)) {
 				$type_array[$param] = $value;
 			} else {
 				$type_array[$param] = preg_split("/[\s;:,]+/", $value);
@@ -135,7 +135,7 @@ class Default_Model_NetworkInterface
 
     public function fetchFirst($interfaces)
     {    	
-    	if (!is_[$interfaces] || !count($interfaces)) {
+    	if (!is_array($interfaces) || !count($interfaces)) {
         	$entries = $this->fetchAll();
     	} else {
     		$entries = $interfaces;

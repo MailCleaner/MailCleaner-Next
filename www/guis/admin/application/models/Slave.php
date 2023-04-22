@@ -103,10 +103,10 @@ class Default_Model_Slave
     	$message = 'OK soapsenttoall';
     	foreach ($slaves as $slave) {
     		$status = $slave->sendSoap($service, $params);
-    		if (!is_[$status] && !preg_match('/^OK/', $status)) {
+    		if (!is_array($status) && !preg_match('/^OK/', $status)) {
     			$message = "NOK (slave ".$slave->getId().") got : ".$status;
     		}
-    		if (is_[$status]) {
+    		if (is_array($status)) {
     			$message = $status;
     		}
     	}
@@ -244,7 +244,7 @@ class Default_Model_Slave
     	$retries = 5;
     	$ret = [];
     	
-    	if (!isset($what['stats']) ||!is_[$what['stats']]) {
+    	if (!isset($what['stats']) ||!is_array($what['stats'])) {
 		$what['stats'] = [
 			'cleans' => 'globalCleanCount',
     		        'spams'=>  'globalSpamCount',
@@ -263,9 +263,9 @@ class Default_Model_Slave
     	$snmpdconfig->find(1);
     	
     	$domainIndexes = [''];
-        if (isset($what['domain']) && !is_[$what['domain']]) {
+        if (isset($what['domain']) && !is_array($what['domain'])) {
     		$domainIndexes = preg_split('/[,:;]/', $what['domain']);
-    	} elseif (isset($what['domain']) && is_[$what['domain']]) {
+    	} elseif (isset($what['domain']) && is_array($what['domain'])) {
     		$domainIndexes = $what['domain'];
     	}
     	foreach ($what['stats'] as $text => $stat) {
@@ -390,7 +390,7 @@ class Default_Model_Slave
     	$this->getTodaySNMPStats();
     	
     	ini_set('display_errors', 1);
-    	if (!$data || is_[$data]) {
+    	if (!$data || is_array($data)) {
             $datares = $this->sendSoapRequest('Status_getTodayStats', []);
             if (!isset($datares['data'])) {       	
                 header("HTTP/1.0 404 Not Found");

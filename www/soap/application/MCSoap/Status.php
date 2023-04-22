@@ -360,7 +360,7 @@ class MCSoap_Status
     	$ret = ['message' => 'OK','msgsdeleted' => [], 'errors' => []];
     	
     	$msgs = [];
-    	if (is_[$params['msg']]) {
+    	if (is_array($params['msg'])) {
     		$msgs = $params['msg'];
     	} else {
     		$msgs = [$params['msg']];
@@ -399,7 +399,7 @@ class MCSoap_Status
     	$ret = ['message' => 'OK','msgstried' => [], 'errors' => []];
     	
     	$msgs = [];
-        if (is_[$params['msg']]) {
+        if (is_array($params['msg'])) {
             $msgs = $params['msg'];
         } else {
             $msgs = [$params['msg']];

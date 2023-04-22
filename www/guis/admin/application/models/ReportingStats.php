@@ -287,7 +287,7 @@ class Default_Model_ReportingStats
         $label_bg = ['R'=>240,'G'=>240,'B'=>240,'A'=>255];
         $label_size = ['S' => -50, 'M' => 5, 'O' => LEGEND_HORIZONTAL];
 
-        if (isset($params['size']) && is_[$params['size']]) {
+        if (isset($params['size']) && is_array($params['size'])) {
                 $size = $params['size'];
         }
         $picture = new pImage($size[0],$size[1],$DataSet);
@@ -325,7 +325,7 @@ class Default_Model_ReportingStats
                 $position = [135, 80];
             }
         }
-        if (isset($params['position']) && is_[$params['position']]) {
+        if (isset($params['position']) && is_array($params['position'])) {
             $position = $params['position'];
         }
         if (isset($params['radius']) && is_numeric($params['radius'])) {

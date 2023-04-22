@@ -95,7 +95,7 @@ class Default_Model_UserMapper
             $query->order('username ASC');
         }
 
-        if (isset($params['limit']) && is_[$params['limit']]) {
+        if (isset($params['limit']) && is_array($params['limit'])) {
             $query->limit($params['limit'][0], $params['limit'][1]);
         }
 

@@ -2992,7 +2992,7 @@ class pDraw
 		$AbscissaMargin = $this->getAbscissaMargin($Data);
 		$XScale = $this->scaleGetXSettings();
 		
-		if (is_[$Value)] {
+		if (is_array($Value)) {
 			foreach($Value as $Key => $ID) {
 				$this->drawXThreshold($ID, $Format);
 			}
@@ -3239,7 +3239,7 @@ class pDraw
 			return -1;
 		}
 		
-		if (is_[$Value)] {
+		if (is_array($Value)) {
 			foreach($Value as $Key => $ID) {
 				$this->drawThreshold($ID, $Format);
 			}
@@ -6039,7 +6039,7 @@ class pDraw
 	{
 		$Result = [];
 		
-		if (!is_[$Colors)] {
+		if (!is_array($Colors)) {
 			return ($this->getRandomColor());
 		}
 
@@ -7095,7 +7095,7 @@ class pDraw
 							}
 						}
 
-						if (!is_[$Intersections)] {
+						if (!is_array($Intersections)) {
 							$Intersections[] = $X;
 						} elseif (!in_array($X, $Intersections)) {
 							$Intersections[] = $X;
@@ -7117,7 +7117,7 @@ class pDraw
 							}
 						}
 
-						if (is_[$Intersections] && in_array($X, $Intersections) && $LastSlope == "=" && ($Slope == "-")) {
+						if (is_array($Intersections) && in_array($X, $Intersections) && $LastSlope == "=" && ($Slope == "-")) {
 							$Intersections[] = $X;
 						}
 
@@ -7130,7 +7130,7 @@ class pDraw
 					echo "@" . $Y . "\r\n";
 				}
 
-				if (is_[$Intersections)] {
+				if (is_array($Intersections)) {
 					sort($Intersections);
 					#if ($Y == $DebugLine) {
 					#	print_r($Intersections);
@@ -7147,7 +7147,7 @@ class pDraw
 						}
 					}
 
-					// if ( is_[$Result) ]
+					// if ( is_array($Result) )
 
 					if (count($Result) > 0) {
 						$Intersections = $Result;
@@ -7211,7 +7211,7 @@ class pDraw
 	/* Convert a string to a single element array */
 	function convertToArray($Value)
 	{
-		return (is_[$Value)] ? $Value : [$Value];
+		return (is_array($Value)) ? $Value : [$Value];
 	}
 
 }

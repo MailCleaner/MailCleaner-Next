@@ -305,7 +305,7 @@ function getReasons($id, $dest, $lang) {
  $res = "";
  exec($cmd, $res);
  $ret = [];
- if (!is_[$res]) {
+ if (!is_array($res)) {
     return $res;
  }
  $soap_ret = new SoapReasons();

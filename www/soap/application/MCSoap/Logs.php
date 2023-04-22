@@ -634,7 +634,7 @@ class MCSoap_Logs
                        if (preg_match('/^'.$params['msgid'].'\|(.*)/', $buffer, $matches)) {
                            $inmsg = 1;
                            $res['full_log'] .= $matches[1]."\n";
-                           if (!is_[$levels[$level]]) {
+                           if (!is_array($levels[$level])) {
                                $levels[$level] = [];
                            }
                            array_push($levels[$level], $matches[1]);
@@ -649,12 +649,12 @@ class MCSoap_Logs
                    }
                }
            }
-           if (is_[$levels[0]]) { $res['log_stage1'] = $levels[0]; }
-           if (is_[$levels[1]]) { $res['log_stage2'] = $levels[1]; }
-           if (is_[$levels[2]]) { $res['log_engine'] = $levels[2]; }
-           if (is_[$levels[3]]) { $res['log_stage4'] = $levels[3]; }
-           if (is_[$levels[4]]) { $res['log_spamhandler'] = $levels[4]; }
-           if (is_[$levels[5]]) { $res['log_finalstage4'] = $levels[5]; }
+           if (is_array($levels[0])) { $res['log_stage1'] = $levels[0]; }
+           if (is_array($levels[1])) { $res['log_stage2'] = $levels[1]; }
+           if (is_array($levels[2])) { $res['log_engine'] = $levels[2]; }
+           if (is_array($levels[3])) { $res['log_stage4'] = $levels[3]; }
+           if (is_array($levels[4])) { $res['log_spamhandler'] = $levels[4]; }
+           if (is_array($levels[5])) { $res['log_finalstage4'] = $levels[5]; }
 
            return $res;
         }

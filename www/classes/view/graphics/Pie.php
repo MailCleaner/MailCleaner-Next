@@ -82,7 +82,7 @@ public function setSize($width, $height) {
  * @return         boolean    true on success, false on failure
  */
 public function addValue($value, $name, $color) {
-  if (!is_numeric($value) || !is_[$color]) {
+  if (!is_numeric($value) || !is_array($color)) {
   	return false;
   }
   if ($value == 0) {

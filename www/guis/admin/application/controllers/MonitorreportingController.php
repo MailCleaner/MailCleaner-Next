@@ -171,7 +171,7 @@ class MonitorreportingController extends Zend_Controller_Action
 		} else {
 			## no search running, launch search
 	    	$search_id = $element->startFetchAll($params);
-	    	if (! (is_[$search_id] && isset($search_id['error'])) ) {
+	    	if (! (is_array($search_id) && isset($search_id['error'])) ) {
      	    	$session->search_id = $search_id ;
 	     	    $view->loading = 1;
 	    	}

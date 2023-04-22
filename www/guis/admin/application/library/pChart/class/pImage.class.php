@@ -378,7 +378,7 @@ class pImage extends pDraw
 			return -1;
 		}
 
-		if (is_[$NewTitle)] {
+		if (is_array($NewTitle)) {
 			$NewTitle = $this->removeVOIDFromArray($OldTitle, $NewTitle);
 		}
 
@@ -387,7 +387,7 @@ class pImage extends pDraw
 				return -1;
 			}
 
-			if (is_[$NewTitle)] {
+			if (is_array($NewTitle)) {
 				$ID = 0;
 				foreach($_SESSION[$this->ImageMapIndex] as $Key => $Settings) {
 					if ($Settings[3] == $OldTitle && isset($NewTitle[$ID])) {
@@ -413,7 +413,7 @@ class pImage extends pDraw
 				}
 
 				fclose($Handle);
-				if (is_[$NewTitle)] {
+				if (is_array($NewTitle)) {
 					$ID = 0;
 					foreach($TempArray as $Key => $Settings) {
 						if ($Settings[3] == $OldTitle && isset($NewTitle[$ID])) {

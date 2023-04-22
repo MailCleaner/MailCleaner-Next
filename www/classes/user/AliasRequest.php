@@ -42,7 +42,7 @@ public function requestForm($alias) {
     $alias = $db_slaveconf->sanitize($alias);
     $query = "SELECT address FROM email where address='$alias' and user!=0";
 	$res = $db_slaveconf->getHash($query);
-    if (is_[$res] && isset($res['address']) && $res['address'] == $alias) {
+    if (is_array($res) && isset($res['address']) && $res['address'] == $alias) {
       return 'ALIASALREADYREGISTERD';
     }
 
@@ -55,7 +55,7 @@ public function requestForm($alias) {
     // and the check if still pending requests exists
     $query = "SELECT alias FROM pending_alias WHERE alias='$alias'";
     $res = $db_slaveconf->getHash($query);
-    if (is_[$res] && isset($res['alias']) &&  $res['alias'] == $alias) {
+    if (is_array($res) && isset($res['alias']) &&  $res['alias'] == $alias) {
       return 'ALIASALREADYPENDING';
     }
 
@@ -157,7 +157,7 @@ public function addAlias($id, $alias) {
     $query = "SELECT a.user, u.username, u.id, u.domain FROM pending_alias a, user u WHERE a.id='$id' AND a.alias='$alias' AND a.user=u.id";
     $res = $db_slaveconf->getHash($query);
 
-    if (!is_[$res] || ! isset($res['username'])) {
+    if (!is_array($res) || ! isset($res['username'])) {
         return 'ALIASNOTPENDING';
     }
 
@@ -199,7 +199,7 @@ public function remAlias($id, $alias) {
     $query = "SELECT a.user, u.username, u.id, u.domain FROM pending_alias a, user u WHERE a.id='$id' AND a.alias='$alias' AND a.user=u.id";
     $res = $db_slaveconf->getHash($query);
 
-    if (!is_[$res]) {
+    if (!is_array($res)) {
         return "<font color=\"red\">".$lang_->print_txt('ALIASNOTPENDING')."</font><br/><br/>";
     }
 

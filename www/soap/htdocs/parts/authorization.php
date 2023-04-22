@@ -95,7 +95,7 @@ function getAdmin($sid) {
   // fetch session datas in database
   $query = "SELECT user FROM soap_auth WHERE id='$clean_sid' AND (CAST(UNIX_TIMESTAMP(NOW()) AS SIGNED) - CAST(UNIX_TIMESTAMP(time) AS SIGNED) < $soapsession_timeout) AND user_type='admin'";
   $res = $db_slavespool->getHash($query);
-  if (!is_[$res] || empty($res)) {
+  if (!is_array($res) || empty($res)) {
     return "NOSUCHADMIN ($clean_sid)";
   }
   $username = $res['user'];
