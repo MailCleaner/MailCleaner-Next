@@ -199,7 +199,7 @@ class Default_Model_NetworkInterface
       ## create IPv4 configuration
       if ($this->getIPv4Param('mode') == 'static') {
           $ret .= "iface ".$this->getName()." inet static\n";
-          foreach (['address', 'netmask', 'network', 'broadcast', 'gateway') as $key] {
+          foreach (['address', 'netmask', 'network', 'broadcast', 'gateway'] as $key) {
       	      if ($this->getIPv4Param($key) != "") {
       		      $ret .= "\t$key ".$this->getIPv4Param($key)."\n";
       	      }
@@ -231,7 +231,7 @@ class Default_Model_NetworkInterface
           if (file_exists("/proc/sys/net/ipv6/conf/".$this->getName()."/disable_ipv6")) {
       	      $ret .= " \tpre-up echo 0 > /proc/sys/net/ipv6/conf/".$this->getName()."/disable_ipv6\n";
           }
-      	  foreach (['address', 'netmask', 'gateway') as $key] {
+      	  foreach (['address', 'netmask', 'gateway'] as $key) {
       	  	  if ($this->getIPv6Param($key) != "") {
       	  	  	$ret .= "\t$key ".$this->getIPv6Param($key)."\n";
       	  	  }

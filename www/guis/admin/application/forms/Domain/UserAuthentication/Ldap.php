@@ -98,7 +98,7 @@ class Default_Form_Domain_UserAuthentication_Ldap
 	    'filters'    => ['StringTrim']
 	    ]);
 
-        foreach ([2, 3) as $value] {
+        foreach ([2, 3] as $value) {
         	$version->addMultiOption($value, $value);
         }
         $version->setValue($this->_settings['version']);

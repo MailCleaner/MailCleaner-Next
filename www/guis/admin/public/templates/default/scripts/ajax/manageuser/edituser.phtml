@@ -6,7 +6,7 @@
  * @copyright 2009, Olivier Diserens
  */
 ?>
-<?php foreach (['panel', 'username', 'domain') as $f] {
+<?php foreach (['panel', 'username', 'domain'] as $f) {
  echo $this->InputRow($this->form->getElement($f),['field_only'=>true,'nobox'=>true]);
   }?>
 <?php echo $this->partial(

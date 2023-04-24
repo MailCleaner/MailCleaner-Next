@@ -40,7 +40,7 @@ class ManageuserController extends Zend_Controller_Action
 
 	static protected function getSearchParams($request, $view) {
 		$params = [];
-		foreach (['domain' => '', 'search' => '', 'page' => 1, 'type' => 'user') as $p => $v] {
+		foreach (['domain' => '', 'search' => '', 'page' => 1, 'type' => 'user'] as $p => $v) {
 			if ($request->getParam($p)) {
 				$params[$p] = $request->getParam($p);
 				$view->$p = $request->getParam($p);
@@ -156,7 +156,7 @@ class ManageuserController extends Zend_Controller_Action
 		$params = $this->getRequest()->getParams();
 			
 		$params = [];
-		foreach (['page', 'search', 'type') as $p] {
+		foreach (['page', 'search', 'type'] as $p) {
 			$params[$p] = $this->getRequest()->getParam($p);
 		}
 		$params['username'] = $username;
@@ -280,7 +280,7 @@ class ManageuserController extends Zend_Controller_Action
 		$params = $this->getRequest()->getParams();
 			
 		$params = [];
-		foreach (['page', 'search', 'type') as $p] {
+		foreach (['page', 'search', 'type'] as $p) {
 			$params[$p] = $this->getRequest()->getParam($p);
 		}
 		$params['email'] = $address;

@@ -11,7 +11,7 @@
        
           <?php echo $this->InputRow($this->form->getElement('gui_default_address'));?>
         
-          <?php foreach (['gui_displayed_spams', 'gui_displayed_days') as $f] {?>
+          <?php foreach (['gui_displayed_spams', 'gui_displayed_days'] as $f) {?>
              <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
          

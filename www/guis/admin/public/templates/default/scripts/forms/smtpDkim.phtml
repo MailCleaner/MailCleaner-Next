@@ -11,7 +11,7 @@
  <fieldset id="dkimsettings">
        <table class="ftable">
        
-          <?php foreach (['dkim_default_domain', 'dkim_default_selector') as $f] {?>
+          <?php foreach (['dkim_default_domain', 'dkim_default_selector'] as $f) {?>
              <?php echo $this->InputRow($this->form->getElement($f),['label_addclass'=>'flabelstrict']);?>
           <?php }?>
           

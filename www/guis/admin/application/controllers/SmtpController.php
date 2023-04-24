@@ -195,7 +195,7 @@ class SmtpController extends Zend_Controller_Action
     	$mta4->find(4);
     	
     	$view->rate_display_class = [];
-    	foreach (['rate', 'trusted_rate') as $rtype ] {
+    	foreach (['rate', 'trusted_rate'] as $rtype ) {
     		$view->rate_display_class[$rtype] = 'none';
         	if ($mta->getParam($rtype.'limit_enable') < 1) {
         		$view->rate_display_class[$rtype] = 'hidden';
@@ -215,7 +215,7 @@ class SmtpController extends Zend_Controller_Action
             	  $mta->save();
             	  $mta2->save();
             	  $mta4->save();
-            	  foreach (['rate', 'trusted_rate') as $rtype ] {
+            	  foreach (['rate', 'trusted_rate'] as $rtype ) {
                 	  if ($mta->getParam($rtype.'limit_enable') > 0) {
         		          $view->rate_display_class[$rtype] = 'none';
             	          $slaves = new Default_Model_Slave();
@@ -229,7 +229,7 @@ class SmtpController extends Zend_Controller_Action
             	  $message = 'NOK error saving data ('.$e->getMessage().')';
             	}
             } else {
-                foreach (['rate', 'trusted_rate') as $rtype ] {
+                foreach (['rate', 'trusted_rate'] as $rtype ) {
                     if ($request->getParam($rtype.'limit_enable')) {
                           $view->rate_display_class[$rtype] = 'none';
                     } else {

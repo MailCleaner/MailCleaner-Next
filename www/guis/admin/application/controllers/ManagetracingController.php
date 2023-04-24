@@ -13,7 +13,7 @@ class ManagetracingController extends Zend_Controller_Action
 		protected function getSearchParams() {
 		$request = $this->getRequest();
 		$params = [];
-		foreach (['search', 'domain', 'sender', 'mpp', 'page', 'sort', 'fd', 'fm', 'td', 'tm', 'submit', 'cancel', 'hiderejected') as $param] {
+		foreach (['search', 'domain', 'sender', 'mpp', 'page', 'sort', 'fd', 'fm', 'td', 'tm', 'submit', 'cancel', 'hiderejected'] as $param) {
 			$params[$param] = '';
 			if ($request->getParam($param)) {
 				$params[$param] = $request->getParam($param);
@@ -33,13 +33,13 @@ class ManagetracingController extends Zend_Controller_Action
         $fromdate = Zend_Locale_Format::getDate($fromdateO, ['date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()]);
 
 
-        foreach ( ['fd' => 'day', 'fm' => 'month') as $tk => $tv] {
+        foreach ( ['fd' => 'day', 'fm' => 'month'] as $tk => $tv) {
         	if  (!isset($params[$tk]) || !$params[$tk]) {
         	    $params[$tk] = $fromdate[$tv];
             }
         }
         $params['ty'] = $todate['year'];
-	    foreach ( ['td' => 'day', 'tm' => 'month') as $tk => $tv] {
+	    foreach ( ['td' => 'day', 'tm' => 'month'] as $tk => $tv) {
 	    	if  (!isset($params[$tk]) || !$params[$tk]) {
         	    $params[$tk] = $todate[$tv];
             }
@@ -305,7 +305,7 @@ class ManagetracingController extends Zend_Controller_Action
                 foreach ($traces as $t) {
                    $tstr = '';
                    fwrite($handle, $separator);
-                   foreach (['log_stage1', 'log_stage2', 'log_engine', 'log_stage4', 'log_spamhandler') as $c] {
+                   foreach (['log_stage1', 'log_stage2', 'log_engine', 'log_stage4', 'log_spamhandler'] as $c) {
                        $str = '';
                        if ( is_array($t[$c]) && count($t[$c]) > 0) {
                            $sstr = implode("\r\n", $t[$c]);

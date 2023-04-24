@@ -13,7 +13,7 @@ class MonitorreportingController extends Zend_Controller_Action
     protected function getSearchParams() {
 		$request = $this->getRequest();
 		$params = [];
-		foreach (['search', 'domain', 'fd', 'fm', 'td', 'tm', 'submit', 'sort', 'top') as $param] {
+		foreach (['search', 'domain', 'fd', 'fm', 'td', 'tm', 'submit', 'sort', 'top'] as $param) {
 			$params[$param] = '';
 			if ($request->getParam($param)) {
 				$params[$param] = $request->getParam($param);
@@ -43,13 +43,13 @@ class MonitorreportingController extends Zend_Controller_Action
         $todate = Zend_Locale_Format::getDate($todateO, ['date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()]);
         $fromdate = Zend_Locale_Format::getDate($fromdateO, ['date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()]);
 
-        foreach ( ['fd' => 'day', 'fm' => 'month', 'fy' => 'year') as $tk => $tv] {
+        foreach ( ['fd' => 'day', 'fm' => 'month', 'fy' => 'year'] as $tk => $tv) {
         	if  (!isset($params[$tk]) || !$params[$tk]) {
         	    $params[$tk] = $fromdate[$tv];
             }
         }
         $params['ty'] = $todate['year'];
-	    foreach ( ['td' => 'day', 'tm' => 'month', 'ty' => 'year') as $tk => $tv] {
+	    foreach ( ['td' => 'day', 'tm' => 'month', 'ty' => 'year'] as $tk => $tv) {
 	    	if  (!isset($params[$tk]) || !$params[$tk]) {
         	    $params[$tk] = $todate[$tv];
             }
@@ -72,10 +72,10 @@ class MonitorreportingController extends Zend_Controller_Action
         if ( intval($params['fy']) > intval($params['ty']) ||
              (intval($params['fy']) == intval($params['ty']) && intval($params['fm']) > intval($params['tm'])) ||
              (intval($params['fy']) == intval($params['ty']) && intval($params['fm']) == intval($params['tm']) && intval($params['fd']) > intval($params['td']))) {
-               foreach (['fy', 'fm', 'fd') as $key] {
+               foreach (['fy', 'fm', 'fd'] as $key) {
                   $tmp[$key] = $params[$key];
                }
-               foreach (['y', 'm', 'd') as $key] {
+               foreach (['y', 'm', 'd'] as $key) {
                   $params['f'.$key] = $params['t'.$key];
                   $params['t'.$key] = $tmp['f'.$key];
                }

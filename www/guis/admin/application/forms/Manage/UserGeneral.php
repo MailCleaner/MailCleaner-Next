@@ -56,7 +56,7 @@ class Default_Form_Manage_UserGeneral extends Zend_Form
 	}
 	
 	public function setParams($request, $domain) {
-		foreach (['') as $pref] {
+		foreach ([''] as $pref) {
             if ($request->getParam($pref)) {
 			    $domain->setPref($pref, $request->getParam($pref));
 		    }	

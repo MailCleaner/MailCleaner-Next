@@ -78,7 +78,7 @@ class IndexController extends Zend_Controller_Action
 
         $res = [];
 
-        foreach (['hardware', 'disk', 'raid', 'load', 'spools') as $service] {
+        foreach (['hardware', 'disk', 'raid', 'load', 'spools'] as $service) {
         	$res[$service] = ['status' => 'ok', 'message' => '', 'value' => ''];
             foreach ($slaves as $s) {
                $tmpres = $s->getStatus($service);

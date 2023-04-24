@@ -10,7 +10,7 @@
 <?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t]); ?>
  <fieldset id="quarantinessettings">
        <table class="ftable">
-          <?php foreach (['spamretention', 'contentretention') as $f] {?>
+          <?php foreach (['spamretention', 'contentretention'] as $f) {?>
           <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           <?php echo $this->SubmitRow($this->form->getElement('submit'));?>

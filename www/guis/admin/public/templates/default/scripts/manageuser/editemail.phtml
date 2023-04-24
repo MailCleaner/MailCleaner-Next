@@ -68,7 +68,7 @@
         </span>
         </h2>
         <div id="domainformcontent">
-<?php foreach (['panel', 'address') as $f] {
+<?php foreach (['panel', 'address'] as $f) {
  echo $this->InputRow($this->form->getElement($f),['field_only'=>true,'nobox'=>true]);
   }?>
 <?php echo $this->partial('forms/manageuser/email'.strtolower($this->panel).'Form.phtml', [

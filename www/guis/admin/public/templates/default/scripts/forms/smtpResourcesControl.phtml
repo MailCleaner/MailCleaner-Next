@@ -26,17 +26,17 @@ $this->form->setTranslator($this->t);
            <td class="fvalue"></td>
           </tr>
           
-          <?php foreach (['smtp_accept_max', 'smtp_accept_max_per_host', 'smtp_accept_max_per_trusted_host') as $f] {?>
+          <?php foreach (['smtp_accept_max', 'smtp_accept_max_per_host', 'smtp_accept_max_per_trusted_host'] as $f) {?>
             <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
-          <?php foreach (['smtp_accept_max_per_connection') as $f] {?>
+          <?php foreach (['smtp_accept_max_per_connection'] as $f) {?>
            <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           <tr>
             <td colspan="2"><hr class="sectionsplit" /></td>
           </tr>
           
-          <?php foreach (['smtp_reserve', 'smtp_load_reserve') as $f] {?>
+          <?php foreach (['smtp_reserve', 'smtp_load_reserve'] as $f) {?>
            <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           
@@ -63,7 +63,7 @@ $this->form->setTranslator($this->t);
             </td>
           </tr>
           
-          <?php foreach (['rate', 'trusted_rate') as $rtype ] {?>
+          <?php foreach (['rate', 'trusted_rate'] as $rtype ) {?>
           <tr>
             <td colspan="2"><hr /></td>
           </tr>

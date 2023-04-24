@@ -65,7 +65,7 @@
 		if ($this->form->getElement('relay_smarthost')->isChecked() ) {
 			echo $this->InputRow($this->form->getElement('servers_smarthost'),['label_addclass'=>'flabeltextarea']);
 
-			foreach (['port_smarthost', 'multiple_smarthost') as $f] {
+			foreach (['port_smarthost', 'multiple_smarthost'] as $f) {
 				echo $this->InputRow($this->form->getElement($f));
 			}
 		}

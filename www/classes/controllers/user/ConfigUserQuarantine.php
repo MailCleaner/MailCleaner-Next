@@ -29,7 +29,7 @@ class ConfigUserQuarantine {
     $posted = $this->form_->getResult();
     if ($this->form_->shouldSave()) {
       $this->message_ = 'NOTSAVED';
-      foreach (['gui_displayed_spams', 'gui_displayed_days', 'gui_mask_forced', 'gui_graph_type', 'gui_group_quarantines') as $po] {
+      foreach (['gui_displayed_spams', 'gui_displayed_days', 'gui_mask_forced', 'gui_graph_type', 'gui_group_quarantines'] as $po) {
           if (isset($posted[$po])) {
               $user_->setPref($po, $posted[$po]);
           }
@@ -46,7 +46,7 @@ class ConfigUserQuarantine {
       	$_SESSION['user'] = serialize($user_);
       	$email = new Email();
       	$email->load($user_->getMainAddress());
-      	foreach (['gui_displayed_spams', 'gui_displayed_days', 'gui_mask_forced', 'gui_graph_type', 'gui_group_quarantines') as $p] {
+      	foreach (['gui_displayed_spams', 'gui_displayed_days', 'gui_mask_forced', 'gui_graph_type', 'gui_group_quarantines'] as $p) {
       		$email->setPref($p, $user_->getPref($p));
       	}
       	if ($email->save()) {

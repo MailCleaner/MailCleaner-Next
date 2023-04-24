@@ -10,7 +10,7 @@
 <?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t]); ?>
  <fieldset id="taskssettings">
        <table class="ftable">
-          <?php foreach (['use_syslog', 'syslog_host') as $f] {?>
+          <?php foreach (['use_syslog', 'syslog_host'] as $f) {?>
            <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           

@@ -13,7 +13,7 @@ $baseconf = DataManager::getFileConfig(SystemConfig::$CONFIGFILE_); ?>
 <?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t]); ?>
  <fieldset id="companysettings">
        <table class="ftable">
-          <?php foreach (['verify_sender', 'smtp_enforce_sync') as $f] {?>
+          <?php foreach (['verify_sender', 'smtp_enforce_sync'] as $f) {?>
            <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           
@@ -26,7 +26,7 @@ $baseconf = DataManager::getFileConfig(SystemConfig::$CONFIGFILE_); ?>
 		  ]
 	  );?>
           
-          <?php foreach (['allow_mx_to_ip') as $f] {?>
+          <?php foreach (['allow_mx_to_ip'] as $f) {?>
            <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           
@@ -34,7 +34,7 @@ $baseconf = DataManager::getFileConfig(SystemConfig::$CONFIGFILE_); ?>
             <td colspan="2"><hr /></td>
           </tr>
           
-          <?php foreach (['reject_bad_spf', 'reject_bad_rdns', 'dmarc_follow_reject_policy') as $f] {?>
+          <?php foreach (['reject_bad_spf', 'reject_bad_rdns', 'dmarc_follow_reject_policy'] as $f) {?>
            <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           
@@ -76,7 +76,7 @@ $baseconf = DataManager::getFileConfig(SystemConfig::$CONFIGFILE_); ?>
           <tr>
             <td colspan="2"><hr /></td>
           </tr>
-          <?php foreach (['outgoing_virus_scan', 'mask_relayed_ip', 'block_25_auth', 'masquerade_outgoing_helo', 'dmarc_enable_reports', 'log_subject', 'log_attachments') as $f] {?>
+          <?php foreach (['outgoing_virus_scan', 'mask_relayed_ip', 'block_25_auth', 'masquerade_outgoing_helo', 'dmarc_enable_reports', 'log_subject', 'log_attachments'] as $f) {?>
            <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           <?php echo $this->InputRow($this->form->getElement('long_lines'));?> 

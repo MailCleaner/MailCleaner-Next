@@ -13,7 +13,7 @@ class ManagespamquarantineController extends Zend_Controller_Action
 	protected function getSearchParams() {
 		$request = $this->getRequest();
 		$params = [];
-		foreach (['search', 'domain', 'sender', 'subject', 'mpp', 'page', 'sort', 'forced', 'fd', 'fm', 'td', 'tm', 'hidedup', 'showSpamOnly', 'showNewslettersOnly') as $param] {
+		foreach (['search', 'domain', 'sender', 'subject', 'mpp', 'page', 'sort', 'forced', 'fd', 'fm', 'td', 'tm', 'hidedup', 'showSpamOnly', 'showNewslettersOnly'] as $param) {
 			$params[$param] = '';
 			if ($request->getParam($param)) {
 				$params[$param] = $request->getParam($param);
@@ -32,13 +32,13 @@ class ManagespamquarantineController extends Zend_Controller_Action
         $todate = Zend_Locale_Format::getDate($todateO, ['date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()]);
         $fromdate = Zend_Locale_Format::getDate($fromdateO, ['date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()]);
 
-        foreach ( ['fd' => 'day', 'fm' => 'month') as $tk => $tv] {
+        foreach ( ['fd' => 'day', 'fm' => 'month'] as $tk => $tv) {
         	if  (!isset($params[$tk]) || !$params[$tk]) {
         	    $params[$tk] = $fromdate[$tv];
             }
         }
         $params['ty'] = $todate['year'];
-	    foreach ( ['td' => 'day', 'tm' => 'month') as $tk => $tv] {
+	    foreach ( ['td' => 'day', 'tm' => 'month'] as $tk => $tv) {
 	    	if  (!isset($params[$tk]) || !$params[$tk]) {
         	    $params[$tk] = $todate[$tv];
             }

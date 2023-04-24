@@ -371,7 +371,7 @@ class BaseconfigurationController extends Zend_Controller_Action
 						$message = 'NOK System could not be registered, please check parameters and connectivity';
                                 }
 			} else if ($this->getRequest()->getParam('register') && $form->isValid($this->getRequest()->getPost())) {
-				foreach (['clientid', 'resellerid', 'resellerpwd') as $d] {
+				foreach (['clientid', 'resellerid', 'resellerpwd'] as $d) {
                            		$mgr->setData($d, $this->getRequest()->getParam($d));
                         	}
                         	$message = $mgr->save();

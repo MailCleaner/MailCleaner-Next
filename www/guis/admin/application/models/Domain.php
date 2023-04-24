@@ -352,7 +352,7 @@ class Default_Model_Domain
 	}
 
 	public function setAsAliasOf($domain) {
-		foreach(['destination', 'callout', 'altcallout', 'adcheck', 'forward_by_mx', 'greylist', 'prefs', 'active', 'destination_smarthost') as $param] {
+		foreach(['destination', 'callout', 'altcallout', 'adcheck', 'forward_by_mx', 'greylist', 'prefs', 'active', 'destination_smarthost'] as $param) {
 			$this->setParam($param, $domain->getParam($param));
 		}
 		return $this->getMapper()->save($this);
@@ -916,7 +916,7 @@ class Default_Model_Domain
         return 'none';
     }
 	public function setSummaryFrequency($frequency) {
-		foreach (['daily_summary', 'weekly_summary', 'monthly_summary') as $f] {
+		foreach (['daily_summary', 'weekly_summary', 'monthly_summary'] as $f) {
 			$this->setPref($f, '0');
 		}
 		if ($frequency == 1 || $frequency == 'daily') { $this->setPref('daily_summary', '1'); }

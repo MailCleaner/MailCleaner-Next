@@ -275,7 +275,7 @@ class Api_Model_AddressAPI
 			default:
 				$data['action_on_spam'] = 'unavailable';
 		}
-		foreach (['spam_tag', 'summary_type') as $pref] {
+		foreach (['spam_tag', 'summary_type'] as $pref) {
 		   $data[$pref] = $email->getPref($pref);
 		}
 		$data['summary_frequency'] = $email->getSummaryFrequency();

@@ -143,7 +143,7 @@ class Default_Form_DomainGeneral extends Zend_Form
 	}
 	
 	public function setParams($request, $domain) {
-		foreach (['systemsender', 'falseneg_to', 'falsepos_to', 'supportname', 'supportemail') as $pref] {
+		foreach (['systemsender', 'falseneg_to', 'falsepos_to', 'supportname', 'supportemail'] as $pref) {
 		    $domain->setPref($pref, $request->getParam($pref));
 		}
 		$alias = preg_split('/\n/', $request->getParam('aliases'));

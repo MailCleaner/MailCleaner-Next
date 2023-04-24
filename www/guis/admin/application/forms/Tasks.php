@@ -47,7 +47,7 @@ class Default_Form_Tasks extends ZendX_JQuery_Form
 	    'filters'    => ['StringTrim']
 	]);
 
-        foreach (['1' => 'Sunday', '2' => 'Monday', '3' => 'Tuesday', '4' => 'Wednesday', '5' => 'Thursday', '6' => 'Friday', '7' => 'Saturday') as $k => $v] {
+        foreach (['1' => 'Sunday', '2' => 'Monday', '3' => 'Tuesday', '4' => 'Wednesday', '5' => 'Thursday', '6' => 'Friday', '7' => 'Saturday'] as $k => $v) {
         	$weekly->addMultiOption($k, $t->_($v));
         }
         $weekly->setValue($this->_systemconf->getParam('cron_weekday'));

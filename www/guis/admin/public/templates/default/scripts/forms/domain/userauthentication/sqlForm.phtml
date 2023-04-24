@@ -8,7 +8,7 @@
 ?>
 <td colspan="2">
 <table class="callouttable">
-<?php foreach (['authserver', 'sqlusername', 'sqlpassword') as $f] {?>
+<?php foreach (['authserver', 'sqlusername', 'sqlpassword'] as $f) {?>
 <?php echo $this->InputRow($this->form->getElement($f));?>
 <?php }?>
 </table>

@@ -105,7 +105,7 @@ class Default_Form_DomainTemplates extends Zend_Form
         }
 
     public function setParams($request, $domain) {
-    	foreach (['web_template', 'summary_template', 'report_template') as $p] {
+    	foreach (['web_template', 'summary_template', 'report_template'] as $p) {
     	    $domain->setPref($p, $request->getParam($p));
     	}
 		return true;

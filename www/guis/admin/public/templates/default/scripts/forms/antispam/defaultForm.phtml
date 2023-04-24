@@ -10,7 +10,7 @@
 <?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t]); ?>
  <fieldset id="defaultssettings">
        <table class="ftable">
-          <?php foreach (['active', 'decisive', 'position') as $f] {?>
+          <?php foreach (['active', 'decisive', 'position'] as $f) {?>
             <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           

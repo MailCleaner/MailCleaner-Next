@@ -76,7 +76,7 @@ class Default_Form_Manage_UserQuarantinedisplay extends Zend_Form
 	    'filters'    => ['StringTrim']
 	]);
 
-        foreach ([5, 10, 20, 50, 100) as $nb] {
+        foreach ([5, 10, 20, 50, 100] as $nb) {
             $nblines->addMultiOption($nb, $nb);
         }
         $nblines->setValue($this->_user->getPref('gui_displayed_spams'));
@@ -109,7 +109,7 @@ class Default_Form_Manage_UserQuarantinedisplay extends Zend_Form
 	}
 	
 	public function setParams($request, $user) {
-		foreach (['gui_default_address', 'gui_displayed_spams', 'gui_displayed_days') as $pref] {
+		foreach (['gui_default_address', 'gui_displayed_spams', 'gui_displayed_days'] as $pref) {
             if ($request->getParam($pref)) {
 			    $user->setPref($pref, $request->getParam($pref));
 		    }	

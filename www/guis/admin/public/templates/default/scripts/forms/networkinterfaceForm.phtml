@@ -14,7 +14,7 @@
           <?php echo $this->InputRow($this->form->getElement('ipv4mode'));?> 
           <tr class="ipv4autoaddress"><td class="flabel"><?php echo $this->t->_('Assigned IPv4 address')?> : </td><td class="fvalue"><?php echo $this->form->getInterface()->getIPv4Param('auto_address');?></tr>
           
-          <?php foreach (['address', 'netmask', 'gateway') as $el] {?>
+          <?php foreach (['address', 'netmask', 'gateway'] as $el) {?>
               <?php echo $this->InputRow($this->form->getElement($el), ['row_class'=> 'ipv4configs']);?> 
           <?php }?>
           <?php echo $this->InputRow($this->form->getElement('virtual_addresses'),['label_addclass'=>'flabeltextarea', 'row_class'=> 'ipv4configs']);?>
@@ -26,7 +26,7 @@
 
           <?php echo $this->InputRow($this->form->getElement('ipv6mode'));?> 
           <tr class="ipv6autoaddress"><td class="flabel"><?php echo $this->t->_('Assigned IPv6 address')?> : </td><td class="fvalue"><?php echo $this->form->getInterface()->getIPv6Param('auto_address');?></tr>
-          <?php foreach (['ipv6address', 'ipv6netmask', 'ipv6gateway')as $el] {?>
+          <?php foreach (['ipv6address', 'ipv6netmask', 'ipv6gateway'] as $el) {?>
                <?php echo $this->InputRow($this->form->getElement($el), ['row_class'=> 'ipv6configs']);?> 
           <?php }?>  
           

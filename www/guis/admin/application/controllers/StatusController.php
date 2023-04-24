@@ -28,7 +28,7 @@ class StatusController extends Zend_Controller_Action
 
         $users = 0;
         foreach ($slaves as $s) {
-           foreach (['hardware', 'spools', 'load') as $what] {
+           foreach (['hardware', 'spools', 'load'] as $what) {
            	  $status = $s->getStatus($what);
            	  if (is_array($status)) {
            	  	$var = $what."_status";

@@ -145,7 +145,7 @@ class Default_Form_Manage_EmailAddresssettings extends Zend_Form
 	public function setParams($request, $email) {
 		$email->setPref('quarantine_bounces', '0');
                 $email->setPref('bypass_filtering', '0');
-		foreach (['delivery_type', 'quarantine_bounces', 'bypass_filtering', 'summary_type') as $pref] {
+		foreach (['delivery_type', 'quarantine_bounces', 'bypass_filtering', 'summary_type'] as $pref) {
             if ($request->getParam($pref)) {
 			    $email->setPref($pref, $request->getParam($pref));
 		    }	

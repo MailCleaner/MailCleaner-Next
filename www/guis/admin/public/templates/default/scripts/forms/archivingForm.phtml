@@ -12,7 +12,7 @@
        <table class="ftable">
            <?php echo $this->InputRow($this->form->getElement('archiving_type'));?>
           
-           <?php foreach (['archiver_host') as $f] { ?>
+           <?php foreach (['archiver_host'] as $f) { ?>
             <?php echo $this->InputRow($this->form->getElement($f),['row_class'=>'archiver_type_field external_archiver_type_field']);?>
            <?php } ?>
 

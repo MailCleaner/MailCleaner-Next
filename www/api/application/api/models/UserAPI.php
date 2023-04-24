@@ -240,7 +240,7 @@ class Api_Model_UserAPI
 		$data = [];
 		$data['username'] = $user->getParam('username');
 		$data['domain'] = $user->getParam('domain');
-		foreach (['gui_default_address', 'gui_displayed_spams', 'gui_displayed_days', 'gui_mask_forced') as $pref] {
+		foreach (['gui_default_address', 'gui_displayed_spams', 'gui_displayed_days', 'gui_mask_forced'] as $pref) {
 		   $data[$pref] = $user->getPref($pref);
 		}
 		$data['addresses'] = [];

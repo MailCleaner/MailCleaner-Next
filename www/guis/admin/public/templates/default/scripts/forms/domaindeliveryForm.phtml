@@ -13,7 +13,7 @@
        <table class="ftable">
           <?php echo $this->InputRow($this->form->getElement('servers'),['label_addclass'=>'flabeltextarea']);?>
           
-          <?php foreach (['port', 'multipleaction', 'usemx') as $f] {?>
+          <?php foreach (['port', 'multipleaction', 'usemx'] as $f) {?>
              <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
 

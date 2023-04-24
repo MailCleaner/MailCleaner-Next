@@ -105,7 +105,7 @@ class Default_Form_Manage_UserAuthentification extends Zend_Form
 
 	public function setParams($request, $user) {
 		$local = $user->getLocalUserObject();
-		foreach (['realname', 'email') as $pref] {
+		foreach (['realname', 'email'] as $pref) {
 			if ($request->getParam($pref)) {
 				$local->setParam($pref, $request->getParam($pref));
 			}

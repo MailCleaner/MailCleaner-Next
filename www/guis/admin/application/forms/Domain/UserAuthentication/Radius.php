@@ -55,7 +55,7 @@ class Default_Form_Domain_UserAuthentication_Radius
 	    'filters'    => ['StringTrim']
 	    ]);
 
-        foreach (['PAP', 'CHAP_MD5', 'MSCHAPv1', 'MSCHAPv2') as $value] {
+        foreach (['PAP', 'CHAP_MD5', 'MSCHAPv1', 'MSCHAPv2'] as $value) {
         	$auth_type->addMultiOption($value, $value);
         }
         $auth_type->setValue($this->_settings['radiusauthtype']);

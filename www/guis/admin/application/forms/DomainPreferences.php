@@ -176,7 +176,7 @@ class Default_Form_DomainPreferences extends Zend_Form
 	}
 	
     public function setParams($request, $domain) {
-		foreach (['language', 'gui_group_quarantines', 'summary_type', 'summary_to', 'virus_subject', 'file_subject', 'content_subject', 'spam_tag', 'delivery_type') as $pref] {
+		foreach (['language', 'gui_group_quarantines', 'summary_type', 'summary_to', 'virus_subject', 'file_subject', 'content_subject', 'spam_tag', 'delivery_type'] as $pref) {
             if ($request->getParam($pref) || is_string($request->getParam($pref)) ) {
 			    $domain->setPref($pref, $request->getParam($pref));
 		    }	

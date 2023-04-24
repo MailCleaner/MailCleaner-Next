@@ -47,18 +47,18 @@
          } ?>
 	
         <?php if ($this->domain->getParam('name') != '__global__') {?>
-          <?php foreach (['aliases') as $f] {?>
+          <?php foreach (['aliases'] as $f) {?>
            <?php echo $this->InputRow($this->form->getElement($f),['label_addclass'=>'flabeltextarea']);?>
           <?php }?>
           <tr><td colspan="2"><hr /></td></tr>
         <?php }?>      
-          <?php foreach (['systemsender', 'falseneg_to', 'falsepos_to') as $f] {?>
+          <?php foreach (['systemsender', 'falseneg_to', 'falsepos_to'] as $f) {?>
            <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           
            <tr><td colspan="2"><hr /></td></tr>
           
-          <?php foreach (['supportname', 'supportemail') as $f] {?>
+          <?php foreach (['supportname', 'supportemail'] as $f) {?>
            <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           <?php echo $this->SubmitRow($this->form->getElement('submit'));?>

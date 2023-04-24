@@ -11,7 +11,7 @@
        <?php echo $this->InputRow($this->form->getElement('panel'),['field_only'=>true,'nobox'=>true]);?>
        <?php echo $this->InputRow($this->form->getElement('name'),['field_only'=>true,'nobox'=>true]);?>
        <table class="ftable">
-          <?php foreach (['web_template', 'summary_template', 'report_template') as $f] {?>
+          <?php foreach (['web_template', 'summary_template', 'report_template'] as $f) {?>
             <?php echo $this->InputRow($this->form->getElement($f));?>
           <?php }?>
           

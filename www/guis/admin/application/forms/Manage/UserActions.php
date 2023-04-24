@@ -86,7 +86,7 @@ class Default_Form_Manage_UserActions extends Zend_Form
 		   'type' => 'email'
 		];
 		Zend_Controller_Action_HelperBroker::getStaticHelper('Redirector')->gotoSimple('editemail', null, null, $params);
-		foreach (['') as $pref] {
+		foreach ([''] as $pref) {
             if ($request->getParam($pref)) {
 			    $domain->setPref($pref, $request->getParam($pref));
 		    }	

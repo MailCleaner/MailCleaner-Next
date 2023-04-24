@@ -275,7 +275,7 @@ class Api_Model_DomainAPI
 			$domain->setAliases(preg_split('/[^a-zA-Z0-9\.\-_]/', $params['aliases']));
 		}
 		## general options
-		foreach (['systemsender', 'falseneg_to', 'falsepos_to', 'supportname', 'supportemail') as $pref] {
+		foreach (['systemsender', 'falseneg_to', 'falsepos_to', 'supportname', 'supportemail'] as $pref) {
 			if (isset($params[$pref])) {
                 $domain->setPref($pref, $params[$pref]);
 			}
@@ -389,7 +389,7 @@ class Api_Model_DomainAPI
             }
         }
         ## Filtering
-        foreach (['spamwall', 'contentwall', 'viruswall') as $key] {
+        foreach (['spamwall', 'contentwall', 'viruswall'] as $key) {
         	if (isset($params[$key]) && preg_match('/^[01]$/', $params[$key])) {
         		$domain->setPref($key, $params[$key]);
         	}
@@ -397,23 +397,23 @@ class Api_Model_DomainAPI
         if (isset($params['greylist']) && preg_match('/^[01]$/', $params['greylist'])) {
             $domain->setParam('greylist', $params['greylist']);
         }
-        foreach (['whitelists' => 'enable_whitelists', 'warnlists' => 'enable_warnlists', 'notice_wwlists' => 'notice_wwlists_hit') as $key => $storekey] {
+        foreach (['whitelists' => 'enable_whitelists', 'warnlists' => 'enable_warnlists', 'notice_wwlists' => 'notice_wwlists_hit'] as $key => $storekey) {
         	if (isset($params[$key]) && preg_match('/^[01]$/', $params[$key])) {
         		$domain->setPref($storekey, $params[$key]);
         	}
 	}
-        foreach (['prevent_spoof', 'require_incoming_tls', 'reject_capital_domain') as $key] {
+        foreach (['prevent_spoof', 'require_incoming_tls', 'reject_capital_domain'] as $key) {
         	if ( isset($params[$key]) && preg_match('/^[01]$/', $params[$key])) {
         		$domain->setPref($key, $params[$key]);
         	}
         }
         ## Outgoing
-        foreach (['allow_smtp_auth' => 'allow_smtp_auth', 'require_outgoing_tls' => 'require_outgoing_tls', 'batv_enable' => 'batv_check') as $key => $storekey] {
+        foreach (['allow_smtp_auth' => 'allow_smtp_auth', 'require_outgoing_tls' => 'require_outgoing_tls', 'batv_enable' => 'batv_check'] as $key => $storekey) {
             if ( isset($params[$key]) && preg_match('/^[01]$/', $params[$key])) {
                 $domain->setPref($storekey, $params[$key]);
             }
         }
-        foreach (['batv_secret' => 'batv_secret','dkim_domain' => 'dkim_domain', 'dkim_selector' => 'dkim_selector', 'dkim_private_key' => 'dkim_pkey') as $key => $storekey] {
+        foreach (['batv_secret' => 'batv_secret','dkim_domain' => 'dkim_domain', 'dkim_selector' => 'dkim_selector', 'dkim_private_key' => 'dkim_pkey'] as $key => $storekey) {
             if (isset($params[$key])) {
              	$domain->setPref($storekey, $params[$key]);
             }
@@ -426,7 +426,7 @@ class Api_Model_DomainAPI
         	$domain->setPref('copyto_mail', $params['send_copy_to']);
         }
         ## Templates
-        foreach (['web_template', 'summary_template') as $key] {
+        foreach (['web_template', 'summary_template'] as $key) {
         	if (isset($params[$key]) && preg_match('/^[a-zA-Z-_]+$/', $params[$key])) {
         		$domain->setPref($key, $params[$key]);
         	}
@@ -441,7 +441,7 @@ class Api_Model_DomainAPI
             $data['aliases'] = implode(',', $domain->getAliases());
         }
 	    ## general options
-        foreach (['systemsender', 'falseneg_to', 'falsepos_to', 'supportname', 'supportemail') as $pref] {
+        foreach (['systemsender', 'falseneg_to', 'falsepos_to', 'supportname', 'supportemail'] as $pref) {
             if (empty($params) || in_array($pref, $params)) {
                 $data[$pref] = $domain->getPref($pref);
             }
@@ -529,7 +529,7 @@ class Api_Model_DomainAPI
         }
 
 	## Filtering, Templates
-        foreach (['prevent_spoof', 'require_incoming_tls', 'spamwall', 'contentwall', 'viruswall', 'greylist', 'web_template', 'summary_template', 'reject_capital_domain') as $key] {
+        foreach (['prevent_spoof', 'require_incoming_tls', 'spamwall', 'contentwall', 'viruswall', 'greylist', 'web_template', 'summary_template', 'reject_capital_domain'] as $key) {
             if (empty($params) || in_array($key, $params)) {
             	if (!$domain->getPref($key)) {
             		$data[$key] = "0";
@@ -538,7 +538,7 @@ class Api_Model_DomainAPI
             	}
             }
         }
-        foreach (['whitelists' => 'enable_whitelists', 'warnlists' => 'enable_warnlists', 'notice_wwlists' => 'notice_wwlists_hit') as $key => $storekey] {
+        foreach (['whitelists' => 'enable_whitelists', 'warnlists' => 'enable_warnlists', 'notice_wwlists' => 'notice_wwlists_hit'] as $key => $storekey) {
         	if (empty($params) || in_array($key, $params)) {
         		if (!$domain->getPref($storekey)) {
         		    $data[$key] = "0";
@@ -549,10 +549,10 @@ class Api_Model_DomainAPI
         }
 
         ## Outgoing
-        foreach (['allow_smtp_auth' => 'allow_smtp_auth', 'require_outgoing_tls' => 'require_outgoing_tls', 'batv_enable' => 'batv_check') as $key => $storekey] {
+        foreach (['allow_smtp_auth' => 'allow_smtp_auth', 'require_outgoing_tls' => 'require_outgoing_tls', 'batv_enable' => 'batv_check'] as $key => $storekey) {
         	$data[$key] = $domain->getPref($storekey);
         }
-        foreach (['batv_secret' => 'batv_secret','dkim_domain' => 'dkim_domain', 'dkim_selector' => 'dkim_selector', 'dkim_private_key' => 'dkim_pkey') as $key => $storekey] {
+        foreach (['batv_secret' => 'batv_secret','dkim_domain' => 'dkim_domain', 'dkim_selector' => 'dkim_selector', 'dkim_private_key' => 'dkim_pkey'] as $key => $storekey) {
         	$data[$key] = $domain->getPref($storekey);
         }
 

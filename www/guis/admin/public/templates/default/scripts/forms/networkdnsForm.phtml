@@ -11,13 +11,13 @@
  <?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t]); ?>
    <fieldset id="dnssettings">
        <table class="ftable">
-          <?php foreach (['domainsearch', 'primarydns', 'secondarydns', 'tertiarydns') as $el] {?>
+          <?php foreach (['domainsearch', 'primarydns', 'secondarydns', 'tertiarydns'] as $el) {?>
             <?php echo $this->InputRow($this->form->getElement($el));?>
           <?php }?>
           
           <tr><td colspan="2"><hr /></td></tr>
           
-          <?php foreach (['heloname') as $el] {?>
+          <?php foreach (['heloname'] as $el) {?>
             <?php echo $this->InputRow($this->form->getElement($el));?>
           <?php }?>
           <?php echo $this->SubmitRow($this->form->getElement('dnssubmit'));?>

@@ -227,7 +227,7 @@ class Default_Form_DomainFiltering extends Zend_Form
 
    public function setParams($request, $domain) {
         ### newsl
-    	foreach (['spamwall', 'contentwall', 'enable_whitelists', 'enable_warnlists', 'enable_blacklists', 'notice_wwlists_hit' , 'allow_newsletters') as $p] {
+    	foreach (['spamwall', 'contentwall', 'enable_whitelists', 'enable_warnlists', 'enable_blacklists', 'notice_wwlists_hit' , 'allow_newsletters'] as $p) {
     	    $domain->setPref($p, $request->getParam($p));
     	}
 

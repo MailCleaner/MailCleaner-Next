@@ -203,7 +203,7 @@ class Default_Form_SmtpResourcesControl extends ZendX_JQuery_Form
         $retrycutoffunit->setValue($retryrule->getCutoffUnit());
         $this->addElement($retrycutoffunit);
 	
-        foreach (['rate', 'trusted_rate') as $rtype ] {
+        foreach (['rate', 'trusted_rate'] as $rtype ) {
           $ratelimit = new Default_Model_RatelimitRule($this->_mta->getParam($rtype.'limit_rule'));
           $ratecount =  new  Zend_Form_Element_Text($rtype.'_count', [
 		    'required' => false,
@@ -297,7 +297,7 @@ class Default_Form_SmtpResourcesControl extends ZendX_JQuery_Form
 		$retryrule->setCutoff($request->getParam('retry_cutoff_value'), $request->getParam('retry_cutoff_unit'));
 		$mta->setParam('retry_rule', $retryrule->getRetryRule());
 		
-		foreach (['rate', 'trusted_rate') as $rtype ] {
+		foreach (['rate', 'trusted_rate'] as $rtype ) {
 			
     		$mta->setParam($rtype.'limit_enable', $request->getParam($rtype.'limit_enable'));
 	    	if ($request->getParam($rtype.'limit_enable')) {

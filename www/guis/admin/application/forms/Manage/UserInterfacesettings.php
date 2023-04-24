@@ -78,7 +78,7 @@ class Default_Form_Manage_UserInterfacesettings extends Zend_Form
 	}
 	
 	public function setParams($request, $user) {
-		foreach (['language') as $pref] {
+		foreach (['language'] as $pref) {
             if ($request->getParam($pref)) {
 			    $user->setPref($pref, $request->getParam($pref));
 		    }	

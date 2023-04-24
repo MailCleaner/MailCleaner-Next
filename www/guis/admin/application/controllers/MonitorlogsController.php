@@ -13,7 +13,7 @@ class MonitorlogsController extends Zend_Controller_Action
 	protected function getSearchParams() {
 		$request = $this->getRequest();
 		$params = [];
-		foreach (['fd', 'fm') as $param] {
+		foreach (['fd', 'fm'] as $param) {
 			$params[$param] = '';
 			if ($request->getParam($param)) {
 				$params[$param] = $request->getParam($param);
@@ -23,7 +23,7 @@ class MonitorlogsController extends Zend_Controller_Action
 		$todateO = Zend_Date::now();
 		$todate = Zend_Locale_Format::getDate($todateO, ['date_format' => Zend_Locale_Format::STANDARD, 'locale' => Zend_Registry::get('Zend_Locale')->getLanguage()]);
 
-		foreach ( ['fd' => 'day', 'fm' => 'month') as $tk => $tv] {
+		foreach ( ['fd' => 'day', 'fm' => 'month'] as $tk => $tv) {
 			if  (!isset($params[$tk]) || !$params[$tk]) {
 				$params[$tk] = $todate[$tv];
 			}
