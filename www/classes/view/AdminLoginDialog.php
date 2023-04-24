@@ -7,7 +7,7 @@
  */
 
 require_once("system/SystemConfig.php");
-require_once("Auth.php");
+require_once("Zuth.php");
 require_once("view/Language.php");
 require_once("config/Administrator.php");
 require_once("connector/AuthManager.php");

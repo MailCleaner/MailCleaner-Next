@@ -9,7 +9,7 @@
 /**
  * requires PEAR's Auth class
  */
-require_once("Auth.php");
+require_once("Pear/Auth.php");
 
 /**
  * This is the LDAPAuthenticator class
