@@ -96,28 +96,32 @@ class Default_Form_AntiSpam_Spamc extends Default_Form_AntiSpam_Default
                 'use_dkim' => ['label' => 'Enable DKIM control', 'timeout' => 'dkim_timeout', 'title' => "DomainKeys Identified Mail (DKIM) is a method by which emails are signed by the organisation responsible for the senders domain and are placed in the DKIM-Signature: header field"],
 		];
 	    foreach ($netchecks as $checkname => $check) {
-	 	    $el = new Zend_Form_Element_Checkbox($checkname, [
-	                 'label'   => $t->_($check{'label'}). " :",
-			 'title' => $t->_($check{'title'}),
-                         'uncheckedValue' => "0",
-	                 'checkedValue' => "1"
-		    ]);
-	        $el->setValue($as->getParam($checkname));
-	        $this->addElement($el);
-	        $el_timeout = new  Zend_Form_Element_Text($check{'timeout'}, [
-	                 'label'    => $t->_('timeout')." :",
-			 'title' => $t->_('Timeout: Maximum time to wait for a response'),
-		         'required' => false,
-		         'size' => 4,
-                         'class' => 'fieldrighted',
-			 'filters'    => ['Alnum', 'StringTrim']
-		]);
-	        $el_timeout->setValue($as->getParam($check{'timeout'}));
-            $el_timeout->addValidator(new Zend_Validate_Int());
-            if (!$as->getParam($checkname)) {
-            	$el_timeout->setAttrib('class', 'fieldrighted disabled');
-            }
-	        $this->addElement($el_timeout);
+        $el = new Zend_Form_Element_Checkbox(
+          $checkname, [
+	          'label'   => $t->_($check['label']). " :",
+			      'title' => $t->_($check['title']),
+            'uncheckedValue' => "0",
+	          'checkedValue' => "1"
+          ]
+        );
+	      $el->setValue($as->getParam($checkname));
+	      $this->addElement($el);
+        $el_timeout = new Zend_Form_Element_Text(
+          $check['timeout'], [
+	          'label' => $t->_('timeout')." :",
+			      'title' => $t->_('Timeout: Maximum time to wait for a response'),
+		        'required' => false,
+		        'size' => 4,
+            'class' => 'fieldrighted',
+			      'filters' => ['Alnum', 'StringTrim']
+          ]
+        );
+	      $el_timeout->setValue($as->getParam($check['timeout']));
+        $el_timeout->addValidator(new Zend_Validate_Int());
+        if (!$as->getParam($checkname)) {
+          $el_timeout->setAttrib('class', 'fieldrighted disabled');
+        }
+	      $this->addElement($el_timeout);
 	    }
 	
 	    if (! $as->getParam('use_rbls')) {
