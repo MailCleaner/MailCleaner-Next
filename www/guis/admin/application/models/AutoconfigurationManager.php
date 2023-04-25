@@ -2,8 +2,8 @@
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
- * @author Mentor Reka
- * @copyright 2017, Mentor Reka
+ * @author Mentor Reka, John Mertz
+ * @copyright 2017, Mentor Reka; 2023, John Mertz
  *
  * Auto-configuration Manager
  */

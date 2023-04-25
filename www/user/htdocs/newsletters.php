@@ -2,8 +2,8 @@
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
- * @author Marin Gilles
- * @copyright 20018, MailCleaner
+ * @author Marin Gilles, John Mertz
+ * @copyright 20018, MailCleaner; 2023, John Mertz
  *
  * This is the controller for the newsletter release page
  */

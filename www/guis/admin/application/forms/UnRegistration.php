@@ -2,8 +2,8 @@
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
- * @author Mentor Reka
- * @copyright (C) 2017 Mentor Reka <reka.mentor@gmail.com>
+ * @author Mentor Reka, John Mertz
+ * @copyright (C) 2017 Mentor Reka <reka.mentor@gmail.com>; 2023, John Mertz
  *
  * UnRegistration form
  */

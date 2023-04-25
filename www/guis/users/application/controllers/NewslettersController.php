@@ -4,7 +4,7 @@
  * MailCleaner
  *
  * @license http://www.mailcleaner.net/open/licence_en.html MailCleaner Public License
- * @copyright 2015 Fastnet SA
+ * @copyright 2015 Fastnet SA; 2023, John Mertz
  */
 
 /**
@@ -23,7 +23,7 @@ class NewslettersController extends Zend_Controller_Action
 
         $eximId = $this->getRequest()->getParam('id');
 	
-	if (strlen($eximId) == 0) { die(); }
+	    if (strlen($eximId) == 0) { die(); }
 
         $spam = new Default_Model_DbTable_Spam();
 
@@ -34,7 +34,7 @@ class NewslettersController extends Zend_Controller_Action
 
             $recipient = $row->to_user.'@'.$row->to_domain;
 
-	    $storage = $row->store_slave;
+	        $storage = $row->store_slave;
 
             $sender = $this->getFromHeader($eximId, $recipient);
 
@@ -51,7 +51,7 @@ class NewslettersController extends Zend_Controller_Action
                     'expiracy'  => '0000-00-00',
                     'status'    => '1',
                     'comments'  => '[Newsletter]'
-		];
+		        ];
 
                 try {
                     $rule = new Default_Model_DbTable_NewsletterRule();
@@ -82,7 +82,7 @@ class NewslettersController extends Zend_Controller_Action
         preg_match('/[<]?([-0-9a-zA-Z.+_\']+@[-0-9a-zA-Z.+_\']+\.[a-zA-Z-0-9]+)[>]?/', trim($headers['From']), $match);
 
         if (!empty($match[1])) {
-           return $match[1];
+            return $match[1];
         }
 
         return false;

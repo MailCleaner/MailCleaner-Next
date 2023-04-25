@@ -2,8 +2,8 @@
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
- * @author Olivier Diserens
- * @copyright 2006, Olivier Diserens
+ * @author Olivier Diserens, John Mertz
+ * @copyright 2006, Olivier Diserens; 2023, John Mertz
  */
 ### newsl
 $txt['NEWSLETTERSTOPIC'] = "Nieuwsbrieven";
@@ -481,8 +481,8 @@ $txt['BEENLOGGEDOUT'] = "Als je een nieuwe sessie wilt starten, klik dan op deze
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
- * @author Olivier Diserens
- * @copyright 2006, Olivier Diserens
+ * @author Olivier Diserens, John Mertz
+ * @copyright 2006, Olivier Diserens; 2023, John Mertz
  */
 ### newsl
 $txt['NEWSLETTERMODULE'] = "Nieuwsbrief";

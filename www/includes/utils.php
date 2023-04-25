@@ -2,8 +2,8 @@
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
- * @author Olivier Diserens
- * @copyright 2006, Olivier Diserens
+ * @author Olivier Diserens, John Mertz
+ * @copyright 2006, Olivier Diserens; 2023, John Mertz
  * @todo this file has to be set in a static class
  */
 function is_exim_id($id) {

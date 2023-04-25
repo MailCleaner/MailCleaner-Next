@@ -11,8 +11,8 @@
  * It can manage multiple table with simple constrains (id reference)
  *
  * @package mailcleaner
- * @author Olivier Diserens
- * @copyright 2006, Olivier Diserens
+ * @author Olivier Diserens, John Mertz
+ * @copyright 2006, Olivier Diserens; 2023, John Mertz
  */
 class PrefHandler
 {

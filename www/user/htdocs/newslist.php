@@ -3,13 +3,13 @@
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
  * @author John Mertz
- * @copyright 2021, MailCleaner
+ * @copyright 2023, John Mertz
  *
  * This is the controler for the newsletter whitelist page
  */
 
 if ($_SERVER["REQUEST_METHOD"] == "HEAD") {
-  return 200;
+    return 200;
 }
 
 /**
@@ -89,12 +89,12 @@ $lang_ = Language::getInstance('user');
 
 // set the language from what is passed in url
 if (isset($_GET['lang'])) {
-  $lang_->setLanguage($_GET['lang']);
-  $lang_->reload();
+    $lang_->setLanguage($_GET['lang']);
+    $lang_->reload();
 }
 if (isset($_GET['l'])) {
-  $lang_->setLanguage($_GET['l']);
-  $lang_->reload();
+    $lang_->setLanguage($_GET['l']);
+    $lang_->reload();
 }
 
 

@@ -3,13 +3,13 @@
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
  * @author John Mertz
- * @copyright 2021, MailCleaner
+ * @copyright 2023, John Mertz
  *
  * This is the controler for the blacklist page
  */
 
 if ($_SERVER["REQUEST_METHOD"] == "HEAD") {
-  return 200;
+    return 200;
 }
 
 /**

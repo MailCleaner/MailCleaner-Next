@@ -2,8 +2,8 @@
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
- * @author Olivier Diserens
- * @copyright (C) 2004-2014 Olivier Diserens <olivier@diserens.ch>
+ * @author Olivier Diserens, John Mertz
+ * @copyright (C) 2004-2014 Olivier Diserens <olivier@diserens.ch>; 2023, John Mertz
  *                2017 Mentor Reka <reka.mentor@gmail.com>
  * Domain
  */

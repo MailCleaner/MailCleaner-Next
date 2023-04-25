@@ -3,7 +3,7 @@
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
  * @author Olivier Diserens, John Mertz
- * @copyright 2006, Olivier Diserens; 2020, John Mertz
+ * @copyright 2006, Olivier Diserens; 2023, John Mertz
  *
  * This is the users interface settings
  */
