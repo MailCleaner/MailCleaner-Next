@@ -69,10 +69,8 @@ exit 0;
 #####################################
 ## dumpWWFiles
 
-sub dumpWWFiles
+sub dumpWWFiles($to,$filepath)
 {
-  my $to = shift;
-  my $filepath = shift;
 
   my @types = ('warn', 'white');
 
@@ -114,10 +112,8 @@ sub dumpWWFiles
 #####################################
 ## createDir
 
-sub createDirs
+sub createDirs($path)
 {
-  my $path = shift;
-
   my $cmd = "mkdir -p $path";
   my $res = `$cmd`;
   chown chown $uid, $gid, $path;

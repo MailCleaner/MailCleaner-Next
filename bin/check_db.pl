@@ -137,21 +137,16 @@ exit 0;
 #######################
 # output
 #######################
-sub output
+sub output($message)
 {
-    my $message = shift;
-
-    if ($VERBOSE) {
-        print $message."\n";
-    }
+    print("$message\n") if ($VERBOSE);
 }
 
 #######################
 # getRefTables
 #######################
-sub getRefTables
+sub getRefTables($dbname)
 {
-    my $dbname = shift;
     my %tables;
 
     my $prefix = 'cf';
@@ -179,9 +174,8 @@ sub getRefTables
 #######################
 # getActualTables
 #######################
-sub getActualTables
+sub getActualTables($db_ref)
 {
-    my $db_ref = shift;
     my $db = $$db_ref;
     my %tables_hash;
 
@@ -198,9 +192,8 @@ sub getActualTables
 #######################
 # getRefFields
 #######################
-sub getRefFields
+sub getRefFields($file)
 {
-    my $file = shift;
     my %fields;
     my $previous = 0;
     my $order = 0;
@@ -244,11 +237,9 @@ sub getRefFields
 #######################
 # getActualFields
 #######################
-sub getActualFields
+sub getActualFields($db_ref,$tablename)
 {
-    my $db_ref = shift;
     my $db = $$db_ref;
-    my $tablename = shift;
     my %fields;
     my $previous = "";
 
@@ -268,11 +259,9 @@ sub getActualFields
 #######################
 # myCheckDatabase
 #######################
-sub myCheckRepairDatabase
+sub myCheckRepairDatabase($db_ref,$repair)
 {
-    my $db_ref = shift;
     my $db = $$db_ref;
-    my $repair = shift;
     my $sql = "";
 
     my %tables = getActualTables(\$db);
@@ -293,11 +282,8 @@ sub myCheckRepairDatabase
 #######################
 # add permission to database
 #######################
-sub addDatabase
+sub addDatabase($dbtype,$dbname='slave')
 {
-    my $dbtype = shift;
-    my $dbname = shift;
-
     if ($dbtype ne 'slave') {
         $dbtype = 'master';
     }
@@ -332,9 +318,8 @@ sub addDatabase
 #######################
 # check replication status and try to fix if wanted
 #######################
-sub checkReplicationStatus
+sub checkReplicationStatus($fix)
 {
-    my $fix = shift;
     my $haserror = 0;
     my $logfile = $conf->getOption('VARDIR')."/log/mysql_slave/mysql.log";
     if (! -f $logfile) {
@@ -373,12 +358,9 @@ sub checkReplicationStatus
 #######################
 # compareUpdateDatabase
 #######################
-sub compareUpdateDatabase
+sub compareUpdateDatabase($db_ref,$dbname,$update)
 {
-    my $db_ref = shift;
     my $db = $$db_ref;
-    my $dbname = shift;
-    my $update=shift;
 
     my %reftables = getRefTables($dbname);
     my %actualtables = getActualTables(\$db);
@@ -421,13 +403,9 @@ sub compareUpdateDatabase
 #######################
 # compareUpdateTable
 #######################
-sub compareUpdateTable
+sub compareUpdateTable($db_ref,$tablename,$tablefile,$update)
 {
-    my $db_ref = shift;
     my $db = $$db_ref;
-    my $tablename = shift;
-    my $tablefile = shift;
-    my $update=shift;
 
     my %reffields = getRefFields($tablefile);
     my %actualfields = getActualFields(\$db, $tablename);

@@ -101,9 +101,8 @@ sub get_system_config
 }
 
 ##########################################
-sub get_domain_config
+sub get_domain_config($d)
 {
-    my $d = shift;
     my %default = (language => 'en', support_email => '');
 
     my $dbh = DBI->connect(
@@ -130,9 +129,8 @@ sub get_domain_config
 }
 
 ##########################################
-sub send_message
+sub send_message($msg_file)
 {
-    my $msg_file = shift;
     my $for = $system_conf{'analyse_to'};
     #if ($domain_conf{'support_email'} =~ /^(\S+)\@(\S+)$/) { $for = $domain_conf{'support_email'};};
     my $from = $system_conf{'summary_from'};
@@ -166,9 +164,8 @@ sub send_message
 }
 
 ##########################################
-sub readConfig
+sub readConfig($configfile)
 {
-    my $configfile = shift;
     my %config;
     my ($var, $value);
 

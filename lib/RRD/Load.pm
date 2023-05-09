@@ -35,11 +35,9 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(new collect plot);
 our $VERSION = 1.0;
 
-sub new
+sub new($statfile,$reset)
 {
-    my $statfile = shift;
     $statfile = $statfile."/load.rrd";
-    my $reset = shift;
 
     my %things = (
         load => ['GAUGE', 'AVERAGE']
@@ -54,11 +52,8 @@ sub new
     return bless $this, "RRD::Load";
 }
 
-sub collect
+sub collect($this,$snmp)
 {
-    my $this = shift;
-    my $snmp = shift;
-
     my %things = (
         load => '1.3.6.1.4.1.2021.10.1.3.2'
     );
@@ -66,13 +61,8 @@ sub collect
     return RRD::Generic::collect($this->{rrd}, $snmp, \%things);
 }
 
-sub plot
+sub plot($this,$dir,$period,$leg)
 {
-    my $this = shift;
-    my $dir = shift;
-    my $period = shift;
-    my $leg = shift;
-
     my %things = (
         load => ['area', 'EB9C48', 'BA3614', 'Load', 'AVERAGE', '%10.2lf', ''],
     );

@@ -54,9 +54,8 @@ sub view_slaves
     $sth->finish();
 }
 
-sub readConfig
+sub readConfig($configfile)
 {
-    my $configfile = shift;
     my %config;
     my ($var, $value);
 

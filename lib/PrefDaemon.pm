@@ -40,7 +40,8 @@ our @EXPORT = qw(create getPref);
 our $VERSION = 1.0;
 our $LOGGERLOG;
 
-sub create {
+sub create
+{
     my $conf = ReadConfig::getInstance();
     my $configfile = $conf->getOption('SRCDIR')."/etc/exim/prefDaemon.conf";
 
@@ -121,10 +122,8 @@ sub create {
     return $this;
 }
 
-sub logMessage {
-    my $this = shift;
-    my $message = shift;
-
+sub logMessage($this,$message)
+{
     if ($this->{debug}) {
         if ( !defined(fileno($LOGGERLOG))) {
              open($LOGGERLOG, '>>', "/tmp/".$this->{logfile});
@@ -139,9 +138,8 @@ sub logMessage {
 ######
 ## startDaemon
 ######
-sub startDaemon {
-    my $this = shift;
-
+sub startDaemon($this)
+{
     open($LOGGERLOG, '>>', $this->{logfile});
 
     my $pid = fork();
@@ -169,16 +167,14 @@ sub startDaemon {
     exit;
 }
 
-sub parentGotSignal {
-    my $this = shift;
-
+sub parentGotSignal($this)
+{
     $this->{time_to_die} = 1;
 }
 
 
-sub reaper {
-    my $this = shift;
-
+sub reaper($this)
+{
     $this->logMessage("Got child death...");
     $SIG{CHLD} = sub { $this->reaper(); };
     my $pid = wait;
@@ -190,8 +186,8 @@ sub reaper {
     }
 }
 
-sub huntsMan {
-    my $this = shift;
+sub huntsMan($this)
+{
     local($SIG{CHLD}) = 'IGNORE';
     $this->{time_to_die} = 1;
     $this->logMessage("Shutting down childs");
@@ -200,8 +196,8 @@ sub huntsMan {
     exit;
 }
 
-sub initDaemon {
-     my $this = shift;
+sub initDaemon($this)
+{
      $this->logMessage("Initializing Daemon");
      $this->{server} = IO::Socket::INET->new(
         LocalAddr => '127.0.0.1',
@@ -214,9 +210,8 @@ sub initDaemon {
     return 0;
 }
 
-sub launchChilds {
-    my $this = shift;
-
+sub launchChilds($this)
+{
     for (1 .. $this->{prefork}) {
         $this->logMessage("Launching child ".$this->{children}." on ".$this->{prefork}."...");
         $this->makeChild();
@@ -234,8 +229,8 @@ sub launchChilds {
     }
 }
 
-sub makeChild {
-    my $this = shift;
+sub makeChild($this)
+{
     my $pid;
     my $sigset;
 
@@ -267,9 +262,8 @@ sub makeChild {
     }
 }
 
-sub connectDB {
-    my $this = shift;
-
+sub connectDB($this)
+{
     $this->{slaveDB} = DB::connect('slave', 'mc_config', 0);
     if ($this->{slaveDB}->ping()) {
         $this->logMessage("Connected to configuration database");
@@ -279,8 +273,8 @@ sub connectDB {
     return 0;
 }
 
-sub listenForQuery {
-    my $this = shift;
+sub listenForQuery($this)
+{
     my $message;
     my $serv = $this->{server};
     my $MAXLEN = 1024;
@@ -299,12 +293,8 @@ sub listenForQuery {
     }
 }
 
-sub manageClient {
-    my $this = shift;
-    my $cli = shift;
-    my $cli_add = shift;
-    my $datas = shift;
-
+sub manageClient($this,$cli,$cli_add,$datas)
+{
     alarm $this->{daemontimeout};
 
     $this->logMessage("Accepting connection");
@@ -341,11 +331,8 @@ sub manageClient {
     }
 }
 
-sub fetchPref {
-    my $this = shift;
-    my $who = shift;
-    my $what = shift;
-
+sub fetchPref($this,$who,$what)
+{
     my $cachevalue = $this->getCacheValue($who, $what);
     if ( $cachevalue !~ /^NOCACHE/) {
         $this->logMessage("Using cached value for: $who / $what");
@@ -376,12 +363,8 @@ sub fetchPref {
     return $res;
 }
 
-sub fetchWW {
-    my $this = shift;
-    my $type = shift;
-    my $dest = shift;
-    my $sender = shift;
-
+sub fetchWW($this,$type,$dest,$sender)
+{
     my $atype = 1; # address
     if ($dest =~ /^\@(\S+)$/) {
         $atype = 2; # domain
@@ -398,13 +381,8 @@ sub fetchWW {
     return $this->fetchDatabaseWW($type, $dest, $sender, $atype);
 }
 
-sub fetchDatabaseWW {
-    my $this = shift;
-    my $type = shift;
-    my $recipient = shift;
-    my $sender = shift;
-    my $atype = shift;
-
+sub fetchDatabaseWW($this,$type,$recipient,$sender,$atype)
+{
     if (!$this->{slaveDB}->ping()) {
         if (!$this->connectDB()) {
             return 'NOTFOUND';
@@ -432,11 +410,8 @@ sub fetchDatabaseWW {
     return "NOTFOUND";
 }
 
-sub fetchAddressPref {
-    my $this = shift;
-    my $who = shift;
-    my $what = shift;
-
+sub fetchAddressPref($this,$who,$what)
+{
     if (!$this->{slaveDB}->ping()) {
         if (!$this->connectDB()) {
             return 'NOTFOUND';
@@ -451,11 +426,8 @@ sub fetchAddressPref {
     return "NOTFOUND";
 }
 
-sub fetchDomainPref {
-    my $this = shift;
-    my $who = shift;
-    my $what = shift;
-
+sub fetchDomainPref($this,$who,$what)
+{
     if (!$this->{slaveDB}->ping()) {
         if (!$this->connectDB()) {
             return 'NOTFOUND';
@@ -493,10 +465,8 @@ sub fetchDomainPref {
     return "NOTFOUND";
 }
 
-sub fetchGlobalPref {
-    my $this = shift;
-    my $what = shift;
-
+sub fetchGlobalPref($this,$what)
+{
     if (!$this->{slaveDB}->ping()) {
         if (!$this->connectDB()) {
             return 'NOTFOUND';
@@ -514,11 +484,8 @@ sub fetchGlobalPref {
 ####################
 ## cache management
 
-sub getCacheValue {
-    my $this = shift;
-    my $who = shift;
-    my $what = shift;
-
+sub getCacheValue($this,$who,$what)
+{
     my $timeout = $this->{cacheuser};
     if ($who =~ /^\@/) {
         $timeout = $this->{cachedomain};
@@ -541,12 +508,8 @@ sub getCacheValue {
 }
 
 
-sub setCache {
-    my $this = shift;
-    my $who = shift;
-    my $what = shift;
-    my $value = shift;
-
+sub setCache($this,$who,$what,$value)
+{
     my $timeout = $this->{cacheuser};
     if ($who =~ /^\@/) {
         $timeout = $this->{cachedomain};
@@ -562,30 +525,22 @@ sub setCache {
     $this->logMessage("Saved cache for: $cachekey");
 }
 
-sub dumpCache {
-    my $this = shift;
-
+sub dumpCache($this)
+{
     foreach my $key (keys %{$this->{cache}}) {
         $this->logMessage(" === cache key: $key     /    ".$this->{cache}{$key}[1]);
     }
 }
 
-sub getCacheKey {
-    my $who = shift;
-    my $what = shift;
-
+sub getCacheKey($who,$what)
+{
     return $who."/".$what;
 #    use Digest::MD5 qw(md5_hex);
 #    return md5_hex($who."/".$what);
 }
 
-sub getWWCacheValues {
-    my $this = shift;
-    my $type = shift;
-    my $dest = shift;
-    my $sender = shift;
-    my $atype = shift;
-
+sub getWWCacheValues($this,$type,$dest,$sender,$atype)
+{
     ## purging caches
     my $cachehash = \%{$this->{wwusercache}};
     if ($atype == 2) {
@@ -633,14 +588,8 @@ sub getWWCacheValues {
     return "NOCACHE";
 }
 
-sub setWWCache {
-    my $this = shift;
-    my $type = shift;
-    my $dest = shift;
-    my $sender = shift;
-    my $atype = shift;
-    my $value = shift;
-
+sub setWWCache($this,$type,$dest,$sender,$atype,$value)
+{
     return if ($value eq "FOUND" && $this->{wwcachepos} < 1);
     return if ($value eq "NOTFOUND" && $this->{wwcacheneg} < 1);
     return if (! $value eq "FOUND" && ! $value eq "NOTFOUND");
@@ -659,22 +608,16 @@ sub setWWCache {
     $this->logMessage("Saved WW cache for: $cachekey");
 }
 
-sub getWWCacheKey {
-    my $type = shift;
-    my $dest = shift;
-    my $sender = shift;
-
+sub getWWCacheKey($type,$dest,$sender)
+{
     return $type."/".$dest."/".$sender;
 }
 
 ###########################
 ## client call
 
-sub getPref {
-    my $this = shift;
-    my $type = shift;
-    my $pref = shift;
-
+sub getPref($this,$type,$pref)
+{
     my $res = "NOTFOUND";
     my $t = Mail::SpamAssassin::Timeout->new({ secs => $this->{clienttimeout} });
     $t->run_and_catch( sub { $res = $this->queryDaemon($type, $pref);});
@@ -687,11 +630,8 @@ sub getPref {
     return 'NOTFOUND';
 }
 
-sub queryDaemon {
-    my $this = shift;
-    my $type = shift;
-    my $pref = shift;
-
+sub queryDaemon($this,$type,$pref)
+{
     my $socket;
     if ( $socket = IO::Socket::INET->new(
         PeerAddr => '127.0.0.1',
@@ -716,8 +656,8 @@ sub queryDaemon {
     return "NODAEMON";
 }
 
-sub timedOut {
-    my $this = shift;
+sub timedOut($this)
+{
     exit();
 }
 

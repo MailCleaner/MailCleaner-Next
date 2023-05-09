@@ -254,10 +254,8 @@ if ($cont =~ /Name_T/) {
 exit 0;
 
 ####################################################################################
-sub call_uri
+sub call_uri($uri)
 {
-    my $uri = shift;
-
     my $ua = LWP::UserAgent->new;
     $ua->agent("Mailcleaner");
 
@@ -273,9 +271,8 @@ sub call_uri
 }
 
 ####################################################################################
-sub readConfig
+sub readConfig($configfile)
 {
-    my $configfile = shift;
     my %config;
     my ($var, $value);
 

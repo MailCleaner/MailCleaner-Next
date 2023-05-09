@@ -180,9 +180,8 @@ sub mark_forced
 }
 
 ##########################################
-sub readConfig
+sub readConfig($configfile)
 {
-    my $configfile = shift;
     my %config;
     my ($var, $value);
 

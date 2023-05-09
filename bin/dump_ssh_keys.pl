@@ -36,8 +36,6 @@ if ($0 =~ m/(\S*)\/\S+.pl$/) {
 
 use DBI();
 
-my $DEBUG = 1;
-
 my %config = readConfig("/etc/mailcleaner.conf");
 my $known_hosts_file = $config{'VARDIR'}."/.ssh/known_hosts";
 my $authorized_file = $config{'VARDIR'}."/.ssh/authorized_keys";
@@ -99,9 +97,8 @@ sub do_authorized_keys
 
 
 #############################
-sub readConfig
+sub readConfig($configfile)
 {
-    my $configfile = shift;
     my %config;
     my ($var, $value);
 

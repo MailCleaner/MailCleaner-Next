@@ -45,24 +45,17 @@ sub create
     return $this;
 }
 
-sub setNewDefault
+sub setNewDefault($this,$defstr)
 {
-    my $this = shift;
-    my $defstr = shift;
-
     foreach my $data (split('\s', $defstr)) {
         if ($data =~ m/(\S+):(\S+)/) {
-        #print "setting: $1 => $2\n";
         $this->{prefs}{$1} = $2;
         }
     }
 }
 
-sub checkElementExistence
+sub checkElementExistence($this,$address)
 {
-    my $this = shift;
-    my $address = shift;
-
     my $check_query = "SELECT address, pref FROM email WHERE address='$address'";
     my %check_res = $this->{db}->getHashRow($check_query);
     if (defined($check_res{'prefs'})) {
@@ -71,17 +64,10 @@ sub checkElementExistence
     return 0;
 }
 
-sub processElement
+sub processElement($this,$address,$flags='',$params='')
 {
-    my $this = shift;
-    my $address = shift;
-    my $flags = shift;
-    my $params = shift;
-
     my $update = 1;
-    if ($flags && $flags =~ m/noupdate/ ) {
-        $update = 0;
-    }
+    $update = 0 if ( $flags =~ m/noupdate/ );
     $this->{prefs}{'address'} = lc($address);
 
     my $pref = 0;
@@ -93,12 +79,8 @@ sub processElement
     return $this->addNewElement($this->{prefs}{'address'});
 }
 
-sub updateElement
+sub updateElement($this,$address,$pref)
 {
-    my $this = shift;
-    my $address = shift;
-    my $pref = shift;
-
     my $set_prefquery = $this->getPrefQuery();
     if (! $set_prefquery eq '') {
         my $prefquery = "UPDATE user_pref SET ".$set_prefquery." WHERE id=".$pref;
@@ -114,10 +96,8 @@ sub updateElement
     }
 }
 
-sub getPrefQuery()
+sub getPrefQuery($this)
 {
-    my $this = shift;
-
     my $set_prefquery = '';
     foreach my $datak (keys %{$this->{prefs}}) {
         if (! defined($this->{field_email}{$datak})) {
@@ -128,10 +108,8 @@ sub getPrefQuery()
     return $set_prefquery;
 }
 
-sub getEmailQuery()
+sub getEmailQuery($this)
 {
-    my $this = shift;
-
     my $set_emailquery = '';
     foreach my $datak (keys %{$this->{prefs}}) {
         if (defined($this->{field_email}{$datak})) {
@@ -142,11 +120,8 @@ sub getEmailQuery()
     return $set_emailquery;
 }
 
-sub addNewElement
+sub addNewElement($this,$address)
 {
-    my $this = shift;
-    my $address = shift;
-
     my $set_prefquery = $this->getPrefQuery();
     my $prefquery = "INSERT INTO user_pref SET id=NULL";
     if (! $set_prefquery eq '') {
@@ -172,20 +147,17 @@ sub addNewElement
     print $query."\n";
 }
 
-sub deleteElement
+sub deleteElement($this,$address)
 {
-    my $this = shift;
-    my $name = shift;
-
+    my $query = "DELETE FROM email WHERE address=".$address;
+    my @res = $this->{db}->getList($query);
+    return @res;
 }
 
-sub getExistingElements
+sub getExistingElements($this)
 {
-    my $this = shift;
-
     my $query = "SELECT address FROM email";
     my @res = $this->{db}->getList($query);
-
     return @res;
 }
 

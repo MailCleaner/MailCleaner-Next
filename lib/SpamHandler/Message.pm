@@ -43,12 +43,8 @@ our @ISA     = qw(Exporter);
 our @EXPORT  = qw(new load process purge);
 our $VERSION = 1.0;
 
-sub new
+sub new($id,$daemon,$batchid)
 {
-    my $id      = shift;
-    my $daemon  = shift;
-    my $batchid = shift;
-
     my $t   = threads->self;
     my $tid = $t->tid;
     my %timers;
@@ -114,10 +110,8 @@ sub new
     return $this;
 }
 
-sub load
+sub load($this)
 {
-    my $this = shift;
-
     $this->startTimer('Message load');
     if ( -f $this->{envfile} ) {
         ## open env file
@@ -154,10 +148,8 @@ sub load
     $this->endTimer('Message load');
 }
 
-sub process
+sub process($this)
 {
-    my $this = shift;
-
     $this->startTimer('Message processing');
     my $email = Email::create( $this->{env_rcpt} );
     return 0 if !$email;
@@ -442,10 +434,8 @@ sub process
     return 1;
 }
 
-sub loadEnvFile
+sub loadEnvFile($this)
 {
-    my $this = shift;
-
     open(my $ENV, '<', $this->{envfile}) or return 0;
 
     my $fromfound = 0;
@@ -469,10 +459,8 @@ sub loadEnvFile
     }
 }
 
-sub loadMsgFile
+sub loadMsgFile($this)
 {
-    my $this = shift;
-
     my $has_subject = 0;
     my $in_score    = 0;
     my $in_header   = 1;
@@ -560,9 +548,8 @@ sub loadMsgFile
     $this->loadScores();
 }
 
-sub loadScores
+sub loadScores($this)
 {
-    my $this = shift;
     my $line;
 
     if ( !defined( $this->{headers}{'x-mailcleaner-spamcheck'} ) ) {
@@ -667,20 +654,16 @@ sub loadScores
     return 1;
 }
 
-sub deleteFiles
+sub deleteFiles($this)
 {
-    my $this = shift;
-
     unlink( $this->{envfile} );
     unlink( $this->{msgfile} );
     $this->{daemon}->deleteLock( $this->{id} );
     return 1;
 }
 
-sub purge
+sub purge($this)
 {
-    my $this = shift;
-
     delete( $this->{fullheaders} );
     delete( $this->{fullmsg} );
     delete( $this->{fullbody} );
@@ -691,12 +674,8 @@ sub purge
     }
 }
 
-sub manageUncheckeable
+sub manageUncheckeable($this,$status)
 {
-    my $this   = shift;
-    my $status = shift;
-
-    ## modify the X-MailCleaner-SpamCheck header
     $this->{fullheaders} =~
         s/X-MailCleaner-SpamCheck: [^\n]+(\r?\n\s+[^\n]+)*/X-MailCleaner-SpamCheck: cannot be checked against spam ($status)/mi;
 
@@ -707,12 +686,8 @@ sub manageUncheckeable
     return 1;
 }
 
-sub manageWhitelist
+sub manageWhitelist($this,$whitelevel=undef,$newslevel=undef)
 {
-    my $this       = shift;
-    my $whitelevel = shift;
-    my $newslevel  = shift || undef;
-
     my %level = ( 1 => 'system', 2 => 'domain', 3 => 'user' );
     my $str;
     if (defined($whitelevel)) {
@@ -735,11 +710,8 @@ sub manageWhitelist
     return 1;
 }
 
-sub manageBlacklist
+sub manageBlacklist($this,$blacklevel)
 {
-    my $this       = shift;
-    my $blacklevel = shift;
-
     my %level = ( 1 => 'system', 2 => 'domain', 3 => 'user' );
     my $str   = "blacklisted by " . $level{$blacklevel};
 
@@ -753,11 +725,8 @@ sub manageBlacklist
     return 1;
 }
 
-sub manageTagMode
+sub manageTagMode($this,$tag)
 {
-    my $this = shift;
-    my $tag  = shift;
-
     ## change the spam tag
     $this->{fullheaders} =~
         s/Subject:\s+\{(MC_SPAM|MC_HIGHSPAM)\}/Subject:$tag /i;
@@ -766,10 +735,8 @@ sub manageTagMode
     return 1;
 }
 
-sub sendMeAnyway
+sub sendMeAnyway($this)
 {
-    my $this = shift;
-
     $this->{daemon}->doLog(
         $this->{batchid}
             . ": message "
@@ -917,10 +884,8 @@ sub sendMeAnyway
     return 1;
 }
 
-sub getRawMessage
+sub getRawMessage($this)
 {
-    my $this = shift;
-
     my $msg = $this->{fullheaders};
     $msg .= "\n";
     $msg .= $this->{fullbody};
@@ -928,10 +893,8 @@ sub getRawMessage
     return $msg;
 }
 
-sub quarantine
+sub quarantine($this)
 {
-    my $this = shift;
-
     $this->startTimer('Message quarantining');
     my $config = ReadConfig::getInstance();
 
@@ -992,12 +955,8 @@ sub quarantine
     return 1;
 }
 
-sub log
+sub log($this,$dbname,$inmasterh)
 {
-    my $this      = shift;
-    my $dbname    = shift;
-    my $inmasterh = shift;
-
     return 1 if ( $this->{quarantined} < 1 );
 
     $this->startTimer('Message logging');
@@ -1070,9 +1029,8 @@ sub log
     return $loggedonce;
 }
 
-sub decisiveModule
+sub decisiveModule($this)
 {
-    my $this = shift;
     my ($module, $line) = @_;
 
     $line =~ s/.*$module \((.*)/$1/;
@@ -1120,27 +1078,20 @@ sub decisiveModule
 #######
 ## profiling timers
 
-sub startTimer
+sub startTimer($this,$timer)
 {
-    my $this  = shift;
-    my $timer = shift;
-
     $this->{'timers'}{$timer} = [gettimeofday];
 }
 
-sub endTimer
+sub endTimer($this,$timer)
 {
-    my $this  = shift;
-    my $timer = shift;
-
     my $interval = tv_interval( $this->{timers}{$timer} );
     $this->{timers}{$timer} = 0;
     $this->{'timers'}{ 'd_' . $timer } = ( int( $interval * 10000 ) / 10000 );
 }
 
-sub getTimers
+sub getTimers($this)
 {
-    my $this = shift;
     return $this->{'timers'};
 }
 

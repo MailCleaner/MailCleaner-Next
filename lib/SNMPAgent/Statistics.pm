@@ -197,50 +197,43 @@ sub populateDomains
     }
 }
 
-sub setDomain
+sub setDomain($id,$domain)
 {
-	my $id = shift;
-	my $domain = shift;
-	
-	$domains{$id} = $domain;
-	foreach my $s (keys %domain_stats) {
-		$mib_domains{'1'}{$id} = \&getDomainIndex;
-		$mib_domains{'2'}{$id} = \&getDomainName;
-    	$mib_domains{$s}{$id} = \&getDomainStat;
-	}
+	  $domains{$id} = $domain;
+	  foreach my $s (keys %domain_stats) {
+		    $mib_domains{'1'}{$id} = \&getDomainIndex;
+		    $mib_domains{'2'}{$id} = \&getDomainName;
+    	  $mib_domains{$s}{$id} = \&getDomainStat;
+	  }
 }
 
 ##### Handlers
-sub getDomainIndex
+sub getDomainIndex($oid)
 {
-    my $oid = shift;
     my @oid = $oid->to_array();
-
     my $domainIndex = pop(@oid);
     return (ASN_INTEGER, int($domainIndex));
 }
 
-sub getDomainName
+sub getDomainName($oid)
 {
-	my $oid = shift;
-	my @oid = $oid->to_array();
+	  my @oid = $oid->to_array();
 
     my $domainIndex = pop(@oid);
     return (ASN_OCTET_STR, $domains{$domainIndex});
 }
 
-sub getDomainStat
+sub getDomainStat($oid)
 {
-	my $oid = shift;
-	my @oid = $oid->to_array();
+	  my @oid = $oid->to_array();
 	
-	my $domainIndex = pop(@oid);
-	my $stat_el = pop(@oid);
-	if (!defined($domain_stats{$stat_el})) {
-         return (ASN_COUNTER, int(0));
+	  my $domainIndex = pop(@oid);
+	  my $stat_el = pop(@oid);
+	  if (!defined($domain_stats{$stat_el})) {
+        return (ASN_COUNTER, int(0));
     }
     if (!defined($domains{$domainIndex})) {
-    	 return (ASN_COUNTER, int(0));
+    	  return (ASN_COUNTER, int(0));
     }
     my $total_value = 0;
     foreach my $single_stat (split(/\+/, $domain_stats{$stat_el})) {
@@ -257,59 +250,45 @@ sub getDomainStat
     return (ASN_COUNTER, int($total_value));
 }
 
-sub getGlobalProcessedStat
+sub getGlobalProcessedStat($oid)
 {
-    my $oid = shift;
-
     return getGlobalStat($oid, \%smtp_processed_stats, 'global');
 }
 
-sub getGlobalRefusedStat
+sub getGlobalRefusedStat($oid)
 {
-    my $oid = shift;
-
     return getGlobalStat($oid, \%smtp_refused_stats, 'smtp');
 }
 
-sub getGlobalDelayedStat
+sub getGlobalDelayedStat($oid)
 {
-    my $oid = shift;
-
     return getGlobalStat($oid, \%smtp_delayed_stats, 'smtp');
 }
 
-sub getGlobalRelayedStat
+sub getGlobalRelayedStat($oid)
 {
-    my $oid = shift;
-
     return getGlobalStat($oid, \%smtp_relayed_stats, 'smtp');
 }
 
-sub getGlobalAcceptedStat
+sub getGlobalAcceptedStat($oid)
 {
-    my $oid = shift;
-
     return getGlobalStat($oid, \%smtp_accepted_stats, 'smtp');
 }
 
-sub getGlobalStat
+sub getGlobalStat($oid,$stat_defs,$base)
 {
-	my $oid = shift;
-	my $stat_defs = shift;
-	my $base = shift;
+	  my @oid = $oid->to_array();
+	  my $stat_el = pop(@oid);
 	
-	my @oid = $oid->to_array();
-	my $stat_el = pop(@oid);
+	  my $type = ASN_COUNTER;
+	  if (!defined($stat_defs->{$stat_el})) {
+		    SNMPAgent::doLog('No such stat element: '.$stat_el);
+		    return ($type, int(0));
+	  }
 	
-	my $type = ASN_COUNTER;
-	if (!defined($stat_defs->{$stat_el})) {
-		SNMPAgent::doLog('No such stat element: '.$stat_el);
-		return ($type, int(0));
-	}
-	
-	my $total_value = 0;
+	  my $total_value = 0;
     foreach my $single_stat (split(/\+/, $stat_defs->{$stat_el})) {
-    	my $st_str = $base.':'.$single_stat;
+    	  my $st_str = $base.':'.$single_stat;
         SNMPAgent::doLog('Querying stat daemon for : '.$st_str,'daemon','debug');
         my $value = $stats_client->query('GET '.$st_str);
         if ($value !~ m/^\d+$/) {

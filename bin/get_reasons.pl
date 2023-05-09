@@ -127,9 +127,8 @@ if ( open(my $MSG, '<', $msg_file)) {
 exit 1;
 
 ##########################################
-sub readConfig
+sub readConfig($configfile)
 {
-    my $configfile = shift;
     my %config;
     my ($var, $value);
 

@@ -41,16 +41,16 @@ require MCDnsLists;
 require GetDNS;
 
 my $db = DB::connect('slave', 'mc_config');
-my $conf = ReadConfig::getInstance();
+our $conf = ReadConfig::getInstance();
 
-my $DEBUG = 1;
+our $DEBUG = 1;
 my $lasterror = "";
 
 my $scanners = get_active_scanners();
 my @prefilters = get_prefilters();
-my %sys_conf = get_system_config() or fatal_error("NOSYSTEMCONFIGURATIONFOUND", "no record found for system configuration");
-my %ms_conf = get_ms_config() or fatal_error("NOMAILSCANNERCONFIGURATIONFOUND", "no record found for default mailscanner configuration");
-my %sa_conf = get_sa_config() or fatal_error("NOSPAMASSASSINCONFIGURATION", "no default configuration found for spamassassin");
+our %sys_conf = get_system_config() or fatal_error("NOSYSTEMCONFIGURATIONFOUND", "no record found for system configuration");
+our %ms_conf = get_ms_config() or fatal_error("NOMAILSCANNERCONFIGURATIONFOUND", "no record found for default mailscanner configuration");
+our %sa_conf = get_sa_config() or fatal_error("NOSPAMASSASSINCONFIGURATION", "no default configuration found for spamassassin");
 my @dnslists = get_dnslists() or fatal_error("NODNSLISTINFORMATIONS", "no dnslists information found");
 
 dump_ms_file() or fatal_error("CANNOTDUMPMAILSCANNERFILE", $lasterror);
@@ -436,11 +436,8 @@ sub dump_prefilter_files
     return 1;
 }
 
-sub getPrefilterSpecConfig
+sub getPrefilterSpecConfig($prefilter,$replace)
 {
-    my $prefilter = shift;
-    my $replace = shift;
-
     return 0 if ! $prefilter;
     if (! -f $conf->getOption('SRCDIR')."/install/dbs/t_cf_$prefilter.sql") {
         return 0;
@@ -511,14 +508,9 @@ sub dump_saplugins_conf
     return $template->dump();
 }
 
-sub getModuleStatus
+sub getModuleStatus($module)
 {
-    my $module = shift;
-
-    if (defined($sa_conf{$module}) && $sa_conf{$module} < 1) {
-        return "#";
-    }
-    return "";
+    return ( (defined($sa_conf{$module}) && $sa_conf{$module} < 1) ? "#" : "" );
 }
 
 #############################
@@ -610,28 +602,18 @@ sub dump_dnsblacklists_conf
 }
 
 #############################
-sub fatal_error
+sub fatal_error($msg, $full)
 {
-    my $msg = shift;
-    my $full = shift;
-
-    print $msg;
-    if ($DEBUG) {
-        print "\n Full information: $full \n";
-    }
-    exit(0);
+    print $msg . ( $DEBUG ? "\n Full information: $full \n" : "\n" );
 }
 
-sub log_dns
+sub log_dns($str)
 {
-  my $str = shift;
-
   #print $str."\n";
 }
 
-sub expand_host_string
+sub expand_host_string($string)
 {
-    my $string = shift;
     my %args = @_;
     my $dns = GetDNS->new();
     return $dns->dumper($string,%args);

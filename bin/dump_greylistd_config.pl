@@ -78,9 +78,8 @@ sub get_greylist_config
 }
 
 #############################
-sub dump_domain_to_avoid
+sub dump_domain_to_avoid($domains)
 {
-   my $domains = shift;
    my @domains_to_avoid;
    if (! $domains eq "") {
      @domains_to_avoid = split /\s*[\,\:\;]\s*/, $domains;
@@ -99,9 +98,8 @@ sub dump_domain_to_avoid
 }
 
 #############################
-sub dump_greylistd_file
+sub dump_greylistd_file($href)
 {
-    my $href = shift;
     my %greylist_conf = %$href;
     my $srcpath = $conf->getOption('SRCDIR');
     my $varpath = $conf->getOption('VARDIR');
@@ -141,29 +139,20 @@ sub dump_greylistd_file
 
 
 #############################
-sub fatal_error
+sub fatal_error($msg,$full)
 {
-    my $msg = shift;
-    my $full = shift;
-
-    print $msg;
-    if ($DEBUG) {
-        print "\n Full information: $full \n";
-    }
-    exit(0);
+    print $msg . ($DEBUG ? "\n Full information: $full \n" : "\n");
 }
 
 #############################
 sub print_usage
 {
     print "Bad usage: dump_exim_config.pl [stage-id]\n\twhere stage-id is an integer between 0 and 4 (0 or null for all).\n";
-    exit(0);
 }
 
 #############################
-sub readConfig
+sub readConfig($configfile)
 {
-    my $configfile = shift;
     my %config;
     my ($var, $value);
 

@@ -48,7 +48,8 @@ our $VERSION = 1.0;
 # @param    $destination    Email     destination mail address
 # @return                   this
 ###
-sub create {
+sub create
+{
     my ($directory, $filename,$template,$destination_h,$language,$type ) = @_;
     my ($path, %subtemplates, $lang, $to, $from, %replacements, %headers, $sup_part, %values, %attachedpicts);
 
@@ -132,9 +133,8 @@ sub create {
 # @param     file    string        filename to preparse
 # @return                boolean     true on success, false on failure
 ###
-sub preParseTemplate {
-    my $this = shift;
-    my $file = shift;
+sub preParseTemplate($this,$file)
+{
     my $in_headers = 1;
     my $in_template = "";
     return 0 if (!open(my $FILE, '<', $file));
@@ -178,10 +178,8 @@ sub preParseTemplate {
 # @param    $name   string    name of the sub template
 # @return           string    value of the sub template
 ###
-sub getSubTemplate {
-    my $this = shift;
-    my $name = shift;
-
+sub getSubTemplate($this,$name)
+{
     if (defined($this->{subtemplates}{$name})) {
         return $this->{subtemplates}{$name};
     }
@@ -193,9 +191,8 @@ sub getSubTemplate {
 # @param    replace array_h    handle of array of rplacements with tag as keys
 # @return           boolean    true on success, false on failure
 ###
-sub setReplacements {
-    my $this = shift;
-    my $replace_h = shift;
+sub setReplacements($this,$replace_h)
+{
     my %replace = %{$replace_h};
 
     foreach my $tag (keys %replace) {
@@ -204,27 +201,20 @@ sub setReplacements {
     return 1;
 }
 
-sub setDestination {
-    my $this = shift;
-    my $destination = shift;
-
+sub setDestination($this,$destination)
+{
     $this->{to} = $destination;
     return 1;
 }
 
-sub setLanguage {
-    my $this = shift;
-    my $lang = shift;
-
+sub setLanguage($this,$lang)
+{
     $this->{language} = $lang;
     return 1;
 }
 
-sub addAttachement {
-    my $this = shift;
-    my $type = shift;
-    my $parth = shift;
-
+sub addAttachement($this,$type,$parth)
+{
     $this->{sup_part} = $$parth;
     return 1;
 }
@@ -234,13 +224,8 @@ sub addAttachement {
 # @param    destination if set, will override the default destination address
 # @return   boolean     true on success, false on failure
 ###
-sub send {
-    my $this = shift;
-    my $dest = shift;
-    my $retries = shift;
-    # set retries to 1 if it is not defined or inferior to 1
-    $retries = 1 if ( (! defined($retries)) || ($retries < 1) );
-
+sub send($this,$dest,$retries=1)
+{
     my $to = $this->{to};
     if (defined($dest) && $dest =~ /^\S+\@\S+$/) {
         $to = $dest;
@@ -412,30 +397,23 @@ sub send {
 # get the main text part body
 # @return    string    part body
 ###
-sub getMainTextPart {
-    my $this = shift;
-
+sub getMainTextPart($this)
+{
     my $file = $this->{path}.".txt";
     return $this->parseTemplate($file);
 }
 
-sub getDefaultValue {
-    my $this = shift;
-    my $value = shift;
-
-    if (defined($this->{values}{$value})) {
-        return $this->{values}{$value};
-    }
-    return "";
+sub getDefaultValue($this,$value)
+{
+    return $this->{values}{$value} || "";
 }
 
 ###
 # get the parts
 # @return     array     array of useable parts files
 ###
-sub getUseableParts {
-    my $this = shift;
-
+sub getUseableParts($this)
+{
     my @ret = ();
     # first add html parts
     if ( opendir(my $DIR, $this->{path}."_parts")) {
@@ -472,10 +450,8 @@ sub getUseableParts {
 # @param    $template    string     template file to use
 # @return                string     body text
 ###
-sub parseTemplate {
-    my $this = shift;
-    my $template = shift;
-
+sub parseTemplate($this,$template)
+{
     return "" if (!open(my $FILE, '<', $template));
 
     my $ret;
@@ -556,7 +532,8 @@ sub parseTemplate {
     return $ret;
 }
 
-sub uniqid() {
+sub uniqid
+{
     my $sessionId    ="";
     my $length=16;
 

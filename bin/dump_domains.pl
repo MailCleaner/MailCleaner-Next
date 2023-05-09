@@ -140,9 +140,8 @@ $previous_time = time();
 $slave_db->disconnect();
 print "DUMPSUCCESSFUL";
 
-sub parseDestinations
+sub parseDestinations($d_ref)
 {
-    my $d_ref = shift;
     my @domain_list = @$d_ref;
     my %domain_dest;
 
@@ -219,11 +218,9 @@ sub parseDestinations
 #####################################
 ## dumpDomainsFile
 
-sub dumpDomainsFile
+sub dumpDomainsFile($d_ref,$filepath)
 {
-    my $d_ref = shift;
     my %domains = %$d_ref;
-    my $filepath = shift;
 
     my $locktime = 20;
     my $lockfile = $filepath.'/dump.lock';
@@ -529,9 +526,7 @@ sub dumpDomainsFile
     return 1;
 }
 
-sub print_time
+sub print_time($what)
 {
-    my $what = shift;
-
     print "Time for: $what: ".( int( $time_in{$what} * 10000 ) / 10000 )."s.\n";
 }

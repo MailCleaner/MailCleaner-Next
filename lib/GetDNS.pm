@@ -51,9 +51,8 @@ sub new
     return $self;
 }
 
-sub dumper {
-    my $self = shift;
-    my $raw = shift;
+sub dumper($self,$raw)
+{
     my %args = @_;
 
     unless (defined($raw)) {

@@ -40,12 +40,10 @@ our @EXPORT = qw(create getPref);
 our $VERSION = 1.0;
 
 
-sub create {
-    my $address = shift;
-    my $domain = $address;
+sub create($address, $domain)
+{
     my %prefs;
     my $d;
-    #my $pref_daemon = PrefDaemon::create();
 
     if ($address =~ /(\S+)\@(\S+)/) {
         $domain = $2;
@@ -67,13 +65,9 @@ sub create {
     return $this;
 }
 
-sub getPref {
-    my $this = shift;
-    my $pref = shift;
-    my $default = shift;
-
+sub getPref($this,$pref,$default)
+{
     if (!defined($this->{prefs}) || !defined($this->{prefs}{$pref})) {
-
         my $prefclient = PrefClient->new();
         $prefclient->setTimeout(2);
         my $dpref = $prefclient->getRecursivePref($this->{address}, $pref);
@@ -81,7 +75,6 @@ sub getPref {
             $this->{prefs}->{$pref} = $dpref;
             return $dpref;
         }
-        ## fallback loading
         $this->loadPrefs();
     }
 
@@ -98,31 +91,26 @@ sub getPref {
     return "";
 }
 
-sub getDomainObject {
-    my $this = shift;
-
+sub getDomainObject($this)
+{
     return $this->{d};
 }
 
-sub getAddress {
-    my $this = shift;
-
+sub getAddress($this)
+{
     return $this->{address};
 }
 
-sub getUser {
-    my $this = shift;
-
+sub getUser($this)
+{
     if (!$this->{user}) {
         $this->{user} = User::create($this->{address});
     }
     return $this->{user};
 }
 
-sub getUserPref {
-    my $this = shift;
-    my $pref = shift;
-
+sub getUserPref($this,$pref)
+{
     $this->getUser();
     if ($this->{user}) {
         return $this->{user}->getPref($pref);
@@ -130,9 +118,8 @@ sub getUserPref {
     return;
 }
 
-sub loadPrefs {
-    my $this = shift;
-
+sub loadPrefs($this)
+{
     require DB;
     my $db = DB::connect('slave', 'mc_config', 0);
 
@@ -154,10 +141,8 @@ sub loadPrefs {
 	}
 }
 
-sub hasInWhiteWarnList {
-    my $this = shift;
-    my $type = shift;
-    my $sender = shift;
+sub hasInWhiteWarnList($this,$type,$sender)
+{
     $sender =~ s/\'//g;
 
     my $sysprefs = SystemPref::getInstance();
@@ -218,11 +203,8 @@ sub hasInWhiteWarnList {
 
 }
 
-sub loadedIsWWListed {
-    my $this = shift;
-    my $type = shift;
-    my $sender = shift;
-
+sub loadedIsWWListed($this,$type,$sender)
+{
     require DB;
     my $db = DB::connect('slave', 'mc_config', 0);
 
@@ -258,38 +240,32 @@ sub loadedIsWWListed {
     return 0;
 }
 
-sub listMatch {
-        my $reg = shift;
-        my $sender = shift;
-
-        # Use only the actual address as pattern
-        if ($reg =~ /^.*<(.*\@.*\..*)>$/) {
-            $reg = $1;
-        }
-        $reg =~ s/\./\\\./g; # Escape all dots
-        $reg =~ s/\@/\\\@/g; # Escape @
-        $reg =~ s/\*/\.\*/g; # Glob on all characters when using *
-        $reg =~ s/\+/\\\+/g; # Escape +
-        $reg =~ s/\|/\\\|/g; # Escape |
-        $reg =~ s/\{/\\\{/g; # Escape {
-        $reg =~ s/\}/\\\}/g; # Escape }
-        $reg =~ s/\?/\\\?/g; # Escape ?
-        $reg =~ s/[^a-zA-Z0-9\+.\\\-_=@\*\$\^!#%&'\/\?`{|}~]//g; # Remove unwanted characters
-        if ( $reg eq "" ) {
-            $reg = '.*';
-        }
-        if ($sender =~ /$reg/i) {
-            return 1;
-        }
-        return 0;
+sub listMatch($reg,$sender)
+{
+    # Use only the actual address as pattern
+    if ($reg =~ /^.*<(.*\@.*\..*)>$/) {
+        $reg = $1;
+    }
+    $reg =~ s/\./\\\./g; # Escape all dots
+    $reg =~ s/\@/\\\@/g; # Escape @
+    $reg =~ s/\*/\.\*/g; # Glob on all characters when using *
+    $reg =~ s/\+/\\\+/g; # Escape +
+    $reg =~ s/\|/\\\|/g; # Escape |
+    $reg =~ s/\{/\\\{/g; # Escape {
+    $reg =~ s/\}/\\\}/g; # Escape }
+    $reg =~ s/\?/\\\?/g; # Escape ?
+    $reg =~ s/[^a-zA-Z0-9\+.\\\-_=@\*\$\^!#%&'\/\?`{|}~]//g; # Remove unwanted characters
+    if ( $reg eq "" ) {
+        $reg = '.*';
+    }
+    if ($sender =~ /$reg/i) {
+        return 1;
+    }
+    return 0;
 }
 
-sub inWW {
-    my $this = shift;
-    my $type = shift;
-    my $sender = shift;
-    my $destination = shift;
-
+sub inWW($this,$type,$sender,$destination)
+{
     my $prefclient = PrefClient->new();
     $prefclient->setTimeout(2);
 
@@ -305,12 +281,8 @@ sub inWW {
     return 0;
 }
 
-sub sendWarnlistHit {
-    my $this = shift;
-    my $sender = shift;
-    my $reason = shift;
-    my $msgid = shift;
-
+sub sendWarnlistHit($this,$sender,$reason,$msgid)
+{
     require MailTemplate;
     my $template = MailTemplate::create('warnhit', 'warnhit', $this->{d}->getPref('summary_template'), \$this, $this->getPref('language'), 'html');
 
@@ -332,13 +304,8 @@ sub sendWarnlistHit {
     return $template->send();
 }
 
-sub sendWWHitNotice {
-    my $this = shift;
-    my $whitelisted = shift;
-    my $warnlisted = shift;
-    my $sender = shift;
-    my $msgh = shift;
-
+sub sendWWHitNotice($this,$whitelisted,$warnlisted,$sender,$msgh)
+{
     require MailTemplate;
     my $template = MailTemplate::create('warnhit', 'noticehit', $this->{d}->getPref('summary_template'), \$this, 'en', 'text');
 
@@ -367,9 +334,8 @@ sub sendWWHitNotice {
     return $template->send();
 }
 
-sub getLinkedAddresses {
-    my $this = shift;
-
+sub getLinkedAddresses($this)
+{
     my %addresses;
 
     if (!$this->{user}) {

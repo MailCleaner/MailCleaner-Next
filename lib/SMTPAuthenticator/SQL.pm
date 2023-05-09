@@ -33,12 +33,8 @@ our @EXPORT = qw(create authenticate);
 our $VERSION = 1.0;
 
 
-sub create
+sub create($server,$port,$params)
 {
-    my $server = shift;
-    my $port = shift;
-    my $params = shift;
-
     my $usessl = 0;
     my $database_type = 'mysql';
     my $database = '';
@@ -101,12 +97,8 @@ sub create
     return $this;
 }
 
-sub authenticate
+sub authenticate($this,$username,$password)
 {
-    my $this = shift;
-    my $username = shift;
-    my $password = shift;
-
     my $dbh = DBI->connect($this->{dsn}, $this->{dbuser}, $this->{dbpass}, {RaiseError => 0, PrintError => 0});
     if (! $dbh ) {
         $this->{'error_code'} = 1;

@@ -31,53 +31,44 @@ require SockClient;
 
 our @ISA = "SockClient";
 
+sub new($class)
+{
+    my %msgs = ();
 
-sub new {
-  my $class = shift;
+    my $spec_this = {
+        %msgs => (),
+        currentid => 0,
+        socketpath => '',
+        timeout => 5,
+        set_timeout => 5,
+        get_timeout => 120,
+    };
 
-  my %msgs = ();
+    my $conf = ReadConfig::getInstance();
+    $spec_this->{socketpath} = $conf->getOption('VARDIR')."/run/statsdaemon.sock";
 
-  my $spec_this = {
-     %msgs => (),
-     currentid => 0,
-     socketpath => '',
-     timeout => 5,
-     set_timeout => 5,
-     get_timeout => 120,
-  };
+    my $this = $class->SUPER::new($spec_this);
 
-  my $conf = ReadConfig::getInstance();
-  $spec_this->{socketpath} = $conf->getOption('VARDIR')."/run/statsdaemon.sock";
-
-  my $this = $class->SUPER::new($spec_this);
-
-  bless $this, $class;
-  return $this;
+    bless $this, $class;
+    return $this;
 }
 
-sub getValue {
-	my $this = shift;
-	my $element = shift;
-	
-	$this->{timeout} = $this->{get_timeout};
-	my $ret = $this->query('GET '.$element);
-	return $ret;
+sub getValue($this,$element)
+{
+	  $this->{timeout} = $this->{get_timeout};
+	  my $ret = $this->query('GET '.$element);
+	  return $ret;
 }
 
-sub addValue {
-	my $this = shift;
-	my $element = shift;
-	my $value = shift;
-	
+sub addValue($this,$element,$value)
+{
     $this->{timeout} = $this->{set_timeout};
-	my $ret = $this->query('ADD '.$element.' '.$value);
-	return $ret;
+	  my $ret = $this->query('ADD '.$element.' '.$value);
+	  return $ret;
 }
 
-sub addMessageStats {
-    my $this = shift;
-    my $element = shift;
-    my $valuesh = shift;
+sub addMessageStats($this,$element,$valuesh)
+{
     my %values = %{$valuesh};	
 	
     my $final_ret = 'ADDED';
@@ -87,41 +78,38 @@ sub addMessageStats {
 
     my @dirtykeys = ('spam', 'highspam', 'virus', 'name', 'other', 'content');
     foreach my $ckey (@dirtykeys) {
-      if (defined($values{$ckey}) && $values{$ckey} > 0) {
-         $values{'clean'} = 0;
-         last;
-      }
+        if (defined($values{$ckey}) && $values{$ckey} > 0) {
+            $values{'clean'} = 0;
+            last;
+        }
     }
 
     foreach my $key (%values) {
-      if ($values{$key}) {
-        my $ret = $this->addValue($element.":".$key, $values{$key});
-        if ($key eq 'msg' && $ret =~ /^ADDED\s+(\d+)/) {
-          $nbmessages = $1;
+        if ($values{$key}) {
+            my $ret = $this->addValue($element.":".$key, $values{$key});
+            if ($key eq 'msg' && $ret =~ /^ADDED\s+(\d+)/) {
+                $nbmessages = $1;
+            }
+            if ($ret !~ /^ADDED/) {
+                $final_ret = $ret;
+    	      }
         }
-        if ($ret !~ /^ADDED/) {
-          $final_ret = $ret;
-    	}
-      }
      }
 	
      return $final_ret." ".$nbmessages;
 }
 
-sub setTimeout {
-   my $this = shift;
-   my $timeout = shift;
-
-   return 0 if ($timeout !~ m/^\d+$/);
-   $this->{timeout} = $timeout;
-   return 1;
+sub setTimeout($this,$timeout)
+{
+    return 0 if ($timeout !~ m/^\d+$/);
+    $this->{timeout} = $timeout;
+    return 1;
 }
 
-sub logStats {
-   my $this = shift;
-
-   my $query = 'STATS';
-   return $this->query($query);
+sub logStats($this)
+{
+    my $query = 'STATS';
+    return $this->query($query);
 }
 
 1;

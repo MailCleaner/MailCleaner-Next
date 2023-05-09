@@ -35,7 +35,7 @@ if ($0 =~ m/(\S*)\/\S+.pl$/) {
     unshift (@INC, $path);
 }
 
-my $DEBUG = 1;
+our $DEBUG = 1;
 
 my %config = readConfig("/etc/mailcleaner.conf");
 
@@ -53,18 +53,16 @@ if (-e $FIRSTUPDATE_FLAG_RAN){
 
 my $lasterror = "";
 
-dump_mysql_file('master') or fatal_error("CANNOTDUMPMYSQLFILE", $lasterror);
-dump_mysql_file('slave') or fatal_error("CANNOTDUMPMYSQLFILE", $lasterror);
+dump_mysql_file($config{'SRCDIR'},'master') or fatal_error("CANNOTDUMPMYSQLFILE", $lasterror);
+dump_mysql_file($config{'SRCDIR'},'slave') or fatal_error("CANNOTDUMPMYSQLFILE", $lasterror);
 
 print "DUMPSUCCESSFUL";
 
 #############################
-sub dump_mysql_file
+sub dump_mysql_file($srcdir,$stage)
 {
-    my $stage = shift;
-
-    my $template_file = "$config{'SRCDIR'}/etc/mysql/my_$stage.cnf_template";
-    my $target_file = "$config{'SRCDIR'}/etc/mysql/my_$stage.cnf";
+    my $template_file = $srcdir,"/etc/mysql/my_$stage.cnf_template";
+    my $target_file = $srcdir,"/etc/mysql/my_$stage.cnf";
 
     if ( !open(my $TEMPLATE, '<', $template_file) ) {
         $lasterror = "Cannot open template file: $template_file";
@@ -96,29 +94,20 @@ sub dump_mysql_file
 }
 
 #############################
-sub fatal_error
+sub fatal_error($msg,$full)
 {
-    my $msg = shift;
-    my $full = shift;
-
-    print $msg;
-    if ($DEBUG) {
-        print "\n Full information: $full \n";
-    }
-    exit(0);
+    print $msg . ($DEBUG ? "\n Full information: $full \n", "\n");
 }
 
 #############################
 sub print_usage
 {
     print "Bad usage: dump_mysql_config.pl\n";
-    exit(0);
 }
 
 #############################
-sub readConfig
+sub readConfig($configfile)
 {
-    my $configfile = shift;
     my %config;
     my ($var, $value);
 

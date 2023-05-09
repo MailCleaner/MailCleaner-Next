@@ -39,11 +39,9 @@ our $VERSION = 1.0;
 my %rblsfailure;
 my %shorteners;
 
-sub new {
-    my $class       = shift;
+sub new($class,$logfunction,$debug)
+{
     my $this        = {};
-    my $logfunction = shift;
-    my $debug       = shift;
 
     $this->{rbls}                      = {};
     $this->{useableRbls}               = ();
@@ -66,16 +64,8 @@ sub new {
     return $this;
 }
 
-sub loadRBLs {
-    my $this                 = shift;
-    my $rblspath             = shift;
-    my $selectedRbls         = shift;
-    my $rblsType             = shift;
-    my $whitelistDomainsFile = shift;
-    my $TLDsFiles            = shift;
-    my $localDomainsFile     = shift;
-    my $prelog               = shift;
-
+sub loadRBLs($this,$rblspath,$selectedRbls,$rblsType,$whitelistDomainsFile,$TLDsFiles,$localDomainsFile,$prelog)
+{
     if ( opendir( DIR, $rblspath ) ) {
         while ( my $entry = readdir(DIR) ) {
             if ( $entry =~ m/\S+\.cf$/ ) {
@@ -221,11 +211,8 @@ sub loadRBLs {
     return;
 }
 
-sub findUri {
-    my $this   = shift;
-    my $line   = shift;
-    my $prelog = shift;
-
+sub findUri($this,$line,$prelog)
+{
     if ( my ( $scheme, $authority ) =
         $line =~ m|(http?s?)://([^#/" ><=\[\]()]{3,$this->{maxurilength}})| )
     {
@@ -242,11 +229,8 @@ sub findUri {
     return 0;
 }
 
-sub findUriShortener {
-    my $this   = shift;
-    my $line   = shift;
-    my $prelog = shift;
-
+sub findUriShortener($this,$line,$prelog)
+{
     my $deep           = 0;
     my $newloc         = $line;
     my $continue       = 1;
@@ -284,10 +268,8 @@ sub findUriShortener {
     return $final_domain;
 }
 
-sub getNextLocation {
-    my $this = shift;
-    my $uri  = shift;
-
+sub getNextLocation($this,$url)
+{
     my ($domain, $get) = $uri =~ m#(?:(?:(?^:https?))://((?:(?:(?:(?:(?:[a-zA-Z0-9][-a-zA-Z0-9]*)?[a-zA-Z0-9])[.])*(?:[a-zA-Z][-a-zA-Z0-9]*[a-zA-Z0-9]|[a-zA-Z])[.]?)|(?:[0-9]+[.][0-9]+[.][0-9]+[.][0-9]+)))(?::(?:(?:[0-9]*)))?(?:/(((?:(?:(?:(?:[a-zA-Z0-9\-_.!~*'():@&=+$,]+|(?:%[a-fA-F0-9][a-fA-F0-9]))*)(?:;(?:(?:[a-zA-Z0-9\-_.!~*'():@&=+$,]+|(?:%[a-fA-F0-9][a-fA-F0-9]))*))*)(?:/(?:(?:(?:[a-zA-Z0-9\-_.!~*'():@&=+$,]+|(?:%[a-fA-F0-9][a-fA-F0-9]))*)(?:;(?:(?:[a-zA-Z0-9\-_.!~*'():@&=+$,]+|(?:%[a-fA-F0-9][a-fA-F0-9]))*))*))*))(?:[?](?:(?:(?:[;/?:@&=+$,a-zA-Z0-9\-_.!~*'()]+|(?:%[a-fA-F0-9][a-fA-F0-9]))*)))?))?)#mg;
     unless (defined($domain)) {
         return ( $uri, 0 );
@@ -347,13 +329,8 @@ sub getNextLocation {
     return ( '', 0 );
 }
 
-sub findEmail {
-    my $this   = shift;
-    my $line   = shift;
-    my $prelog = shift;
-
-    return 0 unless $line;
-
+sub findEmail($this,$line,$prelog)
+{
     if ( my ( $local, $domain ) =
         $line =~
 m/([a-zA-Z0-9-_.]{4,25})[ |[(*'"]{0,5}@[ |\])*'"]{0,5}([a-zA-Z0-9-_\.]{4,25}\.[ |[(*'"]{0,5}[a-z]{2,3})/
@@ -373,12 +350,8 @@ m/([a-zA-Z0-9-_.]{4,25})[ |[(*'"]{0,5}@[ |\])*'"]{0,5}([a-zA-Z0-9-_\.]{4,25}\.[ 
     return 0;
 }
 
-sub isValidDomain {
-    my $this         = shift;
-    my $domain       = shift;
-    my $usewhitelist = shift;
-    my $prelog       = shift;
-
+sub isValidDomain($this,$domain,$usewhitelist,$prelog)
+{
     $domain =~ s/\%//g;
 
     if ( $domain =~ m/[a-z0-9\-_.:]+[.:][a-z0-9]{2,15}$/ ) {
@@ -432,14 +405,8 @@ sub isValidDomain {
     return 0;
 }
 
-sub check_dns {
-    my $this          = shift;
-    my $value         = shift;
-    my $type          = shift;
-    my $prelog        = shift;
-    my $maxhitcount   = shift // 0;
-    my $maxbshitcount = shift // 1;
-
+sub check_dns($this,$value,$type,$prelog,$maxhitcount=0,$maxbshitcount=1)
+{
     if ( $this->{debug} ) {
         &{ $this->{logfunction} }( $prelog . " will check value: $value" );
     }
@@ -644,18 +611,18 @@ sub check_dns {
     return ( $value, $temp, join( ',', @HitList ) );
 }
 
-sub getAllRBLs {
-    my $this = shift;
+sub getAllRBLs($this)
+{
     return $this->{rbls};
 }
 
-sub getUseablRBLs {
-    my $this = shift;
+sub getUseablRBLs($this)
+{
     return $this->{useableRbls};
 }
 
-sub getDebugValue {
-    my $this = shift;
+sub getDebugValue($this)
+{
     return $this->{debug};
 }
 

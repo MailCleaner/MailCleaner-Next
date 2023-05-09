@@ -30,9 +30,8 @@ use IO::Socket;
 use IO::Select;
 use Time::HiRes qw(setitimer time);
 
-sub new {
-    my $class = shift;
-    my $spec_thish = shift;
+sub new($class,$spec_thish)
+{
     my %spec_this = %$spec_thish;
 
     my $this = {
@@ -49,9 +48,8 @@ sub new {
     return $this;
 }
 
-sub connect {
-    my $this = shift;
-
+sub connect($this)
+{
     ## untaint some values
     if ($this->{socketpath} =~ m/^(\S+)/) {
         $this->{socketpath} = $1;
@@ -69,10 +67,8 @@ sub connect {
     return 1;
 }
 
-sub query {
-    my $this = shift;
-    my $query = shift;
-
+sub query($this,$query)
+{
     my $sent = 0;
     my $tries = 1;
 
@@ -85,7 +81,7 @@ sub query {
     my $data = '';
     my $rv;
 
-    my $read_set = new IO::Select;
+    my $read_set = IO::Select::new();
     $read_set->add($sock);
     my ($r_ready, $w_ready, $error) =  IO::Select->select($read_set, undef, undef, $this->{timeout});
 

@@ -67,11 +67,8 @@ sub initialise
     $TrustedIPs::conf{'neg_text'} = 'position : '.$TrustedIPs::conf{'position'}.', ham decisive';
 }
 
-sub Checks
+sub Checks($this,$message)
 {
-    my $this = shift;
-    my $message = shift;
-
     foreach my $hl ($global::MS->{mta}->OriginalMsgHeaders($message)) {
         if ($hl =~ m/^X-MailCleaner-TrustedIPs: Ok/i) {
             my $string = 'sending IP is in Trusted IPs';

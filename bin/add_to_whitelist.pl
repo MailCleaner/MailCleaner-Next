@@ -70,20 +70,15 @@ print("OK");
 exit 0;
 
 ##########################################
-sub isValidEmail
+sub isValidEmail($email_str)
 {
-    my $email_str = shift;
-    if ($email_str =~ /^\S*\@\S+\.\S+$/) {
-        return 1;
-    } else {
-        return 0;
-    }
+    return 1 if ($email_str =~ /^\S*\@\S+\.\S+$/);
+    return 0;
 }
 
 ##########################################
-sub readConfig
+sub readConfig($configfile)
 {       # Reads configuration file given as argument.
-    my $configfile = shift;
     my %config;
     my ($var, $value);
 
@@ -103,9 +98,7 @@ sub readConfig
     return %config;
 }
 
-sub err
+sub err($err="UNKNOWNERROR")
 {
-    my $err = shift || "UNKNOWNERROR";
-    print $err . "\n";
-    exit(1);
+    die("$err\n");
 }

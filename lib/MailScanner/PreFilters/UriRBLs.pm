@@ -77,7 +77,8 @@ sub initialise
         close $CONFIG;
     } else {
         MailScanner::Log::WarnLog(
-            "$MODULE configuration file ($configfile) could not be found !");
+            "$MODULE configuration file ($configfile) could not be found !"
+        );
     }
 
     $UriRBLs::dnslists =
@@ -90,23 +91,19 @@ sub initialise
     );
 
     if ($UriRBLs::conf{'pos_decisive'} && ($UriRBLs::conf{'decisive_field'} eq 'pos_decisive' || $UriRBLs::conf{'decisive_field'} eq 'both')) {
-            $UriRBLs::conf{'pos_text'} = 'position : '.$UriRBLs::conf{'position'}.', spam decisive';
+        $UriRBLs::conf{'pos_text'} = 'position : '.$UriRBLs::conf{'position'}.', spam decisive';
     } else {
-            $UriRBLs::conf{'pos_text'} = 'position : '.$UriRBLs::conf{'position'}.', not decisive';
+        $UriRBLs::conf{'pos_text'} = 'position : '.$UriRBLs::conf{'position'}.', not decisive';
     }
     if ($UriRBLs::conf{'neg_decisive'} && ($UriRBLs::conf{'decisive_field'} eq 'neg_decisive' || $UriRBLs::conf{'decisive_field'} eq 'both')) {
-            $UriRBLs::conf{'neg_text'} = 'position : '.$UriRBLs::conf{'position'}.', ham decisive';
+        $UriRBLs::conf{'neg_text'} = 'position : '.$UriRBLs::conf{'position'}.', ham decisive';
     } else {
-            $UriRBLs::conf{'neg_text'} = 'position : '.$UriRBLs::conf{'position'}.', not decisive';
+        $UriRBLs::conf{'neg_text'} = 'position : '.$UriRBLs::conf{'position'}.', not decisive';
     }
 }
 
-sub Checks
+sub Checks($this,$message)
 {
-    my $this    = shift;
-    my $message = shift;
-
-    ## check maximum message size
     my $maxsize     = $UriRBLs::conf{'maxSize'};
     my $header_size = 0;
     if ( -e $message->{headerspath} ) {

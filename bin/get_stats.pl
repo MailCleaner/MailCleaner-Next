@@ -42,7 +42,7 @@ my $begin = shift;
 my $end = shift;
 my $verbose_o = shift;
 my $fulldays_o = shift;
-my $verbose = 0;
+our $verbose = 0;
 my $batchmode = 0;
 my $fulldays = 0;
 my $debug = 0;
@@ -218,10 +218,8 @@ sub clearStats
 }
 
 #######################
-sub processFile
+sub processFile($file)
 {
-    my $file = shift;
-
     my ($cmsgs, $cspams, $chighspams, $cviruses, $cnames, $cothers, $ccleans, $cbytes, $cusers, $cdomains) = Stats::readFile($file);
 
     $msgs = $msgs + $cmsgs;
@@ -241,11 +239,8 @@ sub processFile
 }
 
 #######################
-sub addDate
+sub addDate($in,$add)
 {
-    my $in = shift;
-    my $add = shift;
-
     if ($in !~ m/^(\d{4})(\d{2})(\d{2})$/ ) {
         return $in;
     }
@@ -298,9 +293,8 @@ sub addDate
 }
 
 #######################
-sub returnStats
+sub returnStats($dir)
 {
-    my $dir = shift;
     if (! $verbose) {
         print "$msgs|$spams|$highspams|$viruses|$names|$others|$cleans|$bytes|$users|$domains\n";
     } else {
@@ -333,9 +327,8 @@ sub addGlobalStats
 }
 
 #######################
-sub badUsage
+sub badUsage($bad)
 {
-    my $bad = shift;
     print "Bad Usage: wrong paremeter: $bad\n";
     print "    Usage: get_stats.pl what begindate enddate\n";
     print "           'what' :  either user, domain name or '_global'\n";

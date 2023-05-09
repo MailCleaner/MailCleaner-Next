@@ -37,15 +37,12 @@ require Mail::SpamAssassin::Timeout;
 require ReadConfig;
 use Time::HiRes qw(gettimeofday tv_interval);
 
-my $PROFILE = 1;
+our $PROFILE = 1;
 my (%prof_start, %prof_res) = ();
 
 
-sub create {
-    my $class = shift;
-    my $daemonname = shift;
-    my $conffilepath = shift;
-    my $spec_thish = shift;
+sub create($class,$daemonname,$conffilepath,$spec_thish)
+{
     my %spec_this = %$spec_thish;
 
     my $conf = ReadConfig::getInstance();
@@ -102,9 +99,8 @@ sub create {
     return $this;
 }
 
-sub createShared {
-    my $this = shift;
-
+sub createShared($this)
+{
     if ($this->{needshared}) {
 
         ## first, clear shared
@@ -133,18 +129,16 @@ my %children = ();  # keys are current child process IDs
 my $children = 0;   # current number of children
 my %shared;
 
-sub REAPER {
-    my $this = shift;
-
+sub REAPER($this)
+{
     $SIG{CHLD} = \&REAPER;
     my $pid = wait;
     $children --;
     delete $children{$pid};
 }
 
-sub HUNTSMAN {
-    my $this = shift;
-
+sub HUNTSMAN($this)
+{
     local($SIG{CHLD}) = 'IGNORE';
 
     while (! $this->{finishedforked}) {
@@ -164,24 +158,18 @@ sub HUNTSMAN {
     exit;
 }
 
-sub logMessage {
-    my $this = shift;
-    my $message = shift;
+sub logMessage($this,$message)
+{
     $this->doLog($message);
 }
 
-sub logDebug {
-    my $this = shift;
-    my $message = shift;
-    if ($this->{debug}) {
-        $this->doLog($message);
-    }
+sub logDebug($this,$message)
+{
+    $this->doLog($message) if ($this->{debug});
 }
 
-sub doLog {
-    my $this = shift;
-    my $message = shift;
-
+sub doLog($this,$message)
+{
     my $LOGGERLOG;
     open($LOGGERLOG, '>>', $this->{logfile});
     if ( !defined(fileno($LOGGERLOG))) {
@@ -194,9 +182,8 @@ sub doLog {
     close $LOGGERLOG;
 }
 
-sub initDaemon {
-    my $this = shift;
-
+sub initDaemon($this)
+{
     $this->logMessage('Initializing Daemon');
     # first daemonize
     my $pid = fork;
@@ -217,9 +204,8 @@ sub initDaemon {
     return 0;
 }
 
-sub forkChildren {
-    my $this = shift;
-
+sub forkChildren($this)
+{
     # Fork off our children.
     for (1 .. $this->{prefork}) {
          $this->makeNewChild();
@@ -240,8 +226,8 @@ sub forkChildren {
     }
 }
 
-sub makeNewChild {
-    my $this = shift;
+sub makeNewChild($this)
+{
     my $pid;
     my $sigset;
 
@@ -292,9 +278,8 @@ sub makeNewChild {
     }
 }
 
-sub clearSystemShared() {
-    my $this = shift;
-
+sub clearSystemShared($this)
+{
     my $cmd = "ipcrm -M ".$this->{gluevalue};
     `$cmd 2>&1 > /dev/null`;
     $cmd = "ipcrm -S ".$this->{gluevalue};
@@ -303,17 +288,15 @@ sub clearSystemShared() {
     sleep 2;
 }
 
-sub preForkHook() {
-    my $this = shift;
-
+sub preForkHook($this)
+{
     $this->logMessage('No preForkHook redefined, using default one...');
     return 1;
 }
 
 
-sub mainLoopHook() {
-    my $this = shift;
-
+sub mainLoopHook($this)
+{
     while(1) {
         sleep 5;
         $this->logMessage('No mainLoopHook redefined, waiting in default loop...');
@@ -321,9 +304,8 @@ sub mainLoopHook() {
     return 1;
 }
 
-sub exit() {
-     my $this = shift;
-
+sub exit($this)
+{
      $this->logMessage('Exit called');
      $this->logMessage('...');
 
@@ -332,19 +314,20 @@ sub exit() {
      return 1;
 }
 
-sub exitChild {
-    my $this = shift;
+sub exitChild($this)
+{
+    return;
 }
 
-sub profile_start {
+sub profile_start($var)
+{
     return unless $PROFILE;
-    my $var = shift;
     $prof_start{$var} = [gettimeofday];
 }
 
-sub profile_stop {
+sub profile_stop($var)
+{
     return unless $PROFILE;
-    my $var = shift;
     return unless defined($prof_start{$var});
     my $interval = tv_interval ($prof_start{$var});
     my $time = (int($interval*10000)/10000);
@@ -352,7 +335,8 @@ sub profile_stop {
     return $time;
 }
 
-sub profile_output {
+sub profile_output
+{
     return unless $PROFILE;
     my $out = "";
     foreach my $var (keys %prof_res) {

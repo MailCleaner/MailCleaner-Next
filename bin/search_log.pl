@@ -245,13 +245,8 @@ if (@messages > 0) {
 print "STOPTIME ".time()."\n" if $batch;
 print "done.\n";
 
-sub loopThroughLogs
+sub loopThroughLogs($filename,$type,$what,$store)
 {
-    my $filename = shift;
-    my $type = shift;
-    my $what = shift;
-    my $store = shift;
-
     my @files = getFileListFromDates($filename, \%starto, \%stopo);
     foreach my $file (@files) {
         if ($what eq '') {
@@ -262,12 +257,8 @@ sub loopThroughLogs
     }
 }
 
-sub populateIDs
+sub populateIDs($file,$what,$store)
 {
-    my $file = shift;
-    my $what = shift;
-    my $store = shift;
-
     my $cmd = "/opt/exim4/bin/exigrep '$what' ".$conf->getOption('VARDIR')."/log/$file";
     print " -> searching $file... \n" if !$batch;
     my $result = '';
@@ -322,12 +313,8 @@ sub populateIDs
 
 }
 
-sub searchInFile
+sub searchInFile($file,$type,$store)
 {
-    my $file = shift;
-    my $type = shift;
-    my $store = shift;
-
     print " -> looking in file $file ($type)...\n" if !$batch;
     if ($type eq 'exim') {
         searchExim($file, $store);
@@ -344,11 +331,8 @@ sub print_usage
     exit 1;
 }
 
-sub searchExim
+sub searchExim($file,$store)
 {
-    my $file = shift;
-    my $store = shift;
-
     my $fh;
     my $ffile = $file;
     return if ! -f $file;
@@ -370,11 +354,8 @@ sub searchExim
     close $fh;
 }
 
-sub searchMailScanner
+sub searchMailScanner($file,$store)
 {
-    my $file = shift;
-    my $store = shift;
-
     my $fh;
     my $ffile = $file;
     return if ! -f $file;
@@ -397,11 +378,8 @@ sub searchMailScanner
 
 }
 
-sub searchSpamHandler
+sub searchSpamHandler($file,$store)
 {
-    my $file = shift;
-    my $store = shift;
-
     my $fh;
     my $ffile = $file;
     return if ! -f $file;
@@ -426,9 +404,8 @@ sub searchSpamHandler
     close $fh;
 }
 
-sub printBatchResult
+sub printBatchResult($msg)
 {
-    my $msg = shift;
     my %msg_o = %{$msg};
 
     my $_datein = '';
@@ -594,9 +571,8 @@ sub printBatchResult
     print "\n";
 }
 
-sub processStage4Logs
+sub processStage4Logs($id)
 {
-    my $id = shift;
     my $spamquarantined = 0;
     my $spamtagged = 0;
 
@@ -683,23 +659,15 @@ sub processStage4Logs
     return ($dateout, $delivered, $outreport, $outmessage, $outhost);
 }
 
-sub getEstimatedCount
+sub getEstimatedCount($dateh)
 {
-    my $dateh = shift;
     my %date = %{$dateh};
-
-    #my $count = 3;
-    #$count = ($today{'year'}*365 - $date{'year'}*365) + ($today{'month'}*31 - $date{'month'}*31) + ($today{'day'} - $date{'day'}) - 1;
-
     my $days = Delta_Days($today{'year'}, $today{'month'}, $today{'day'}, $date{'year'}, $date{'month'}, $date{'day'});
     return abs($days);
-
 }
 
-sub getFileExtFromCount
+sub getFileExtFromCount($count)
 {
-    my $count = shift;
-
     if ($count > 0) {
         return '.'.$count.'.gz';
     }
@@ -712,11 +680,8 @@ sub getFileExtFromCount
     return '';
 }
 
-sub getFileFromCount
+sub getFileFromCount($file,$count)
 {
-    my $file = shift;
-    my $count = shift;
-
     my $tfile = getFileExtFromCount($count);
     if ($tfile eq 'NOTVALID') {
         return 'NOTVALID';
@@ -724,12 +689,8 @@ sub getFileFromCount
     return $file.getFileExtFromCount($count);
 }
 
-sub getFileListFromDates
+sub getFileListFromDates($filename,$start_dateh,$stop_dateh)
 {
-    my $filename = shift;
-    my $start_dateh = shift;
-    my $stop_dateh = shift;
-
     my @list = ();
     my $start_count = getEstimatedCount($start_dateh);
     my $stop_count = getEstimatedCount($stop_dateh);
@@ -760,18 +721,13 @@ sub getFileListFromDates
     return @list;
 }
 
-sub rawDate
+sub rawDate($date)
 {
-    my $date = shift;
-
     return sprintf('%.4d%.2d%.2d', $date->{'year'},$date->{'month'},$date->{'day'});
 }
 
-sub getDateFromLog
+sub getDateFromLog($file,$position)
 {
-    my $file = shift;
-    my $position = shift;
-
     if ($position ne 'tail') {
         $position = 'head';
     }

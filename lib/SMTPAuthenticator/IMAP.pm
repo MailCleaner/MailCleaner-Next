@@ -31,12 +31,8 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(create authenticate);
 our $VERSION = 1.0;
 
-sub create
+sub create($server,$port,$params)
 {
-    my $server = shift;
-    my $port = shift;
-    my $params = shift;
-
     my $use_ssl = 0;
     if ($params =~ /^[01]$/) {
         $use_ssl = $params;
@@ -57,12 +53,8 @@ sub create
     return $this;
 }
 
-sub authenticate
+sub authenticate($this,$username,$password)
 {
-    my $this = shift;
-    my $username = shift;
-    my $password = shift;
-
     my $imap;
     if ($this->{use_ssl}) {
         require Net::IMAP::Simple::SSL;

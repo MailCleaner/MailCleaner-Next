@@ -45,9 +45,8 @@ sub getInstance
     return $oneTrueSelf;
 }
 
-sub create
+sub create($name)
 {
-    my $name = shift;
     my %prefs;
 
     my $conf = ReadConfig::getInstance();
@@ -64,12 +63,8 @@ sub create
     return $this;
 }
 
-sub getPref
+sub getPref($this,$pref,$default)
 {
-    my $this = shift;
-    my $pref = shift;
-    my $default = shift;
-
     if (!defined($this->{prefs}) || !defined($this->{prefs}->{id})) {
 
         my $prefclient = PrefClient->new();
@@ -93,10 +88,8 @@ sub getPref
     return "";
 }
 
-sub loadPrefs
+sub loadPrefs($this)
 {
-    my $this = shift;
-
     if ( ! -f $this->{preffile}) {
         return 0;
     }
@@ -112,10 +105,8 @@ sub loadPrefs
     close $PREFFILE;
 }
 
-sub dumpPrefs
+sub dumpPrefs($this)
 {
-    my $this = shift;
-
     my $slave_db = DB::connect('slave', 'mc_config');
     my %prefs = $slave_db->getHashRow("SELECT * FROM antispam");
     my %conf = $slave_db->getHashRow("SELECT use_ssl, servername FROM httpd_config");

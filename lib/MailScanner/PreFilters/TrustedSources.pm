@@ -166,11 +166,8 @@ sub initialise
     }
 }
 
-sub Checks
+sub Checks($this,$message)
 {
-    my $this = shift;
-    my $message = shift;
-
     my $ham = 1;
     my $reason = "";
 

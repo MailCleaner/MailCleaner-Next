@@ -120,11 +120,8 @@ our %defaultActions = (
     }
 );
 
-sub new
+sub new($class,%params)
 {
-    my $class = shift;
-    my %params = @_;
-
     my $conf = ReadConfig::getInstance();
 
     require Proc::ProcessTable;
@@ -184,9 +181,8 @@ sub getCodes
     return \%codes;
 }
 
-sub getServices
+sub getServices($init=$initDir)
 {
-    my $init = shift || $initDir;
     my %services = (
         #'apache' => {
             #'name'        => 'Web access',
@@ -287,11 +283,8 @@ sub getServices
     return \%services;
 }
 
-sub loadModule
+sub loadModule($self,$service)
 {
-    my $self = shift;
-    my $service = shift;
-
     if (
         defined($self->{'module'}->{'syslog_facility'}) &&
         $self->{'module'}->{'syslog_facility'} ne ''
@@ -337,10 +330,8 @@ sub loadModule
     return $self;
 }
 
-sub getConfig
+sub getConfig($self)
 {
-    my $self = shift;
-
     unless (defined $self->{'module'}) {
         die "must first loadModule('service')";
     }
@@ -383,10 +374,8 @@ sub getConfig
     return 1;
 }
 
-sub getActions
+sub getActions($self)
 {
-    my $self = shift;
-
     my %actions = %defaultActions;
     my $modActions = $self->{'module'}->{'actions'};
     foreach my $action (keys %{$modActions}) {
@@ -398,10 +387,8 @@ sub getActions
     $self->{'module'}->{'actions'} = \%actions;
 }
 
-sub findProcess
+sub findProcess($self)
 {
-    my $self = shift;
-
     foreach my $p ( @{ $self->{'processTable'}->table() } ) {
         if ($p->{'pid'} == $$) {
             next;
@@ -416,16 +403,16 @@ sub findProcess
     return 0;
 }
 
-sub pids
+sub pids($self,$service='')
 {
-    my $self = shift;
-    unless (defined($self->{'module'})) {
-        my $service = shift || die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')";
+    if ($service != '' && defined($self->{'module'}));
+        $service = $self->{'module'};
         $self->loadModule($service);
     }
+    die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service == '');
 
     unless ($self->findProcess()) {
-         $self->clearFlags(0);
+        $self->clearFlags(0);
         return ();
     }
 
@@ -458,11 +445,8 @@ sub pids
     return @pids;
 }
 
-sub createModule
+sub createModule($self,$defs)
 {
-    my $self = shift;
-    my $defs = shift;
-
     my $file = $defs->{'conffile'} || $self->{'conf'}->getOption('SRCDIR').'/etc/mailcleaner/'.$self->{'service'}.".cf";
     my $module = {};
     foreach my $key (keys %defaultConfigs) {
@@ -492,15 +476,14 @@ sub createModule
     return $module;
 }
 
-sub status
+sub status($self,$service='',$autoStart='')
 {
-    my $self = shift;
-    unless (defined($self->{'module'})) {
-        my $service = shift || die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->status('service_name')";
+    if ($service != '' && defined($self->{'module'})) {
+        $service = $self->{'module'};
         $self->loadModule($service);
     }
-    my $autoStart = shift;
-    unless (defined($autoStart)) {
+    die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service == '');
+    if ($autoStart != '' && defined($self->{'autoStart'})) {
         $autoStart = $self->{'autoStart'};
     }
 
@@ -556,13 +539,13 @@ sub status
       }
 }
 
-sub start
+sub start($self,$service='')
 {
-    my $self = shift;
-    unless (defined($self->{'module'})) {
-        my $service = shift || die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->start('service_name')";
+    if ($service != '' && defined($self->{'module'})) {
+        $service = $self->{'module'};
         $self->loadModule($service);
     }
+    die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service == '');
 
     if ($self->status(0) == 7) {
         return $self->clearFlags(7);
@@ -673,13 +656,13 @@ sub start
     return $self->{'module'}->{'state'};
 }
 
-sub stop
+sub stop($self,$service='')
 {
-    my $self = shift;
-    unless (defined($self->{'module'})) {
-        my $service = shift || die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->stop('service_name')";
+    if ($service != '' && defined($self->{'module'})) {
+        $service = $self->{'module'};
         $self->loadModule($service);
     }
+    die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service == '');
 
     my $running = $self->findProcess();
     if ( $self->{'module'}->{'state'} =~ m/^[1356]$/ ) {
@@ -739,13 +722,13 @@ sub stop
     }
 }
 
-sub restart
+sub restart($self,$service='')
 {
-    my $self = shift;
-    unless (defined($self->{'module'})) {
-        my $service = shift || die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->restart('service_name')";
+    if ($service != '' && defined($self->{'module'})) {
+        $service = $self->{'module'};
         $self->loadModule($service);
     }
+    die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service == '');
 
     if ( $self->{'module'}->{'state'} =~ m/^[0123]$/ ) {
         $self->clearFlags(6);
@@ -778,25 +761,25 @@ sub restart
     return $self->start();
 }
 
-sub enable
+sub enable($self,$service='')
 {
-    my $self = shift;
-    unless (defined($self->{'module'})) {
-        my $service = shift || die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->enable('service_name')";
+    if ($service != '' && defined($self->{'module'})) {
+        $service = $self->{'module'};
         $self->loadModule($service);
     }
+    die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service == '');
 
     $self->clearFlags(1);
     return $self->restart();
 }
 
-sub disable
+sub disable($self,$service='')
 {
-    my $self = shift;
-    unless (defined($self->{'module'})) {
-        my $service = shift || die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->disable('service_name')";
+    if ($service != '' && defined($self->{'module'})) {
+        $service = $self->{'module'};
         $self->loadModule($service);
     }
+    die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service == '');
 
     if ($self->stop() == 1) {
         return 1;
@@ -806,10 +789,8 @@ sub disable
     }
 }
 
-sub checkAll
+sub checkAll($self)
 {
-    my $self = shift;
-
     my %results;
     foreach my $service (keys(%{$self->{'services'}})) {
         $self->{'service'} = $service;
@@ -819,10 +800,8 @@ sub checkAll
     return \%results;
 }
 
-sub setup
+sub setup($self)
 {
-    my $self = shift;
-
     $self->doLog( 'Setting up ' . $self->{'service'} . '...', 'daemon' );
     if ($self->{'module'}->setup($self)) {
         $self->doLog( 'Setup complete', 'daemon' );
@@ -832,10 +811,8 @@ sub setup
 
 }
 
-sub preFork
+sub preFork($self)
 {
-    my $self = shift;
-
     $self->doLog( 'Running PreFork for ' . $self->{'service'} . '...', 'daemon' );
     if ($self->{'module'}->preFork($self)) {
         $self->doLog( 'PreFork complete', 'daemon' );
@@ -845,10 +822,8 @@ sub preFork
 
 }
 
-sub mainLoop
+sub mainLoop($self)
 {
-    my $self = shift;
-
     $self->doLog( 'Running MainLoop for ' . $self->{'service'} . '...', 'daemon' );
     if ($self->{'module'}->mainLoop($self)) {
         $self->doLog( 'MainLoop complete', 'daemon' );
@@ -862,10 +837,8 @@ sub mainLoop
     return 1;
 }
 
-sub forkChildren
+sub forkChildren($self)
 {
-    my $self = shift;
-
     $SIG{'TERM'} = sub {
         $self->doLog(
             'Main thread got a TERM signal. Proceeding to shutdown...',
@@ -927,9 +900,8 @@ sub forkChildren
     $self->doLog("Error, in main thread neverland !", 'daemon', 'error' );
 }
 
-sub newChild
+sub newChild($self)
 {
-    my $self = shift;
     my $pid;
 
     my $thread_count = scalar(threads->list);
@@ -943,10 +915,8 @@ sub newChild
     my $t = threads->create( { 'void' => 1 }, sub { $self->mainLoop($self->{'module'}); } );
 }
 
-sub readPidFile
+sub readPidFile($self)
 {
-    my $self = shift;
-
     my @pids;
     if ( open(my $PIDFILE, '<', $self->{'module'}->{'pidfile'}) ) {
         while (<$PIDFILE>) {
@@ -961,9 +931,8 @@ sub readPidFile
     return @pids;
 }
 
-sub writePidFile
+sub writePidFile($self)
 {
-    my $self = shift;
     my @pids = @_;
 
     unless (scalar(@pids)) {
@@ -982,11 +951,8 @@ sub writePidFile
     }
 }
 
-sub clearFlags
+sub clearFlags($self,$status)
 {
-    my $self = shift;
-    my $status = shift;
-
     if ($status == 0 && !$self->{'services'}->{$self->{'service'}}->{'critical'}) {
         $status = 2;
     }
@@ -1027,10 +993,8 @@ sub clearFlags
     return $status;
 }
 
-sub usage
+sub usage($self)
 {
-    my $self = shift;
-
     if (defined($self->{'module'})) {
         print "Available actions:\n\n";
         my @actions;
@@ -1060,17 +1024,8 @@ sub usage
     print "\n";
 }
 
-sub doLog
+sub doLog($self,$message,$given_set,$priority='info')
 {
-    my $self = shift;
-    my $message = shift;
-    my $given_set = shift;
-    my $priority = shift;
-
-    if ( !defined($priority) ) {
-        $priority = 'info';
-    }
-
     unless ( defined($self->{'module'}) ) {
         $self->{'module'} = $self;
     }
@@ -1085,11 +1040,8 @@ sub doLog
     }
 }
 
-sub confirmedLog
+sub confirmedLog($self,$message)
 {
-    my $self    = shift;
-    my $message = shift;
-
     foreach my $line ( split( /\n/, $message ) ) {
         if ( $self->{'module'}->{'logfile'} ne '' ) {
             $self->writeLog($line);
@@ -1100,10 +1052,8 @@ sub confirmedLog
     }
 }
 
-sub writeLog
+sub writeLog($self,$message)
 {
-    my $self = shift;
-    my $message = shift;
     chomp($message);
 
     my $LOCK_SH = 1;
@@ -1142,9 +1092,8 @@ sub writeLog
     flock( $LOGGERLOG, $LOCK_UN );
 }
 
-sub getThreadID
+sub getThreadID($self)
 {
-    my $self = shift;
     my $thread = threads->self;
     return $thread->tid();
 }

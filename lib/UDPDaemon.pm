@@ -35,11 +35,8 @@ require Mail::SpamAssassin::Timeout;
 
 our $LOGGERLOG;
 
-sub create
+sub create($class,$daemonname,$conffilepath)
 {
-    my $class = shift;
-    my $daemonname = shift;
-    my $conffilepath = shift;
     my $conf = ReadConfig::getInstance();
     my $configfile = $conf->getOption('SRCDIR')."/".$conffilepath;
 
@@ -92,11 +89,8 @@ sub create
     return $this;
 }
 
-sub logMessage
+sub logMessage($this,$message)
 {
-    my $this = shift;
-    my $message = shift;
-
     if ($this->{debug}) {
         if ( !defined(fileno($LOGGERLOG))) {
             open($LOGGERLOG, '>>', "/tmp/".$this->{logfile});
@@ -111,10 +105,8 @@ sub logMessage
 ######
 ## startDaemon
 ######
-sub startDaemon
+sub startDaemon($this)
 {
-    my $this = shift;
-
     open($LOGGERLOG, '>>', $this->{logfile});
 
     my $pid = fork();
@@ -140,18 +132,14 @@ sub startDaemon
     exit;
 }
 
-sub parentGotSignal
+sub parentGotSignal($this)
 {
-    my $this = shift;
-
     $this->{time_to_die} = 1;
 }
 
 
-sub reaper
+sub reaper($this)
 {
-    my $this = shift;
-
     $this->logMessage("Got child death...");
     $SIG{CHLD} = sub { $this->reaper(); };
     my $pid = wait;
@@ -163,9 +151,8 @@ sub reaper
     }
 }
 
-sub huntsMan
+sub huntsMan($this)
 {
-    my $this = shift;
     local($SIG{CHLD}) = 'IGNORE';
     $this->{time_to_die} = 1;
     $this->logMessage("Shutting down childs");
@@ -174,9 +161,8 @@ sub huntsMan
     exit;
 }
 
-sub initDaemon
+sub initDaemon($this)
 {
-    my $this = shift;
     $this->logMessage("Initializing Daemon");
     $this->{server} = IO::Socket::INET->new(
         LocalAddr => '127.0.0.1',
@@ -189,10 +175,8 @@ sub initDaemon
     return 0;
 }
 
-sub launchChilds
+sub launchChilds($this)
 {
-    my $this = shift;
-
     for (1 .. $this->{prefork}) {
         $this->logMessage("Launching child ".$this->{children}." on ".$this->{prefork}."...");
         $this->makeChild();
@@ -210,9 +194,8 @@ sub launchChilds
     }
 }
 
-sub makeChild
+sub makeChild($this)
 {
-    my $this = shift;
     my $pid;
     my $sigset;
 
@@ -247,9 +230,8 @@ sub makeChild
 }
 
 
-sub listenForQuery
+sub listenForQuery($this)
 {
-    my $this = shift;
     my $message;
     my $serv = $this->{server};
     my $MAXLEN = 1024;
@@ -263,13 +245,8 @@ sub listenForQuery
     }
 }
 
-sub manageClient
+sub manageClient($this,$cli,$cli_add,$datas)
 {
-    my $this = shift;
-    my $cli = shift;
-    my $cli_add = shift;
-    my $datas = shift;
-
     alarm $this->{daemontimeout};
 
     if ($datas =~ /^EXIT/) {
@@ -294,11 +271,8 @@ sub manageClient
 ###########################
 ## client call
 
-sub exec
+sub exec($this,$command)
 {
-    my $this = shift;
-    my $command = shift;
-
     my $res = "NORESPONSE";
     my $t = Mail::SpamAssassin::Timeout->new({ secs => $this->{clienttimeout} });
     $t->run( sub { $res = $this->queryDaemon($command);  });
@@ -308,11 +282,8 @@ sub exec
     return $res;
 }
 
-sub queryDaemon
+sub queryDaemon($this,$query)
 {
-    my $this = shift;
-    my $query = shift;
-
     my $socket;
     if ( $socket = IO::Socket::INET->new(
         PeerAddr => '127.0.0.1',
@@ -336,9 +307,8 @@ sub queryDaemon
     return "NODAEMON";
 }
 
-sub timedOut
+sub timedOut($this)
 {
-    my $this = shift;
     exit();
 }
 

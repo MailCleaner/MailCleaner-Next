@@ -39,9 +39,8 @@ our @EXPORT = qw(create authenticate);
 our $VERSION = 1.0;
 
 
-sub create {
-    my $username = shift;
-
+sub create($username)
+{
     my $domainname = '';
     my $user = '';
     my $domain;
@@ -138,11 +137,8 @@ sub create {
     return $this;
 }
 
-sub authenticate {
-    my $this = shift;
-    my $password = shift;
-    my $ip = shift;
-
+sub authenticate($this,$password,$ip)
+{
     if ($this->{authorized}) {
 
         my $create_cache_record = 0;
@@ -222,8 +218,8 @@ sub authenticate {
     return 0;
 }
 
-sub getErrorText {
-    my $this = shift;
+sub getErrorText($this)
+{
     my $msg = $this->{auth}->{error_text};
     chomp($msg);
     return $msg;

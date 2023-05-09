@@ -34,9 +34,8 @@ our @ISA          = qw(Exporter);
 our @EXPORT       = qw(createRRD collect plot);
 our $VERSION      = 1.0;
 
-sub new {
-    my $hostname = shift;
-
+sub new($hostname)
+{
     my $conf = ReadConfig::getInstance();
     my $spooldir = $conf->getOption('VARDIR')."/spool/rrdtools/".$hostname;
     my $pictdir = $conf->getOption('VARDIR')."/www/mrtg/".$hostname;
@@ -70,10 +69,8 @@ sub new {
     return $this;
 }
 
-sub createRRD {
-    my $this = shift;
-    my $type = shift;
-
+sub createRRD($this,$type)
+{
     if ($type eq 'cpu') {
         my $res = `uname -r`;
         if ($res =~ m/^2.4/) {
@@ -104,20 +101,15 @@ sub createRRD {
     }
 }
 
-sub collect {
-    my $this = shift;
-    my $type = shift;
-
+sub collect($this,$type)
+{
     if (defined($this->{stats}->{$type})) {
         $this->{stats}->{$type}->collect($this->{snmp_session});
     }
 }
 
-sub plot {
-    my $this = shift;
-    my $type = shift;
-    my $mode = shift;
-
+sub plot($this,$type,$mode)
+{
     my @ranges = ('day', 'week');
     if ($mode eq 'daily') {
         @ranges = ('month', 'year');
@@ -131,9 +123,8 @@ sub plot {
 }
 
 
-sub create_stats_dir {
-    my $this = shift;
-
+sub create_stats_dir($this)
+{
     my $conf = ReadConfig::getInstance();
     my $dir = $this->{spooldir};
     if ( ! -d $dir) {
@@ -142,9 +133,8 @@ sub create_stats_dir {
     return 1;
 }
 
-sub create_graph_dir {
-    my $this = shift;
-
+sub create_graph_dir($this)
+{
     my $conf = ReadConfig::getInstance();
     my $dir = $this->{pictdir};
     if ( ! -d $dir) {
@@ -153,9 +143,8 @@ sub create_graph_dir {
     return 1;
 }
 
-sub connectSNMP {
-    my $this = shift;
-
+sub connectSNMP($this)
+{
     if (defined($this->{snmp_session})) {
         return 1;
     }

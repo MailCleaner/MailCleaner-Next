@@ -29,10 +29,8 @@ require Exporter;
 
 my @statdata_ = ('spam', 'highspam', 'virus', 'name', 'other', 'clean', 'bytes');
 
-sub new
+sub new($class)
 {
-    my $class = shift;
-
     my $this = {};
 
     foreach my $st (@statdata_) {
@@ -57,53 +55,38 @@ sub setStatus
     $this->setBytes($size);
 }
 
-sub setAsSpam
+sub setAsSpam($this)
 {
-    my $this = shift;
-
     $this->{'spam'} = 1;
 }
 
-sub setAsHighSpam
+sub setAsHighSpam($this)
 {
-    my $this = shift;
-
     $this->{'highspam'} = 1;
 }
 
-sub setAsVirus
+sub setAsVirus($this)
 {
-    my $this = shift;
-
     $this->{'virus'} = 1;
 }
 
-sub setAsName
+sub setAsName($this)
 {
-    my $this = shift;
-
     $this->{'name'} = 1;
 }
 
-sub setAsOther
+sub setAsOther($this)
 {
-    my $this = shift;
-
     $this->{'other'} = 1;
 }
 
-sub setBytes
+sub setBytes($this,$bytes)
 {
-    my $this = shift;
-    my $bytes = shift;
-
     $this->{'bytes'} = $bytes;
 }
 
-sub getString
+sub getString($this)
 {
-    my $this = shift;
-
     $this->{'clean'} = 1;
     if ( $this->{'spam'} + $this->{'highspam'} + $this->{'virus'} + $this->{'name'} + $this->{'ohter'} > 0) {
         $this->{'clean'} = 0;
@@ -116,14 +99,8 @@ sub getString
     return $str;
 }
 
-sub doUpdate
+sub doUpdate($this,$client,$to,$update_domain,$update_global)
 {
-    my $this = shift;
-    my $client = shift;
-    my $to = shift;
-    my $update_domain = shift;
-    my $update_global = shift;
-
     print STDERR "\ncalled: ".'ADD '.$to.' '.$this->getString().' '.$update_domain.' '.$update_global."\n";
     return $client->query('ADD '.$to.' '.$this->getString().' '.$update_domain.' '.$update_global);
 }

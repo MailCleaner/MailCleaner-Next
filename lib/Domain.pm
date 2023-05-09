@@ -37,8 +37,8 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(create getPref);
 our $VERSION = 1.0;
 
-sub create {
-    my $name = shift;
+sub create($name)
+{
     my %prefs;
 
     my $this = {
@@ -50,11 +50,8 @@ sub create {
     return $this;
 }
 
-sub getPref {
-    my $this = shift;
-    my $pref = shift;
-    my $default = shift;
-
+sub getPref($this,$pref,$default)
+{
     if (!defined($this->{prefs}) || !defined($this->{prefs}{$pref})) {
 
         my $prefclient = PrefClient->new();
@@ -80,9 +77,8 @@ sub getPref {
     return "";
 }
 
-sub loadPrefs {
-    my $this = shift;
-
+sub loadPrefs($this)
+{
     my $conf = ReadConfig::getInstance();
     my $preffile = $conf->getOption('VARDIR')."/spool/mailcleaner/prefs/".$this->{name}."/prefs.list";
 
@@ -129,10 +125,8 @@ sub loadPrefs {
     close $PREFFILE;
 }
 
-sub dumpPrefs {
-    my $this = shift;
-    my $slave_db = shift;
-
+sub dumpPrefs($this,$slave_db=0)
+{
     require DB;
 
     if (!$slave_db) {
@@ -149,9 +143,8 @@ sub dumpPrefs {
     $this->dumpPrefsFromRow(\%res);
 }
 
-sub dumpPrefsFromRow {
-    my $this = shift;
-    my $row = shift;
+sub dumpPrefsFromRow($this,$row)
+{
     my %res = %{$row};
 
     if (!%res || !defined($res{id})) {
@@ -231,10 +224,8 @@ sub dumpPrefsFromRow {
     }
 }
 
-sub dumpLocalAddresses {
-    my $this = shift;
-    my $slave_db = shift;
-
+sub dumpLocalAddresses($this,$slave_db=0)
+{
     my $mcuid = getpwnam('mailcleaner');
     require DB;
 

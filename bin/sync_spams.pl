@@ -130,9 +130,8 @@ sub get_master_config
 }
 
 ##########################################
-sub readConfig
+sub readConfig($configfile)
 {
-    my $configfile = shift;
     my %config;
     my ($var, $value);
 

@@ -33,11 +33,9 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(new collect plot);
 our $VERSION = 1.0;
 
-sub new
+sub new($statfile,$reset)
 {
-    my $statfile = shift;
     $statfile = $statfile."/cpu.rrd";
-    my $reset = shift;
 
     my %things = (
         idle => ['COUNTER', 'AVERAGE'],
@@ -58,11 +56,8 @@ sub new
 }
 
 
-sub collect
+sub collect($this,$snmp)
 {
-    my $this = shift;
-    my $snmp = shift;
-
     my %things = (
         idle => '1.3.6.1.4.1.2021.11.53.0',
         nice => '1.3.6.1.4.1.2021.11.51.0',
@@ -74,13 +69,8 @@ sub collect
     return RRD::Generic::collect($this->{rrd}, $snmp, \%things);
 }
 
-sub plot
+sub plot($this,$dir,$period,$leg)
 {
-    my $this = shift;
-    my $dir = shift;
-    my $period = shift;
-    my $leg = shift;
-
     my %things = (
         idle => ['stack', 'EEEEEE', 'EEEEEE', 'Idle', 'AVERAGE', '%10.2lf %%', ''],
         nice => ['stack', '48C3EB', '2B82C5', 'Nice', 'AVERAGE', '%10.2lf %%', ''],

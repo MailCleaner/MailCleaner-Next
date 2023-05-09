@@ -73,10 +73,8 @@ if ($until_now =~ /^d$/) {
 
 $dbh->disconnect();
 
-sub get_stats {
-    my $days = shift;
-    my $mode = shift;
-
+sub get_stats($days,$mode)
+{
     my %sql;
     my %val;
     my $date;

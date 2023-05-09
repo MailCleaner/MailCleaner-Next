@@ -34,9 +34,8 @@ our @EXPORT = qw(create verify lastMessage);
 our $VERSION = 1.0;
 
 
-sub create {
-    my $domainname = shift;
-
+sub create($domainname)
+{
     if (!defined($domainname) || $domainname eq "") {
         my $system = SystemPref::create();
         $domainname = $system->getPref('default_domain');
@@ -67,10 +66,8 @@ sub create {
     return $this;
 }
 
-sub verify {
-    my $this = shift;
-    my $address = shift;
-
+sub verify($this,$address)
+{
     if (! $this->{useable}) {
         return $this->{default_on_error};
     }
@@ -110,9 +107,8 @@ sub verify {
     return $this->{default_on_error};
 }
 
-sub lastMessage {
-    my $this = shift;
-
+sub lastMessage($this)
+{
     my $msg = $this->{last_message};
     chomp($msg);
     return $msg;

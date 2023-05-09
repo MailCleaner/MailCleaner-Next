@@ -52,12 +52,8 @@ my $daemoncounts_ = &share( {} );
 my %log_prio_levels = ( 'error' => 0, 'info' => 1, 'debug' => 2 );
 our $LOGGERLOG;
 
-sub create
+sub create($class,$daemonname,$conffilepath,$spec_thish)
 {
-    my $class        = shift;
-    my $daemonname   = shift;
-    my $conffilepath = shift;
-    my $spec_thish   = shift;
     my %spec_this;
     if ($spec_thish) {
         %spec_this = %$spec_thish;
@@ -125,7 +121,7 @@ sub create
     }
 
     # replace with configuration file values
-    if ( open($CONFFILE, '<', $this->{configfile}) ) {
+    if ( open(my $CONFFILE, '<', $this->{configfile}) ) {
         while (<$CONFFILE>) {
             chomp;
             next if /^\#/;
@@ -165,11 +161,9 @@ sub create
     return $this;
 }
 
-sub initDaemon
+sub initDaemon($this)
 {
-    my $this = shift;
     my $result = 'not started';
-    my @errors;
 
     ## change user and group if needed
     if ( $this->{'gid'} ) {
@@ -195,7 +189,7 @@ sub initDaemon
     my @pids = $this->readPidFile();
 
     require Proc::ProcessTable;
-    my $t = new Proc::ProcessTable;
+    my $t = Proc::ProcessTable->new();
     my $match = 0;
     my @errors;
     foreach my $p ( @{ $t->table } ) {
@@ -263,9 +257,8 @@ sub initDaemon
     $this->forkChildren();
 }
 
-sub exitDaemon
+sub exitDaemon($this)
 {
-    my $this = shift;
     my $result = 'not stopped';
     my $time_before_hardkill = $this->{time_before_hardkill};
 
@@ -273,7 +266,7 @@ sub exitDaemon
     my @pids = $this->readPidFile();
 
     require Proc::ProcessTable;
-    my $t = new Proc::ProcessTable;
+    my $t = Proc::ProcessTable->new();
 
     my @running = ();
     my $match = 0;
@@ -303,7 +296,7 @@ sub exitDaemon
                 }
                 sleep 1;
                 $pidstillhere = 0;
-                my $n = new Proc::ProcessTable;
+                my $n = Proc::ProcessTable->new();
                 foreach ( @{$t->table} ) {
                     if ($_->{'pid'} == $p->{'pid'}) {
                         $pidstillhere = 1;
@@ -332,23 +325,18 @@ sub exitDaemon
     return output($result,@errors);
 }
 
-sub status
+sub status($this)
 {
-    my $this = shift;
     $this->statusHook();
 }
 
-sub getDaemonCounts
+sub getDaemonCounts($this)
 {
-    my $this = shift;
-
     return $daemoncounts_;
 }
 
-sub readPidFile
+sub readPidFile($this)
 {
-    my $this = shift;
-
     my @pids;
     if ( open(my $PIDFILE, '<', $this->{pidfile}) ) {
         while (<$PIDFILE>) {
@@ -361,10 +349,8 @@ sub readPidFile
     return @pids;
 }
 
-sub forkChildren
+sub forkChildren($this)
 {
-    my $this = shift;
-
     $SIG{'TERM'} = sub {
         $this->doLog(
             'Main thread got a TERM signal. Proceeding to shutdown...',
@@ -434,9 +420,8 @@ sub forkChildren
     $this->doLog( "Error, in main thread neverland !", 'daemon', 'error' );
 }
 
-sub makeNewChild
+sub makeNewChild($this)
 {
-    my $this = shift;
     my $pid;
     my $sigset;
 
@@ -449,50 +434,41 @@ sub makeNewChild
 }
 
 #### Available Hooks
-sub mainLoopHook
+sub mainLoopHook($this)
 {
-    my $this = shift;
-
     while (1) {
         $this->doLog( 'In dummy main loop...', 'daemon' );
         sleep 5;
     }
 }
 
-sub preForkHook
+sub preForkHook($this)
 {
-    my $this = shift;
-
     $this->doLog( 'No preForkHook redefined, using default one...', 'daemon' );
     return 1;
 }
 
-sub exitHook
+sub exitHook($this)
 {
-    my $this = shift;
-
     $this->doLog( 'No exitHook redefined, using default one...', 'daemon' );
     return 1;
 }
 
-sub postKillHook
+sub postKillHook($this)
 {
-    my $this = shift;
-
     $this->doLog( 'No postKillHook redefined, using default one...', 'daemon' );
     return 1;
 }
 
-sub statusHook
+sub statusHook($this)
 {
-    my $this = shift;
     my @errors;
 
     my @pids = $this->readPidFile();
     my $time_before_hardkill = $this->{time_before_hardkill};
 
     require Proc::ProcessTable;
-    my $t = new Proc::ProcessTable;
+    my $t = Proc::ProcessTable->new();
     my @match;
     foreach my $p ( @{ $t->table } ) {
         my $cmndline = $p->{'cmndline'};
@@ -536,10 +512,8 @@ sub statusHook
 }
 
 #### Threads tools
-sub getNbThreads
+sub getNbThreads($this)
 {
-    my $this = shift;
-
     my @tlist = threads->list;
     if (@tlist) {
         $this->{nbthreads} = @tlist;
@@ -548,26 +522,15 @@ sub getNbThreads
     return 0;
 }
 
-sub getThreadID
+sub getThreadID($this)
 {
-    my $this = shift;
-
     my $t = threads->self;
     return $t->tid;
 }
 
 ##### Log management
-sub doLog
+sub doLog($this,$message,$given_set,$priority='info')
 {
-    my $this      = shift;
-    my $message   = shift;
-    my $given_set = shift;
-    my $priority  = shift;
-
-    if ( !defined($priority) ) {
-        $priority = 'info';
-    }
-
     foreach my $set ( @{ $this->{logged_sets} } ) {
         if ( $set eq 'all' || !defined($given_set) || $set eq $given_set ) {
             if ( $log_prio_levels{$priority} <= $this->{log_prio_level} ) {
@@ -578,11 +541,8 @@ sub doLog
     }
 }
 
-sub doEffectiveLog
+sub doEffectiveLog($this,$message)
 {
-    my $this    = shift;
-    my $message = shift;
-
     foreach my $line ( split( /\n/, $message ) ) {
         if ( $this->{logfile} ne '' ) {
             $this->writeLogToFile($line);
@@ -593,10 +553,8 @@ sub doEffectiveLog
     }
 }
 
-sub writeLogToFile
+sub writeLogToFile($this,$message)
 {
-    my $this    = shift;
-    my $message = shift;
     chomp($message);
 
     if ( $this->{logfile} eq '' ) {
@@ -613,7 +571,7 @@ sub writeLogToFile
 
         if ( -f $this->{logfile} ) {
             open($LOGGERLOG, '>>', $this->{logfile});
-        } else {}
+        } else {
             open($LOGGERLOG, '>>', "/tmp/$this->{logfile}");
             $| = 1;
         }
@@ -630,20 +588,15 @@ sub writeLogToFile
     flock( $LOGGERLOG, $LOCK_UN );
 }
 
-sub closeLog
+sub closeLog($this)
 {
-    my $this = shift;
-
     $this->doLog( 'Closing log file now.', 'daemon' );
     close $LOGGERLOG;
     exit;
 }
 
-sub format_time
+sub format_time($this,$time)
 {
-    my $this = shift;
-    my $time = shift;
-
     my $res     = '';
     my $hours   = int( $time / ( 60 * 60 ) );
     my $rest    = $time % ( 60 * 60 );
@@ -655,22 +608,15 @@ sub format_time
 }
 
 ##### profiling
-sub profile_start
+sub profile_start($this,$var)
 {
-    my $this = shift;
-
     return unless $PROFILE;
-    my $var = shift;
     $prof_start{$var} = [gettimeofday];
-
 }
 
-sub profile_stop
+sub profile_stop($this,$var)
 {
-    my $this = shift;
-
     return unless $PROFILE;
-    my $var = shift;
     return unless defined( $prof_start{$var} );
     my $interval = tv_interval( $prof_start{$var} );
     my $time     = ( int( $interval * 10000 ) / 10000 );
@@ -678,10 +624,8 @@ sub profile_stop
     return $time;
 }
 
-sub profile_output
+sub profile_output($this)
 {
-    my $this = shift;
-
     return unless $PROFILE;
     my $out = "";
     foreach my $var ( keys %prof_res ) {

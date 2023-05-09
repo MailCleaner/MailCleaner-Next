@@ -26,20 +26,16 @@ use utf8;
 
 our @ISA = "ManageServices";
 
-sub init
+sub init($module,$class)
 {
-    my $module = shift;
-    my $class = shift;
     my $self = $class->SUPER::createModule( config($class) );
     bless $self, 'ManageServices::SpamD';
 
     return $self;
 }
 
-sub config
+sub config($class)
 {
-    my $class = shift;
-
     my $config = {
         'name'              => 'spamd',
         'cmndline'          => 'spamd.pid',
@@ -67,11 +63,8 @@ sub config
     return $config;
 }
 
-sub setup
+sub setup($self,$class)
 {
-    my $self = shift;
-    my $class = shift;
-
     $self->doLog('Dumping MailScanner config...', 'daemon');
     if (system($self->{'SRCDIR'}.'/bin/dump_custom_spamc_rules.pl 2>&1 >/dev/null')) {
         $self->doLog('dump_custom_spamc_rules.pl failed', 'daemon');
@@ -89,19 +82,13 @@ sub setup
     return 1;
 }
 
-sub preFork
+sub preFork($self,$class)
 {
-    my $self = shift;
-    my $class = shift;
-
     return 0;
 }
 
-sub mainLoop
+sub mainLoop($self,$class)
 {
-    my $self = shift;
-    my $class = shift;
-
     my $cmd = $self->{'cmd'};
     open(my $CONF, '<', $self->{'conffile'})
         || die "Cannot open config file $self->{'conffile'}";

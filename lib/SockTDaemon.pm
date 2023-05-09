@@ -48,11 +48,8 @@ my %global_shared : shared;
 my %daemoncounts_ : shared = ( 'starttime' => 0, 'stoptime' => 0, 'queries' => 0 );
 my $server : shared;
 
-sub new {
-    my $class        = shift;
-    my $daemonname   = shift;
-    my $conffilepath = shift;
-    my $spec_thish   = shift;
+sub new($class,$daemonname,$conffilepath,$spec_thish)
+{
     my %spec_this;
     if ($spec_thish) {
         %spec_this = %$spec_thish;
@@ -89,9 +86,8 @@ sub new {
     return $this;
 }
 
-sub preForkHook() {
-    my $this = shift;
-
+sub preForkHook($this)
+{
     ## first remove socket if already present
     if ( -e $this->{socketpath} ) {
         unlink( $this->{socketpath} );
@@ -111,26 +107,23 @@ sub preForkHook() {
     return 1;
 }
 
-sub exitHook() {
-    my $this = shift;
-
+sub exitHook($this)
+{
     close( $this->{server} );
     $this->doLog( "Listener socket closed", 'socket' );
 
     return 1;
 }
 
-sub postKillHook {
-    my $this = shift;
-
+sub postKillHook($this)
+{
     $this->doLog( 'No postKillHook redefined...', 'socket' );
     close( $this->{server} );
     return 1;
 }
 
-sub mainLoopHook {
-    my $this = shift;
-
+sub mainLoopHook($this)
+{
     my $t = threads->self;
     $this->{tid} = $t->tid;
 
@@ -243,16 +236,14 @@ sub mainLoopHook {
     }
 }
 
-sub statusHook {
-    my $this = shift;
-
+sub statusHook($this)
+{
     my $client = new SockClient( { 'socketpath' => $this->{socketpath} } );
     return $client->query('STATUS');
 }
 
-sub getStatus {
-    my $this = shift;
-
+sub getStatus($this)
+{
     my $counts = $this->getDaemonCounts();
 
     my $res      = "Status of daemon: " . $this->{name} . "\n";
@@ -265,20 +256,20 @@ sub getStatus {
 }
 
 ### Available hooks
-sub initThreadHook {
-    my $this = shift;
-
-    $this->doLog( 'No initThreadHook redefined, using default one...',
-        'socket' );
-    return;
+sub initThreadHook($this)
+{
+    $this->doLog(
+        'No initThreadHook redefined, using default one...',
+        'socket'
+    );
 }
 
-sub exitThreadHook {
-    my $this = shift;
-
-    $this->doLog( 'No exitThreadHook redefined, using default one...',
-        'socket' );
-    return;
+sub exitThreadHook($this)
+{
+    $this->doLog(
+        'No exitThreadHook redefined, using default one...',
+        'socket'
+    );
 }
 
 1;

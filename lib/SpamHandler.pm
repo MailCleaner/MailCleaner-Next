@@ -38,9 +38,8 @@ our @ISA = "PreForkTDaemon";
 
 my %processed_ids : shared;
 
-sub new {
-    my $class        = shift;
-    my $myspec_thish = shift;
+sub new($class,$myspec_thish)
+{
     my %myspec_this;
     if ($myspec_thish) {
         %myspec_this = %$myspec_thish;
@@ -88,11 +87,8 @@ sub new {
     return $this;
 }
 
-sub clearCache {
-    my $this = shift;
-    my $nosh = shift;
-    my $type = shift;
-
+sub clearCache($this,$nosh,$type)
+{
     lock(%processed_ids);
     foreach my $id ( keys %processed_ids ) {
         delete $processed_ids{$id};
@@ -101,14 +97,13 @@ sub clearCache {
     return 1;
 }
 
-sub preForkHook() {
-    my $this = shift;
-
+sub preForkHook($this)
+{
     return 1;
 }
 
-sub mainLoopHook() {
-    my $this = shift;
+sub mainLoopHook($this)
+{
     $this->doLog( "In SpamHandler mainloop", 'spamhandler' );
 
     $SIG{'INT'} = $SIG{'KILL'} = $SIG{'TERM'} = sub {
@@ -166,9 +161,8 @@ sub mainLoopHook() {
     return 1;
 }
 
-sub connectDatabases {
-    my $this = shift;
-
+sub connectDatabases($this)
+{
     my @databases = ( 'slave', 'realmaster' );
 
     foreach my $db (@databases) {
@@ -216,10 +210,8 @@ sub connectDatabases {
     return 1;
 }
 
-sub deleteLock {
-    my $this = shift;
-    my $id   = shift;
-
+sub deleteLock($this,$id)
+{
     lock(%processed_ids);
     if ( defined( $processed_ids{$id} ) ) {
         delete $processed_ids{$id};
@@ -227,19 +219,15 @@ sub deleteLock {
     return 1;
 }
 
-sub addLock {
-    my $this = shift;
-    my $id   = shift;
-
+sub addLock($this,$id)
+{
     lock(%processed_ids);
     $processed_ids{$id} = 1;
     return 1;
 }
 
-sub isLocked {
-    my $this = shift;
-    my $id   = shift;
-
+sub isLocked($this,$id)
+{
     lock(%processed_ids);
     if ( exists( $processed_ids{$id} ) ) {
         return $processed_ids{$id};

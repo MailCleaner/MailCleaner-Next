@@ -87,12 +87,8 @@ sub getMIB
     return \%mib_status;
 }
 
-sub doLog
+sub doLog($message,$cat,$level)
 {
-    my $message = shift;
-    my $cat = shift;
-    my $level = shift;
-
     SNMPAgent::doLog($message, $cat, $level);
 }
 
@@ -173,9 +169,8 @@ sub getPatchLevel
     return (ASN_OCTET_STR , $patch);
 }
 
-sub getSpool
+sub getSpool($oid)
 {
-    my $oid = shift;
     my @oid = $oid->to_array();
 
     my $spool = pop(@oid);
@@ -200,9 +195,8 @@ sub populateProcesses
     }
 }
 
-sub getRealProcessCount
+sub getRealProcessCount($procIndex)
 {
-    my $procIndex = shift;
     my $count = 0;
 
     if (!defined($processes_tmpl{$procIndex})) {
@@ -219,27 +213,26 @@ sub getRealProcessCount
     return $count;
 }
 
-sub getProcessIndex
+sub getProcessIndex($oid)
 {
-    my $oid = shift;
     my @oid = $oid->to_array();
 
     #my $field = pop(@oid);
     my $proc = pop(@oid);
     return (ASN_INTEGER, int($proc));
 }
-sub getProcessName
+
+sub getProcessName($oid)
 {
-    my $oid = shift;
     my @oid = $oid->to_array();
 
     #my $field = pop(@oid);
     my $proc = pop(@oid);
     return (ASN_OCTET_STR, $processes_tmpl{$proc}->{'name'});
 }
-sub getProcessCount
+
+sub getProcessCount($oid)
 {
-    my $oid = shift;
     my @oid = $oid->to_array();
 
     #my $field = pop(@oid);
@@ -247,9 +240,9 @@ sub getProcessCount
     my $count = getRealProcessCount($proc);
     return (ASN_INTEGER, int($count));
 }
-sub getProcessStatus
+
+sub getProcessStatus($oid)
 {
-    my $oid = shift;
     my @oid = $oid->to_array();
 
     #my $field = pop(@oid);

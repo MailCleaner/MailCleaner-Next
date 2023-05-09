@@ -36,14 +36,16 @@ my %config_options;
 
 my $oneTrueSelf;
 
-sub getInstance {
+sub getInstance
+{
     if (! $oneTrueSelf) {
         $oneTrueSelf = new();
     }
     return $oneTrueSelf;
 }
 
-sub new {
+sub new
+{
     %config_options = readConfig();
     my $this = {
         configs => \%config_options
@@ -52,10 +54,8 @@ sub new {
     return bless $this, "ReadConfig";
 }
 
-sub getOption {
-    my $this = shift;
-    my $o = shift;
-
+sub getOption($this,$o)
+{
     if (exists($this->{configs}->{$o})) {
         return $this->{configs}->{$o};
     }

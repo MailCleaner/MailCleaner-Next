@@ -47,11 +47,8 @@ CREATE TABLE stat (
 );
 ";
 
-sub new
+sub new($class,$daemon)
 {
-    my $class = shift;
-    my $daemon = shift;
-
     my $conf = ReadConfig::getInstance();
 
     my $this = {
@@ -85,18 +82,13 @@ sub new
     return $this;
 }
 
-sub threadInit
+sub threadInit($this)
 {
-    my $this = shift;
-
     $this->doLog("backend thread initialization", 'statsdaemon');
 }
 
-sub accessFlatElement
+sub accessFlatElement($this,$element)
 {
-    my $this = shift;
-    my $element = shift;
-
     my $value = 0;
 
     my ($path, $file, $base, $el_key) = $this->getPathFileBaseAndKeyFromElement($element);
@@ -123,11 +115,8 @@ sub accessFlatElement
     return $value;
 }
 
-sub stabilizeFlatElement
+sub stabilizeFlatElement($this,$element)
 {
-    my $this = shift;
-    my $element = shift;
-
     my ($path, $file, $base, $el_key) = $this->getPathFileBaseAndKeyFromElement($element);
     foreach my $unwantedkey ( @{ $this->{history_avoid_keys_a} } ) {
         if ($el_key eq $unwantedkey) {
@@ -160,40 +149,26 @@ sub stabilizeFlatElement
     return 'STABILIZED';
 }
 
-sub getStats
+sub getStats($this,$start,$stop,$what,$data)
 {
-    my $this = shift;
-    my $start = shift;
-    my $stop = shift;
-    my $what = shift;
-    my $data = shift;
-
     return 'OK';
 }
 
-sub announceMonthChange
+sub announceMonthChange($this)
 {
-    my $this = shift;
+    return;
 }
 
-sub doLog
+sub doLog($this,$message,$given_set,$priority='info')
 {
-    my $this = shift;
-    my $message   = shift;
-    my $given_set = shift;
-    my $priority  = shift;
-
     my $msg = $this->{class}." ".$message;
     if ($this->{daemon}) {
         $this->{daemon}->doLog($msg, $given_set, $priority);
     }
 }
 
-sub getPathFileBaseAndKeyFromElement
+sub getPathFileBaseAndKeyFromElement($this,$element)
 {
-    my $this = shift;
-    my $element = shift;
-
     my @els = split(/:/, $element);
     my $key = pop @els;
 
@@ -203,11 +178,8 @@ sub getPathFileBaseAndKeyFromElement
     return (lc($path), lc($file), lc($base), lc($key));
 }
 
-sub connectToDB
+sub connectToDB($this,$file)
 {
-    my $this = shift;
-    my $file = shift;
-
     if (! -f $file) {
         copy($this->{template_database}, $file);
     }

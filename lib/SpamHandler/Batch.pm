@@ -36,216 +36,192 @@ our @ISA     = qw(Exporter);
 our @EXPORT  = qw(new);
 our $VERSION = 1.0;
 
-sub new
+sub new($dir,$daemon)
 {
-	my $dir    = shift;
-	my $daemon = shift;
-	my %timers;
+	  my %timers;
 
-	my $this = {
-		spamdir => $dir,
-		daemon  => $daemon,
-		batchid => 0,
-		%timers => (),
-	};
-	$this->{messages} = {};
+	  my $this = {
+		    spamdir => $dir,
+		    daemon  => $daemon,
+		    batchid => 0,
+		    %timers => (),
+	  };
+	  $this->{messages} = {};
 
-	bless $this, 'SpamHandler::Batch';
+	  bless $this, 'SpamHandler::Batch';
 
-	if ( !$this->{spamdir} || !-d $this->{spamdir} ) {
-		return 0;
-	}
+	  if ( !$this->{spamdir} || !-d $this->{spamdir} ) {
+		    return 0;
+	  }
 
-	return $this;
+	  return $this;
 }
 
-sub prepareRun
+sub prepareRun($this)
 {
-	my $this = shift;
-
-	#generate a random id
-	srand;
-	$this->{batchid} = int( rand(1000000) );
-	return 1;
+	  #generate a random id
+	  srand;
+	  $this->{batchid} = int( rand(1000000) );
+	  return 1;
 }
 
-sub getMessagesToProcess
+sub getMessagesToProcess($this)
 {
-	my $this = shift;
+	  $this->{daemon}->profile_start('BATCHLOAD');
+	  chdir( $this->{spamdir} ) or return 0;
+	  opendir( SDIR, '.' ) or return 0;
 
-	$this->{daemon}->profile_start('BATCHLOAD');
-	chdir( $this->{spamdir} ) or return 0;
-	opendir( SDIR, '.' ) or return 0;
+	  my $waitingcount = 0;
+	  my $batchsize    = 0;
+	  my $maxbatchsize = $this->{daemon}->{maxbatchsize};
+	  while ( my $entry = readdir(SDIR) ) {
+		    next if ( $entry !~ m/(\S+)\.env$/ );
+		    $waitingcount++;
+		    my $id = $1;
 
-	my $waitingcount = 0;
-	my $batchsize    = 0;
-	my $maxbatchsize = $this->{daemon}->{maxbatchsize};
-	while ( my $entry = readdir(SDIR) ) {
-		next if ( $entry !~ m/(\S+)\.env$/ );
-		$waitingcount++;
-		my $id = $1;
+		    next if ( $batchsize >= $maxbatchsize );
+		    next if ( $this->{daemon}->isLocked($id) );
+		    if ( -f $id . ".msg" ) {
+			      $batchsize++;
+			      $this->addMessage($id);
+		    } else {
+			      $this->{daemon}->doLog(
+				        $this->{batchid} . ": NOTICE: message $id has envelope file but no body...",
+				        'spamhandler'
+			      );
+		    }
+	  }
 
-		next if ( $batchsize >= $maxbatchsize );
-		next if ( $this->{daemon}->isLocked($id) );
-		if ( -f $id . ".msg" ) {
-			$batchsize++;
-			$this->addMessage($id);
-		}
-		else {
-			$this->{daemon}->doLog(
-				$this->{batchid}
-				  . ": NOTICE: message $id has envelope file but no body...",
-				'spamhandler'
-			);
-		}
-	}
-
-	if ( $waitingcount > 0 ) {
-		$this->{daemon}->doLog(
-			$this->{batchid} . ": "
-			  . $waitingcount
-			  . " messages waiting, taken "
-			  . keys %{ $this->{messages} },
-			'spamhandler', 'debug'
-		);
-	}
-	else {
-		$this->{daemon}->doLog(
-			$this->{batchid} . ": "
-			  . $waitingcount
-			  . " messages waiting, taken "
-			  . keys %{ $this->{messages} },
-			'spamhandler', 'debug'
-		);
-	}
-	closedir(SDIR);
-	my $btime = $this->{daemon}->profile_stop('BATCHLOAD');
-	$this->{daemon}
-	  ->doLog( $this->{batchid} . ": finished batch loading in $btime seconds",
-		'spamhandler', 'debug' );
-	return 1;
+	  if ( $waitingcount > 0 ) {
+		    $this->{daemon}->doLog(
+			      "$this->{batchid}: $waitingcount messages waiting, taken ".keys %{ $this->{messages} },
+			      'spamhandler',
+            'debug'
+		    );
+	  } else {
+		    $this->{daemon}->doLog(
+			      "$this->{batchid}: $waitingcount messages waiting, taken ".keys %{ $this->{messages} },
+			      'spamhandler',
+            'debug'
+		    );
+	  }
+	  closedir(SDIR);
+	  my $btime = $this->{daemon}->profile_stop('BATCHLOAD');
+	  $this->{daemon}->doLog(
+        "$this->{batchid}: finished batch loading in $btime seconds",
+		    'spamhandler',
+        'debug'
+    );
+	  return 1;
 }
 
-sub addMessage
+sub addMessage($this,$id)
 {
-	my $this = shift;
-	my $id   = shift;
-
-	$this->{daemon}->addLock($id);
-	$this->{messages}{$id} = $id;
+	  $this->{daemon}->addLock($id);
+	  $this->{messages}{$id} = $id;
 }
 
-sub run
+sub run($this)
 {
-	my $this = shift;
+	  $this->{daemon}->profile_start('BATCHRUN');
+	  my $nbmsgs = keys %{ $this->{messages} };
 
-	$this->{daemon}->profile_start('BATCHRUN');
-	my $nbmsgs = keys %{ $this->{messages} };
+	  my $t   = threads->self;
+	  my $tid = $t->tid;
 
-	my $t   = threads->self;
-	my $tid = $t->tid;
+	  return if ( $nbmsgs < 1 );
+	  $this->{daemon}->doLog(
+        "$this->{batchid}: starting batch run",
+		    'spamhanler',
+        'debug'
+    );
+	  my $count = 0;
+	  foreach my $msgid ( keys %{ $this->{messages} } ) {
+		    $count++;
+		    $this->{daemon}->doLog(
+			      "($tid) $this->{batchid}: processing message: $msgid ($count/$nbmsgs)",
+			      'spamhandler',
+            'debug'
+		    );
 
-	return if ( $nbmsgs < 1 );
-	$this->{daemon}->doLog( $this->{batchid} . ": starting batch run",
-		'spamhanler', 'debug' );
-	my $count = 0;
-	foreach my $msgid ( keys %{ $this->{messages} } ) {
-		$count++;
-		$this->{daemon}->doLog(
-			"($tid) "
-			  . $this->{batchid}
-			  . ": processing message: $msgid ($count/$nbmsgs)",
-			'spamhandler', 'debug'
-		);
+		    my $msg = SpamHandler::Message::new(
+            $msgid,
+            $this->{daemon},
+			      $this->{batchid}
+        );
+		    $msg->load();
+		    $msg->process();
 
-		my $msg =
-		  SpamHandler::Message::new( $msgid, $this->{daemon},
-			$this->{batchid} );
-		$msg->load();
-		$msg->process();
+		    ## then log
+		    my %prepared = %{ $this->{daemon}->{prepared} };
+		    my $inmaster = 0;
+		    foreach my $dbname ( keys %prepared ) {
+			      $msg->log( $dbname, \$inmaster );
+		    }
+		    $msg->purge();
+		    my $msgtimers = $msg->getTimers();
+		    $this->addTimers($msgtimers);
+	  }
+	  delete $this->{messages};
 
-		## then log
-		my %prepared = %{ $this->{daemon}->{prepared} };
-		my $inmaster = 0;
-		foreach my $dbname ( keys %prepared ) {
-			$msg->log( $dbname, \$inmaster );
-		}
-		$msg->purge();
-		my $msgtimers = $msg->getTimers();
-		$this->addTimers($msgtimers);
-	}
-	delete $this->{messages};
-
-	$this->startTimer('Batch logging message');
-	foreach my $dbname ( keys %{ $this->{daemon}->{dbs} } ) {
-		if ( $this->{daemon}->{dbs}{$dbname} ) {
-			$this->{daemon}->{dbs}{$dbname}->commit();
-		}
-	}
-	$this->endTimer('Batch logging message');
-	$this->logTimers();
-	my $btime = $this->{daemon}->profile_stop('BATCHRUN');
-	$this->{daemon}->doLog(
-		$this->{batchid}
-		  . ": finished batch run in $btime seconds for "
-		  . $nbmsgs
-		  . " messages",
-		'spamhandler', 'debug'
-	);
+	  $this->startTimer('Batch logging message');
+	  foreach my $dbname ( keys %{ $this->{daemon}->{dbs} } ) {
+		    if ( $this->{daemon}->{dbs}{$dbname} ) {
+			      $this->{daemon}->{dbs}{$dbname}->commit();
+		    }
+	  }
+	  $this->endTimer('Batch logging message');
+	  $this->logTimers();
+	  my $btime = $this->{daemon}->profile_stop('BATCHRUN');
+	  $this->{daemon}->doLog(
+		    "$this->{batchid}: finished batch run in $btime seconds for $nbmsgs messages",
+		    'spamhandler',
+        'debug'
+	  );
 }
 
-sub addTimers
+sub addTimers($this,$msgtimers)
 {
-	my $this      = shift;
-	my $msgtimers = shift;
-
-	return if !$msgtimers;
-	my %timers = %{$msgtimers};
-	foreach my $t ( keys %timers ) {
-		next if ( $t !~ m/^d_/ );
-		$this->{'timers'}{$t} += $timers{$t};
-	}
-	return 1;
+	  return if !$msgtimers;
+	  my %timers = %{$msgtimers};
+	  foreach my $t ( keys %timers ) {
+		    next if ( $t !~ m/^d_/ );
+		    $this->{'timers'}{$t} += $timers{$t};
+	  }
+	  return 1;
 }
 
 #######
 ## profiling timers
 
-sub startTimer
+sub startTimer($this,$timer)
 {
-	my $this  = shift;
-	my $timer = shift;
-
-	$this->{'timers'}{$timer} = [gettimeofday];
+	  $this->{'timers'}{$timer} = [gettimeofday];
 }
 
-sub endTimer
+sub endTimer($this,$timer)
 {
-	my $this  = shift;
-	my $timer = shift;
-
-	my $interval = tv_interval( $this->{timers}{$timer} );
-	$this->{'timers'}{ 'd_' . $timer } = ( int( $interval * 10000 ) / 10000 );
+	  my $interval = tv_interval( $this->{timers}{$timer} );
+	  $this->{'timers'}{ 'd_' . $timer } = ( int( $interval * 10000 ) / 10000 );
 }
 
-sub getTimers
+sub getTimers($this)
 {
-	my $this = shift;
-	return $this->{'timers'};
+	  return $this->{'timers'};
 }
 
-sub logTimers
+sub logTimers($this)
 {
-	my $this = shift;
-
-	foreach my $t ( keys %{ $this->{'timers'} } ) {
-		next if ( $t !~ m/^d_/ );
-		my $tn = $t;
-		$tn =~ s/^d_//;
-		$this->{daemon}
-		  ->doLog( 'Batch spent ' . $this->{'timers'}{$t} . "s. in " . $tn,
-			'spamhanler', 'debug' );
-	}
+	  foreach my $t ( keys %{ $this->{'timers'} } ) {
+		    next if ( $t !~ m/^d_/ );
+		    my $tn = $t;
+		    $tn =~ s/^d_//;
+		    $this->{daemon}->doLog(
+            'Batch spent ' . $this->{'timers'}{$t} . "s. in " . $tn,
+			      'spamhanler',
+            'debug'
+        );
+	  }
 }
 
 1;

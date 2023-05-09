@@ -26,20 +26,16 @@ use utf8;
 
 our @ISA = "ManageServices";
 
-sub init
+sub init($module,$class)
 {
-    my $module = shift;
-    my $class = shift;
     my $self = $class->SUPER::createModule( config($class) );
     bless $self, 'ManageServices::ClamSpamD';
 
     return $self;
 }
 
-sub config
+sub config($class)
 {
-    my $class = shift;
-
     my $config = {
         'name'              => 'clamspamd',
         'cmndline'          => 'clamav/clamspamd.conf',
@@ -66,27 +62,18 @@ sub config
     return $config;
 }
 
-sub setup
+sub setup($self,$class)
 {
-    my $self = shift;
-    my $class = shift;
-
     return 0;
 }
 
-sub preFork
+sub preFork($self,$class)
 {
-    my $self = shift;
-    my $class = shift;
-
     return 0;
 }
 
-sub mainLoop
+sub mainLoop($self,$class)
 {
-    my $self = shift;
-    my $class = shift;
-
     my $cmd = $self->{'cmd'};
     $cmd .= ' --config-file=' . $self->{'conffile'};
     $self->doLog("Running $cmd", 'daemon');

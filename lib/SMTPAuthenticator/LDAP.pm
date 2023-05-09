@@ -34,12 +34,8 @@ our $VERSION = 1.0;
 
 my @mailattributes = ('mail', 'maildrop', 'mailAlternateAddress', 'mailalternateaddress', 'proxyaddresses', 'proxyAddresses', 'oldinternetaddress', 'oldInternetAddress', 'cn', 'userPrincipalName');
 
-sub create
+sub create($server,$port,$params)
 {
-    my $server = shift;
-    my $port = shift;
-    my $params = shift;
-
     my $this = {
         error_text => "",
         error_code => -1,
@@ -82,12 +78,8 @@ sub create
     return $this;
 }
 
-sub authenticate
+sub authenticate($this,$username,$password)
 {
-    my $this = shift;
-    my $username = shift;
-    my $password = shift;
-
     my $scheme = 'ldap';
     if ($this->{use_ssl} > 0) {
         $scheme = 'ldaps';
@@ -116,11 +108,8 @@ sub authenticate
     return 0;
 }
 
-sub getDN
+sub getDN($this,$username)
 {
-    my $this = shift;
-    my $username = shift;
-
     my $scheme = 'ldap';
     if ($this->{use_ssl} > 0) {
         $scheme = 'ldaps';
@@ -154,11 +143,8 @@ sub getDN
     return $dn ;
 }
 
-sub fetchLinkedAddressesFromEmail
+sub fetchLinkedAddressesFromEmail($this,$email)
 {
-    my $this = shift;
-    my $email = shift;
-
     my $filter = '(|';
     foreach my $att (@mailattributes) {
         $filter .= '('.$att.'='.$email.')('.$att.'='.'smtp:'.$email.')';
@@ -167,20 +153,14 @@ sub fetchLinkedAddressesFromEmail
     return $this->fetchLinkedAddressFromFilter($filter);
 }
 
-sub fetchLinkedAddressesFromUsername
+sub fetchLinkedAddressesFromUsername($this,$username)
 {
-    my $this = shift;
-    my $username = shift;
-
     my $filter = $this->{attribute}."=".$username;
     return $this->fetchLinkedAddressFromFilter($filter);
 }
 
-sub fetchLinkedAddressFromFilter
+sub fetchLinkedAddressFromFilter($this,$filter)
 {
-    my $this = shift;
-    my $filter = shift;
-
     my @addresses;
 
     my $scheme = 'ldap';

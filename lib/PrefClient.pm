@@ -31,9 +31,8 @@ require SockClient;
 
 our @ISA = "SockClient";
 
-sub new {
-    my $class = shift;
-
+sub new($class)
+{
     my %msgs = ();
 
     my $spec_this = {
@@ -52,21 +51,16 @@ sub new {
     return $this;
 }
 
-sub setTimeout {
-   my $this = shift;
-   my $timeout = shift;
-
+sub setTimeout($this,$timeout)
+{
    return 0 if ($timeout !~ m/^\d+$/);
    $this->{timeout} = $timeout;
    return 1;
 }
 
 ## fetch a pref by calling de pref daemon
-sub getPref {
-    my $this = shift;
-    my $object = shift;
-    my $pref = shift;
-
+sub getPref($this,$object,$pref)
+{
     if ($object !~ m/^[-_.!\$#=*&\@a-z0-9]+$/i) {
         return '_BADOBJECT';
     }
@@ -81,11 +75,8 @@ sub getPref {
 }
 
 ## fetch a pref, just like getPref but force pref daemon to fetch domain pref if user pref is not found or not set
-sub getRecursivePref {
-    my $this = shift;
-    my $object = shift;
-    my $pref = shift;
-
+sub getRecursivePref($this,$object,$pref)
+{
     if ($object !~ m/^[-_.!\$#=*&\@a-z0-9]+$/i) {
         return '_BADOBJECT';
     }
@@ -99,9 +90,8 @@ sub getRecursivePref {
     return $result;
 }
 
-sub extractSRSAddress {
-    my $this = shift;
-    my $sender = shift;
+sub extractSRSAddress($this,$sender)
+{
     my $sep = '[=+-]';
     my @segments;
     if ($sender =~ m/^srs0.*/i) {
@@ -131,27 +121,24 @@ sub extractSRSAddress {
     return $sender;
 }
 
-sub extractVERP {
-    my $this = shift;
-    my $sender = shift;
+sub extractVERP($this,$sender)
+{
     if ($sender =~ /^[^\+]+\+.+=[a-z0-9\-\.]+\.[a-z]+/i) {
         $sender =~ s/([^\+]+)\+.+=[a-z0-9\-]{2,}\.[a-z]{2,}\@([a-z0-9\-]{2,}\.[a-z]{2,})/$1\@$2/i;
     }
     return $sender;
 }
 
-sub extractSubAddress {
-    my $this = shift;
-    my $sender = shift;
+sub extractSubAddress($this,$sender)
+{
     if ($sender =~ /^[^\+]+\+.+=[a-z0-9\-\.]+\.[a-z]+/i) {
         $sender =~ s/([^\+]+)\+.+\@([a-z0-9\-]{2,}\.[a-z]{2,})/$1\@$2/i;
     }
     return $sender;
 }
 
-sub extractSender {
-    my $this = shift;
-    my $sender = shift;
+sub extractSender($this,$sender)
+{
     my $orig = $sender;
     $sender = $this->extractSRSAddress($sender);
     $sender = $this->extractVERP($sender);
@@ -162,11 +149,8 @@ sub extractSender {
     return $sender;
 }
 
-sub isWhitelisted {
-    my $this = shift;
-    my $object = shift;
-    my $sender = shift;
-
+sub isWhitelisted($this,$object,$sender)
+{
     if ($object !~ m/^[-_.!\$+#=*&\@a-z0-9]+$/i) {
         return '_BADOBJECT';
     }
@@ -186,11 +170,8 @@ sub isWhitelisted {
     }
 }
 
-sub isWarnlisted {
-    my $this = shift;
-    my $object = shift;
-    my $sender = shift;
-
+sub isWarnlisted($this,$object,$sender)
+{
     if ($object !~ m/^[-_.!\$+#=*&\@a-z0-9]+$/i) {
         return '_BADOBJECT';
     }
@@ -209,11 +190,8 @@ sub isWarnlisted {
     }
 }
 
-sub isBlacklisted {
-    my $this = shift;
-    my $object = shift;
-    my $sender = shift;
-
+sub isBlacklisted($this,$object,$sender)
+{
     if ($object !~ m/^[-_.!\$+#=*&\@a-z0-9]+$/i) {
         return '_BADOBJECT';
     }
@@ -233,8 +211,8 @@ sub isBlacklisted {
     }
 }
 
-sub logStats {
-    my $this = shift;
+sub logStats($this)
+{
     my $query = 'STATS';
     return $this->query($query);
 }

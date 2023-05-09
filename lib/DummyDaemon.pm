@@ -43,9 +43,8 @@ use Date::Calc qw(Add_Delta_Days Today);
 
 our @ISA = "SockTDaemon2";
 
-sub new {
-    my $class = shift;
-    my $myspec_thish   = shift;
+sub new($class,$myspec_thish=0)
+{
     my %myspec_this;
     if ($myspec_thish) {
         %myspec_this = %$myspec_thish;
@@ -72,25 +71,19 @@ sub new {
 }
 
 ### define specific hooks
-sub initThreadHook {
-    my $this = shift;
-
+sub initThreadHook($this)
+{
     $this->doLog('DummyDaemon thread initialization hook...', 'dummy');
-    return;
 }
 
-sub exitThreadHook {
-    my $this = shift;
-
+sub exitThreadHook($this)
+{
     $this->doLog('DummyDaemon thread exiting hook...', 'dummy');
-    return;
 }
 
 ####### Main processing
-sub dataRead {
-    my $this = shift;
-    my $data = shift;
-
+sub dataRead($this,$data)
+{
     $this->doLog("Got a query: $data", 'dummy');
     return 'OK';
 }

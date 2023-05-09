@@ -85,20 +85,19 @@ if ( !-f $path . "/" . $daemon . ".pm" ) {
     show_usage('not such daemon available');
 }
 require $daemon . ".pm";
-
-my $daemon = new $daemon( \%options );
+my $service = $daemon->new( \%options );
 
 if ( $action eq 'start' ) {
-    $daemon->initDaemon();
+    $service->initDaemon();
 } elsif ( $action eq 'stop' ) {
-    $daemon->exitDaemon();
+    $service->exitDaemon();
 } elsif ( $action eq 'restart' ) {
     print "  Stopping... ";
-    $daemon->exitDaemon();
+    $service->exitDaemon();
     print "stopped\n  Starting...";
-    $daemon->initDaemon();
+    $service->initDaemon();
 } elsif ( $action eq 'status' ) {
-    my $res = $daemon->status();
+    my $res = $service->status();
     if ( $res =~ /^_/ ) {
         print "No status available (" . $res . ")\n";
     } elsif ( $res =~ /NOSERVER/ ) {
@@ -111,10 +110,8 @@ if ( $action eq 'start' ) {
 
 exit 0;
 
-sub show_usage
+sub show_usage($reason)
 {
-    my $reason = shift;
-
     print "daemon_starter: Bad usage ($reason).\n";
     print
 "\t daemonstarter daemon [parameters] (start|stop|restart|status)\n";

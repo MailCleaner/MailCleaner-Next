@@ -32,9 +32,8 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(getElementMapper setNewDefault addNewElement);
 our $VERSION = 1.0;
 
-sub getElementMapper {
-    my $what = shift;
-
+sub getElementMapper($what)
+{
     my $el;
 
     if ($what eq "domain") {

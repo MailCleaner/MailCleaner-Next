@@ -35,15 +35,8 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(connect);
 our $VERSION = 1.0;
 
-sub connect {
-    my $type = shift;
-    my $db = shift;
-    my $critical_p = shift;
-
-    my $critical = 1;
-    if (defined($critical_p) && $critical_p < 1) {
-        $critical = 0;
-    }
+sub connect($type,$db,$critical=0)
+{
     if (!$type || $type !~ /slave|master|realmaster|custom/) {
         print "BADCONNECTIONTYPE\n";
         return "";
@@ -104,21 +97,20 @@ sub connect {
     return bless $this, "DB";
 }
 
-sub getType {
-    my $this = shift;
+sub getType($this)
+{
     return $this->{dbh};
 }
 
-sub ping {
-    my $this = shift;
+sub ping($this)
+{
     if (defined($this->{dbh})) {
         return $this->{dbh}->ping();
     }
-    return 0;
 }
 
-sub disconnect {
-    my $this = shift;
+sub disconnect($this)
+{
     my $dbh = $this->{dbh};
     if ($dbh) {
         $dbh->disconnect();
@@ -127,21 +119,14 @@ sub disconnect {
     return 1;
 }
 
-sub fatal_error
+sub fatal_error($msg,$critical=0)
 {
-    my $msg = shift;
-    my $critical = shift;
-
-    if (defined($critical) && $critical < 1) {
-        return 0;
-    }
-    print $msg."\n";
-    exit(0);
+    return 0 unless ($critical);
+    die("$msg\n");
 }
 
-sub prepare {
-    my $this = shift;
-    my $query = shift;
+sub prepare($this,$query)
+{
     my $dbh = $this->{dbh};
 
     my $prepared = $dbh->prepare($query);
@@ -153,13 +138,8 @@ sub prepare {
 }
 
 
-sub execute {
-    my $this = shift;
-    my $query = shift;
-    my $nolock = shift;
-    if (!defined($nolock)) {
-         $nolock = 0;
-    }
+sub execute($this,$query,$nolock=0)
+{
     my $dbh = $this->{dbh};
 
     if (!defined($dbh)) {
@@ -173,9 +153,8 @@ sub execute {
     return 1;
 }
 
-sub commit {
-    my $this = shift;
-    my $query = shift;
+sub commit($this,$query)
+{
     my $dbh = $this->{dbh};
 
     if (! $dbh->commit()) {
@@ -185,13 +164,8 @@ sub commit {
     return 1;
 }
 
-sub getListOfHash {
-    my $this = shift;
-    my $query = shift;
-    my $nowarnings = shift;
-    if (!defined($nowarnings) || $nowarnings != 1) {
-        $nowarnings = 0;
-    }
+sub getListOfHash($this,$query,$nowarnings=0)
+{
     my $dbh = $this->{dbh};
     my @results;
 
@@ -211,13 +185,8 @@ sub getListOfHash {
     return @results;
 }
 
-sub getList{
-    my $this = shift;
-    my $query = shift;
-    my $nowarnings = shift;
-    if (!defined($nowarnings) || $nowarnings != 1) {
-        $nowarnings = 0;
-    }
+sub getList($this,$query,$nowarnings=0)
+{
     my $dbh = $this->{dbh};
     my @results;
 
@@ -237,10 +206,8 @@ sub getList{
     return @results;
 }
 
-sub getCount {
-    my $this = shift;
-    my $query = shift;
-
+sub getCount($this,$query)
+{
     my $dbh = $this->{dbh};
     my $sth = $dbh->prepare($query);
     my $res = $sth->execute();
@@ -248,17 +215,11 @@ sub getCount {
     my ($count) = $sth->fetchrow_array;
 
     return($count);
-
 }
 
 
-sub getHashRow {
-    my $this = shift;
-    my $query = shift;
-    my $nowarnings = shift;
-    if (!defined($nowarnings) || $nowarnings != 1) {
-        $nowarnings = 0;
-    }
+sub getHashRow($this,$query,$nowarnings=0)
+{
     my $dbh = $this->{dbh};
     my %results;
 
@@ -279,9 +240,8 @@ sub getHashRow {
     return %results;
 }
 
-sub getLastID {
-    my $this = shift;
-
+sub getLastID($this)
+{
     my $res = 0;
     my $query = "SELECT LAST_INSERT_ID() as lid;";
 
@@ -301,8 +261,8 @@ sub getLastID {
     return $res;
 }
 
-sub getError {
-    my $this = shift;
+sub getError($this)
+{
     my $dbh = $this->{dbh};
 
     if (defined($dbh->errstr)) {
@@ -311,10 +271,8 @@ sub getError {
     return "";
 }
 
-sub setAutoCommit {
-    my $this = shift;
-    my $v = shift;
-
+sub setAutoCommit($this,$v=0)
+{
     if ($v) {
         $this->{dbh}->{AutoCommit} = 1;
         return 1;

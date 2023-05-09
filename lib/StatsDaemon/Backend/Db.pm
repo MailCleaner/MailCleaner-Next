@@ -38,11 +38,8 @@ my $_current_table : shared = '';
 my $_current_table_exists : shared = 0;
 my $_current_table_creating : shared = 0;
 
-sub new
+sub new($class,$daemon)
 {
-    my $class = shift;
-    my $daemon = shift;
-
     my $this = {
         'class' => $class,
         'daemon' => $daemon
@@ -61,19 +58,14 @@ sub new
     return $this;
 }
 
-sub threadInit
+sub threadInit($this)
 {
-    my $this = shift;
-
     $this->doLog("backend thread initialization", 'statsdaemon');
     $this->connectBackend();
 }
 
-sub accessFlatElement
+sub accessFlatElement($this,$elemen)
 {
-    my $this = shift;
-    my $element = shift;
-
     my $value = 0;
 
     if ( $_current_table_exists ) {
@@ -98,11 +90,8 @@ sub accessFlatElement
      return $value;
 }
 
-sub stabilizeFlatElement
+sub stabilizeFlatElement($this,$element)
 {
-    my $this = shift;
-    my $element = shift;
-
     my $table = '';
     if ( $_current_table_exists ) {
         $table = $_current_table;
@@ -195,14 +184,8 @@ sub stabilizeFlatElement
     return 'STABILIZED';
 }
 
-sub getStats
+sub getStats($this,$start,$stop,$what,$data)
 {
-    my $this = shift;
-    my $start = shift;
-    my $stop = shift;
-    my $what = shift;
-    my $data = shift;
-
     ## defs
     my $base_subject = '---';
 
@@ -330,24 +313,19 @@ sub getStats
     return 'OK';
 }
 
-sub announceMonthChange
+sub announceMonthChange($this)
 {
-    my $this = shift;
-
     $_current_table_exists = 0;
 }
 
-sub announceDayChange
+sub announceDayChange($this)
 {
-    my $this = shift;
-
+    return;
 }
 
 ## Database management
-sub connectBackend
+sub connectBackend($this)
 {
-    my $this = shift;
-
     return 1 if ( defined( $this->{db} ) && $this->{db}->ping() );
 
     $this->{db} = DB::connect( 'slave', 'mc_stats', 0 );
@@ -368,10 +346,8 @@ sub connectBackend
     return 1;
 }
 
-sub createCurrentTable
+sub createCurrentTable($this)
 {
-    my $this = shift;
-
     if ( $_current_table_creating == 1 ) {
         return 0;
     }
@@ -420,13 +396,8 @@ sub createCurrentTable
     return 1;
 }
 
-sub doLog
+sub doLog($this,$message,$given_set,$priority='info')
 {
-    my $this = shift;
-    my $message   = shift;
-    my $given_set = shift;
-    my $priority  = shift;
-
     my $msg = $this->{class}." ".$message;
     if ($this->{daemon}) {
         $this->{daemon}->doLog($msg, $given_set, $priority);

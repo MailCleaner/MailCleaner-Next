@@ -40,12 +40,8 @@ our $VERSION = 1.0;
 my $rrdstep = 300;
 my %host_failed = ();
 
-sub new {
-    my $id = shift;
-    my $name = shift;
-    my $type = shift;
-    my $hosts_status = shift;
-
+sub new($id,$name,$type,$hosts_status)
+{
     my $conf = ReadConfig::getInstance();
 
     my @elements;
@@ -87,17 +83,14 @@ sub new {
     return $this;
 }
 
-sub addElement {
-    my $this = shift;
-    my $element = shift;
-
+sub addElement($this,$element)
+{
     $element->{'name'} =~ s/\s/_/g;
     push @{$this->{'elements'}}, $element;
 }
 
-sub createDatabases {
-    my $this = shift;
-
+sub createDatabases($this)
+{
     foreach my $h (@{$this->{'hosts'}}) {
         my $dbfile = $this->{'spooldir'}."/".$h.".rrd";
         push @{$this->{'databases'}}, {'host' => $h, 'rrd' => $this->createDatabase($dbfile)};
@@ -106,10 +99,8 @@ sub createDatabases {
     $this->{'globaldatabase'} = $this->createDatabase($gdbfile);
 }
 
-sub createDatabase {
-    my $this = shift;
-    my $file = shift;
-
+sub createDatabase($this,$file)
+{
     my $rrd = RRDTool::OO->new( file => $file );
     if ( -f $file) {
         return $rrd;
@@ -237,10 +228,8 @@ sub createDatabase {
     return $rrd;
 }
 
-sub collect {
-    my $this = shift;
-    my $dynamic = shift;
-
+sub collect($this,$dynamic)
+{
     if (!defined($this->{'globaldatabase'})) {
         $this->createDatabases();
     }
@@ -265,12 +254,8 @@ sub collect {
     $this->{'globaldatabase'}->update(values => {%globalvalues});
 }
 
-sub getSNMPValue {
-    my $this = shift;
-    my $host = shift;
-    my $oids = shift;
-    my $dynamic = shift;
-
+sub getSNMPValue($this,$host,$oids,$dynamic)
+{
     if (defined($host_failed{$host}) && $host_failed{$host} > 0) {
         print "Host '$host' is not available!\n";
         return 0;
@@ -319,10 +304,8 @@ sub getSNMPValue {
     return $value;
 }
 
-sub connectSNMP {
-    my $this = shift;
-    my $host = shift;
-
+sub connectSNMP($this,$host)
+{
     if (defined($this->{snmp}->{$host})) {
         return 1;
     }
@@ -346,21 +329,16 @@ sub connectSNMP {
     return 1;
 }
 
-sub getDynamicOids {
-    my $this = shift;
-    my $dynamic_oids = shift;
-
+sub getDynamicOids($this,$dynamic_oids)
+{
     foreach my $h (@{$this->{'hosts'}}) {
         $this->getDynamicOidsForHost($h, $dynamic_oids);
     }
     return 1;
 }
 
-sub getDynamicOidsForHost {
-    my $this = shift;
-    my $host = shift;
-    my $dynamic_oids = shift;
-
+sub getDynamicOidsForHost($this,$host,$dynamic_oids)
+{
     if (!defined($this->{snmp}->{$host})) {
         $this->connectSNMP($host);
     }
@@ -397,12 +375,8 @@ sub getDynamicOidsForHost {
     return 1;
 }
 
-sub getIndexOf {
-    my $this = shift;
-    my $host = shift;
-    my $givenbaseoid = shift;
-    my $search = shift;
-
+sub getIndexOf($this,$host,$givenbaseoid,$search)
+{
     if (!defined($this->{snmp}->{$host})) {
         $this->connectSNMP($host);
     }
@@ -434,11 +408,8 @@ sub getIndexOf {
     }
 }
 
-sub getValueOfOid {
-    my $this = shift;
-    my $host = shift;
-    my $givenoid = shift;
-
+sub getValueOfOid($this,$host,$givenoid)
+{
     if (!defined($this->{snmp}->{$host})) {
         $this->connectSNMP($host);
     }

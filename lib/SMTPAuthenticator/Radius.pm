@@ -33,12 +33,8 @@ our @EXPORT = qw(create authenticate);
 our $VERSION = 1.0;
 
 
-sub create
+sub create($server,$port,$params)
 {
-    my $server = shift;
-    my $port = shift;
-    my $params = shift;
-
     my $secret = '';
     my @fields = split /:/, $params;
     if ($fields[0]) {
@@ -60,12 +56,8 @@ sub create
     return $this;
 }
 
-sub authenticate
+sub authenticate($this,$username,$password)
 {
-    my $this = shift;
-    my $username = shift;
-    my $password = shift;
-
     my $r = new Authen::Radius(Host => $this->{server}.":".$this->{port}, Secret => $this->{secret});
 
     if ($r) {

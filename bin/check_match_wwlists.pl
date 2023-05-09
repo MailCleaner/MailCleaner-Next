@@ -54,12 +54,8 @@ print_result(\@column_names, $final_list);
 
 ## ------
 
-sub sort_by
+sub sort_by($entries,$sort_order_arg,$sort_hash)
 {
-    my $entries = shift;
-    my $sort_order_arg = shift;
-    my $sort_hash = shift;
-
     my @sort_order = @$sort_order_arg;
 
     my @output;
@@ -85,12 +81,8 @@ sub sort_by
     return \@output;
 }
 
-sub get_wlist_matches
+sub get_wlist_matches($sender,$recipient,$column_names)
 {
-    my $sender = shift;
-    my $recipient = shift;
-    my $column_names = shift;
-
     my $db = DB::connect('slave', 'mc_config');
     my $query_cols = join(",", @$column_names);
 
@@ -111,9 +103,8 @@ sub get_wlist_matches
     return \@matches;
 }
 
-sub get_possible_recipients
+sub get_possible_recipients($recipient)
 {
-    $recipient = shift;
     my @recipients;
     push @recipients, $recipient;
     push @recipients, $recipient =~ m/^.+(@.+\..+)$/;
@@ -121,9 +112,8 @@ sub get_possible_recipients
     return \@recipients;
 }
 
-sub get_wlist_level
+sub get_wlist_level($entry)
 {
-    my $entry = shift;
     my $entry_with_level = $entry;
     if ($entry->{recipient} =~ m/^.+@.+\..+$/){
         $entry_with_level->{level} = "user";
@@ -138,11 +128,8 @@ sub get_wlist_level
     return $entry_with_level;
 }
 
-sub check_column_width
+sub check_column_width($column_name,$column_value="",$columns_widths)
 {
-    my $column_name = shift;
-    my $column_value = shift // "";
-    my $columns_widths = shift;
     if (not exists($columns_widths->{$column_name})) {
         $columns_widths->{$column_name} = length($column_value);
         return
@@ -152,12 +139,8 @@ sub check_column_width
     }
 }
 
-sub get_columns_widths
+sub get_columns_widths($column_names,$entries_list,$columns_widths)
 {
-    my $columns_names = shift;
-    my $entries_list = shift;
-    my $columns_widths = shift;
-
     foreach my $column (@$columns_names){
         check_column_width($column, $column, $columns_widths);
         foreach my $entry (@$entries_list){
@@ -166,12 +149,8 @@ sub get_columns_widths
     }
 }
 
-sub format_entry
+sub format_entry($entry,$columns_widths,$column_names)
 {
-    my $entry = shift;
-    my $columns_widths = shift;
-    my $columns_names = shift;
-
     my $format_string = "| %*s ";
     my $return_string = "";
     foreach my $column (@$columns_names){
@@ -184,10 +163,8 @@ sub format_entry
     return $return_string;
 }
 
-sub print_result
+sub print_result($column_names,$entries)
 {
-    my $column_names = shift;
-    my $entries = shift;
     my %columns_widths;
 
     get_columns_widths($column_names, $entries, \%columns_widths);

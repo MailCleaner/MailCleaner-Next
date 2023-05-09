@@ -279,9 +279,8 @@ sub getNumberOfGreylistDomains
 }
 
 #############################
-sub readConfig
+sub readConfig($configfile)
 {
-    my $configfile = shift;
     my %config;
     my ($var, $value);
 

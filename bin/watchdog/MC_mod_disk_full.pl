@@ -37,7 +37,8 @@ my $OUT_FILE   = '/var/mailcleaner/spool/watchdog/' .$script_name_no_ext. '_' .$
 
 open my $file, '>', $OUT_FILE;
 
-sub my_own_exit {
+sub my_own_exit
+{
     my ($exit_code) = @_;
     $exit_code = 0  if ( ! defined ($exit_code) );
 

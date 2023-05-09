@@ -29,10 +29,8 @@ use IO::Socket;
 use IO::Select;
 require Exporter;
 
-sub new
+sub new($class,$spec_thish)
 {
-    my $class = shift;
-    my $spec_thish = shift;
     my %spec_this = %$spec_thish;
 
     my $this = {
@@ -50,10 +48,8 @@ sub new
     return $this;
 }
 
-sub connect
+sub connect($this)
 {
-    my $this = shift;
-
     $this->{socket} = IO::Socket::INET->new(
         PeerAddr => '127.0.0.1',
         PeerPort => $this->{port},
@@ -64,11 +60,8 @@ sub connect
     return 0;
 }
 
-sub query
+sub query($this,$query)
 {
-    my $this = shift;
-    my $query = shift;
-
     my $sent = 0;
     my $tries = 1;
     while ($tries < 2 && ! $sent) {
@@ -109,19 +102,14 @@ sub query
     return '_TIMEOUT';
 }
 
-sub ping
+sub ping($this)
 {
-    my $this = shift;
-
-    return 0 if ! $this->{socket};
-
+    return 1 if ($this->{socket});
     return 0;
 }
 
-sub close
+sub close($this)
 {
-    my $this = shift;
-
     close($this->{socket});
     return 1;
 }

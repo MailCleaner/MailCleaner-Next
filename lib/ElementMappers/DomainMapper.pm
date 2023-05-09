@@ -51,49 +51,32 @@ sub create
     return $this;
 }
 
-sub setNewDefault
+sub setNewDefault($this,$defstr)
 {
-    my $this = shift;
-    my $defstr = shift;
-
     foreach my $data (split('\s', $defstr)) {
-        #print "STRING: $data\n";
         if ($data =~ m/(\S+):(\S+)/) {
-            #print "setting: $1 => $2\n";
             my $val = $2;
             my $key = $1;
             $val =~ s/__S__/ /g;
             $val =~ s/__P__/:/g;
             $this->{prefs}{$key} = $val;
-            #print "added: $key => $val\n";
         }
     }
 }
 
-sub checkElementExistence
+sub checkElementExistence($this,$name)
 {
-    my $this = shift;
-    my $name = shift;
-
     my $check_query = "SELECT name, prefs FROM domain WHERE name='$name'";
     my %check_res = $this->{db}->getHashRow($check_query);
     if (defined($check_res{'prefs'})) {
         return $check_res{'prefs'};
     }
-    return 0;
 }
 
-sub processElement
+sub processElement($this,$name,$flags='',$params='')
 {
-    my $this = shift;
-    my $name = shift;
-    my $flags = shift;
-    my $params = shift;
-
     my $update = 1;
-    if ($flags && $flags =~ m/noupdate/ ) {
-        $update = 0;
-    }
+    $update = 0 if ($flags =~ m/noupdate/ );
 
     $this->{params} = ();
     $this->{prefs}{'name'} = $name;
@@ -115,12 +98,8 @@ sub processElement
     return $this->addNewElement($name);
 }
 
-sub updateElement
+sub updateElement($this,$name,$pref)
 {
-    my $this = shift;
-    my $name = shift;
-    my $pref = shift;
-
     my $set_prefquery = $this->getPrefQuery();
     if (! $set_prefquery eq '') {
         my $prefquery = "UPDATE domain_pref SET ".$set_prefquery." WHERE id=".$pref;
@@ -136,10 +115,8 @@ sub updateElement
     }
 }
 
-sub getPrefQuery()
+sub getPrefQuery($this)
 {
-    my $this = shift;
-
     my $set_prefquery = '';
     foreach my $datak (keys %{$this->{prefs}}) {
         if (! defined($this->{field_domain}{$datak})) {
@@ -152,10 +129,8 @@ sub getPrefQuery()
     return $set_prefquery;
 }
 
-sub getDomQuery()
+sub getDomQuery($this)
 {
-    my $this = shift;
-
     my $set_domquery = '';
     foreach my $datak (keys %{$this->{prefs}}) {
         if (defined($this->{field_domain}{$datak})) {
@@ -168,11 +143,8 @@ sub getDomQuery()
     return $set_domquery;
 }
 
-sub addNewElement
+sub addNewElement($this,$name)
 {
-    my $this = shift;
-    my $name = shift;
-
     my $set_prefquery = $this->getPrefQuery();
     my $prefquery = "INSERT INTO domain_pref SET id=NULL";
     if (! $set_prefquery eq '') {
@@ -198,11 +170,8 @@ sub addNewElement
     print $query."\n";
 }
 
-sub deleteElement
+sub deleteElement($this,$name)
 {
-    my $this = shift;
-    my $name = shift;
-
     my $getprefid = "SELECT prefs FROM domain WHERE name='$name'";
     my %res = $this->{db}->getHashRow($getprefid);
     if (!defined($res{'prefs'})) {
@@ -220,10 +189,8 @@ sub deleteElement
     return;
 }
 
-sub getExistingElements
+sub getExistingElements($this)
 {
-    my $this = shift;
-
     my $query = "SELECT name FROM domain";
     my @res = $this->{db}->getList($query);
 

@@ -35,12 +35,10 @@ our @ISA        = qw(Exporter);
 our @EXPORT     = qw(create);
 our $VERSION    = 1.0;
 
-sub create
+sub create($username,$domain)
 {
     my %prefs;
     my %addresses;
-    my $username = shift;
-    my $domain = shift;
 
     my $this = {
         id          => 0,
@@ -64,34 +62,20 @@ sub create
     return $this;
 }
 
-sub loadFromId
+sub loadFromId($this,$id)
 {
-    my $this = shift;
-    my $id = shift;
-
-    if (!$id) {
-        return;
-    }
-
     my $query = "SELECT u.username, u.domain, u.id FROM user u, WHERE u.id=".$id;
     $this->load($query);
 }
 
-sub loadFromUsername
+sub loadFromUsername($this,$username,$domain)
 {
-    my $this = shift;
-    my $username = shift;
-    my $domain = shift;
-
     my $query = "SELECT u.username, u.domain, u.id FROM user u, WHERE u.username='".$username."' AND u.domain='".$domain."'";
     $this->load($query);
 }
 
-sub loadFromLinkedAddress
+sub loadFromLinkedAddress($this,$email)
 {
-    my $this = shift;
-    my $email = shift;
-
     if ($email =~ m/^(\S+)\@(\S+)$/) {
         $this->{domain} = $2;
     }
@@ -102,11 +86,8 @@ sub loadFromLinkedAddress
     $this->load($query);
 }
 
-sub load
+sub load($this,$query)
 {
-    my $this = shift;
-    my $query = shift;
-
     if (!$this->{db}) {
         require DB;
         $this->{db} = DB::connect('slave', 'mc_config', 0);
@@ -120,10 +101,8 @@ sub load
     return 0;
 }
 
-sub getAddresses
+sub getAddresses($this)
 {
-    my $this = shift;
-
     if ($this->{id}) {
         ## get registered addresses
         if (!$this->{db}) {
@@ -182,10 +161,8 @@ sub getAddresses
     return keys %{$this->{addresses}};
 }
 
-sub getMainAddress
+sub getMainAddress($this)
 {
-    my $this = shift;
-
     if (!keys %{$this->{addresses}}) {
         $this->getAddresses();
     }
@@ -215,11 +192,8 @@ sub getMainAddress
     return undef;
 }
 
-sub getPref
+sub getPref($this,$pref)
 {
-    my $this = shift;
-    my $pref = shift;
-
     if (keys %{$this->{prefs}} < 1) {
         $this->loadPrefs();
     }
@@ -240,10 +214,8 @@ sub getPref
     return undef;
 }
 
-sub loadPrefs
+sub loadPrefs($this)
 {
-    my $this = shift;
-
     if (!$this->{id}) {
         return 0;
     }

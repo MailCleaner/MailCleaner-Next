@@ -140,10 +140,9 @@ sub bad_usage
 }
 
 ##########################################
-sub mark_forced
+sub mark_forced($id)
 {
     use DBI;
-    my $id = shift;
     my $dbh = DBI->connect(
         "DBI:mysql:database=mc_stats;host=localhost;mysql_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
         "mailcleaner", "$config{MYMAILCLEANERPWD}", {RaiseError => 0, PrintError => 0}
@@ -157,9 +156,8 @@ sub mark_forced
 }
 
 ##########################################
-sub readConfig
+sub readConfig($configfile)
 {
-    my $configfile = shift;
     my %config;
     my ($var, $value);
 

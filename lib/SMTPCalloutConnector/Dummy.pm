@@ -32,43 +32,34 @@ our @EXPORT     = qw(create authenticate);
 our $VERSION    = 1.0;
 
 
-sub new
+sub new($class,$paramsh)
 {
-   my $class = shift;
-   my $paramsh = shift;
-   my @params = @{$paramsh};
+    my @params = @{$paramsh};
 
-   my $this = {
-   	    'last_message' => '',
-   	    'useable' => 1,
+    my $this = {
+        'last_message' => '',
+        'useable' => 1,
         'default_on_error' => 1 ## we accept in case of any failure, to avoid false positives
-         };
+    };
 
-  bless $this, $class;
-  return $this;
+    bless $this, $class;
+    return $this;
 }
 
-sub verify
+sub verify($this,$address)
 {
-	my $this = shift;
-	my $address = shift;
-
     $this->{last_message} = 'Dummy callout will always answer yes';
     return 1;
 }
 
-sub isUseable
+sub isUseable($this)
 {
-	my $this = shift;
-	
-	return $this->{useable};
+    return $this->{useable};
 }
 
-sub lastMessage
+sub lastMessage($this)
 {
-	my $this = shift;
-	
-	return $this->{last_message};
+    return $this->{last_message};
 }
 
 1;

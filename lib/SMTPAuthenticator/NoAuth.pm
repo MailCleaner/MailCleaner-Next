@@ -31,11 +31,8 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(create authenticate);
 our $VERSION = 1.0;
 
-sub create {
-    my $server = shift;
-    my $port = shift;
-    my $params = shift;
-
+sub create($server,$port,$params)
+{
     my $this = {
         error_text => "No authentication scheme available",
         error_code => -1,
@@ -45,11 +42,8 @@ sub create {
     return $this;
 }
 
-sub authenticate {
-    my $this = shift;
-    my $username = shift;
-    my $password = shift;
-
+sub authenticate($this,$username,$password)
+{
     error_text => "No authentication scheme available for user: $username",
     return 0;
 }

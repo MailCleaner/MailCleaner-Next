@@ -35,12 +35,9 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(create collect plot);
 our $VERSION = 1.0;
 
-sub create
+sub create($statfile,$things_a,$reset)
 {
-    my $statfile = shift;
-    my $things_a = shift;
     my %things = %$things_a;
-    my $reset = shift;
 
     my $rrdstep = 300;
     my $interval = int($rrdstep / 60);
@@ -110,11 +107,8 @@ sub create
     return $rrd;
 }
 
-sub collect
+sub collect($rrd,$snmp,$things_a)
 {
-    my $rrd = shift;
-    my $snmp = shift;
-    my $things_a = shift;
     my %things = %$things_a;
 
     my %values;
@@ -136,21 +130,10 @@ sub collect
     return 1;
 }
 
-sub plot
+sub plot($type,$dir,$period,$leg,$ylegend,$lower,$upper,$rrd,$things_a,$order_a,$legend)
 {
-    my $type = shift;
-    my $dir = shift;
-    my $period = shift;
-    my $leg = shift;
-    my $ylegend = shift;
-    my $lower = shift;
-    my $upper = shift;
-    my $rrd = shift;
-    my $things_a = shift;
     my %things = %$things_a;
-    my $order_a = shift;
     my @order = @$order_a;
-    my $legend = shift;
 
     my $time = 24*3600;
     if ($period eq 'week') {

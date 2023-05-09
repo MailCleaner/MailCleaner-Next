@@ -38,11 +38,8 @@ use MIME::Base64;
 our @ISA = "UDPDaemon";
 my @fields = ('id', 'tolocal', 'todomain', 'sender', 'subject', 'score', 'rbls', 'prefilter', 'globalscore');
 
-sub new {
-    my $class = shift;
-    my $name = shift;
-    my $file = shift;
-
+sub new($class,$name,$file)
+{
     my $this = $class->SUPER::create($name, $file);
 
     my $conf = ReadConfig::getInstance();
@@ -52,10 +49,8 @@ sub new {
 }
 
 
-sub processDatas {
-    my $this = shift;
-    my $datas = shift;
-
+sub processDatas($this,$datas)
+{
     if ($datas =~ /^LOG (.*)/) {
         my $tmp = $1;
         my @gotfields = split "_", $tmp;
@@ -98,8 +93,8 @@ sub processDatas {
 #####
 ## logSpam
 #####
-sub logSpam {
-    my $this = shift;
+sub logSpam($this)
+{
     my %msg;
 
     my $query = "LOG";
@@ -123,9 +118,8 @@ sub logSpam {
 #####
 ## logInMaster
 #####
-sub logInMaster {
-    my $this = shift;
-    my $msg_h = shift;
+sub logInMaster($this,$msg_h)
+{
     my %message = %$msg_h;
 
     if (!defined($this->{masterDB}) || !$this->{masterDB}->ping()) {
@@ -155,11 +149,9 @@ sub logInMaster {
 #####
 ## logInSlave
 #####
-sub logInSlave {
-    my $this = shift;
-    my $msg_h = shift;
+sub logInSlave($this,$msg_h,$master_stored)
+{
     my %message = %$msg_h;
-    my $master_stored = shift;
 
     if (!defined($this->{slaveDB}) || !$this->{slaveDB}->ping()) {
         $this->{slaveDB} = DB::connect('slave', 'mc_spool', 0);

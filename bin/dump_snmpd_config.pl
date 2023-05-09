@@ -39,7 +39,7 @@ use DBI();
 use File::Path qw(mkpath);
 require GetDNS;
 
-my $DEBUG = 1;
+our $DEBUG = 1;
 
 my %config = readConfig("/etc/mailcleaner.conf");
 my $system_mibs_file = '/usr/share/snmp/mibs/MAILCLEANER-MIB.txt';
@@ -134,7 +134,8 @@ sub dump_snmpd_file
 }
 
 #############################
-sub get_snmpd_config{
+sub get_snmpd_config
+{
     my %config;
 
     my $sth = $dbh->prepare("SELECT allowed_ip, community, disks FROM snmpd_config");
@@ -174,16 +175,9 @@ sub get_master_config
 }
 
 #############################
-sub fatal_error
+sub fatal_error($msg,$full)
 {
-    my $msg = shift;
-    my $full = shift;
-
-    print $msg;
-    if ($DEBUG) {
-        print "\n Full information: $full \n";
-    }
-    exit(0);
+    print $msg . ($DEBUG ? "\n Full information: $full \n" : "\n");
 }
 
 #############################
@@ -194,9 +188,8 @@ sub print_usage
 }
 
 #############################
-sub readConfig
+sub readConfig($configfile)
 {
-    my $configfile = shift;
     my %config;
     my ($var, $value);
 
@@ -216,9 +209,8 @@ sub readConfig
     return %config;
 }
 
-sub expand_host_string
+sub expand_host_string($string)
 {
-    my $string = shift;
     my %args = @_;
     my $dns = GetDNS->new();
     return $dns->dumper($string,%args);

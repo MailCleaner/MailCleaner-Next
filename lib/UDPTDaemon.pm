@@ -36,12 +36,8 @@ our @ISA = "PreForkTDaemon";
 
 my %global_shared : shared;
 
-sub new
+sub new($class,$init,$config,$spec_thish)
 {
-    my $class = shift;
-    my $init = shift;
-    my $config = shift;
-    my $spec_thish = shift;
     my %spec_this = %$spec_thish;
 
     my $udpspec_this = {
@@ -62,10 +58,8 @@ sub new
     return $this;
 }
 
-sub preForkHook()
+sub preForkHook($this)
 {
-    my $this = shift;
-
     ## bind to UDP port
     $this->{server} = IO::Socket::INET->new(
         LocalAddr => '127.0.0.1',
@@ -79,9 +73,8 @@ sub preForkHook()
     return 1;
 }
 
-sub mainLoopHook()
+sub mainLoopHook($this)
 {
-    my $this = shift;
     require Mail::SpamAssassin::Timeout;
 
     $this->logMessage("In UDPTDaemon main loop");
@@ -104,10 +97,8 @@ sub mainLoopHook()
     return 1;
 }
 
-sub exitHook()
+sub exitHook($this)
 {
-    my $this = shift;
-
     close ($this->{server});
     $this->logMessage("Listener socket closed");
     return 1;

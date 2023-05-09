@@ -114,11 +114,8 @@ sub getServices
 }
 
 # The actual simple search and decode function
-sub decode
+sub decode($self,$url)
 {
-    my $self = shift;
-    my $url = shift;
-
     foreach my $service (keys(%{$self->{'services'}})) {
         if ($url =~ $self->{'services'}->{$service}->{'regex'}) {
             my $decoded = $self->{'services'}->{$service}->{'decoder'}($url);

@@ -39,7 +39,7 @@ if ($0 =~ m/(\S*)\/\S+.pl$/) {
 
 use DBI();
 
-my $DEBUG = 1;
+our $DEBUG = 1;
 
 my %config = readConfig("/etc/mailcleaner.conf");
 my $HOSTID=$config{HOSTID};
@@ -71,7 +71,7 @@ if (-e "$config{'SRCDIR'}/etc/apache/sites/configurator.conf.disabled") {
 
 dump_soap_wsdl() or fatal_error("CANNOTDUMPWSDLFILE", $lasterror);
 
-dump_certificate($apache_conf{'tls_certificate_data'}, $apache_conf{'tls_certificate_key'}, $apache_conf{'tls_certificate_chain'});
+dump_certificate($config{'SRCDIR'},$apache_conf{'tls_certificate_data'}, $apache_conf{'tls_certificate_key'}, $apache_conf{'tls_certificate_chain'});
 
 $dbh->disconnect();
 
@@ -202,7 +202,8 @@ sub get_system_config
 }
 
 #############################
-sub get_apache_config{
+sub get_apache_config
+{
     my %config;
 
     my $sth = $dbh->prepare("SELECT serveradmin, servername, use_ssl, timeout, keepalivetimeout,
@@ -234,16 +235,9 @@ sub get_apache_config{
 }
 
 #############################
-sub fatal_error
+sub fatal_error($msg,$full)
 {
-    my $msg = shift;
-    my $full = shift;
-
-    print $msg;
-    if ($DEBUG) {
-        print "\n Full information: $full \n";
-    }
-    exit(0);
+    print $msg . ($DEBUG ? "\n Full information: $full \n" : "\n");
 }
 
 #############################
@@ -253,15 +247,11 @@ sub print_usage
     exit(0);
 }
 
-sub dump_certificate
+sub dump_certificate($srcdir,$cert,$key,$chain)
 {
-    my $cert = shift;
-    my $key = shift;
-    my $chain = shift;
-
-    my $path = $config{'SRCDIR'}."/etc/apache/certs/certificate.pem";
-    my $backup = $config{'SRCDIR'}."/etc/apache/certs/default.pem";
-    my $chainpath = $config{'SRCDIR'}."/etc/apache/certs/certificate-chain.pem";
+    my $path = $srcdir."/etc/apache/certs/certificate.pem";
+    my $backup = $srcdir."/etc/apache/certs/default.pem";
+    my $chainpath = $srcdir."/etc/apache/certs/certificate-chain.pem";
 
     if (!$cert || !$key || $cert =~ /^\s+$/ || $key =~ /^\s+$/) {
         my $cmd = "cp $backup $path";
@@ -285,9 +275,8 @@ sub dump_certificate
 }
 
 #############################
-sub readConfig
+sub readConfig($configfile)
 {
-    my $configfile = shift;
     my %config;
     my ($var, $value);
 

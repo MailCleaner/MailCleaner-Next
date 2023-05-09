@@ -41,7 +41,7 @@ require Exporter;
 our @ISA = "SockTDaemon";
 
 ## define all shared data
-my %stats_ : shared = (
+our %stats_ : shared = (
     'queries'           => 0,
     'queries_add'       => 0,
     'queries_get'       => 0,
@@ -61,14 +61,12 @@ my %backend_infos_ : shared = (
 );
 my $closing_ : shared             = 0;
 my $clearing_ : shared            = 0;
-my $changing_day_ : shared        = 0;
+our $changing_day_ : shared       = 0;
 my $last_stable_ : shared         = 0;
 my $set_socks_available_ : shared = 0;
 
-sub new
+sub new($class,$myspec_thish)
 {
-    my $class        = shift;
-    my $myspec_thish = shift;
     my %myspec_this;
     if ($myspec_thish) {
         %myspec_this = %$myspec_thish;
@@ -124,10 +122,8 @@ sub new
     return $this;
 }
 
-sub preForkHook
+sub preForkHook($this)
 {
-   my $this = shift;
-
    my $backend_class = 'StatsDaemon::Backend::'.ucfirst($this->{backend_type});
 
    if (! eval "require $backend_class") {
@@ -139,10 +135,8 @@ sub preForkHook
 }
 
 ### define specific hooks
-sub exitHook
+sub exitHook($this)
 {
-   my $this = shift;
-
    $this->SUPER::exitHook();
 
    $this->doLog('Close called, stabilizing and cleaning data...', 'statsdaemon');
@@ -151,10 +145,8 @@ sub exitHook
 
 }
 
-sub initThreadHook
+sub initThreadHook($this)
 {
-    my $this = shift;
-
     $this->doLog( 'StatsDaemon thread initialization...', 'statsdaemon' );
     $this->{backend_object}->threadInit();
 
@@ -163,24 +155,19 @@ sub initThreadHook
     return;
 }
 
-sub exitThreadHook
+sub exitThreadHook($this)
 {
-    my $this = shift;
-
     $this->doLog( 'StatsDaemon thread exiting hook...', 'statsdaemon' );
     return;
 }
 
-sub postKillHook
+sub postKillHook($this)
 {
-    my $this = shift;
     return;
 }
 
-sub statusHook
+sub statusHook($this)
 {
-    my $this = shift;
-
     my $res = '-------------------'."\n";
     $res .= 'Current statistics:'."\n";
     $res .= '-------------------' ."\n";
@@ -199,11 +186,8 @@ sub statusHook
 }
 
 ####### Main processing
-sub dataRead
+sub dataRead($this,$data)
 {
-    my $this = shift;
-    my $data = shift;
-
     my $data_ = $this->{data_};
 
     $this->doLog(
@@ -330,11 +314,8 @@ sub dataRead
 
 ## stats data management
 
-sub createElement
+sub createElement($this,$element)
 {
-    my $this    = shift;
-    my $element = shift;
-
     my $data_ = $this->{data_};
 
     if ( !defined( $data_->{$element} ) ) {
@@ -348,53 +329,32 @@ sub createElement
     }
 }
 
-sub setElementValue
+sub setElementValue($this,$element,$key,$value)
 {
-    my $this    = shift;
-    my $element = shift;
-    my $key     = shift;
-    my $value   = shift;
-
     lock($element);
     $element->{$key} = $value;
 }
 
-sub setElementValueByName
+sub setElementValueByName($this,$element,$key,$value)
 {
-    my $this    = shift;
-    my $element = shift;
-    my $key     = shift;
-    my $value   = shift;
-
     my $data_ = $this->{data_};
     $this->setElementValue($data_->{$element}, $key, $value);
 }
 
-sub getElementValueByName
+sub getElementValueByName($this,$element,$key)
 {
-    my $this     = shift;
-    my $element  = shift;
-    my $key      = shift;
-
     my $data_ = $this->{data_};
     return $data_->{$element}->{$key};
 }
 
-sub addElementValue
+sub addElementValue($this,$element,$value)
 {
-    my $this    = shift;
-    my $element = shift;
-    my $value   = shift;
-
     lock($element);
     $element->{'value'} += $value;
 }
 
-sub accessFlatElement
+sub accessFlatElement($this,$element)
 {
-    my $this    = shift;
-    my $element = shift;
-
     my $data_ = $this->{data_};
 
     if ( !defined( $data_->{$element} ) ) {
@@ -416,11 +376,8 @@ sub accessFlatElement
     return $data_->{$element};
 }
 
-sub checkForStabilization
+sub checkForStabilization($this,$element)
 {
-    my $this    = shift;
-    my $element = shift;
-
     my $data_ = $this->{data_};
 
     my $time = time();
@@ -435,11 +392,8 @@ sub checkForStabilization
     return 0;
 }
 
-sub stabilizeFlatElement
+sub stabilizeFlatElement($this,$element)
 {
-    my $this    = shift;
-    my $element = shift;
-
     foreach my $unwantedkey ( @{ $this->{history_avoid_keys_a} } ) {
         if ($element =~ m/\:$unwantedkey$/) {
             return 'UNWANTEDKEY';
@@ -479,10 +433,8 @@ sub stabilizeFlatElement
     return $stret;
 }
 
-sub stabilizeFlatAll
+sub stabilizeFlatAll($this)
 {
-    my $this = shift;
-
     my $data_ = $this->{data_};
     my $start_time = [gettimeofday];
     if ( $backend_infos_{'stabilizing'} > 0 ) {
@@ -554,9 +506,8 @@ sub stabilizeFlatAll
     return 'ALLSTABILIZED';
 }
 
-sub clearAllData
+sub clearAllData($this)
 {
-    my $this = shift;
     if ( $clearing_ > 0 ) {
         return;
     }
@@ -575,11 +526,8 @@ sub clearAllData
     return 'CLEARED';
 }
 
-sub freeElement
+sub freeElement($this,$el)
 {
-    my $this = shift;
-    my $el = shift;
-
     my $data_ = $this->{data_};
 
     if (!defined($data_->{$el})) {
@@ -599,30 +547,23 @@ sub freeElement
     return 'OK';
 }
 
-sub dumpData
+sub dumpData($this)
 {
-    my $this = shift;
-
     my $data_ = $this->{data_};
 
     while( my ($el, $value) = each(%{$data_})) {
         $this->doLog(' - '.$el, 'statsdaemon');
     }
 }
-sub calcStats
+sub calcStats($this,$what,$begin,$end)
 {
-    my $this  = shift;
-    my $what  = shift;
-    my $begin = shift;
-    my $end   = shift;
-
-    if ( !defined($what) || $what !~ m/^[a-zA-Z0-9@._\-,*:]+$/ ) {
+    if ( $what !~ m/^[a-zA-Z0-9@._\-,*:]+$/ ) {
         return '_BADUSAGEWHAT';
     }
-    if ( !defined($begin) || $begin !~ m/^[+-]?\d{1,8}$/ ) {
+    if ( $begin !~ m/^[+-]?\d{1,8}$/ ) {
         return '_BADUSAGEBEGIN';
     }
-    if ( !defined($end) || $end !~ /^[+-]?\d{1,8}$/ ) {
+    if ( $end !~ /^[+-]?\d{1,8}$/ ) {
         return '_BADUSAGEEND';
     }
 
@@ -685,34 +626,25 @@ sub calcStats
 
 }
 
-sub increaseLongRead
+sub increaseLongRead($this)
 {
-    my $this = shift;
-
     lock %backend_infos_;
     $backend_infos_{'long_read'}++;
     return;
 }
-sub decreaseLongRead
+sub decreaseLongRead($this)
 {
-    my $this = shift;
-
     lock %backend_infos_;
     $backend_infos_{'long_read'}--;
     return;
 }
-sub getLongReadCount
+sub getLongReadCount($this)
 {
-    my $this = shift;
-
     return $backend_infos_{'long_read'};
 }
 
-sub addDate
+sub addDate($in,$add)
 {
-    my $in  = shift;
-    my $add = shift;
-
     if ( $in !~ m/^(\d{4})(\d{2})(\d{2})$/ ) {
         return $in;
     }
@@ -729,10 +661,8 @@ sub addDate
     return $enddate;
 }
 
-sub getCurrentDate
+sub getCurrentDate($this)
 {
-    my $this = shift;
-
     return \%current_date_;
 }
 
@@ -741,12 +671,8 @@ sub isChangingDay
     return $changing_day_;
 }
 ####### Internal stats management
-sub addStat
+sub addStat($this,$what,$amount)
 {
-    my $this   = shift;
-    my $what   = shift;
-    my $amount = shift;
-
     lock %stats_;
     if ( !defined( $stats_{$what} ) ) {
         $stats_{$what} = 0;
@@ -755,10 +681,8 @@ sub addStat
     return 1;
 }
 
-sub getStats
+sub getStats($this)
 {
-    my $this = shift;
-
     lock %stats_;
 
     my $data_ = $this->{data_};
@@ -776,17 +700,13 @@ sub getStats
     return $res;
 }
 
-sub logStats
+sub logStats($this)
 {
-    my $this = shift;
-
     return $this->getStats();
 }
 
-sub getDataSize
+sub getDataSize($this)
 {
-    my $this = shift;
-
     my $data_ = $this->{data_};
     my $size = 0;
     while( my ($el, $value) = each(%{$data_})) {

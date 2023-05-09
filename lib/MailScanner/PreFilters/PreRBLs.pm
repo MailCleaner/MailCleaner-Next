@@ -111,11 +111,8 @@ sub initialise
     }
 }
 
-sub Checks
+sub Checks($this,$message)
 {
-    my $this = shift;
-    my $message = shift;
-
     my $RBLsaysspam = 0;
 
     my $senderdomain = $message->{fromdomain};

@@ -48,7 +48,7 @@ require MCDnsLists;
 require GetDNS;
 require DB;
 
-my $DEBUG = 1;
+our $DEBUG = 1;
 my $db = DB::connect('slave', 'mc_config');
 our $conf = ReadConfig::getInstance();
 my $include_debug = 0;
@@ -170,7 +170,7 @@ if ($conf->getOption('SMTPPROXY') ne '') {
 }
 
 ## dump DKIM
-dump_default_dkim(\%stage1_conf);
+dump_default_dkim(\%stage1_conf) if ($stage == 1);
 
 ## dump TLS access files
 dump_tls_force_files();
@@ -743,9 +743,8 @@ local0.err      ".$conf->getOption('VARDIR')."/log/mailscanner/errorlog\n\" > $f
 }
 
 #############################
-sub get_exim_config{
-    my $stage = shift;
-
+sub get_exim_config($stage)
+{
     my %config = ();
     my %row = $db->getHashRow("SELECT * FROM mta_config WHERE stage=$stage");
     return unless %row;
@@ -956,11 +955,8 @@ sub get_exim_config{
 }
 
 #############################
-sub dump_ignore_list
+sub dump_ignore_list($ignorehosts,$filename)
 {
-    my $ignorehosts = shift;
-    my $filename = shift;
-
     my $file = $tmpdir.'/'.$filename;
 
     my @list = expand_host_string($ignorehosts,('dumper'=>'exim/dump_ignore_list/'.$filename));
@@ -1101,11 +1097,8 @@ END
 
 
 #############################
-sub dump_certificate
+sub dump_certificate($cert,$key)
 {
-    my $cert = shift;
-    my $key = shift;
-
     my $backup_path = $conf->getOption('SRCDIR')."/etc/exim/certs/";
 
     my $cmd;
@@ -1136,12 +1129,8 @@ sub dump_certificate
 }
 
 #############################
-sub dump_default_dkim
+sub dump_default_dkim($stage1_conf)
 {
-    my $stage1_conf = shift;
-    if ($stage != 1) {
-        return;
-    }
     my $keypath = $conf->getOption('VARDIR')."/spool/tmp/mailcleaner/dkim";
     if (! -d $keypath) {
         mkpath($keypath);
@@ -1177,16 +1166,9 @@ sub dump_tls_force_files
     }
 }
 #############################
-sub fatal_error
+sub fatal_error($msg,$full)
 {
-    my $msg = shift;
-    my $full = shift;
-
-    print $msg;
-    if ($DEBUG) {
-        print "\n Full information: $full \n";
-    }
-    exit(0);
+    print $msg . ( $DEBUG ? "\n Full information: $full \n" : "\n" );
 }
 
 #############################
@@ -1196,10 +1178,8 @@ sub print_usage
     exit(0);
 }
 
-sub log_dns
+sub log_dns($str)
 {
-  my $str = shift;
-
 #  print $str."\n";
 }
 
@@ -1219,9 +1199,8 @@ sub get_interfaces
     return @interfaces;
 }
 
-sub is_ipv6_disabled
+sub is_ipv6_disabled($interface)
 {
-    my $interface = shift;
     my $sysctl_result = `sysctl -a | grep disable_ipv6 | grep $interface`;
     if($sysctl_result =~ /^net\.ipv6\.conf\.$interface\.disable_ipv6\s=\s(\d)$/){
         return $1
@@ -1230,9 +1209,8 @@ sub is_ipv6_disabled
     }
 }
 
-sub expand_host_string
+sub expand_host_string($string)
 {
-    my $string = shift;
     my %args = @_;
     my $dns = GetDNS->new();
     return $dns->dumper($string,%args);

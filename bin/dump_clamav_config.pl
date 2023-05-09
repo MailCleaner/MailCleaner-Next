@@ -37,16 +37,14 @@ if ($0 =~ m/(\S*)\/\S+.pl$/) {
 
 use DBI();
 
-my $DEBUG = 1;
-
 my $lasterror;
 
 my %config = readConfig("/etc/mailcleaner.conf");
 
-dump_file("clamav.conf");
-dump_file("freshclam.conf");
-dump_file("clamd.conf");
-dump_file("clamspamd.conf");
+dump_file($config{'SRCDIR'},"clamav.conf");
+dump_file($config{'SRCDIR'},"freshclam.conf");
+dump_file($config{'SRCDIR'},"clamd.conf");
+dump_file($config{'SRCDIR'},"clamspamd.conf");
 
 # recreate links
 my $cmd = "rm /opt/clamav/etc/*.conf >/dev/null 2>&1";
@@ -86,12 +84,10 @@ if (-e "$config{'VARDIR'}/spool/mailcleaner/clamav-unofficial-sigs") {
 print "DUMPSUCCESSFUL\n";
 
 #############################
-sub dump_file
+sub dump_file($srcdir,$file)
 {
-    my $file = shift;
-
-    my $template_file = "$config{'SRCDIR'}/etc/clamav/".$file."_template";
-    my $target_file = "$config{'SRCDIR'}/etc/clamav/".$file;
+    my $template_file = $srcdir."/etc/clamav/".$file."_template";
+    my $target_file = $srcdir."/etc/clamav/".$file;
 
     if ( !open(my $TEMPLATE, '<', $template_file) ) {
         $lasterror = "Cannot open template file: $template_file";
@@ -136,9 +132,8 @@ sub dump_file
 }
 
 #############################
-sub readConfig
+sub readConfig($configfile)
 {
-    my $configfile = shift;
     my %config;
     my ($var, $value);
 

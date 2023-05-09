@@ -29,9 +29,8 @@ our @ISA        = qw(Exporter);
 our @EXPORT     = qw(readFile);
 our $VERSION    = 1.0;
 
-sub readFile {
-    my $file = shift;
-
+sub readFile($file)
+{
     if (! -f $file) {
         return (0,0,0,0,0,0,0,0,0,0);
     }

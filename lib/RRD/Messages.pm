@@ -34,11 +34,9 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(new collect plot);
 our $VERSION = 1.0;
 
-sub new
+sub new($statfile,$reset)
 {
-    my $statfile = shift;
     $statfile = $statfile."/messages.rrd";
-    my $reset = shift;
 
     my %things = (
         bytes => ['GAUGE', 'LAST'],
@@ -65,11 +63,8 @@ sub new
 }
 
 
-sub collect
+sub collect($this,$snmp)
 {
-    my $this = shift;
-    my $snmp = shift;
-
     require Net::SNMP;
     require RRDTool::OO;
 
@@ -99,12 +94,8 @@ sub collect
 
 }
 
-sub plot
+sub plot($this,$dir,$period,$leg)
 {
-    my $this = shift;
-    my $dir = shift;
-    my $period = shift;
-    my $leg = shift;
     my %things = (
         msgs => ['line', '000000', '', 'Messages', 'LAST', '%10.0lf', ''],
         viruses => ['area', 'FF0000', '', 'Viruses', 'LAST', '%10.0lf', ''],

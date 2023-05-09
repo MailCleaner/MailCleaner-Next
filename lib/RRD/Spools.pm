@@ -33,11 +33,9 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(new collect plot);
 our $VERSION = 1.0;
 
-sub new
+sub new($statfile,$reset)
 {
-    my $statfile = shift;
     $statfile = $statfile."/spools.rrd";
-    my $reset = shift;
 
     my %things = (
         incoming => ['GAUGE', 'AVERAGE'],
@@ -57,11 +55,8 @@ sub new
 }
 
 
-sub collect
+sub collect($this,$snmp)
 {
-    my $this = shift;
-    my $snmp = shift;
-
     require Net::SNMP;
     require RRDTool::OO;
 
@@ -84,12 +79,8 @@ sub collect
 
 }
 
-sub plot
+sub plot($this,$dir,$period,$leg)
 {
-    my $this = shift;
-    my $dir = shift;
-    my $period = shift;
-    my $leg = shift;
     my %things = (
         incoming => ['line', '000000', '', 'Incoming', 'AVERAGE', '%10.0lf', ''],
         filtering => ['line', 'FF0000', '', 'Filtering', 'AVERAGE', '%10.0lf', ''],

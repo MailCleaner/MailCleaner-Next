@@ -33,11 +33,9 @@ our @ISA        = qw(Exporter);
 our @EXPORT     = qw(new collect plot);
 our $VERSION    = 1.0;
 
-sub new
+sub new($statfile,$reset)
 {
-    my $statfile = shift;
     $statfile = $statfile."/memory.rrd";
-    my $reset = shift;
 
     my %things = (
         used => ['GAUGE', 'LAST'],
@@ -58,11 +56,8 @@ sub new
 }
 
 
-sub collect
+sub collect($this,$snmp)
 {
-    my $this = shift;
-    my $snmp = shift;
-
     require Net::SNMP;
     require RRDTool::OO;
     my %things = (
@@ -96,13 +91,8 @@ sub collect
     );
 }
 
-sub plot
+sub plot($this,$dir,$period,$leg)
 {
-    my $this = shift;
-    my $dir = shift;
-    my $period = shift;
-    my $leg = shift;
-
     my %things = (
         mused => ['area', 'EB9C48', '', 'Used', 'AVERAGE', '%10.2lf Mb', 'used,1024,/'],
         mbuffered => ['stack', '7648EB', '', 'Buffered', 'AVERAGE', '%10.2lf Mb', 'buffered,1024,/'],

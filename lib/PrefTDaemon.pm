@@ -58,9 +58,8 @@ my %stats_ : shared = (
     'backendwwcall'    => 0
 );
 
-sub new {
-    my $class        = shift;
-    my $myspec_thish = shift;
+sub new($class,$myspec_thish)
+{
     my %myspec_this;
     if ($myspec_thish) {
         %myspec_this = %$myspec_thish;
@@ -92,18 +91,16 @@ sub new {
     return $this;
 }
 
-sub initThreadHook {
-    my $this = shift;
-
+sub initThreadHook($this)
+{
     $this->doLog('PrefDaemon thread initialization...', 'prefdaemon', 'debug');
     $this->connectBackend();
 
     return 1;
 }
 
-sub connectBackend {
-    my $this = shift;
-
+sub connectBackend($this)
+{
     return 1 if ( defined( $this->{backend} ) && $this->{backend}->ping() );
 
     $this->{backend} = DB::connect( 'slave', 'mc_config', 0 );
@@ -115,10 +112,8 @@ sub connectBackend {
     return 0;
 }
 
-sub dataRead {
-    my $this = shift;
-    my $data = shift;
-
+sub dataRead($this,$data)
+{
     $this->doLog("Received datas: $data", 'prefdaemon', 'debug');
     my $ret = 'NOTHINGDONE';
 
@@ -201,45 +196,40 @@ sub dataRead {
 
 ##################
 ## utils
-sub isGlobal {
-    my $object = shift;
-
+sub isGlobal($object)
+{
     if ( $object =~ /^_global/ ) {
         return 1;
     }
     return 0;
 }
 
-sub isDomain {
-    my $object = shift;
-
+sub isDomain($object)
+{
     if ( $object =~ /^[-_.a-z0-9]+$/ ) {
         return 1;
     }
     return 0;
 }
 
-sub isEmail {
-    my $object = shift;
-
+sub isEmail($object)
+{
     if ( $object =~ /^[-_.!\$#=*&\@'`a-z0-9]+\@[-_.a-z0-9]+$/ ) {
         return 1;
     }
     return 0;
 }
 
-sub isUserID {
-    my $object = shift;
-
+sub isUserID($object)
+{
     if ( $object =~ /^\*\d+$/ ) {
         return 1;
     }
     return 0;
 }
 
-sub getDomain {
-    my $object = shift;
-
+sub getDomain($object)
+{
     if ( $object =~ /^[-_.!\$#=*&\@'`a-z0-9]+\@([-_.a-z0-9]+)$/ ) {
         return $1;
     }
@@ -249,12 +239,8 @@ sub getDomain {
 #######################################################
 ##  Preferences management
 
-sub getObjectPreference {
-    my $this   = shift;
-    my $object = shift;
-    my $pref   = shift;
-    my $recurs = shift;
-
+sub getObjectPreference($this,$object,$pref,$recurs)
+{
     $this->addStat( 'prefqueries', 1 );
 
     ## first check if value is already being cached
@@ -321,18 +307,13 @@ sub getObjectPreference {
     return $result;
 }
 
-sub getPrefCacheKey {
-    my $object = shift;
-    my $pref   = shift;
-
+sub getPrefCacheKey($object,$pref)
+{
     return md5_hex( $object . "-" . $pref );
 }
 
-sub getObjectCachedPref {
-    my $this   = shift;
-    my $object = shift;
-    my $pref   = shift;
-
+sub getObjectCachedPref($this,$object,$pref)
+{
     my $key = PrefTDaemon::getPrefCacheKey( $object, $pref );
 
     if (
@@ -359,12 +340,8 @@ sub getObjectCachedPref {
     return '_NOTCACHED';
 }
 
-sub setObjectPrefCache {
-    my $this   = shift;
-    my $object = shift;
-    my $pref   = shift;
-    my $value  = shift;
-
+sub setObjectPrefCache($this,$object,$pref,$value)
+{
     my $key = PrefTDaemon::getPrefCacheKey( $object, $pref );
     if ( !defined( $prefs_->{$key} ) ) {
         $prefs_->{$key} = &share( {} );
@@ -379,11 +356,8 @@ sub setObjectPrefCache {
     return 1;
 }
 
-sub fetchEmailPref {
-    my $this   = shift;
-    my $object = shift;
-    my $pref   = shift;
-
+sub fetchEmailPref($this,$object,$pref)
+{
     my $query = "SELECT $pref FROM user_pref p, email e WHERE p.id=e.pref AND e.address='$object'";
     my $result = $this->fetchBackendPref( $query, $pref );
     $this->addStat( 'backendprefcall', 1 );
@@ -391,11 +365,8 @@ sub fetchEmailPref {
     return $result;
 }
 
-sub fetchUserPref {
-    my $this   = shift;
-    my $object = shift;
-    my $pref   = shift;
-
+sub fetchUserPref($this,$object,$pref)
+{
     $object =~ s/^\*//g;
     my $query = "SELECT $pref FROM user_pref p, user u WHERE u.id=".$object;
     my $result = $this->fetchBackendPref( $query, $pref );
@@ -404,11 +375,8 @@ sub fetchUserPref {
     return $result;
 }
 
-sub fetchDomainPref {
-    my $this   = shift;
-    my $object = shift;
-    my $pref   = shift;
-
+sub fetchDomainPref($this,$object,$pref)
+{
     $this->addStat( 'prefsubqueries', 1 );
 
     if ( $pref eq 'has_whitelist' ) {
@@ -427,11 +395,8 @@ sub fetchDomainPref {
     return $result;
 }
 
-sub fetchGlobalPref {
-    my $this   = shift;
-    my $object = shift;
-    my $pref   = shift;
-
+sub fetchGlobalPref($this,$object,$pref)
+{
     my $query = "SELECT $pref FROM system_conf, antispam, antivirus, httpd_config";
     my $result = $this->fetchBackendPref( $query, $pref );
     $this->addStat( 'backendprefcall', 1 );
@@ -439,11 +404,8 @@ sub fetchGlobalPref {
     return $result;
 }
 
-sub fetchBackendPref {
-    my $this  = shift;
-    my $query = shift;
-    my $pref  = shift;
-
+sub fetchBackendPref($this,$object,$pref)
+{
     return '_NOBACKEND' if ( !$this->connectBackend() );
 
     my %res = $this->{backend}->getHashRow($query);
@@ -457,18 +419,13 @@ sub fetchBackendPref {
 ##########################
 ## WWList management
 
-sub getWWCacheKey {
-    my $object = shift;
-
+sub getWWCacheKey($object)
+{
     return md5_hex($object);
 }
 
-sub getObjectWWList {
-    my $this   = shift;
-    my $type   = shift;
-    my $object = shift;
-    my $sender = shift;
-
+sub getObjectWWList($this,$object,$object,$sender)
+{
     ## first check if already cached
     my $iscachelisted = $this->getObjectCachedWW( $type, $object, $sender );
     return 'LISTED USER' if ( $iscachelisted eq 'LISTED' );
@@ -507,12 +464,8 @@ sub getObjectWWList {
     return 'NOTLISTED';
 }
 
-sub getObjectCachedWW {
-    my $this   = shift;
-    my $type   = shift;
-    my $object = shift;
-    my $sender = shift;
-
+sub getObjectCachedWW($this,$type,$object,$sender)
+{
     $this->addStat( 'wwsubqueries', 1 );
     my $key = PrefTDaemon::getWWCacheKey($object);
 
@@ -563,11 +516,9 @@ sub getObjectCachedWW {
     return '_NOTCACHED';
 }
 
-sub getObjectBackendWW {
-    my $this   = shift;
-    my $type   = lc(shift);
-    my $object = shift;
-    my $sender = shift;
+sub getObjectBackendWW($this,$type,$object,$sender)
+{
+    $type   = lc($type);
 
     $this->addStat( 'wwsubqueries', 1 );
     my $cache_ = $whitelists_;
@@ -610,20 +561,14 @@ sub getObjectBackendWW {
     return $result;
 }
 
-sub addToCache {
-    my $this  = shift;
-    my $cache = shift;
-    my $key   = shift;
-    my $data  = shift;
-
+sub addToCache($this,$cache,$key,$data)
+{
     lock $cache;
     push @{ $cache->{$key}->{'value'} }, $data;
 }
 
-sub listMatch {
-    my $reg = shift;
-    my $sender = shift;
-
+sub listMatch($reg,$sender)
+{
     # Use only the actual address as pattern
     if ($reg =~ /^.*<(.*\@.*\..*)>$/) {
         $reg = $1;
@@ -646,11 +591,8 @@ sub listMatch {
     return 0;
 }
 
-sub createWWArrayCache {
-    my $this = shift;
-    my $type = shift;
-    my $key  = shift;
-
+sub createWWArrayCache($this,$type,$key)
+{
     my $cache_ = $whitelists_;
     if ( $type eq 'warn' ) {
         $cache_ = $warnlists_;
@@ -669,11 +611,8 @@ sub createWWArrayCache {
 
 ##########################
 ## Stats and counts utils
-sub addStat {
-    my $this   = shift;
-    my $what   = shift;
-    my $amount = shift;
-
+sub addStat($this,$what,$amount)
+{
     lock %stats_;
     if ( !defined( $stats_{$what} ) ) {
         $stats_{$what} = 0;
@@ -682,9 +621,8 @@ sub addStat {
     return 1;
 }
 
-sub statusHook {
-    my $this = shift;
-
+sub statusHook($this)
+{
     my $res = '-------------------'."\n";
     $res .= 'Current statistics:'."\n";
     $res .= '-------------------' ."\n";
@@ -701,9 +639,8 @@ sub statusHook {
     return $res;
 }
 
-sub logStats {
-    my $this = shift;
-
+sub logStats($this)
+{
     lock %stats_;
 
     my $prefpercencached = 0;

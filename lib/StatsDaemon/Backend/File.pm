@@ -39,11 +39,8 @@ our $VERSION    = 1.0;
 my $_need_day_change : shared = 0;
 my $_changing_day : shared = 0;
 
-sub new
+sub new($class,$daemon)
 {
-    my $class = shift;
-    my $daemon = shift;
-
     my $conf = ReadConfig::getInstance();
 
     my $this = {
@@ -72,18 +69,13 @@ sub new
     return $this;
 }
 
-sub threadInit
+sub threadInit($this)
 {
-    my $this = shift;
-
     $this->doLog("backend thread initialization", 'statsdaemon');
 }
 
-sub accessFlatElement
+sub accessFlatElement($this,$element)
 {
-    my $this = shift;
-    my $element = shift;
-
     my $value = 0;
 
     my ($path, $file, $base, $el_key) = $this->getPathFileBaseAndKeyFromElement($element);
@@ -106,11 +98,8 @@ sub accessFlatElement
     return $value;
 }
 
-sub stabilizeFlatElement
+sub stabilizeFlatElement($this,$element)
 {
-    my $this = shift;
-    my $element = shift;
-
     my ($path, $file, $base, $el_key) = $this->getPathFileBaseAndKeyFromElement($element);
     if (! -d $path) {
         mkpath($path);
@@ -159,29 +148,18 @@ sub stabilizeFlatElement
     return 'STABILIZED';
 }
 
-sub getStats
+sub getStats($this,$start,$stop,$what,$data)
 {
-    my $this = shift;
-    my $start = shift;
-    my $stop = shift;
-    my $what = shift;
-    my $data = shift;
-
     return 'OK';
 }
 
-sub announceMonthChange
+sub announceMonthChange($this)
 {
-    my $this = shift;
+    return;
 }
 
-sub doLog
+sub doLog($this,$message,$given_set,$priority='info')
 {
-    my $this = shift;
-    my $message   = shift;
-    my $given_set = shift;
-    my $priority  = shift;
-
     my $msg = $this->{class}." ".$message;
     if ($this->{daemon}) {
         $this->{daemon}->doLog($msg, $given_set, $priority);
@@ -189,11 +167,8 @@ sub doLog
 }
 
 ##
-sub getPathFileBaseAndKeyFromElement
+sub getPathFileBaseAndKeyFromElement($this,$element)
 {
-    my $this = shift;
-    my $element = shift;
-
     my @els = split(/:/, $element);
     my $key = pop @els;
 

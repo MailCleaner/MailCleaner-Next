@@ -34,10 +34,9 @@ our @ISA        = qw(Exporter);
 our @EXPORT     = qw(new collect plot);
 our $VERSION    = 1.0;
 
-sub new {
-    my $statfile = shift;
+sub new($statfile,$reset)
+{
     $statfile = $statfile."/network.rrd";
-    my $reset = shift;
 
     my %things = (
         in => ['COUNTER', 'AVERAGE'],
@@ -53,10 +52,8 @@ sub new {
     return bless $this, "RRD::Network";
 }
 
-sub collect {
-    my $this = shift;
-    my $snmp = shift;
-
+sub collect($this,$snmp)
+{
     my $if = $this->getInterfaceID($snmp, 'eth0');
 
     my %things = (
@@ -67,12 +64,8 @@ sub collect {
     return RRD::Generic::collect($this->{rrd}, $snmp, \%things);
 }
 
-sub plot {
-    my $this = shift;
-    my $dir = shift;
-    my $period = shift;
-    my $leg = shift;
-
+sub plot($this,$dir,$period,$leg)
+{
     my %things = (
         kbin => ['area', '54EB48', 'BA3614', 'In', 'AVERAGE', '%3.2lf KBps', 'in,1024,/'],
         kbout => ['line', '7648EB', 'BA3614', 'Out', 'AVERAGE', '%3.2lf KBps', 'out,1024,/'],
@@ -83,10 +76,8 @@ sub plot {
     return RRD::Generic::plot('network', $dir, $period, $leg, 'Bandwidth [KBps]', 0, 0, $this->{rrd}, \%things, \@order, $legend);
 }
 
-sub getInterfaceID {
-    my $this = shift;
-    my $snmp = shift;
-    my $if_name = shift;
+sub getInterfaceID($this,$snmp,$if_name)
+{
     my $if_nb = 1;
 
     my $base_oid = '1.3.6.1.2.1.2.2.1.2';

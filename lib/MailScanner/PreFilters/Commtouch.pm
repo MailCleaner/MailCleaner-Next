@@ -93,12 +93,8 @@ sub initialise
     }
 }
 
-sub Checks
+sub Checks($this,$message)
 {
-    my $this = shift;
-    my $message = shift;
-
-    ## check maximum message size
     my $maxsize = $Commtouch::conf{'maxSize'};
     if ($maxsize > 0 && $message->{size} > $maxsize) {
         MailScanner::Log::InfoLog(

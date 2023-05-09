@@ -38,7 +38,7 @@ if ($0 =~ m/(\S*)\/\S+.pl$/) {
 
 use DBI();
 
-my $DEBUG = 1;
+our $DEBUG = 1;
 
 my $lasterror;
 
@@ -62,11 +62,11 @@ if (!defined($messagesniffer_conf{'__AUTHENTICATION__'})) {
 my $uid = getpwnam( 'snfuser' );
 my $gid = getgrnam( 'snfuser' );
 
-dump_file("SNFServer.xml");
+dump_file($config{'SRCDIR'},"SNFServer.xml");
 chown $uid, $gid, "SNFServer.xml";
-dump_file("identity.xml");
+dump_file($config{'SRCDIR'},"identity.xml");
 chown $uid, $gid, "identity.xml";
-dump_file("getRulebase");
+dump_file($config{'SRCDIR'},"getRulebase");
 chown $uid, $gid, "getRulebase";
 
 chmod 0755, "$config{'SRCDIR'}/etc/messagesniffer/getRulebase";
@@ -76,12 +76,10 @@ $dbh->disconnect();
 print "DUMPSUCCESSFUL";
 
 #############################
-sub dump_file
+sub dump_file($srcdir,$file)
 {
-    my $file = shift;
-
-    my $template_file = "$config{'SRCDIR'}/etc/messagesniffer/".$file."_template";
-    my $target_file = "$config{'SRCDIR'}/etc/messagesniffer/".$file;
+    my $template_file = $srcdir."/etc/messagesniffer/".$file."_template";
+    my $target_file = $srcdir."/etc/messagesniffer/".$file;
 
     if ( !open(my $TEMPLATE, '<', $template_file) ) {
         $lasterror = "Cannot open template file: $template_file";
@@ -124,29 +122,29 @@ sub dump_file
 }
 
 #############################
-sub get_messagesniffer_config{
-        my %config;
+sub get_messagesniffer_config
+{
+    my %config;
 
-        my $sth = $dbh->prepare("SELECT licenseid, authentication FROM MessageSniffer");
-        $sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
+    my $sth = $dbh->prepare("SELECT licenseid, authentication FROM MessageSniffer");
+    $sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
 
-        if ($sth->rows < 1) {
-                return;
-        }
-        my $ref = $sth->fetchrow_hashref() or return;
+    if ($sth->rows < 1) {
+        return;
+    }
+    my $ref = $sth->fetchrow_hashref() or return;
 
-        $config{'__LICENSEID__'} = $ref->{'licenseid'};
-        $config{'__AUTHENTICATION__'} = $ref->{'authentication'};
+    $config{'__LICENSEID__'} = $ref->{'licenseid'};
+    $config{'__AUTHENTICATION__'} = $ref->{'authentication'};
 
-        $sth->finish();
-        return %config;
+    $sth->finish();
+    return %config;
 }
 
 
 #############################
-sub readConfig
+sub readConfig($configfile)
 {
-    my $configfile = shift;
     my %config;
     my ($var, $value);
 

@@ -101,10 +101,8 @@ foreach my $service (keys %services) {
 
 exit 0;
 
-sub checkHTTP
+sub checkHTTP($params)
 {
-    my $params = shift;
-
     my $timeout = 10;
 
     my %return = ('status' => 0, 'message' => 'no check done');

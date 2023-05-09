@@ -282,12 +282,8 @@ sub getAllAddresses
 # @param  $spams     array handle  handle of spams array
 # @return            boolean       true on success, false on failure
 ###
-sub getFullQuarantine
+sub getFullQuarantine($address,$spams_h,$email)
 {
-    my $address = shift;
-    my $spams_h = shift;
-    my $email = shift;
-
     my ($to_local, $to_domain, $initial);
 
     if ($address =~ /(\S+)@(\S+)/) {
@@ -333,15 +329,8 @@ sub getFullQuarantine
 # @param  $type      string        test or html
 # @return            string        filled quarantine template
 ###
-sub getQuarantineTemplate
+sub getQuarantineTemplate($template,$tmpl,$spams,$type,$lang,$temp_id)
 {
-    my $template = shift;
-    my $tmpl = shift;
-    my $spams = shift;
-    my $type = shift;
-    my $lang = shift;
-    my $temp_id = shift;
-
     my $ret = "";
     my $i = 0;
     my $bullet_filled = $template->getDefaultValue('FILLEDBULLET');

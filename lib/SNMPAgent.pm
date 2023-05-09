@@ -50,7 +50,8 @@ our $LOGGERLOG;
 
 my %mib = ();
 
-sub init {
+sub init
+{
     doLog('MailCleaner SNMP Agent Initializing...', 'daemon', 'debug');
 
     my $conf = ReadConfig::getInstance();
@@ -90,7 +91,8 @@ sub init {
     doLog('MailCleaner SNMP Agent Initialized.', 'daemon', 'debug');
 }
 
-sub SNMPHandler {
+sub SNMPHandler
+{
     my ($handler, $registration_info, $request_info, $requests) = @_;
 
     for (my $request = $requests; $request; $request = $request->next()) {
@@ -122,9 +124,8 @@ sub SNMPHandler {
     }
 }
 
-sub getValueForOID {
-    my $oid = shift;
-
+sub getValueForOID($oid)
+{
     my $el = getOIDElement($oid);
     if (ref($el) eq 'CODE') {
         return $el;
@@ -132,9 +133,8 @@ sub getValueForOID {
     return undef;
 }
 
-sub getOIDElement {
-    my $oid = shift;
-
+sub getOIDElement($oid)
+{
     if (!defined($oid)) {
         return undef;
     }
@@ -160,10 +160,8 @@ sub getOIDElement {
     return $branch;
 }
 
-sub getNextForOID {
-    my $oid = shift;
-    my $nextbranch = shift;
-
+sub getNextForOID($oid,$nextbranch)
+{
     if (new NetSNMP::OID($oid) < new NetSNMP::OID($rootOID)) {
         return undef;
     }
@@ -205,9 +203,8 @@ sub getNextForOID {
     }
 }
 
-sub getNextElementInBranch {
-    my $branch = shift;
-
+sub getNextElementInBranch($branch)
+{
     if ( ref($branch) ne 'HASH') {
         return undef;
     }
@@ -230,15 +227,8 @@ foreach my $set ( split( /,/, $log_sets ) ) {
 }
 my $log_prio_level = $log_prio_levels{ $log_priority };
 
-sub doLog {
-    my $message   = shift;
-    my $given_set = shift;
-    my $priority  = shift;
-
-    if ( !defined($priority) ) {
-        $priority = 'info';
-    }
-
+sub doLog($message,$given_set,$priority='info')
+{
     foreach my $set ( @logged_sets  ) {
         if ( $set eq 'all' || !defined($given_set) || $set eq $given_set ) {
             if ( $log_prio_levels{$priority} <= $log_prio_level ) {
@@ -249,9 +239,8 @@ sub doLog {
     }
 }
 
-sub doEffectiveLog {
-    my $message = shift;
-
+sub doEffectiveLog($message)
+{
     foreach my $line ( split( /\n/, $message ) ) {
         if ( $logfile ne '' ) {
             writeLogToFile($line);
@@ -262,10 +251,9 @@ sub doEffectiveLog {
     }
 }
 
-sub writeLogToFile {
-    my $message = shift;
+sub writeLogToFile($message)
+{
     chomp($message);
-
     if ( $logfile eq '' ) {
         return;
     }
@@ -293,9 +281,8 @@ sub writeLogToFile {
     flock( $LOGGERLOG, $LOCK_UN );
 }
 
-sub closeLog {
-    my $this = shift;
-
+sub closeLog($this)
+{
     doLog( 'Closing log file now.', 'daemon' );
     close $LOGGERLOG;
     exit;

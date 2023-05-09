@@ -53,21 +53,15 @@ sub initAgent
     return $mib_root_position;
 }
 
-
 sub getMIB
 {
     return \%mib_status;
 }
 
-sub doLog
+sub doLog($message,$cat,$level)
 {
-    my $message = shift;
-    my $cat = shift;
-    my $level = shift;
-
     SNMPAgent::doLog($message, $cat, $level);
 }
-
 
 ##### Handlers
 sub isMaster

@@ -69,9 +69,8 @@ EOF
     exit(1);
 }
 
-sub check_and_split
+sub check_and_split($addr)
 {
-    my $addr = shift;
     $addr = lc($addr);
     if ($addr =~ m/.\@/) {
         my $domain = $addr;
@@ -88,9 +87,8 @@ sub check_and_split
     }
 }
 
-sub check_date
+sub check_date($date)
 {
-    my $date = shift;
     if ($date =~ m/[0-9]{4}-[0-9]{2}-[0-9]{2}/) {
         return $date;
     } else {

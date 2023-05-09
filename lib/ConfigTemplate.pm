@@ -33,9 +33,9 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(create dumpFile);
 our $VERSION = 1.0;
 
-my $conf = ReadConfig::getInstance();
-my $SRCDIR=$conf->getOption('SRCDIR');
-my $VARDIR=$conf->getOption('VARDIR');
+our $conf = ReadConfig::getInstance();
+our $SRCDIR = $conf->getOption('SRCDIR');
+our $VARDIR = $conf->getOption('VARDIR');
 
 ###
 # create the dumper
@@ -43,14 +43,8 @@ my $VARDIR=$conf->getOption('VARDIR');
 # @param    $targetfile    string    target config file
 # @return                            this
 ###
-sub create
+sub create($templatefile,$targetfile)
 {
-    my $templatefile = shift;
-    my $targetfile = shift;
-
-    return if !$templatefile || $templatefile eq "";
-    return if !$targetfile || $targetfile eq "";
-
     $templatefile =~ s/__SRCDIR__/$SRCDIR/g;
     $templatefile =~ s/__VARDIR__/$VARDIR/g;
     if ($templatefile =~ m/^[^\/]/) {
@@ -84,10 +78,8 @@ sub create
 # preparse template and variables
 # @return   boolean     true on success, false on failure
 ###
-sub preParseTemplate
+sub preParseTemplate($this)
 {
-    my $this = shift;
-
     my $in_template = "";
     return 0 if (!open(my $FILE, '<', $this->{templatefile}));
     while (<$FILE>) {
@@ -111,11 +103,8 @@ sub preParseTemplate
     return 1;
 }
 
-sub getSubTemplate
+sub getSubTemplate($this,$tmplname)
 {
-    my $this = shift;
-    my $tmplname = shift;
-
     if (defined($this->{subtemplates}{$tmplname})) {
         return $this->{subtemplates}{$tmplname};
     }
@@ -127,10 +116,8 @@ sub getSubTemplate
 # @param    replace     array_h    handle of array of rplacements with tag as keys
 # @return               boolean    true on success, false on failure
 ###
-sub setReplacements
+sub setReplacements($this,$replace_h)
 {
-    my $this = shift;
-    my $replace_h = shift;
     my %replace = %{$replace_h};
 
     foreach my $tag (keys %replace) {
@@ -142,10 +129,8 @@ sub setReplacements
 ###
 # dump to destination file
 ###
-sub dump
+sub dump($this)
 {
-    my $this = shift;
-
     return 0 if (!open(my $FILE, '<', $this->{templatefile}));
 
     my $ret;
@@ -288,21 +273,13 @@ sub dump
     return 1;
 }
 
-sub setCondition
+sub setCondition($this,$condition,$value)
 {
-    my $this = shift;
-    my $condition = shift;
-    my $value = shift;
-
     $this->{conditions}{$condition} = $value;
-    return 1;
 }
 
-sub getCondition
+sub getCondition($this,$condition)
 {
-    my $this = shift;
-    my $condition = shift;
-
     if (defined($this->{conditions}{$condition})) {
         return $this->{conditions}{$condition};
     }
