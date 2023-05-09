@@ -78,16 +78,16 @@ sub new($class,$myspec_thish)
     foreach my $sk ( keys %myspec_this ) {
         $spec_this->{$sk} = $myspec_this{$sk};
     }
-    my $this = $class->SUPER::create( 'SpamHandler', undef, $spec_this );
-    foreach my $key ( keys %{$this} ) {
-        $this->{$key} =~ s/%([A-Z]+)%/$conf->getOption($1)/eg;
+    my $self = $class->SUPER::create( 'SpamHandler', undef, $spec_this );
+    foreach my $key ( keys %{$self} ) {
+        $self->{$key} =~ s/%([A-Z]+)%/$conf->getOption($1)/eg;
     }
-    bless $this, $class;
+    bless $self, $class;
 
-    return $this;
+    return $self;
 }
 
-sub clearCache($this,$nosh,$type)
+sub clearCache($self,$nosh,$type)
 {
     lock(%processed_ids);
     foreach my $id ( keys %processed_ids ) {
@@ -97,54 +97,54 @@ sub clearCache($this,$nosh,$type)
     return 1;
 }
 
-sub preForkHook($this)
+sub preForkHook($self)
 {
     return 1;
 }
 
-sub mainLoopHook($this)
+sub mainLoopHook($self)
 {
-    $this->doLog( "In SpamHandler mainloop", 'spamhandler' );
+    $self->doLog( "In SpamHandler mainloop", 'spamhandler' );
 
     $SIG{'INT'} = $SIG{'KILL'} = $SIG{'TERM'} = sub {
         my $t = threads->self;
-        $this->{tid} = $t->tid;
+        $self->{tid} = $t->tid;
 
-        $this->doLog(
+        $self->doLog(
             "Thread " . $t->tid . " got TERM! Proceeding to shutdown thread...",
             'daemon'
         );
 
         threads->detach();
-        $this->doLog( "Thread " . $t->tid . " detached.", 'daemon' );
+        $self->doLog( "Thread " . $t->tid . " detached.", 'daemon' );
         threads->exit();
-        $this->doLog( "Huho... Thread " . $t->tid . " still working though...",
+        $self->doLog( "Huho... Thread " . $t->tid . " still working though...",
             'daemon', 'error' );
     };
 
     ## first prepare databases access for loggin ('_Xname' are for order)
-    $this->connectDatabases();
+    $self->connectDatabases();
 
-    my $spamdir = $this->{spamdir};
+    my $spamdir = $self->{spamdir};
 
-    if ( $this->{reportspamtodnslists} > 0 ) {
+    if ( $self->{reportspamtodnslists} > 0 ) {
         require MCDnsLists;
-        $this->{dnslists} = new MCDnsLists(
-            sub { my $msg = shift; $this->doLog($msg, 'spamhandler'); },
-            $this->{debug}
+        $self->{dnslists} = new MCDnsLists(
+            sub { my $msg = shift; $self->doLog($msg, 'spamhandler'); },
+            $self->{debug}
         );
-        $this->{dnslists}->loadRBLs(
-            $this->{rblsDefsPath}, $this->{reportrbls},
-            'URIRBL',              $this->{whitelistDomainsFile},
-            $this->{TLDsFiles},    $this->{localDomainsFile},
+        $self->{dnslists}->loadRBLs(
+            $self->{rblsDefsPath}, $self->{reportrbls},
+            'URIRBL',              $self->{whitelistDomainsFile},
+            $self->{TLDsFiles},    $self->{localDomainsFile},
             'dnslists'
         );
     }
 
     while (1) {
-        my $batch = SpamHandler::Batch::new( $spamdir, $this );
+        my $batch = SpamHandler::Batch::new( $spamdir, $self );
         if ( !$batch ) {
-            $this->doLog(
+            $self->doLog(
                 "Cannot create spam batch ($spamdir) ! sleeping for 10 seconds...",
                 'spamhandler', 'error'
             );
@@ -155,34 +155,34 @@ sub mainLoopHook($this)
         $batch->prepareRun();
         $batch->getMessagesToProcess();
         $batch->run();
-        sleep $this->{prefork} * $this->{interval};
+        sleep $self->{prefork} * $self->{interval};
     }
-    $this->doLog( "Error, in thread neverland !", 'spamhandler', 'error' );
+    $self->doLog( "Error, in thread neverland !", 'spamhandler', 'error' );
     return 1;
 }
 
-sub connectDatabases($this)
+sub connectDatabases($self)
 {
     my @databases = ( 'slave', 'realmaster' );
 
     foreach my $db (@databases) {
-        if ( !defined( $this->{dbs}{$db} ) || !$this->{dbs}{$db}->ping() ) {
-            $this->doLog( "Connecting to database $db", 'spamhandler' );
-            $this->{dbs}{$db} = DB::connect( $db, 'mc_spool', 0 );
+        if ( !defined( $self->{dbs}{$db} ) || !$self->{dbs}{$db}->ping() ) {
+            $self->doLog( "Connecting to database $db", 'spamhandler' );
+            $self->{dbs}{$db} = DB::connect( $db, 'mc_spool', 0 );
         }
 
-        if ( !defined( $this->{dbs}{$db} ) || !$this->{dbs}{$db}->ping() ) {
-            $this->doLog( "Error, could not connect to db $db ",
+        if ( !defined( $self->{dbs}{$db} ) || !$self->{dbs}{$db}->ping() ) {
+            $self->doLog( "Error, could not connect to db $db ",
                 'spamhandler', 'error' );
-            delete( $this->{dbs}{$db} );
+            delete( $self->{dbs}{$db} );
         }
     }
 
     ## and prepare statements
-    foreach my $dbname ( keys %{ $this->{dbs} } ) {
+    foreach my $dbname ( keys %{ $self->{dbs} } ) {
         ## desable autocommit
-        $this->{dbs}{$dbname}->setAutoCommit(0);
-        my $db = $this->{dbs}{$dbname};
+        $self->{dbs}{$dbname}->setAutoCommit(0);
+        my $db = $self->{dbs}{$dbname};
         foreach my $t (
             (
                 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
@@ -192,16 +192,16 @@ sub connectDatabases($this)
             )
         ) {
             my %db_prepare = ();
-            $this->{prepared}{$dbname}{$t} = $db->prepare(
+            $self->{prepared}{$dbname}{$t} = $db->prepare(
                 'INSERT IGNORE INTO spam_' . $t . ' ' .
                 '(date_in, time_in, to_domain, to_user, sender, exim_id, M_score, M_rbls, ' .
                 'M_prefilter, M_subject, M_globalscore, forced, in_master, store_slave, ' .
                 'is_newsletter) VALUES(NOW(), NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, \'0\', ?,' .
-                $this->{storeslave} . ', ?)'
+                $self->{storeslave} . ', ?)'
             );
 
-            if ( !$this->{prepared}{$dbname}{$t} ) {
-                $this->doLog( "Error in preparing statement $dbname, $t!",
+            if ( !$self->{prepared}{$dbname}{$t} ) {
+                $self->doLog( "Error in preparing statement $dbname, $t!",
                     'spamhandler', 'error' );
             }
         }
@@ -210,7 +210,7 @@ sub connectDatabases($this)
     return 1;
 }
 
-sub deleteLock($this,$id)
+sub deleteLock($self,$id)
 {
     lock(%processed_ids);
     if ( defined( $processed_ids{$id} ) ) {
@@ -219,14 +219,14 @@ sub deleteLock($this,$id)
     return 1;
 }
 
-sub addLock($this,$id)
+sub addLock($self,$id)
 {
     lock(%processed_ids);
     $processed_ids{$id} = 1;
     return 1;
 }
 
-sub isLocked($this,$id)
+sub isLocked($self,$id)
 {
     lock(%processed_ids);
     if ( exists( $processed_ids{$id} ) ) {

@@ -43,7 +43,7 @@ sub new($class,$daemon)
 {
     my $conf = ReadConfig::getInstance();
 
-    my $this = {
+    my $self = {
         'class' => $class,
         'daemon' => $daemon,
         'data' => undef,
@@ -52,33 +52,33 @@ sub new($class,$daemon)
         'history_filename' => '_history'
     };
 
-    bless $this, $class;
+    bless $self, $class;
 
-    foreach my $option (keys %{ $this->{daemon} }) {
-        if (defined($this->{$option})) {
-            $this->{$option} = $this->{daemon}->{$option};
+    foreach my $option (keys %{ $self->{daemon} }) {
+        if (defined($self->{$option})) {
+            $self->{$option} = $self->{daemon}->{$option};
         }
     }
-    if (! -d $this->{basepath}) {
-        mkpath($this->{basepath});
-        $this->doLog("base path created: ".$this->{basepath});
+    if (! -d $self->{basepath}) {
+        mkpath($self->{basepath});
+        $self->doLog("base path created: ".$self->{basepath});
     }
-    $this->doLog("backend loaded", 'statsdaemon');
+    $self->doLog("backend loaded", 'statsdaemon');
 
-    $this->{data} = $StatsDaemon::data_;
-    return $this;
+    $self->{data} = $StatsDaemon::data_;
+    return $self;
 }
 
-sub threadInit($this)
+sub threadInit($self)
 {
-    $this->doLog("backend thread initialization", 'statsdaemon');
+    $self->doLog("backend thread initialization", 'statsdaemon');
 }
 
-sub accessFlatElement($this,$element)
+sub accessFlatElement($self,$element)
 {
     my $value = 0;
 
-    my ($path, $file, $base, $el_key) = $this->getPathFileBaseAndKeyFromElement($element);
+    my ($path, $file, $base, $el_key) = $self->getPathFileBaseAndKeyFromElement($element);
     if ( open(my $FILE, '<', $file)) {
         while (<$FILE>) {
             if (/^([^:\s]+)\s*:\s*(\d+)/) {
@@ -87,8 +87,8 @@ sub accessFlatElement($this,$element)
                 if ($newkey eq $el_key) {
                     $value = $v;
                 } else {
-                    $this->{daemon}->createElement($base.":".$newkey);
-                    $this->{daemon}->setElementValueByName($base.":".$newkey, 'value', $v);
+                    $self->{daemon}->createElement($base.":".$newkey);
+                    $self->{daemon}->setElementValueByName($base.":".$newkey, 'value', $v);
                 }
             }
         }
@@ -98,21 +98,21 @@ sub accessFlatElement($this,$element)
     return $value;
 }
 
-sub stabilizeFlatElement($this,$element)
+sub stabilizeFlatElement($self,$element)
 {
-    my ($path, $file, $base, $el_key) = $this->getPathFileBaseAndKeyFromElement($element);
+    my ($path, $file, $base, $el_key) = $self->getPathFileBaseAndKeyFromElement($element);
     if (! -d $path) {
         mkpath($path);
     }
 
-    if ($this->{daemon}->isChangingDay()) {
-        my $sfile = $path."/".$this->{history_filename};
+    if ($self->{daemon}->isChangingDay()) {
+        my $sfile = $path."/".$self->{history_filename};
         if (! open(my $FILE, '>>', $sfile)) {
             return '_CANNOTWRITEHISTORYFILE';
         }
-        my $cdate = $this->{daemon}->getCurrentDate();
+        my $cdate = $self->{daemon}->getCurrentDate();
         print $FILE sprintf('%.4u%.2u%.2u' ,$cdate->{'year'},$cdate->{'month'},$cdate->{'day'}).":";
-        print $FILE $el_key.":".$this->{daemon}->getElementValueByName($element, 'value')."\n";
+        print $FILE $el_key.":".$self->{daemon}->getElementValueByName($element, 'value')."\n";
         close $FILE;
 
         if (-f $file) {
@@ -140,7 +140,7 @@ sub stabilizeFlatElement($this,$element)
         foreach my $key (keys %els) {
             print $FILE $key.":".$els{$key}."\n";
         }
-        print $FILE $el_key.":".$this->{daemon}->getElementValueByName($element, 'value')."\n";
+        print $FILE $el_key.":".$self->{daemon}->getElementValueByName($element, 'value')."\n";
         flock $FILE, LOCK_UN;
         close $FILE;
     }
@@ -148,32 +148,32 @@ sub stabilizeFlatElement($this,$element)
     return 'STABILIZED';
 }
 
-sub getStats($this,$start,$stop,$what,$data)
+sub getStats($self,$start,$stop,$what,$data)
 {
     return 'OK';
 }
 
-sub announceMonthChange($this)
+sub announceMonthChange($self)
 {
     return;
 }
 
-sub doLog($this,$message,$given_set,$priority='info')
+sub doLog($self,$message,$given_set,$priority='info')
 {
-    my $msg = $this->{class}." ".$message;
-    if ($this->{daemon}) {
-        $this->{daemon}->doLog($msg, $given_set, $priority);
+    my $msg = $self->{class}." ".$message;
+    if ($self->{daemon}) {
+        $self->{daemon}->doLog($msg, $given_set, $priority);
     }
 }
 
 ##
-sub getPathFileBaseAndKeyFromElement($this,$element)
+sub getPathFileBaseAndKeyFromElement($self,$element)
 {
     my @els = split(/:/, $element);
     my $key = pop @els;
 
-    my $path = $this->{basepath}.'/'.join('/',@els);
-    my $file = $path.'/'.$this->{today_filename};
+    my $path = $self->{basepath}.'/'.join('/',@els);
+    my $file = $path.'/'.$self->{today_filename};
     my $base = join(':', @els);
     return (lc($path), lc($file), lc($base), lc($key));
 }

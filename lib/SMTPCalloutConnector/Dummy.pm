@@ -36,30 +36,30 @@ sub new($class,$paramsh)
 {
     my @params = @{$paramsh};
 
-    my $this = {
+    my $self = {
         'last_message' => '',
         'useable' => 1,
         'default_on_error' => 1 ## we accept in case of any failure, to avoid false positives
     };
 
-    bless $this, $class;
-    return $this;
+    bless $self, $class;
+    return $self;
 }
 
-sub verify($this,$address)
+sub verify($self,$address)
 {
-    $this->{last_message} = 'Dummy callout will always answer yes';
+    $self->{last_message} = 'Dummy callout will always answer yes';
     return 1;
 }
 
-sub isUseable($this)
+sub isUseable($self)
 {
-    return $this->{useable};
+    return $self->{useable};
 }
 
-sub lastMessage($this)
+sub lastMessage($self)
 {
-    return $this->{last_message};
+    return $self->{last_message};
 }
 
 1;

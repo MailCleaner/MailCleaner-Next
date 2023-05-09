@@ -33,16 +33,16 @@ our $VERSION = 1.0;
 
 sub create($server,$port,$params)
 {
-    my $this = {
+    my $self = {
         error_text => "No authentication scheme available",
         error_code => -1,
     };
 
-    bless $this, "SMTPAuthenticator::NoAuth";
-    return $this;
+    bless $self, "SMTPAuthenticator::NoAuth";
+    return $self;
 }
 
-sub authenticate($this,$username,$password)
+sub authenticate($self,$username,$password)
 {
     error_text => "No authentication scheme available for user: $username",
     return 0;

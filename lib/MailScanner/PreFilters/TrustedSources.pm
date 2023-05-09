@@ -166,7 +166,7 @@ sub initialise
     }
 }
 
-sub Checks($this,$message)
+sub Checks($self,$message)
 {
     my $ham = 1;
     my $reason = "";
@@ -319,9 +319,9 @@ sub Checks($this,$message)
         return 0;
     }
 
-    if ((! $message->{from} eq "") && $this->wantSPF($message) && ( $first_untrusted > 0)) {
+    if ((! $message->{from} eq "") && $self->wantSPF($message) && ( $first_untrusted > 0)) {
         use Mail::SPF;
-        my $spf_from = $this->validatedFrom($message);
+        my $spf_from = $self->validatedFrom($message);
         if ($TrustedSources::conf{debug}) {
             MailScanner::Log::InfoLog("$MODULE will do SPF check for: ".$spf_from);
         }
@@ -380,10 +380,10 @@ sub dispose
 
 sub wantSPF
 {
-    my $this = shift;
+    my $self = shift;
     my $message = shift;
 
-    my $from = $this->validatedFrom($message);
+    my $from = $self->validatedFrom($message);
 
     if ($TrustedSources::conf{useSPFOnGlobal}) {
         return 1;
@@ -412,7 +412,7 @@ sub wantSPF
 
 sub validatedFrom
 {
-    my $this = shift;
+    my $self = shift;
     my $message = shift;
 
     my $from = $message->{from};

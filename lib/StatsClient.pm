@@ -47,27 +47,27 @@ sub new($class)
     my $conf = ReadConfig::getInstance();
     $spec_this->{socketpath} = $conf->getOption('VARDIR')."/run/statsdaemon.sock";
 
-    my $this = $class->SUPER::new($spec_this);
+    my $self = $class->SUPER::new($spec_this);
 
-    bless $this, $class;
-    return $this;
+    bless $self, $class;
+    return $self;
 }
 
-sub getValue($this,$element)
+sub getValue($self,$element)
 {
-	  $this->{timeout} = $this->{get_timeout};
-	  my $ret = $this->query('GET '.$element);
+	  $self->{timeout} = $self->{get_timeout};
+	  my $ret = $self->query('GET '.$element);
 	  return $ret;
 }
 
-sub addValue($this,$element,$value)
+sub addValue($self,$element,$value)
 {
-    $this->{timeout} = $this->{set_timeout};
-	  my $ret = $this->query('ADD '.$element.' '.$value);
+    $self->{timeout} = $self->{set_timeout};
+	  my $ret = $self->query('ADD '.$element.' '.$value);
 	  return $ret;
 }
 
-sub addMessageStats($this,$element,$valuesh)
+sub addMessageStats($self,$element,$valuesh)
 {
     my %values = %{$valuesh};	
 	
@@ -86,7 +86,7 @@ sub addMessageStats($this,$element,$valuesh)
 
     foreach my $key (%values) {
         if ($values{$key}) {
-            my $ret = $this->addValue($element.":".$key, $values{$key});
+            my $ret = $self->addValue($element.":".$key, $values{$key});
             if ($key eq 'msg' && $ret =~ /^ADDED\s+(\d+)/) {
                 $nbmessages = $1;
             }
@@ -99,17 +99,17 @@ sub addMessageStats($this,$element,$valuesh)
      return $final_ret." ".$nbmessages;
 }
 
-sub setTimeout($this,$timeout)
+sub setTimeout($self,$timeout)
 {
     return 0 if ($timeout !~ m/^\d+$/);
-    $this->{timeout} = $timeout;
+    $self->{timeout} = $timeout;
     return 1;
 }
 
-sub logStats($this)
+sub logStats($self)
 {
     my $query = 'STATS';
-    return $this->query($query);
+    return $self->query($query);
 }
 
 1;

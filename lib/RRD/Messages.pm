@@ -54,16 +54,16 @@ sub new($statfile,$reset)
     my $rrd = RRD::Generic::create($statfile, \%things, $reset);
 
 
-    my $this = {
+    my $self = {
         statfile => $statfile,
         rrd => $rrd
     };
 
-    return bless $this, "RRD::Messages";
+    return bless $self, "RRD::Messages";
 }
 
 
-sub collect($this,$snmp)
+sub collect($self,$snmp)
 {
     require Net::SNMP;
     require RRDTool::OO;
@@ -77,7 +77,7 @@ sub collect($this,$snmp)
     }
 
     my @values = split('\|', $value);
-    return $this->{rrd}->update(
+    return $self->{rrd}->update(
         values => {
             bytes => $values[0],
             msgs => $values[1],
@@ -94,7 +94,7 @@ sub collect($this,$snmp)
 
 }
 
-sub plot($this,$dir,$period,$leg)
+sub plot($self,$dir,$period,$leg)
 {
     my %things = (
         msgs => ['line', '000000', '', 'Messages', 'LAST', '%10.0lf', ''],
@@ -106,7 +106,7 @@ sub plot($this,$dir,$period,$leg)
     my @order = ('msgs', 'viruses', 'contents', 'spams', 'cleans');
 
     my $legend = "\t\t         Last\t Average\t\tMax\\n";
-    RRD::Generic::plot('messages', $dir, $period, $leg, 'Messages stats', 0, 5, $this->{rrd}, \%things, \@order, $legend);
+    RRD::Generic::plot('messages', $dir, $period, $leg, 'Messages stats', 0, 5, $self->{rrd}, \%things, \@order, $legend);
 
     %things = (
        pviruses => ['area', 'FF0000', '', 'Viruses', 'AVERAGE', '%10.2lf %%', ''],
@@ -116,7 +116,7 @@ sub plot($this,$dir,$period,$leg)
     );
     @order = ('pviruses', 'pcontents', 'pspams', 'pcleans');
     $legend = "\t\t           Last\t     Average\t\tMax\\n";
-    RRD::Generic::plot('pmessages', $dir, $period, $leg, 'Message type [%]', 0, 100, $this->{rrd}, \%things, \@order, $legend);
+    RRD::Generic::plot('pmessages', $dir, $period, $leg, 'Message type [%]', 0, 100, $self->{rrd}, \%things, \@order, $legend);
     return 1;
 }
 

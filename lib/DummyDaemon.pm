@@ -65,26 +65,26 @@ sub new($class,$myspec_thish=0)
     }
 
     ## call parent class creation
-    my $this = $class->SUPER::new($spec_this->{'name'}, undef, $spec_this );
-    bless $this, 'DummyDaemon';
-    return $this;
+    my $self = $class->SUPER::new($spec_this->{'name'}, undef, $spec_this );
+    bless $self, 'DummyDaemon';
+    return $self;
 }
 
 ### define specific hooks
-sub initThreadHook($this)
+sub initThreadHook($self)
 {
-    $this->doLog('DummyDaemon thread initialization hook...', 'dummy');
+    $self->doLog('DummyDaemon thread initialization hook...', 'dummy');
 }
 
-sub exitThreadHook($this)
+sub exitThreadHook($self)
 {
-    $this->doLog('DummyDaemon thread exiting hook...', 'dummy');
+    $self->doLog('DummyDaemon thread exiting hook...', 'dummy');
 }
 
 ####### Main processing
-sub dataRead($this,$data)
+sub dataRead($self,$data)
 {
-    $this->doLog("Got a query: $data", 'dummy');
+    $self->doLog("Got a query: $data", 'dummy');
     return 'OK';
 }
 

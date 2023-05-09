@@ -46,16 +46,16 @@ sub new($statfile,$reset)
     my $rrd = RRD::Generic::create($statfile, \%things, $reset);
 
 
-    my $this = {
+    my $self = {
         statfile => $statfile,
         rrd => $rrd
     };
 
-    return bless $this, "RRD::Spools";
+    return bless $self, "RRD::Spools";
 }
 
 
-sub collect($this,$snmp)
+sub collect($self,$snmp)
 {
     require Net::SNMP;
     require RRDTool::OO;
@@ -69,7 +69,7 @@ sub collect($this,$snmp)
     }
 
     my @values = split('\|', $value);
-    return $this->{rrd}->update(
+    return $self->{rrd}->update(
         values => {
             incoming => $values[1],
             filtering => $values[2],
@@ -79,7 +79,7 @@ sub collect($this,$snmp)
 
 }
 
-sub plot($this,$dir,$period,$leg)
+sub plot($self,$dir,$period,$leg)
 {
     my %things = (
         incoming => ['line', '000000', '', 'Incoming', 'AVERAGE', '%10.0lf', ''],
@@ -89,7 +89,7 @@ sub plot($this,$dir,$period,$leg)
     my @order = ('incoming', 'filtering', 'outgoing');
 
     my $legend = "\t\t          Last\t  Average\t\t Max\\n";
-    RRD::Generic::plot('spools', $dir, $period, $leg, 'Spools count', 0, 5, $this->{rrd}, \%things, \@order, $legend);
+    RRD::Generic::plot('spools', $dir, $period, $leg, 'Spools count', 0, 5, $self->{rrd}, \%things, \@order, $legend);
     return 1;
 }
 

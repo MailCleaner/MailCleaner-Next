@@ -47,16 +47,16 @@ sub new($statfile,$reset)
     my $rrd = RRD::Generic::create($statfile, \%things, $reset);
 
 
-    my $this = {
+    my $self = {
         statfile => $statfile,
         rrd => $rrd
     };
 
-    return bless $this, "RRD::Memory";
+    return bless $self, "RRD::Memory";
 }
 
 
-sub collect($this,$snmp)
+sub collect($self,$snmp)
 {
     require Net::SNMP;
     require RRDTool::OO;
@@ -80,7 +80,7 @@ sub collect($this,$snmp)
         $values{$thing} = $value;
     }
 
-    return $this->{rrd}->update(
+    return $self->{rrd}->update(
         values => {
             used => $values{totalreal} - $values{freereal},
             buffered => $values{buffered},
@@ -91,7 +91,7 @@ sub collect($this,$snmp)
     );
 }
 
-sub plot($this,$dir,$period,$leg)
+sub plot($self,$dir,$period,$leg)
 {
     my %things = (
         mused => ['area', 'EB9C48', '', 'Used', 'AVERAGE', '%10.2lf Mb', 'used,1024,/'],
@@ -103,7 +103,7 @@ sub plot($this,$dir,$period,$leg)
     my @order = ('mused', 'mfree','mcached', 'mbuffered', 'mswapused');
 
     my $legend = "\t\t           Last\t      Average\t\t  Max\\n";
-    return RRD::Generic::plot('memory', $dir, $period, $leg, 'Memory usage [Mb]', 0, 100, $this->{rrd}, \%things, \@order, $legend);
+    return RRD::Generic::plot('memory', $dir, $period, $leg, 'Memory usage [Mb]', 0, 100, $self->{rrd}, \%things, \@order, $legend);
 }
 
 1;

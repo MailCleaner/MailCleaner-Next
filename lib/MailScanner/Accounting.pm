@@ -33,106 +33,106 @@ sub new($preposttype='post')
     if ($preposttype ne 'pre') {
   	    $preposttype = 'post';
     }
-    my $this = {
+    my $self = {
         last_message => '',
         prepost_type => $preposttype
     };
 
-    $this->{statsclient} = StatsClient->new();
+    $self->{statsclient} = StatsClient->new();
 
-    bless $this, 'MailScanner::Accounting';
-    return $this;
+    bless $self, 'MailScanner::Accounting';
+    return $self;
 }
 
-sub checkCheckeableUser($this,$user)
+sub checkCheckeableUser($self,$user)
 {
-    if (! $this->isUserCheckeable($user)) {
-  	    $this->{last_message} = 'Number of licensed users has been exhausted';
+    if (! $self->isUserCheckeable($user)) {
+  	    $self->{last_message} = 'Number of licensed users has been exhausted';
         return 0;
     }
-    if (! $this->isUserCheckeableForDomain($user)) {
-  	    $this->{last_message} = 'Number of licensed users for domain has been exhausted';
+    if (! $self->isUserCheckeableForDomain($user)) {
+  	    $self->{last_message} = 'Number of licensed users for domain has been exhausted';
         return 0;
     }
     return 1;
 }
 
-sub checkCheckeable($this,$msg)
+sub checkCheckeable($self,$msg)
 {
     my $nb_notcheakable = 0;
     my $nb_recipients = @{$msg->{to}};
 
     ## check globally
     foreach my $rcpt (@{$msg->{to}}) {
-        if (! $this->isUserCheckeable($rcpt)) {
+        if (! $self->isUserCheckeable($rcpt)) {
             $nb_notcheakable++;
         }
     }
     ## only of all recipients are not checkeable, otherwise still filter message
     if ($nb_notcheakable >= $nb_recipients) {
-        $this->{last_message} = 'Number of licensed users has been exhausted';
+        $self->{last_message} = 'Number of licensed users has been exhausted';
         return 0;
     }
 
     ## check per domain
     $nb_notcheakable = 0;
     foreach my $rcpt (@{$msg->{to}}) {
-  	    if (! $this->isUserCheckeableForDomain($rcpt)) {
+  	    if (! $self->isUserCheckeableForDomain($rcpt)) {
             $nb_notcheakable++;
         }
     }
     ## only of all recipients are not checkeable, otherwise still filter message
     if ($nb_notcheakable >= $nb_recipients) {
-  	  $this->{last_message} = 'Number of licensed users for domain has been exhausted';
+  	  $self->{last_message} = 'Number of licensed users for domain has been exhausted';
   	  return 0;
     }
 
     return 1;
 }
 
-sub isUserCheckeable($this,$user)
+sub isUserCheckeable($self,$user)
 {
 	  if ($user =~ m/(\S+)\@(\S+)/) {
         my $domain_name = $2;
         my $local_part = $1;
 
-        if ($this->{statsclient}->getValue('user:'.$domain_name.":".$local_part.":unlicenseduser") > 0) {
+        if ($self->{statsclient}->getValue('user:'.$domain_name.":".$local_part.":unlicenseduser") > 0) {
             ## if user already has exhausted license
             return 0;
         }
-        if ($this->{statsclient}->getValue('user:'.$domain_name.":".$local_part.":licenseduser") > 0) {
+        if ($self->{statsclient}->getValue('user:'.$domain_name.":".$local_part.":licenseduser") > 0) {
             ## user already has been counted
             return 1;
         }
 
         my $maxusers = 0;
         if ($maxusers > 0) {
-        	  my $current_count = $this->{statsclient}->getValue('global:user');
-        	  if ($this->{prepost_type} eq 'pre') {
+        	  my $current_count = $self->{statsclient}->getValue('global:user');
+        	  if ($self->{prepost_type} eq 'pre') {
                 $current_count++;
             }
             if ($current_count > $maxusers) {
-                $this->{statsclient}->addValue('user:'.$domain_name.":".$local_part.":unlicenseduser", 1);
+                $self->{statsclient}->addValue('user:'.$domain_name.":".$local_part.":unlicenseduser", 1);
                 return 0;
             } else {
-                $this->{statsclient}->addValue('user:'.$domain_name.":".$local_part.":licenseduser", 1);
+                $self->{statsclient}->addValue('user:'.$domain_name.":".$local_part.":licenseduser", 1);
             }
         }
 	  }
     return 1;
 }
 
-sub isUserCheckeableForDomain($this,$user)
+sub isUserCheckeableForDomain($self,$user)
 {
 	  if ($user =~ m/(\S+)\@(\S+)/) {
 	      my $domain_name = $2;
 	      my $local_part = $1;
 	
-	      if ($this->{statsclient}->getValue('user:'.$domain_name.":".$local_part.":domainunlicenseduser") > 0) {
+	      if ($self->{statsclient}->getValue('user:'.$domain_name.":".$local_part.":domainunlicenseduser") > 0) {
 	    	    ## if user already has exhausted license
 	    	    return 0;
 	      }
-	      if ($this->{statsclient}->getValue('user:'.$domain_name.":".$local_part.":domainlicenseduser") > 0) {
+	      if ($self->{statsclient}->getValue('user:'.$domain_name.":".$local_part.":domainlicenseduser") > 0) {
             ## user already has been counted
             return 1;
         }
@@ -142,15 +142,15 @@ sub isUserCheckeableForDomain($this,$user)
             my $maxusers = $domain->getPref('acc_max_daily_users');
             if ($maxusers > 0) {	
             	  my $domain_subject = 'domain:'.$domain_name.":user";
-                my $current_count = $this->{statsclient}->getValue($domain_subject);
-                if ($this->{prepost_type} eq 'pre') {
+                my $current_count = $self->{statsclient}->getValue($domain_subject);
+                if ($self->{prepost_type} eq 'pre') {
                     $current_count++;
                 }
                 if ($current_count > $maxusers) {
-                	  $this->{statsclient}->addValue('user:'.$domain_name.":".$local_part.":domainunlicenseduser", 1);
+                	  $self->{statsclient}->addValue('user:'.$domain_name.":".$local_part.":domainunlicenseduser", 1);
                     return 0;
                 } else {
-                	  $this->{statsclient}->addValue('user:'.$domain_name.":".$local_part.":domainlicenseduser", 1);
+                	  $self->{statsclient}->addValue('user:'.$domain_name.":".$local_part.":domainlicenseduser", 1);
                 }
             }
         }
@@ -158,9 +158,9 @@ sub isUserCheckeableForDomain($this,$user)
 	  return 1;
 }
 
-sub getLastMessage($this)
+sub getLastMessage($self)
 {
-    return $this->{last_message};
+    return $self->{last_message};
 }
 
 1;

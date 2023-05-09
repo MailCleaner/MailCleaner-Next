@@ -88,34 +88,34 @@ sub connect($type,$db,$critical=0)
             "mailcleaner", $conf->getOption('MYMAILCLEANERPWD'), {RaiseError => 0, PrintError => 0}
         ) or fatal_error("CANNOTCONNECTDB 2", $critical);
     }
-    my $this = {
+    my $self = {
         dbh => $dbh,
         type => $type,
         critical => $critical,
     };
 
-    return bless $this, "DB";
+    return bless $self, "DB";
 }
 
-sub getType($this)
+sub getType($self)
 {
-    return $this->{dbh};
+    return $self->{dbh};
 }
 
-sub ping($this)
+sub ping($self)
 {
-    if (defined($this->{dbh})) {
-        return $this->{dbh}->ping();
+    if (defined($self->{dbh})) {
+        return $self->{dbh}->ping();
     }
 }
 
-sub disconnect($this)
+sub disconnect($self)
 {
-    my $dbh = $this->{dbh};
+    my $dbh = $self->{dbh};
     if ($dbh) {
         $dbh->disconnect();
     }
-    $this->{dbh} = "";
+    $self->{dbh} = "";
     return 1;
 }
 
@@ -125,9 +125,9 @@ sub fatal_error($msg,$critical=0)
     die("$msg\n");
 }
 
-sub prepare($this,$query)
+sub prepare($self,$query)
 {
-    my $dbh = $this->{dbh};
+    my $dbh = $self->{dbh};
 
     my $prepared = $dbh->prepare($query);
     if (! $prepared) {
@@ -138,9 +138,9 @@ sub prepare($this,$query)
 }
 
 
-sub execute($this,$query,$nolock=0)
+sub execute($self,$query,$nolock=0)
 {
-    my $dbh = $this->{dbh};
+    my $dbh = $self->{dbh};
 
     if (!defined($dbh)) {
         print "WARNING, DB HANDLE IS NULL\n";
@@ -153,9 +153,9 @@ sub execute($this,$query,$nolock=0)
     return 1;
 }
 
-sub commit($this,$query)
+sub commit($self,$query)
 {
-    my $dbh = $this->{dbh};
+    my $dbh = $self->{dbh};
 
     if (! $dbh->commit()) {
         print "WARNING, CANNOT commit\n";
@@ -164,9 +164,9 @@ sub commit($this,$query)
     return 1;
 }
 
-sub getListOfHash($this,$query,$nowarnings=0)
+sub getListOfHash($self,$query,$nowarnings=0)
 {
-    my $dbh = $this->{dbh};
+    my $dbh = $self->{dbh};
     my @results;
 
     my $sth = $dbh->prepare($query);
@@ -185,9 +185,9 @@ sub getListOfHash($this,$query,$nowarnings=0)
     return @results;
 }
 
-sub getList($this,$query,$nowarnings=0)
+sub getList($self,$query,$nowarnings=0)
 {
-    my $dbh = $this->{dbh};
+    my $dbh = $self->{dbh};
     my @results;
 
     my $sth = $dbh->prepare($query);
@@ -206,9 +206,9 @@ sub getList($this,$query,$nowarnings=0)
     return @results;
 }
 
-sub getCount($this,$query)
+sub getCount($self,$query)
 {
-    my $dbh = $this->{dbh};
+    my $dbh = $self->{dbh};
     my $sth = $dbh->prepare($query);
     my $res = $sth->execute();
 
@@ -218,9 +218,9 @@ sub getCount($this,$query)
 }
 
 
-sub getHashRow($this,$query,$nowarnings=0)
+sub getHashRow($self,$query,$nowarnings=0)
 {
-    my $dbh = $this->{dbh};
+    my $dbh = $self->{dbh};
     my %results;
 
     my $sth = $dbh->prepare($query);
@@ -240,12 +240,12 @@ sub getHashRow($this,$query,$nowarnings=0)
     return %results;
 }
 
-sub getLastID($this)
+sub getLastID($self)
 {
     my $res = 0;
     my $query = "SELECT LAST_INSERT_ID() as lid;";
 
-    my $sth = $this->{dbh}->prepare($query);
+    my $sth = $self->{dbh}->prepare($query);
     my $ret = $sth->execute();
     if (!$ret) {
         return $res;
@@ -261,9 +261,9 @@ sub getLastID($this)
     return $res;
 }
 
-sub getError($this)
+sub getError($self)
 {
-    my $dbh = $this->{dbh};
+    my $dbh = $self->{dbh};
 
     if (defined($dbh->errstr)) {
         return $dbh->errstr;
@@ -271,13 +271,13 @@ sub getError($this)
     return "";
 }
 
-sub setAutoCommit($this,$v=0)
+sub setAutoCommit($self,$v=0)
 {
     if ($v) {
-        $this->{dbh}->{AutoCommit} = 1;
+        $self->{dbh}->{AutoCommit} = 1;
         return 1;
     }
-    $this->{dbh}->{AutoCommit} = 0;
+    $self->{dbh}->{AutoCommit} = 0;
     return 0
 }
 

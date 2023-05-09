@@ -44,7 +44,7 @@ sub create($server,$port,$params)
     if ($port < 1 ) {
         $port = 1645;
     }
-    my $this = {
+    my $self = {
         error_text => "",
         error_code => -1,
         server => $server,
@@ -52,24 +52,24 @@ sub create($server,$port,$params)
         secret => $secret,
     };
 
-    bless $this, "SMTPAuthenticator::Radius";
-    return $this;
+    bless $self, "SMTPAuthenticator::Radius";
+    return $self;
 }
 
-sub authenticate($this,$username,$password)
+sub authenticate($self,$username,$password)
 {
-    my $r = new Authen::Radius(Host => $this->{server}.":".$this->{port}, Secret => $this->{secret});
+    my $r = new Authen::Radius(Host => $self->{server}.":".$self->{port}, Secret => $self->{secret});
 
     if ($r) {
         if ( $r->check_pwd($username, $password) ) {
-            $this->{'error_code'} = 0;
-            $this->{'error_text'} = Authen::Radius::strerror;
+            $self->{'error_code'} = 0;
+            $self->{'error_text'} = Authen::Radius::strerror;
             return 1;
         }
     }
 
-    $this->{'error_code'} =  Authen::Radius::get_error;
-    $this->{'error_text'} = Authen::Radius::strerror;
+    $self->{'error_code'} =  Authen::Radius::get_error;
+    $self->{'error_text'} = Authen::Radius::strerror;
     return 0;
 }
 

@@ -29,49 +29,49 @@ sub new($class='MailScanner::Profiler')
 {
     my (%start_times, %res_times) = ();
 
-    my $this = {
+    my $self = {
         %start_times => (),
         %res_times => (),
     };
 
-    bless $this, $class;
-    return $this;
+    bless $self, $class;
+    return $self;
 }
 
-sub start($this,$var)
+sub start($self,$var)
 {
     return unless MailScanner::Config::Value('profile');
 
-    $this->{start_times}{$var} = [gettimeofday];
+    $self->{start_times}{$var} = [gettimeofday];
 }
 
-sub stop($this,$var)
+sub stop($self,$var)
 {
     return unless MailScanner::Config::Value('profile');
 
-    return unless defined($this->{start_times}{$var});
-    my $interval = tv_interval ($this->{start_times}{$var});
-    $this->{res_times}{$var} = (int($interval*10000)/10000);
+    return unless defined($self->{start_times}{$var});
+    my $interval = tv_interval ($self->{start_times}{$var});
+    $self->{res_times}{$var} = (int($interval*10000)/10000);
 }
 
-sub getResult($this)
+sub getResult($self)
 {
     return unless MailScanner::Config::Value('profile');
 
     my $out = "";
 
-    my @keys = sort keys %{$this->{res_times}};
+    my @keys = sort keys %{$self->{res_times}};
     foreach my $key (@keys) {
-        $out .= " ($key:".$this->{res_times}{$key}."s)";
+        $out .= " ($key:".$self->{res_times}{$key}."s)";
     }
     return $out;
 }
 
-sub log($this,$extra)
+sub log($self,$extra)
 {
     return unless MailScanner::Config::Value('profile');
 
-    MailScanner::Log::InfoLog($extra.$this->getResult());
+    MailScanner::Log::InfoLog($extra.$self->getResult());
     return 1;
 }
 

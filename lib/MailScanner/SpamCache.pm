@@ -111,7 +111,7 @@ sub CacheResult
 }
 
 ## called per batch ##
-sub CheckForCacheExpire($this)
+sub CheckForCacheExpire($self)
 {
     return if (!$SpamCache::conf{cache_useable});
 

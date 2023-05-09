@@ -71,7 +71,7 @@ sub create
     my $wwcachepos = 120;
     my $wwcacheneg = 120;
 
-    my $this = {
+    my $self = {
         port => $port,
         server => '',
         pidfile => $pidfile,
@@ -110,23 +110,23 @@ sub create
             chomp;
             next if /^\#/;
             if (/^(\S+)\ ?\=\ ?(.*)$/) {
-                if (defined($this->{$1})) {
-                    $this->{$1} = $2;
+                if (defined($self->{$1})) {
+                    $self->{$1} = $2;
                 }
             }
         }
         close $CONFFILE;
     }
 
-    bless $this, "PrefDaemon";
-    return $this;
+    bless $self, "PrefDaemon";
+    return $self;
 }
 
-sub logMessage($this,$message)
+sub logMessage($self,$message)
 {
-    if ($this->{debug}) {
+    if ($self->{debug}) {
         if ( !defined(fileno($LOGGERLOG))) {
-             open($LOGGERLOG, '>>', "/tmp/".$this->{logfile});
+             open($LOGGERLOG, '>>', "/tmp/".$self->{logfile});
              $| = 1;
         }
         my $date=`date "+%Y-%m-%d %H:%M:%S"`;
@@ -138,9 +138,9 @@ sub logMessage($this,$message)
 ######
 ## startDaemon
 ######
-sub startDaemon($this)
+sub startDaemon($self)
 {
-    open($LOGGERLOG, '>>', $this->{logfile});
+    open($LOGGERLOG, '>>', $self->{logfile});
 
     my $pid = fork();
     if (!defined($pid)) {
@@ -152,84 +152,84 @@ sub startDaemon($this)
         # Dameonize
         POSIX::setsid();
 
-        $this->logMessage("Starting Daemon");
+        $self->logMessage("Starting Daemon");
 
-        $SIG{INT} = $SIG{TERM} = $SIG{HUP} = $SIG{ALRM} = sub { $this->parentGotSignal(); };
+        $SIG{INT} = $SIG{TERM} = $SIG{HUP} = $SIG{ALRM} = sub { $self->parentGotSignal(); };
 
 
-        #alarm $this->{daemontimeout};
+        #alarm $self->{daemontimeout};
         $0 = "PrefDaemon";
-        $this->initDaemon();
-        $this->launchChilds();
-        until ($this->{time_to_die}) {
+        $self->initDaemon();
+        $self->launchChilds();
+        until ($self->{time_to_die}) {
         };
     }
     exit;
 }
 
-sub parentGotSignal($this)
+sub parentGotSignal($self)
 {
-    $this->{time_to_die} = 1;
+    $self->{time_to_die} = 1;
 }
 
 
-sub reaper($this)
+sub reaper($self)
 {
-    $this->logMessage("Got child death...");
-    $SIG{CHLD} = sub { $this->reaper(); };
+    $self->logMessage("Got child death...");
+    $SIG{CHLD} = sub { $self->reaper(); };
     my $pid = wait;
-    $this->{children}--;
-    delete $this->{childrens}{$pid};
-    if ($this->{time_to_die} < 1 ) {
-        $this->logMessage("Not yet death.. relauching new child");
-        $this->makeChild();
+    $self->{children}--;
+    delete $self->{childrens}{$pid};
+    if ($self->{time_to_die} < 1 ) {
+        $self->logMessage("Not yet death.. relauching new child");
+        $self->makeChild();
     }
 }
 
-sub huntsMan($this)
+sub huntsMan($self)
 {
     local($SIG{CHLD}) = 'IGNORE';
-    $this->{time_to_die} = 1;
-    $this->logMessage("Shutting down childs");
-    kill 'INT' => keys %{$this->{childrens}};
-    $this->logMessage("Daemon shut down");
+    $self->{time_to_die} = 1;
+    $self->logMessage("Shutting down childs");
+    kill 'INT' => keys %{$self->{childrens}};
+    $self->logMessage("Daemon shut down");
     exit;
 }
 
-sub initDaemon($this)
+sub initDaemon($self)
 {
-     $this->logMessage("Initializing Daemon");
-     $this->{server} = IO::Socket::INET->new(
+     $self->logMessage("Initializing Daemon");
+     $self->{server} = IO::Socket::INET->new(
         LocalAddr => '127.0.0.1',
-        LocalPort => $this->{port},
+        LocalPort => $self->{port},
         Proto         => 'udp'
-    ) or die "Couldn't be an udp server on port ".$this->{port}." : $@\n";
+    ) or die "Couldn't be an udp server on port ".$self->{port}." : $@\n";
 
-    $this->logMessage("Listening on port ".$this->{port});
+    $self->logMessage("Listening on port ".$self->{port});
 
     return 0;
 }
 
-sub launchChilds($this)
+sub launchChilds($self)
 {
-    for (1 .. $this->{prefork}) {
-        $this->logMessage("Launching child ".$this->{children}." on ".$this->{prefork}."...");
-        $this->makeChild();
+    for (1 .. $self->{prefork}) {
+        $self->logMessage("Launching child ".$self->{children}." on ".$self->{prefork}."...");
+        $self->makeChild();
     }
     # Install signal handlers
-    $SIG{CHLD} = sub { $this->reaper(); };
-    $SIG{INT} = sub { $this->huntsMan(); };
+    $SIG{CHLD} = sub { $self->reaper(); };
+    $SIG{INT} = sub { $self->huntsMan(); };
 
     while (1) {
         sleep;
-        $this->logMessage("Child death... still: ".$this->{children});
-        for (my $i = $this->{children}; $i < $this->{prefork}; $i++) {
-            $this->makeChild();
+        $self->logMessage("Child death... still: ".$self->{children});
+        for (my $i = $self->{children}; $i < $self->{prefork}; $i++) {
+            $self->makeChild();
         }
     }
 }
 
-sub makeChild($this)
+sub makeChild($self)
 {
     my $pid;
     my $sigset;
@@ -243,9 +243,9 @@ sub makeChild($this)
     if ($pid) {
         # Parent records the child's birth and returns.
         sigprocmask(SIG_UNBLOCK, $sigset) or die "Can't unblock SIGINT for fork: $!\n";
-        $this->{childrens}{$pid} = 1;
-        $this->{children}++;
-        $this->logMessage("Child created with pid: $pid");
+        $self->{childrens}{$pid} = 1;
+        $self->{children}++;
+        $self->logMessage("Child created with pid: $pid");
         return;
     } else {
         # Child can *not* return from this subroutine.
@@ -254,88 +254,88 @@ sub makeChild($this)
         # unblock signals
         sigprocmask(SIG_UNBLOCK, $sigset) or die "Can't unblock SIGINT for fork: $!\n";
 
-        $this->connectDB();
+        $self->connectDB();
 
-        $this->logMessage("In child listening...");
-        $this->listenForQuery();
+        $self->logMessage("In child listening...");
+        $self->listenForQuery();
         exit;
     }
 }
 
-sub connectDB($this)
+sub connectDB($self)
 {
-    $this->{slaveDB} = DB::connect('slave', 'mc_config', 0);
-    if ($this->{slaveDB}->ping()) {
-        $this->logMessage("Connected to configuration database");
+    $self->{slaveDB} = DB::connect('slave', 'mc_config', 0);
+    if ($self->{slaveDB}->ping()) {
+        $self->logMessage("Connected to configuration database");
         return 1;
     }
-    $this->logMessage("WARNING, could not connect to configuration database");
+    $self->logMessage("WARNING, could not connect to configuration database");
     return 0;
 }
 
-sub listenForQuery($this)
+sub listenForQuery($self)
 {
     my $message;
-    my $serv = $this->{server};
+    my $serv = $self->{server};
     my $MAXLEN = 1024;
 
-    $this->{lastcleanup} = time();
+    $self->{lastcleanup} = time();
     my $datas;
     while (my $cli = $serv->recv($datas, $MAXLEN)) {
         my($cli_add, $cli_port) =    sockaddr_in($serv->peername);
-        $this->manageClient($cli, $cli_port, $datas);
-        my $deltaclean = time() - $this->{lastcleanup};
-        if ($deltaclean > $this->{cleancache}) {
-            $this->logMessage("Global cache cleanup requested.. ($deltaclean)");
-            delete($this->{cache});
-            $this->{lastcleanup} = time();
+        $self->manageClient($cli, $cli_port, $datas);
+        my $deltaclean = time() - $self->{lastcleanup};
+        if ($deltaclean > $self->{cleancache}) {
+            $self->logMessage("Global cache cleanup requested.. ($deltaclean)");
+            delete($self->{cache});
+            $self->{lastcleanup} = time();
         }
     }
 }
 
-sub manageClient($this,$cli,$cli_add,$datas)
+sub manageClient($self,$cli,$cli_add,$datas)
 {
-    alarm $this->{daemontimeout};
+    alarm $self->{daemontimeout};
 
-    $this->logMessage("Accepting connection");
+    $self->logMessage("Accepting connection");
     if ($datas =~ /^EXIT/) {
-        $this->logMessage("Received EXIT command");
-        $this->huntsMan();
+        $self->logMessage("Received EXIT command");
+        $self->huntsMan();
         exit;
     }
     my $query .= $datas;
     if ($query =~ /^HELO\ (\S+)/) {
-        $this->{server}->send("NICE TO MEET YOU: $1\n");
-        $this->logMessage("Command HELO answered");
+        $self->{server}->send("NICE TO MEET YOU: $1\n");
+        $self->logMessage("Command HELO answered");
     } elsif ($query =~ /^NULL/) {
-        $this->{server}->send("\n");
-        $this->logMessage("Command NULL answered");
+        $self->{server}->send("\n");
+        $self->logMessage("Command NULL answered");
     } elsif ($query =~ /^PREF\ (\S+)\ (\S+)/) {
         ## now fetch the value and return it as fast as possible
-        $this->logMessage("Command: pref $2 requested for $1");
-        $this->{server}->send($this->fetchPref($1, $2)."\n");
+        $self->logMessage("Command: pref $2 requested for $1");
+        $self->{server}->send($self->fetchPref($1, $2)."\n");
     } elsif ($query =~ /^(WHITE|WARN|BLACK)LIST (\S+)\ (\S+)/) {
         if ($1 eq "WHITE") {
-            $this->logMessage("Command: whitelist query: from $3 to $2");
-            $this->{server}->send($this->fetchWW('white', $2, $3)."\n");
+            $self->logMessage("Command: whitelist query: from $3 to $2");
+            $self->{server}->send($self->fetchWW('white', $2, $3)."\n");
         } elsif ($1 eq "WARN") {
-            $this->logMessage("Command: warnlist query: from $3 to $2");
-            $this->{server}->send($this->fetchWW('warn', $2, $3)."\n");
+            $self->logMessage("Command: warnlist query: from $3 to $2");
+            $self->{server}->send($self->fetchWW('warn', $2, $3)."\n");
         } elsif ($1 eq "BLACK") {
-            $this->logMessage("Command: blacklist query: from $3 to $2");
-            $this->{server}->send($this->fetchWW('black', $2, $3)."\n");
+            $self->logMessage("Command: blacklist query: from $3 to $2");
+            $self->{server}->send($self->fetchWW('black', $2, $3)."\n");
         }
     } else {
-        $this->logMessage("BAD command found: $query");
-        $this->{server}->send("BAD COMMAND\n");
+        $self->logMessage("BAD command found: $query");
+        $self->{server}->send("BAD COMMAND\n");
     }
 }
 
-sub fetchPref($this,$who,$what)
+sub fetchPref($self,$who,$what)
 {
-    my $cachevalue = $this->getCacheValue($who, $what);
+    my $cachevalue = $self->getCacheValue($who, $what);
     if ( $cachevalue !~ /^NOCACHE/) {
-        $this->logMessage("Using cached value for: $who / $what");
+        $self->logMessage("Using cached value for: $who / $what");
         if ($cachevalue eq 'NOTSET') {
             return 'NOTFOUND';
         }
@@ -344,26 +344,26 @@ sub fetchPref($this,$who,$what)
 
     my $res = "BADPREF";
     if ($who =~ /^\S+\@\S+$/) {
-        $this->logMessage("Fetching preference for user: $who");
-        $res = $this->fetchAddressPref($who, $what);
+        $self->logMessage("Fetching preference for user: $who");
+        $res = $self->fetchAddressPref($who, $what);
     } elsif ($who =~ /^\@(\S+)$/) {
-        $this->logMessage("Fetching preference for domain: $1");
-        $res = $this->fetchDomainPref($1, $what);
+        $self->logMessage("Fetching preference for domain: $1");
+        $res = $self->fetchDomainPref($1, $what);
     } elsif ($who eq 'global') {
-        $this->logMessage("Fetching global preference");
-        $res = $this->fetchGlobalPref($what);
+        $self->logMessage("Fetching global preference");
+        $res = $self->fetchGlobalPref($what);
     }
     if ($res eq "BADPREF") {
-        $this->logMessage("BAD preference who value: $who");
+        $self->logMessage("BAD preference who value: $who");
     } elsif ($res eq "NOTFOUND" || $res eq "NOTSET") {
         return 'NOTFOUND';
     } else {
-        $this->setCache($who, $what, $res);
+        $self->setCache($who, $what, $res);
     }
     return $res;
 }
 
-sub fetchWW($this,$type,$dest,$sender)
+sub fetchWW($self,$type,$dest,$sender)
 {
     my $atype = 1; # address
     if ($dest =~ /^\@(\S+)$/) {
@@ -372,19 +372,19 @@ sub fetchWW($this,$type,$dest,$sender)
     if ($dest eq 'global' || $dest eq '' || $dest eq '_') {
         $atype = 3; # global
     }
-    my $cachevalue = $this->getWWCacheValues($type, $dest, $sender, $atype);
+    my $cachevalue = $self->getWWCacheValues($type, $dest, $sender, $atype);
     if ( $cachevalue !~ /^NOCACHE/) {
-        $this->logMessage("Using cached value for: $type / $dest - $sender");
+        $self->logMessage("Using cached value for: $type / $dest - $sender");
         return $cachevalue;
     }
 
-    return $this->fetchDatabaseWW($type, $dest, $sender, $atype);
+    return $self->fetchDatabaseWW($type, $dest, $sender, $atype);
 }
 
-sub fetchDatabaseWW($this,$type,$recipient,$sender,$atype)
+sub fetchDatabaseWW($self,$type,$recipient,$sender,$atype)
 {
-    if (!$this->{slaveDB}->ping()) {
-        if (!$this->connectDB()) {
+    if (!$self->{slaveDB}->ping()) {
+        if (!$self->connectDB()) {
             return 'NOTFOUND';
         }
     }
@@ -394,42 +394,42 @@ sub fetchDatabaseWW($this,$type,$recipient,$sender,$atype)
     $sender =~ s/[\/\'\"\<\>\:\;\?\*\%\&\+]//g;
     $recipient =~ s/[\/\'\"\<\>\:\;\?\*\%\&\+]//g;
     my $query = "SELECT sender FROM wwlists WHERE type='$type' AND ( recipient='$recipient' OR recipient='' ) AND status=1";
-    #$this->logMessage("Using query: $query");
-    my @entries = $this->{slaveDB}->getListOfHash($query);
+    #$self->logMessage("Using query: $query");
+    my @entries = $self->{slaveDB}->getListOfHash($query);
     foreach my $entry (@entries) {
         my %entryv = %$entry;
         my $test = $entryv{sender};
         $test =~ s/(\.)?\*/\\S+/g;
         $test =~ s/[\/\'\"\<\>\:\;\?\*\%\&\+]//g;
         if ($sender =~ /$test/i) {
-            $this->setWWCache($type, $recipient, $sender, $atype, 'FOUND');
+            $self->setWWCache($type, $recipient, $sender, $atype, 'FOUND');
             return "FOUND";
         }
     }
-    $this->setWWCache($type, $recipient, $sender, $atype, 'NOTFOUND');
+    $self->setWWCache($type, $recipient, $sender, $atype, 'NOTFOUND');
     return "NOTFOUND";
 }
 
-sub fetchAddressPref($this,$who,$what)
+sub fetchAddressPref($self,$who,$what)
 {
-    if (!$this->{slaveDB}->ping()) {
-        if (!$this->connectDB()) {
+    if (!$self->{slaveDB}->ping()) {
+        if (!$self->connectDB()) {
             return 'NOTFOUND';
         }
     }
 
     my $query = "SELECT $what FROM user_pref p, email e WHERE p.id=e.pref AND e.address='$who'";
-    my %res = $this->{slaveDB}->getHashRow($query);
+    my %res = $self->{slaveDB}->getHashRow($query);
     if (defined($res{$what})) {
         return $res{$what};
     }
     return "NOTFOUND";
 }
 
-sub fetchDomainPref($this,$who,$what)
+sub fetchDomainPref($self,$who,$what)
 {
-    if (!$this->{slaveDB}->ping()) {
-        if (!$this->connectDB()) {
+    if (!$self->{slaveDB}->ping()) {
+        if (!$self->connectDB()) {
             return 'NOTFOUND';
         }
     }
@@ -445,35 +445,35 @@ sub fetchDomainPref($this,$who,$what)
     }
     ## check this domain
     my $query = "SELECT $what FROM domain_pref p, domain d WHERE p.id=d.prefs AND d.name='$who'";
-    my %res = $this->{slaveDB}->getHashRow($query);
+    my %res = $self->{slaveDB}->getHashRow($query);
     if (defined($res{$what})) {
         return $res{$what};
     }
     ## check for jocker domain
     $query = "SELECT $what FROM domain_pref p, domain d WHERE p.id=d.prefs AND d.name='*'";
-    %res = $this->{slaveDB}->getHashRow($query);
+    %res = $self->{slaveDB}->getHashRow($query);
     if (defined($res{$what})) {
         return $res{$what};
     }
     ## check for default domain
-    my $dd = $this->fetchGlobalPref('default_domain');
+    my $dd = $self->fetchGlobalPref('default_domain');
     $query = "SELECT $what FROM domain_pref p, domain d WHERE p.id=d.prefs AND d.name='$dd'";
-    %res = $this->{slaveDB}->getHashRow($query);
+    %res = $self->{slaveDB}->getHashRow($query);
     if (defined($res{$what})) {
         return $res{$what};
     }
     return "NOTFOUND";
 }
 
-sub fetchGlobalPref($this,$what)
+sub fetchGlobalPref($self,$what)
 {
-    if (!$this->{slaveDB}->ping()) {
-        if (!$this->connectDB()) {
+    if (!$self->{slaveDB}->ping()) {
+        if (!$self->connectDB()) {
             return 'NOTFOUND';
         }
     }
     my $query = "SELECT $what FROM system_conf, antispam, antivirus, httpd_config";
-    my %res = $this->{slaveDB}->getHashRow($query);
+    my %res = $self->{slaveDB}->getHashRow($query);
     if (defined($res{$what})) {
         return $res{$what};
     }
@@ -484,51 +484,51 @@ sub fetchGlobalPref($this,$what)
 ####################
 ## cache management
 
-sub getCacheValue($this,$who,$what)
+sub getCacheValue($self,$who,$what)
 {
-    my $timeout = $this->{cacheuser};
+    my $timeout = $self->{cacheuser};
     if ($who =~ /^\@/) {
-        $timeout = $this->{cachedomain};
+        $timeout = $self->{cachedomain};
     } elsif ($who eq 'global') {
-        $timeout = $this->{cachesystem};
+        $timeout = $self->{cachesystem};
     }
     return "NOCACHE" if $timeout < 1;
 
     my $cachekey = getCacheKey($who, $what);
 
-    if ( defined($this->{cache}{$cachekey}) && $this->{cache}{$cachekey} =~ /^(\d+)\-(.*)/) {
-        $this->logMessage("Cache key hit for: $cachekey ($1, $2)");
+    if ( defined($self->{cache}{$cachekey}) && $self->{cache}{$cachekey} =~ /^(\d+)\-(.*)/) {
+        $self->logMessage("Cache key hit for: $cachekey ($1, $2)");
         my $deltatime = time() - $1;
         if ($deltatime < $timeout) {
             return $2 ;
         }
-        $this->logMessage("Cache key too old: $deltatime s.");
+        $self->logMessage("Cache key too old: $deltatime s.");
     }
     return "NOCACHE";
 }
 
 
-sub setCache($this,$who,$what,$value)
+sub setCache($self,$who,$what,$value)
 {
-    my $timeout = $this->{cacheuser};
+    my $timeout = $self->{cacheuser};
     if ($who =~ /^\@/) {
-        $timeout = $this->{cachedomain};
+        $timeout = $self->{cachedomain};
     } elsif ($who eq 'global') {
-            $timeout = $this->{cachesystem};
+            $timeout = $self->{cachesystem};
     }
     return if ($timeout < 1);
 
     my $cachekey = getCacheKey($who, $what);
 
     my $time = time();
-    $this->{cache}{$cachekey} = $time."-".$value;
-    $this->logMessage("Saved cache for: $cachekey");
+    $self->{cache}{$cachekey} = $time."-".$value;
+    $self->logMessage("Saved cache for: $cachekey");
 }
 
-sub dumpCache($this)
+sub dumpCache($self)
 {
-    foreach my $key (keys %{$this->{cache}}) {
-        $this->logMessage(" === cache key: $key     /    ".$this->{cache}{$key}[1]);
+    foreach my $key (keys %{$self->{cache}}) {
+        $self->logMessage(" === cache key: $key     /    ".$self->{cache}{$key}[1]);
     }
 }
 
@@ -539,73 +539,73 @@ sub getCacheKey($who,$what)
 #    return md5_hex($who."/".$what);
 }
 
-sub getWWCacheValues($this,$type,$dest,$sender,$atype)
+sub getWWCacheValues($self,$type,$dest,$sender,$atype)
 {
     ## purging caches
-    my $cachehash = \%{$this->{wwusercache}};
+    my $cachehash = \%{$self->{wwusercache}};
     if ($atype == 2) {
-        if (keys(%{$this->{wwdomaincache}}) > $this->{wwdomaincachemax}) {
-            unset ($this->{wwdomaincache});
-            $this->logMessage(" Purged ww domain cache, maximum of ".$this->{wwdomaincachemax}." entries reached");
+        if (keys(%{$self->{wwdomaincache}}) > $self->{wwdomaincachemax}) {
+            unset ($self->{wwdomaincache});
+            $self->logMessage(" Purged ww domain cache, maximum of ".$self->{wwdomaincachemax}." entries reached");
             return "NOCACHE";
         }
-        $cachehash = \%{$this->{wwdomaincache}};
+        $cachehash = \%{$self->{wwdomaincache}};
     } elsif ($atype == 3) {
-         if (keys(%{$this->{wwglobalcache}}) > $this->{wwglobalcachemax}) {
-            unset ($this->{wwglobalcache});
-            $this->logMessage(" Purged ww global cache, maximum of ".$this->{wwglobalcachemax}." entries reached");
+         if (keys(%{$self->{wwglobalcache}}) > $self->{wwglobalcachemax}) {
+            unset ($self->{wwglobalcache});
+            $self->logMessage(" Purged ww global cache, maximum of ".$self->{wwglobalcachemax}." entries reached");
             return "NOCACHE";
          }
-         $cachehash = \%{$this->{wwglobalcache}};
+         $cachehash = \%{$self->{wwglobalcache}};
     }
-    if (keys(%{$this->{wwusercache}}) > $this->{wwusercachemax}) {
-        unset ($this->{wwusercache});
-        $this->logMessage(" Purged ww user cache, maximum of ".$this->{wwusercachemax}." entries reached");
+    if (keys(%{$self->{wwusercache}}) > $self->{wwusercachemax}) {
+        unset ($self->{wwusercache});
+        $self->logMessage(" Purged ww user cache, maximum of ".$self->{wwusercachemax}." entries reached");
         return "NOCACHE";
     }
 
     my $cachekey = getWWCacheKey($type, $dest, $sender);
 
     if ( defined($cachehash->{$cachekey}) && $cachehash->{$cachekey} =~ /^(\d+)\-(.*)/) {
-        $this->logMessage("WW Cache key hit for: $cachekey ($1, $2)");
+        $self->logMessage("WW Cache key hit for: $cachekey ($1, $2)");
         my $deltatime = time() - $1;
         my $result = $2;
-        if ($result eq "FOUND" && $deltatime > $this->{wwcachepos}) {
-            $this->logMessage("WW positive Cache key too old: $deltatime s.");
+        if ($result eq "FOUND" && $deltatime > $self->{wwcachepos}) {
+            $self->logMessage("WW positive Cache key too old: $deltatime s.");
             return "NOCACHE";
         }
-        if ($result eq "NOTFOUND" && $deltatime > $this->{wwcacheneg}) {
-            $this->logMessage("WW negative Cache key too old: $deltatime s.");
+        if ($result eq "NOTFOUND" && $deltatime > $self->{wwcacheneg}) {
+            $self->logMessage("WW negative Cache key too old: $deltatime s.");
             return "NOCACHE";
         }
         if ($result =~ /^(NOT)?FOUND$/) {
             return $result;
         }
-        $this->logMessage(" Illegal WW cache value: $2");
+        $self->logMessage(" Illegal WW cache value: $2");
         return "NOCACHE";
     }
 
     return "NOCACHE";
 }
 
-sub setWWCache($this,$type,$dest,$sender,$atype,$value)
+sub setWWCache($self,$type,$dest,$sender,$atype,$value)
 {
-    return if ($value eq "FOUND" && $this->{wwcachepos} < 1);
-    return if ($value eq "NOTFOUND" && $this->{wwcacheneg} < 1);
+    return if ($value eq "FOUND" && $self->{wwcachepos} < 1);
+    return if ($value eq "NOTFOUND" && $self->{wwcacheneg} < 1);
     return if (! $value eq "FOUND" && ! $value eq "NOTFOUND");
 
     my $cachekey = getWWCacheKey($type, $dest, $sender);
 
-    my $cachehash = \%{$this->{wwusercache}};
+    my $cachehash = \%{$self->{wwusercache}};
     if ($atype == 2) {
-        $cachehash = \%{$this->{wwdomaincache}};
+        $cachehash = \%{$self->{wwdomaincache}};
     } elsif ($atype == 3) {
-        $cachehash = \%{$this->{wwglobalcache}};
+        $cachehash = \%{$self->{wwglobalcache}};
     }
 
     my $time = time();
     $cachehash->{$cachekey} = $time."-".$value;
-    $this->logMessage("Saved WW cache for: $cachekey");
+    $self->logMessage("Saved WW cache for: $cachekey");
 }
 
 sub getWWCacheKey($type,$dest,$sender)
@@ -616,11 +616,11 @@ sub getWWCacheKey($type,$dest,$sender)
 ###########################
 ## client call
 
-sub getPref($this,$type,$pref)
+sub getPref($self,$type,$pref)
 {
     my $res = "NOTFOUND";
-    my $t = Mail::SpamAssassin::Timeout->new({ secs => $this->{clienttimeout} });
-    $t->run_and_catch( sub { $res = $this->queryDaemon($type, $pref);});
+    my $t = Mail::SpamAssassin::Timeout->new({ secs => $self->{clienttimeout} });
+    $t->run_and_catch( sub { $res = $self->queryDaemon($type, $pref);});
 
     if ($t->timed_out()) { return "TIMEDOUT"; };
 
@@ -630,12 +630,12 @@ sub getPref($this,$type,$pref)
     return 'NOTFOUND';
 }
 
-sub queryDaemon($this,$type,$pref)
+sub queryDaemon($self,$type,$pref)
 {
     my $socket;
     if ( $socket = IO::Socket::INET->new(
         PeerAddr => '127.0.0.1',
-        PeerPort => $this->{port},
+        PeerPort => $self->{port},
         Proto        => "udp"
     )) {
 
@@ -656,7 +656,7 @@ sub queryDaemon($this,$type,$pref)
     return "NODAEMON";
 }
 
-sub timedOut($this)
+sub timedOut($self)
 {
     exit();
 }

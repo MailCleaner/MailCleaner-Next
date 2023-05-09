@@ -52,7 +52,7 @@ sub create($class,$daemonname,$conffilepath)
     my $debug = 1;
     my %childrens;
 
-    my $this = {
+    my $self = {
         name => $daemonname,
         port => $port,
         server => '',
@@ -77,23 +77,23 @@ sub create($class,$daemonname,$conffilepath)
             chomp;
             next if /^\#/;
             if (/^(\S+)\ ?\=\ ?(.*)$/) {
-                if (defined($this->{$1})) {
-                    $this->{$1} = $2;
+                if (defined($self->{$1})) {
+                    $self->{$1} = $2;
                 }
             }
         }
         close $CONFFILE;
     }
 
-    bless $this, $class;
-    return $this;
+    bless $self, $class;
+    return $self;
 }
 
-sub logMessage($this,$message)
+sub logMessage($self,$message)
 {
-    if ($this->{debug}) {
+    if ($self->{debug}) {
         if ( !defined(fileno($LOGGERLOG))) {
-            open($LOGGERLOG, '>>', "/tmp/".$this->{logfile});
+            open($LOGGERLOG, '>>', "/tmp/".$self->{logfile});
             $| = 1;
         }
         my $date=`date "+%Y-%m-%d %H:%M:%S"`;
@@ -105,9 +105,9 @@ sub logMessage($this,$message)
 ######
 ## startDaemon
 ######
-sub startDaemon($this)
+sub startDaemon($self)
 {
-    open($LOGGERLOG, '>>', $this->{logfile});
+    open($LOGGERLOG, '>>', $self->{logfile});
 
     my $pid = fork();
     if (!defined($pid)) {
@@ -119,88 +119,88 @@ sub startDaemon($this)
         # Dameonize
         POSIX::setsid();
 
-        $this->logMessage("Starting Daemon");
+        $self->logMessage("Starting Daemon");
 
-        $SIG{INT} = $SIG{TERM} = $SIG{HUP} = $SIG{ALRM} = sub { $this->parentGotSignal(); };
+        $SIG{INT} = $SIG{TERM} = $SIG{HUP} = $SIG{ALRM} = sub { $self->parentGotSignal(); };
 
-        #alarm $this->{daemontimeout};
-        $0 = $this->{'name'};
-        $this->initDaemon();
-        $this->launchChilds();
-        until ($this->{time_to_die}) {};
+        #alarm $self->{daemontimeout};
+        $0 = $self->{'name'};
+        $self->initDaemon();
+        $self->launchChilds();
+        until ($self->{time_to_die}) {};
     }
     exit;
 }
 
-sub parentGotSignal($this)
+sub parentGotSignal($self)
 {
-    $this->{time_to_die} = 1;
+    $self->{time_to_die} = 1;
 }
 
 
-sub reaper($this)
+sub reaper($self)
 {
-    $this->logMessage("Got child death...");
-    $SIG{CHLD} = sub { $this->reaper(); };
+    $self->logMessage("Got child death...");
+    $SIG{CHLD} = sub { $self->reaper(); };
     my $pid = wait;
-    $this->{children}--;
-    delete $this->{childrens}{$pid};
-    if ($this->{time_to_die} < 1 ) {
-        $this->logMessage("Not yet dead.. relauching new child");
-        $this->makeChild();
+    $self->{children}--;
+    delete $self->{childrens}{$pid};
+    if ($self->{time_to_die} < 1 ) {
+        $self->logMessage("Not yet dead.. relauching new child");
+        $self->makeChild();
     }
 }
 
-sub huntsMan($this)
+sub huntsMan($self)
 {
     local($SIG{CHLD}) = 'IGNORE';
-    $this->{time_to_die} = 1;
-    $this->logMessage("Shutting down childs");
-    kill 'INT' => keys %{$this->{childrens}};
-    $this->logMessage("Daemon shut down");
+    $self->{time_to_die} = 1;
+    $self->logMessage("Shutting down childs");
+    kill 'INT' => keys %{$self->{childrens}};
+    $self->logMessage("Daemon shut down");
     exit;
 }
 
-sub initDaemon($this)
+sub initDaemon($self)
 {
-    $this->logMessage("Initializing Daemon");
-    $this->{server} = IO::Socket::INET->new(
+    $self->logMessage("Initializing Daemon");
+    $self->{server} = IO::Socket::INET->new(
         LocalAddr => '127.0.0.1',
-        LocalPort => $this->{port},
+        LocalPort => $self->{port},
         Proto     => 'udp'
-    ) or die "Couldn't be an udp server on port ".$this->{port}." : $@\n";
+    ) or die "Couldn't be an udp server on port ".$self->{port}." : $@\n";
 
-    $this->logMessage("Listening on port ".$this->{port});
+    $self->logMessage("Listening on port ".$self->{port});
 
     return 0;
 }
 
-sub launchChilds($this)
+sub launchChilds($self)
 {
-    for (1 .. $this->{prefork}) {
-        $this->logMessage("Launching child ".$this->{children}." on ".$this->{prefork}."...");
-        $this->makeChild();
+    for (1 .. $self->{prefork}) {
+        $self->logMessage("Launching child ".$self->{children}." on ".$self->{prefork}."...");
+        $self->makeChild();
     }
     # Install signal handlers
-    $SIG{CHLD} = sub { $this->reaper(); };
-    $SIG{INT} = sub { $this->huntsMan(); };
+    $SIG{CHLD} = sub { $self->reaper(); };
+    $SIG{INT} = sub { $self->huntsMan(); };
 
     while (1) {
         sleep;
-        $this->logMessage("Child death... still: ".$this->{children});
-        for (my $i = $this->{children}; $i < $this->{prefork}; $i++) {
-            $this->makeChild();
+        $self->logMessage("Child death... still: ".$self->{children});
+        for (my $i = $self->{children}; $i < $self->{prefork}; $i++) {
+            $self->makeChild();
         }
     }
 }
 
-sub makeChild($this)
+sub makeChild($self)
 {
     my $pid;
     my $sigset;
 
-    if ($this->{time_to_die} > 0) {
-        $this->logMessage("Not creating child because shutdown requested");
+    if ($self->{time_to_die} > 0) {
+        $self->logMessage("Not creating child because shutdown requested");
         exit;
     }
     # block signal for fork
@@ -212,9 +212,9 @@ sub makeChild($this)
     if ($pid) {
         # Parent records the child's birth and returns.
         sigprocmask(SIG_UNBLOCK, $sigset) or die "Can't unblock SIGINT for fork: $!\n";
-        $this->{childrens}{$pid} = 1;
-        $this->{children}++;
-        $this->logMessage("Child created with pid: $pid");
+        $self->{childrens}{$pid} = 1;
+        $self->{children}++;
+        $self->logMessage("Child created with pid: $pid");
         return;
     } else {
         # Child can *not* return from this subroutine.
@@ -223,71 +223,71 @@ sub makeChild($this)
         # unblock signals
         sigprocmask(SIG_UNBLOCK, $sigset) or die "Can't unblock SIGINT for fork: $!\n";
 
-        $this->logMessage("In child listening...");
-        $this->listenForQuery();
+        $self->logMessage("In child listening...");
+        $self->listenForQuery();
         exit;
     }
 }
 
 
-sub listenForQuery($this)
+sub listenForQuery($self)
 {
     my $message;
-    my $serv = $this->{server};
+    my $serv = $self->{server};
     my $MAXLEN = 1024;
 
-    $this->{'lastdump'} = time();
+    $self->{'lastdump'} = time();
     my $datas;
     while (my $cli = $serv->recv($datas, $MAXLEN)) {
         my($cli_add, $cli_port) =  sockaddr_in($serv->peername);
-        $this->manageClient($cli, $cli_port, $datas);
+        $self->manageClient($cli, $cli_port, $datas);
         my $time = int(time());
     }
 }
 
-sub manageClient($this,$cli,$cli_add,$datas)
+sub manageClient($self,$cli,$cli_add,$datas)
 {
-    alarm $this->{daemontimeout};
+    alarm $self->{daemontimeout};
 
     if ($datas =~ /^EXIT/) {
-        $this->logMessage("Received EXIT command");
-        $this->huntsMan();
+        $self->logMessage("Received EXIT command");
+        $self->huntsMan();
         exit;
     }
     my $query .= $datas;
     chomp($query);
     if ($query =~ /^HELO\ (\S+)/) {
-        $this->{server}->send("NICE TO MEET YOU: $1\n");
-        #$this->logMessage("Command HELO answered");
+        $self->{server}->send("NICE TO MEET YOU: $1\n");
+        #$self->logMessage("Command HELO answered");
     } elsif ($query =~ /^NULL/) {
-        $this->{server}->send("\n");
-        #$this->logMessage("Command NULL answered");
+        $self->{server}->send("\n");
+        #$self->logMessage("Command NULL answered");
     } else {
-        my $result = $this->processDatas($datas);
-        $this->{server}->send("$result\n");
+        my $result = $self->processDatas($datas);
+        $self->{server}->send("$result\n");
     }
 }
 
 ###########################
 ## client call
 
-sub exec($this,$command)
+sub exec($self,$command)
 {
     my $res = "NORESPONSE";
-    my $t = Mail::SpamAssassin::Timeout->new({ secs => $this->{clienttimeout} });
-    $t->run( sub { $res = $this->queryDaemon($command);  });
+    my $t = Mail::SpamAssassin::Timeout->new({ secs => $self->{clienttimeout} });
+    $t->run( sub { $res = $self->queryDaemon($command);  });
 
     return "TIMEDOUT" if ($t->timed_out());
 
     return $res;
 }
 
-sub queryDaemon($this,$query)
+sub queryDaemon($self,$query)
 {
     my $socket;
     if ( $socket = IO::Socket::INET->new(
         PeerAddr => '127.0.0.1',
-        PeerPort => $this->{port},
+        PeerPort => $self->{port},
         Proto    => "udp")
     ) {
         $socket->send($query."\n");
@@ -307,7 +307,7 @@ sub queryDaemon($this,$query)
     return "NODAEMON";
 }
 
-sub timedOut($this)
+sub timedOut($self)
 {
     exit();
 }

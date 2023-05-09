@@ -41,7 +41,7 @@ sub create($server,$port,$params)
     if ($port < 1 ) {
         $port = 143;
     }
-    my $this = {
+    my $self = {
         error_text => "",
         error_code => -1,
         server => $server,
@@ -49,34 +49,34 @@ sub create($server,$port,$params)
         use_ssl => $use_ssl
     };
 
-    bless $this, "SMTPAuthenticator::IMAP";
-    return $this;
+    bless $self, "SMTPAuthenticator::IMAP";
+    return $self;
 }
 
-sub authenticate($this,$username,$password)
+sub authenticate($self,$username,$password)
 {
     my $imap;
-    if ($this->{use_ssl}) {
+    if ($self->{use_ssl}) {
         require Net::IMAP::Simple::SSL;
-        $imap = new Net::IMAP::Simple::SSL($this->{server}.":".$this->{port});
+        $imap = new Net::IMAP::Simple::SSL($self->{server}.":".$self->{port});
     } else {
         require Net::IMAP::Simple;
-        $imap = new Net::IMAP::Simple($this->{server}.":".$this->{port});
+        $imap = new Net::IMAP::Simple($self->{server}.":".$self->{port});
     }
 
     if ($imap && $imap->login( $username, $password )) {
         $imap->quit;
-        $this->{'error_code'} = 0;
-        $this->{'error_text'} = $imap->errstr;
+        $self->{'error_code'} = 0;
+        $self->{'error_text'} = $imap->errstr;
         return 1;
     }
 
     if (!$imap) {
-        $this->{'error_text'} = "Could not connect to ".$this->{server}.":".$this->{port}." ssl:".$this->{use_ssl};
+        $self->{'error_text'} = "Could not connect to ".$self->{server}.":".$self->{port}." ssl:".$self->{use_ssl};
     } else {
-        $this->{'error_text'} = $imap->errstr;
+        $self->{'error_text'} = $imap->errstr;
     }
-    $this->{'error_code'} = 1;
+    $self->{'error_code'} = 1;
     return 0;
 }
 

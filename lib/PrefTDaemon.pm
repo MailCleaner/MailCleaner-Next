@@ -85,36 +85,36 @@ sub new($class,$myspec_thish)
         $spec_this->{$sk} = $myspec_this{$sk};
     }
 
-    my $this = $class->SUPER::new( $spec_this->{'name'}, undef, $spec_this );
+    my $self = $class->SUPER::new( $spec_this->{'name'}, undef, $spec_this );
 
-    bless $this, $class;
-    return $this;
+    bless $self, $class;
+    return $self;
 }
 
-sub initThreadHook($this)
+sub initThreadHook($self)
 {
-    $this->doLog('PrefDaemon thread initialization...', 'prefdaemon', 'debug');
-    $this->connectBackend();
+    $self->doLog('PrefDaemon thread initialization...', 'prefdaemon', 'debug');
+    $self->connectBackend();
 
     return 1;
 }
 
-sub connectBackend($this)
+sub connectBackend($self)
 {
-    return 1 if ( defined( $this->{backend} ) && $this->{backend}->ping() );
+    return 1 if ( defined( $self->{backend} ) && $self->{backend}->ping() );
 
-    $this->{backend} = DB::connect( 'slave', 'mc_config', 0 );
-    if ( $this->{backend}->ping() ) {
-        $this->doLog("Connected to configuration database", 'prefdaemon');
+    $self->{backend} = DB::connect( 'slave', 'mc_config', 0 );
+    if ( $self->{backend}->ping() ) {
+        $self->doLog("Connected to configuration database", 'prefdaemon');
         return 1;
     }
-    $this->doLog("WARNING, could not connect to configuration database", 'prefdaemon', 'error');
+    $self->doLog("WARNING, could not connect to configuration database", 'prefdaemon', 'error');
     return 0;
 }
 
-sub dataRead($this,$data)
+sub dataRead($self,$data)
 {
-    $this->doLog("Received datas: $data", 'prefdaemon', 'debug');
+    $self->doLog("Received datas: $data", 'prefdaemon', 'debug');
     my $ret = 'NOTHINGDONE';
 
     ## PREF query
@@ -129,11 +129,11 @@ sub dataRead($this,$data)
             $recurs = 1;
         }
 
-        my $result = $this->getObjectPreference( $object, $pref, $recurs );
+        my $result = $self->getObjectPreference( $object, $pref, $recurs );
         return $result;
     }
 
-    $this->doLog('BLACKLIST PREFT'.$data, 'prefdaemon', 'debug');
+    $self->doLog('BLACKLIST PREFT'.$data, 'prefdaemon', 'debug');
 
     ## WHITELIST and WARNLSIT query
     if ( $data =~
@@ -143,37 +143,37 @@ sub dataRead($this,$data)
         my $object = lc($2);
         my $sender = lc($3);
 
-        $this->addStat( 'wwqueries', 1 );
+        $self->addStat( 'wwqueries', 1 );
 
         my $result = "NOTLISTED";
 
         ## first check if global system allows wwlist
-        if ( $type eq 'BLACK' && !$this->getObjectPreference( '_global', 'enable_blacklists' ) ) {
+        if ( $type eq 'BLACK' && !$self->getObjectPreference( '_global', 'enable_blacklists' ) ) {
             return $result;
         }
-        if ( $type eq 'WHITE' && !$this->getObjectPreference( '_global', 'enable_whitelists' ) ) {
+        if ( $type eq 'WHITE' && !$self->getObjectPreference( '_global', 'enable_whitelists' ) ) {
             return $result;
         }
-        if ( $type eq 'WARN' && !$this->getObjectPreference( '_global', 'enable_warnlists' ) ) {
+        if ( $type eq 'WARN' && !$self->getObjectPreference( '_global', 'enable_warnlists' ) ) {
             return $result;
         }
 
         ## then check if domain allows wwlist
         my $domain = PrefTDaemon::getDomain($object);
         if ($domain) {
-            if ( $type eq 'BLACK' && !$this->getObjectPreference( $domain, 'enable_blacklists' ) ) {
+            if ( $type eq 'BLACK' && !$self->getObjectPreference( $domain, 'enable_blacklists' ) ) {
                 return $result;
             }
-            if ( $type eq 'WHITE' && !$this->getObjectPreference( $domain, 'enable_whitelists' ) ) {
+            if ( $type eq 'WHITE' && !$self->getObjectPreference( $domain, 'enable_whitelists' ) ) {
                 return $result;
             }
-            if ( $type eq 'WARN' && !$this->getObjectPreference( $domain, 'enable_warnlists' ) ) {
+            if ( $type eq 'WARN' && !$self->getObjectPreference( $domain, 'enable_warnlists' ) ) {
                 return $result;
             }
         }
 
         ## if here, then wwlists are allowed
-        $result = $this->getObjectWWList( $type, $object, $sender );
+        $result = $self->getObjectWWList( $type, $object, $sender );
 
         return $result;
     }
@@ -188,7 +188,7 @@ sub dataRead($this,$data)
 
     ## GETINTERNALSTATS command
     if ( $data =~ m/^GETINTERNALSTATS/i ) {
-        return $this->logStats();
+        return $self->logStats();
     }
 
     return "_UNKNOWNCOMMAND";
@@ -239,12 +239,12 @@ sub getDomain($object)
 #######################################################
 ##  Preferences management
 
-sub getObjectPreference($this,$object,$pref,$recurs)
+sub getObjectPreference($self,$object,$pref,$recurs)
 {
-    $this->addStat( 'prefqueries', 1 );
+    $self->addStat( 'prefqueries', 1 );
 
     ## first check if value is already being cached
-    my $cachedvalue = $this->getObjectCachedPref( $object, $pref );
+    my $cachedvalue = $self->getObjectCachedPref( $object, $pref );
     if ( $cachedvalue !~ m/^_/ && !(
         $cachedvalue =~ m/^(NOTSET|NOTFOUND)$/
         && ( $recurs || PrefTDaemon::isDomain($object) )
@@ -256,46 +256,46 @@ sub getObjectPreference($this,$object,$pref,$recurs)
 
     ## if notcached or not defined, fetch pref by type
     if ( PrefTDaemon::isGlobal($object) ) {
-        $result = $this->fetchGlobalPref( $object, $pref );
+        $result = $self->fetchGlobalPref( $object, $pref );
         return $result;
     } elsif ( PrefTDaemon::isDomain($object) ) {
         $result = $cachedvalue;
         if ( $result !~ m/^(NOTSET|NOTFOUND)$/ ) {
-            $result = $this->fetchDomainPref( $object, $pref );
+            $result = $self->fetchDomainPref( $object, $pref );
         }
         if ( $result =~ m/^_/ || $result =~ m/NOTFOUND/ ) {
             my $dom = '*';
-            $cachedvalue = $this->getObjectCachedPref( $dom, $pref );
+            $cachedvalue = $self->getObjectCachedPref( $dom, $pref );
             if ( $cachedvalue !~ m/^_/ && $cachedvalue !~ m/NOTFOUND/ ) {
-                $this->addStat( 'prefqueries', 1 );
+                $self->addStat( 'prefqueries', 1 );
                 return $cachedvalue;
             }
-            $result = $this->fetchDomainPref( $dom, $pref );
+            $result = $self->fetchDomainPref( $dom, $pref );
         }
         return $result;
     } elsif ( PrefTDaemon::isEmail($object) ) {
         $result = $cachedvalue;
         if ( $result !~ m/^(NOTSET|NOTFOUND)$/ ) {
-            $result = $this->fetchEmailPref( $object, $pref );
+            $result = $self->fetchEmailPref( $object, $pref );
         }
         if ( $result =~ m/^(NOTSET|NOTFOUND)$/ ) {
             my $dom = PrefTDaemon::getDomain($object);
-            $cachedvalue = $this->getObjectCachedPref( $dom, $pref );
+            $cachedvalue = $self->getObjectCachedPref( $dom, $pref );
             if ( $cachedvalue !~ m/^_/ && $cachedvalue !~ m/NOTFOUND/ ) {
-                $this->addStat( 'prefqueries', 1 );
+                $self->addStat( 'prefqueries', 1 );
                 return $cachedvalue;
             }
-            $result = $this->fetchDomainPref( $dom, $pref );
+            $result = $self->fetchDomainPref( $dom, $pref );
             if ( $result =~ m/^_/ || $result =~ m/NOTFOUND/ ) {
                 $dom = '*';
-                $cachedvalue = $this->getObjectCachedPref( $dom, $pref );
+                $cachedvalue = $self->getObjectCachedPref( $dom, $pref );
                 if ( $cachedvalue !~ m/^_/ && $cachedvalue !~ m/NOTFOUND/ ) {
-                    $this->addStat( 'prefqueries', 1 );
+                    $self->addStat( 'prefqueries', 1 );
                     return $cachedvalue;
                 }
-                $result = $this->fetchDomainPref( $dom, $pref );
+                $result = $self->fetchDomainPref( $dom, $pref );
             }
-            $this->addStat( 'prefqueries', 1 );
+            $self->addStat( 'prefqueries', 1 );
             return $result;
         }
         return $result;
@@ -312,7 +312,7 @@ sub getPrefCacheKey($object,$pref)
     return md5_hex( $object . "-" . $pref );
 }
 
-sub getObjectCachedPref($this,$object,$pref)
+sub getObjectCachedPref($self,$object,$pref)
 {
     my $key = PrefTDaemon::getPrefCacheKey( $object, $pref );
 
@@ -326,21 +326,21 @@ sub getObjectCachedPref($this,$object,$pref)
         my $deltatime = time() - $prefs_->{$key}->{'time'};
 
         ## if not expired, then return cached value
-        if ( $deltatime < $this->{'timeout_pref'} ) {
-            $this->doLog("Cache key hit for: $key ($object, $pref)", 'prefdaemon', 'debug');
-            $this->addStat( 'cacheprefhits', 1 );
+        if ( $deltatime < $self->{'timeout_pref'} ) {
+            $self->doLog("Cache key hit for: $key ($object, $pref)", 'prefdaemon', 'debug');
+            $self->addStat( 'cacheprefhits', 1 );
             return $prefs_->{$key}->{'value'};
         }
-        $this->addStat( 'cacheprefexpired', 1 );
-        $this->doLog("Cache key ($key) too old: $deltatime s.", 'prefdaemon', 'debug');
+        $self->addStat( 'cacheprefexpired', 1 );
+        $self->doLog("Cache key ($key) too old: $deltatime s.", 'prefdaemon', 'debug');
         return '_CACHEEXPIRED';
     }
-    $this->addStat( 'prefnotcached', 1 );
-    $this->doLog("No cache key hit for: $key ($object, $pref)", 'prefdaemon', 'debug');
+    $self->addStat( 'prefnotcached', 1 );
+    $self->doLog("No cache key hit for: $key ($object, $pref)", 'prefdaemon', 'debug');
     return '_NOTCACHED';
 }
 
-sub setObjectPrefCache($this,$object,$pref,$value)
+sub setObjectPrefCache($self,$object,$pref,$value)
 {
     my $key = PrefTDaemon::getPrefCacheKey( $object, $pref );
     if ( !defined( $prefs_->{$key} ) ) {
@@ -350,34 +350,34 @@ sub setObjectPrefCache($this,$object,$pref,$value)
     lock( %{ $prefs_->{$key} } );
     $prefs_->{$key}->{'value'} = $value;
     $prefs_->{$key}->{'time'}  = time();
-    $this->doLog("Caching value for: $key ($object, $pref)", 'prefdaemon', 'debug');
-    $this->addStat( 'cachingprefvalue', 1 );
+    $self->doLog("Caching value for: $key ($object, $pref)", 'prefdaemon', 'debug');
+    $self->addStat( 'cachingprefvalue', 1 );
 
     return 1;
 }
 
-sub fetchEmailPref($this,$object,$pref)
+sub fetchEmailPref($self,$object,$pref)
 {
     my $query = "SELECT $pref FROM user_pref p, email e WHERE p.id=e.pref AND e.address='$object'";
-    my $result = $this->fetchBackendPref( $query, $pref );
-    $this->addStat( 'backendprefcall', 1 );
-    $this->setObjectPrefCache( $object, $pref, $result );
+    my $result = $self->fetchBackendPref( $query, $pref );
+    $self->addStat( 'backendprefcall', 1 );
+    $self->setObjectPrefCache( $object, $pref, $result );
     return $result;
 }
 
-sub fetchUserPref($this,$object,$pref)
+sub fetchUserPref($self,$object,$pref)
 {
     $object =~ s/^\*//g;
     my $query = "SELECT $pref FROM user_pref p, user u WHERE u.id=".$object;
-    my $result = $this->fetchBackendPref( $query, $pref );
-    $this->addStat( 'backendprefcall', 1 );
-    $this->setObjectPrefCache( $object, $pref, $result );
+    my $result = $self->fetchBackendPref( $query, $pref );
+    $self->addStat( 'backendprefcall', 1 );
+    $self->setObjectPrefCache( $object, $pref, $result );
     return $result;
 }
 
-sub fetchDomainPref($this,$object,$pref)
+sub fetchDomainPref($self,$object,$pref)
 {
-    $this->addStat( 'prefsubqueries', 1 );
+    $self->addStat( 'prefsubqueries', 1 );
 
     if ( $pref eq 'has_whitelist' ) {
         $pref = 'enable_whitelists';
@@ -389,26 +389,26 @@ sub fetchDomainPref($this,$object,$pref)
         $pref = 'enable_blacklists';
     }
     my $query = "SELECT $pref FROM domain_pref p, domain d WHERE p.id=d.prefs AND d.name='$object'";
-    my $result = $this->fetchBackendPref( $query, $pref );
-    $this->addStat( 'backendprefcall', 1 );
-    $this->setObjectPrefCache( $object, $pref, $result );
+    my $result = $self->fetchBackendPref( $query, $pref );
+    $self->addStat( 'backendprefcall', 1 );
+    $self->setObjectPrefCache( $object, $pref, $result );
     return $result;
 }
 
-sub fetchGlobalPref($this,$object,$pref)
+sub fetchGlobalPref($self,$object,$pref)
 {
     my $query = "SELECT $pref FROM system_conf, antispam, antivirus, httpd_config";
-    my $result = $this->fetchBackendPref( $query, $pref );
-    $this->addStat( 'backendprefcall', 1 );
-    $this->setObjectPrefCache( $object, $pref, $result );
+    my $result = $self->fetchBackendPref( $query, $pref );
+    $self->addStat( 'backendprefcall', 1 );
+    $self->setObjectPrefCache( $object, $pref, $result );
     return $result;
 }
 
-sub fetchBackendPref($this,$object,$pref)
+sub fetchBackendPref($self,$object,$pref)
 {
-    return '_NOBACKEND' if ( !$this->connectBackend() );
+    return '_NOBACKEND' if ( !$self->connectBackend() );
 
-    my %res = $this->{backend}->getHashRow($query);
+    my %res = $self->{backend}->getHashRow($query);
     if ( defined( $res{$pref} ) ) {
         return $res{$pref};
     }
@@ -424,49 +424,49 @@ sub getWWCacheKey($object)
     return md5_hex($object);
 }
 
-sub getObjectWWList($this,$object,$object,$sender)
+sub getObjectWWList($self,$object,$object,$sender)
 {
     ## first check if already cached
-    my $iscachelisted = $this->getObjectCachedWW( $type, $object, $sender );
+    my $iscachelisted = $self->getObjectCachedWW( $type, $object, $sender );
     return 'LISTED USER' if ( $iscachelisted eq 'LISTED' );
 
     my $islisted = '';
 
     if ( $iscachelisted =~ /^_/ ) {
         ## fetch user list
-        $islisted = $this->getObjectBackendWW( $type, $object, $sender );
+        $islisted = $self->getObjectBackendWW( $type, $object, $sender );
         return 'LISTED USER' if ( $islisted eq 'LISTED' );
     }
 
     ## then search for domain list if needed
     my $domain = '@' . PrefTDaemon::getDomain($object);
     if ($domain) {
-        $iscachelisted = $this->getObjectCachedWW( $type, $domain, $sender );
+        $iscachelisted = $self->getObjectCachedWW( $type, $domain, $sender );
         return 'LISTED DOMAIN' if ( $iscachelisted eq 'LISTED' );
 
         if ( $iscachelisted =~ /^_/ ) {
             ## fetch domain list
-            $islisted = $this->getObjectBackendWW( $type, $domain, $sender );
+            $islisted = $self->getObjectBackendWW( $type, $domain, $sender );
             return 'LISTED DOMAIN' if ( $islisted eq 'LISTED' );
         }
     }
 
     ## finally search fot global list
-    $iscachelisted = $this->getObjectCachedWW( $type, '_global', $sender );
+    $iscachelisted = $self->getObjectCachedWW( $type, '_global', $sender );
     return 'LISTED GLOBAL' if ( $iscachelisted eq 'LISTED' );
 
     if ( $iscachelisted =~ /^_/ ) {
         ## fetch global list
-        $islisted = $this->getObjectBackendWW( $type, '_global', $sender );
+        $islisted = $self->getObjectBackendWW( $type, '_global', $sender );
         return 'LISTED GLOBAL' if ( $islisted eq 'LISTED' );
     }
 
     return 'NOTLISTED';
 }
 
-sub getObjectCachedWW($this,$type,$object,$sender)
+sub getObjectCachedWW($self,$type,$object,$sender)
 {
-    $this->addStat( 'wwsubqueries', 1 );
+    $self->addStat( 'wwsubqueries', 1 );
     my $key = PrefTDaemon::getWWCacheKey($object);
 
     my $cache_ = $whitelists_;
@@ -483,22 +483,22 @@ sub getObjectCachedWW($this,$type,$object,$sender)
     ) {
         lock( %{ $cache_->{$key} } );
         ## have to check time for expired cached value
-        my $deltatime = $this->{'timeout_ww'};
+        my $deltatime = $self->{'timeout_ww'};
         if ( $cache_->{$key}->{'time'} ) {
-            $this->doLog(
+            $self->doLog(
                 "found WW cache with time: " . $cache_->{$key}->{'time'}, 'prefdaemon', 'debug'
             );
             $deltatime = time() - $cache_->{$key}->{'time'};
         }
         ## if not expired, then return cached value
-        if ( $deltatime < $this->{'timeout_ww'} ) {
-            $this->doLog("Cache key hit for: $key ($object)", 'prefdaemon', 'debug');
-            $this->addStat( 'cachewwhits', 1 );
+        if ( $deltatime < $self->{'timeout_ww'} ) {
+            $self->doLog("Cache key hit for: $key ($object)", 'prefdaemon', 'debug');
+            $self->addStat( 'cachewwhits', 1 );
             foreach my $l ( @{ $cache_->{$key}->{'value'} } ) {
-                $this->doLog(
+                $self->doLog(
                     "testing cached WW value for $object: $sender <-> " . $l, 'prefdaemon', 'debug' );
                 if ( PrefTDaemon::listMatch( $l, $sender ) ) {
-                    $this->doLog(
+                    $self->doLog(
                         "Found WW cached MATCH for $object: $sender <-> "
                         . $l, 'prefdaemon', 'debug'
                     );
@@ -507,20 +507,20 @@ sub getObjectCachedWW($this,$type,$object,$sender)
             }
             return 'NOTLISTED';
         }
-        $this->addStat( 'cachewwexpired', 1 );
-        $this->doLog("Cache key ($key) too old: $deltatime s.", 'prefdaemon', 'debug');
+        $self->addStat( 'cachewwexpired', 1 );
+        $self->doLog("Cache key ($key) too old: $deltatime s.", 'prefdaemon', 'debug');
         return '_CACHEEXPIRED';
     }
-    $this->addStat( 'wwnotcached', 1 );
-    $this->doLog("No cache key hit for: $key ($object)", 'prefdaemon', 'debug');
+    $self->addStat( 'wwnotcached', 1 );
+    $self->doLog("No cache key hit for: $key ($object)", 'prefdaemon', 'debug');
     return '_NOTCACHED';
 }
 
-sub getObjectBackendWW($this,$type,$object,$sender)
+sub getObjectBackendWW($self,$type,$object,$sender)
 {
     $type   = lc($type);
 
-    $this->addStat( 'wwsubqueries', 1 );
+    $self->addStat( 'wwsubqueries', 1 );
     my $cache_ = $whitelists_;
     if ( $type eq 'warn' ) {
         $cache_ = $warnlists_;
@@ -528,7 +528,7 @@ sub getObjectBackendWW($this,$type,$object,$sender)
     if ( $type eq 'black' ) {
         $cache_ = $blacklists_;
     }
-    if ( !$this->connectBackend() ) {
+    if ( !$self->connectBackend() ) {
         return '_NOBACKEND';
     }
 
@@ -537,22 +537,22 @@ sub getObjectBackendWW($this,$type,$object,$sender)
         $query = "SELECT sender FROM wwlists WHERE recipient='$object' OR recipient='' AND type='$type' AND status=1";
     }
 
-    my @reslist = $this->{backend}->getListOfHash($query);
+    my @reslist = $self->{backend}->getListOfHash($query);
 
-    $this->addStat( 'backendwwcall', 1 );
+    $self->addStat( 'backendwwcall', 1 );
 
     my $key = PrefTDaemon::getWWCacheKey($object);
 
     my $result = 'NOTLISTED';
-    $this->createWWArrayCache( $type, $key );
+    $self->createWWArrayCache( $type, $key );
     foreach my $resh (@reslist) {
 
-        $this->doLog( "testing backend WW entry for $object: $sender: <-> "
+        $self->doLog( "testing backend WW entry for $object: $sender: <-> "
               . $resh->{'sender'}, 'prefdaemon', 'debug' );
-        $this->addToCache( $cache_, $key, $resh->{'sender'} );
+        $self->addToCache( $cache_, $key, $resh->{'sender'} );
 
         if ( PrefTDaemon::listMatch( $resh->{'sender'}, $sender ) ) {
-            $this->doLog( "Found WW entry MATCH for $object: $sender <-> "
+            $self->doLog( "Found WW entry MATCH for $object: $sender <-> "
                   . $resh->{'sender'}, 'prefdaemon', 'debug' );
             $result = 'LISTED';
         }
@@ -561,7 +561,7 @@ sub getObjectBackendWW($this,$type,$object,$sender)
     return $result;
 }
 
-sub addToCache($this,$cache,$key,$data)
+sub addToCache($self,$cache,$key,$data)
 {
     lock $cache;
     push @{ $cache->{$key}->{'value'} }, $data;
@@ -591,7 +591,7 @@ sub listMatch($reg,$sender)
     return 0;
 }
 
-sub createWWArrayCache($this,$type,$key)
+sub createWWArrayCache($self,$type,$key)
 {
     my $cache_ = $whitelists_;
     if ( $type eq 'warn' ) {
@@ -611,7 +611,7 @@ sub createWWArrayCache($this,$type,$key)
 
 ##########################
 ## Stats and counts utils
-sub addStat($this,$what,$amount)
+sub addStat($self,$what,$amount)
 {
     lock %stats_;
     if ( !defined( $stats_{$what} ) ) {
@@ -621,25 +621,25 @@ sub addStat($this,$what,$amount)
     return 1;
 }
 
-sub statusHook($this)
+sub statusHook($self)
 {
     my $res = '-------------------'."\n";
     $res .= 'Current statistics:'."\n";
     $res .= '-------------------' ."\n";
 
-    $res .= $this->SUPER::statusHook();
+    $res .= $self->SUPER::statusHook();
     require PrefClient;
     my $client = new PrefClient();
     $res .= $client->query('GETINTERNALSTATS');
 
     $res .= '-------------------' ."\n";
 
-    $this->doLog($res, 'prefdaemon');
+    $self->doLog($res, 'prefdaemon');
 
     return $res;
 }
 
-sub logStats($this)
+sub logStats($self)
 {
     lock %stats_;
 

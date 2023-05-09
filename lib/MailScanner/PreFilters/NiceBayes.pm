@@ -96,7 +96,7 @@ sub initialise
     }
 }
 
-sub Checks($this,$message)
+sub Checks($self,$message)
 {
     my $maxsize = $NiceBayes::conf{'maxSize'};
     if ($maxsize > 0 && $message->{size} > $maxsize) {

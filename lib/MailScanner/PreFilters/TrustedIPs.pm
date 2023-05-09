@@ -67,7 +67,7 @@ sub initialise
     $TrustedIPs::conf{'neg_text'} = 'position : '.$TrustedIPs::conf{'position'}.', ham decisive';
 }
 
-sub Checks($this,$message)
+sub Checks($self,$message)
 {
     foreach my $hl ($global::MS->{mta}->OriginalMsgHeaders($message)) {
         if ($hl =~ m/^X-MailCleaner-TrustedIPs: Ok/i) {

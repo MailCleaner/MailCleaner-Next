@@ -52,35 +52,35 @@ sub create($name)
     my $conf = ReadConfig::getInstance();
     my $preffile = $conf->getOption('VARDIR')."/spool/mailcleaner/prefs/_global/prefs.list";
     my $prefdir = $conf->getOption('VARDIR')."/spool/mailcleaner/prefs/_global/";
-    my $this = {
+    my $self = {
         name => $name,
         prefdir => $prefdir,
         preffile => $preffile,
         prefs => \%prefs
     };
 
-    bless $this, "SystemPref";
-    return $this;
+    bless $self, "SystemPref";
+    return $self;
 }
 
-sub getPref($this,$pref,$default)
+sub getPref($self,$pref,$default)
 {
-    if (!defined($this->{prefs}) || !defined($this->{prefs}->{id})) {
+    if (!defined($self->{prefs}) || !defined($self->{prefs}->{id})) {
 
         my $prefclient = PrefClient->new();
         $prefclient->setTimeout(2);
         my $dpref = $prefclient->getPref('_global', $pref);
         if (defined($dpref) && $dpref !~ /^_/) {
-            $this->{prefs}->{$pref} = $dpref;
+            $self->{prefs}->{$pref} = $dpref;
             return $dpref;
         }
         ## fallback loading
-        $this->loadPrefs();
+        $self->loadPrefs();
 
     }
 
-    if (defined($this->{prefs}->{$pref})) {
-        return $this->{prefs}->{$pref};
+    if (defined($self->{prefs}->{$pref})) {
+        return $self->{prefs}->{$pref};
     }
     if (defined($default)) {
         return $default;
@@ -88,39 +88,39 @@ sub getPref($this,$pref,$default)
     return "";
 }
 
-sub loadPrefs($this)
+sub loadPrefs($self)
 {
-    if ( ! -f $this->{preffile}) {
+    if ( ! -f $self->{preffile}) {
         return 0;
     }
 
-    if ( !open(my $PREFFILE, $this->{preffile}) ) {
+    if ( !open(my $PREFFILE, $self->{preffile}) ) {
         return 0;
     }
     while (<$PREFFILE>) {
         if (/^(\S+)\s+(.*)$/) {
-            $this->{prefs}->{$1} = $2;
+            $self->{prefs}->{$1} = $2;
         }
     }
     close $PREFFILE;
 }
 
-sub dumpPrefs($this)
+sub dumpPrefs($self)
 {
     my $slave_db = DB::connect('slave', 'mc_config');
     my %prefs = $slave_db->getHashRow("SELECT * FROM antispam");
     my %conf = $slave_db->getHashRow("SELECT use_ssl, servername FROM httpd_config");
     my %sysconf = $slave_db->getHashRow("SELECT summary_from, analyse_to FROM system_conf");
 
-    if (! -d $this->{prefdir} && ! mkdir($this->{prefdir})) {
+    if (! -d $self->{prefdir} && ! mkdir($self->{prefdir})) {
         print "CANNOTCREATESYSTEMPREFDIR\n";
         return 0;
     }
     my $uid = getpwnam( 'mailcleaner' );
     my $gid = getgrnam( 'mailcleaner' );
-    chown $uid, $gid, $this->{prefdir};
+    chown $uid, $gid, $self->{prefdir};
 
-    if ( !open(my $PREFFILE, ">".$this->{preffile}) ) {
+    if ( !open(my $PREFFILE, ">".$self->{preffile}) ) {
         print "CANNOTWRITESYSTEMPREF\n";
         return 0;
     }
@@ -137,7 +137,7 @@ sub dumpPrefs($this)
         print $PREFFILE "$p ".$sysconf{$p}."\n";
     }
     close $PREFFILE;
-    chown $uid, $gid, $this->{preffile};
+    chown $uid, $gid, $self->{preffile};
     return 1;
 }
 

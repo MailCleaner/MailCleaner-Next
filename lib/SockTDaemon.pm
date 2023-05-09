@@ -75,198 +75,198 @@ sub new($class,$daemonname,$conffilepath,$spec_thish)
         $sockspec_this->{$sk} = $spec_this{$sk};
     }
 
-    my $this = $class->SUPER::create( $daemonname, $conffilepath, $sockspec_this );
+    my $self = $class->SUPER::create( $daemonname, $conffilepath, $sockspec_this );
 
     $daemoncounts_{'realstarttime'} = time;
 
-    $this->{socks_status} = ();
-    $this->{sock_timer} = ();
+    $self->{socks_status} = ();
+    $self->{sock_timer} = ();
 
-    bless $this, 'SockTDaemon';
-    return $this;
+    bless $self, 'SockTDaemon';
+    return $self;
 }
 
-sub preForkHook($this)
+sub preForkHook($self)
 {
     ## first remove socket if already present
-    if ( -e $this->{socketpath} ) {
-        unlink( $this->{socketpath} );
+    if ( -e $self->{socketpath} ) {
+        unlink( $self->{socketpath} );
     }
 
     ## bind to socket
-    $this->{server} = IO::Socket::UNIX->new(
-        Local  => $this->{socketpath},
+    $self->{server} = IO::Socket::UNIX->new(
+        Local  => $self->{socketpath},
         Type   => SOCK_STREAM,
         Listen => 50,
-    ) or die( "Cannot listen on socket: $this->{socketpath}: " . $@ . "\n" );
+    ) or die( "Cannot listen on socket: $self->{socketpath}: " . $@ . "\n" );
 
-    $this->{server}->autoflush(1);
-    chmod 0777, $this->{socketpath};
-    $this->doLog( "Listening on socket " . $this->{socketpath}, 'socket' );
+    $self->{server}->autoflush(1);
+    chmod 0777, $self->{socketpath};
+    $self->doLog( "Listening on socket " . $self->{socketpath}, 'socket' );
 
     return 1;
 }
 
-sub exitHook($this)
+sub exitHook($self)
 {
-    close( $this->{server} );
-    $this->doLog( "Listener socket closed", 'socket' );
+    close( $self->{server} );
+    $self->doLog( "Listener socket closed", 'socket' );
 
     return 1;
 }
 
-sub postKillHook($this)
+sub postKillHook($self)
 {
-    $this->doLog( 'No postKillHook redefined...', 'socket' );
-    close( $this->{server} );
+    $self->doLog( 'No postKillHook redefined...', 'socket' );
+    close( $self->{server} );
     return 1;
 }
 
-sub mainLoopHook($this)
+sub mainLoopHook($self)
 {
     my $t = threads->self;
-    $this->{tid} = $t->tid;
+    $self->{tid} = $t->tid;
 
     $SIG{'INT'} = $SIG{'KILL'} = $SIG{'TERM'} = sub {
-        $this->doLog(
+        $self->doLog(
             "Thread " . $t->tid . " got TERM! Proceeding to shutdown thread...",
             'daemon'
         );
         ## give our child a chance to exit cleanly
-        $this->exitThreadHook();
+        $self->exitThreadHook();
 
         threads->detach();
-        $this->doLog( "Thread " . $t->tid . " detached.", 'daemon' );
+        $self->doLog( "Thread " . $t->tid . " detached.", 'daemon' );
         threads->exit();
-        $this->doLog( "Huho... Thread " . $t->tid . " still working though...",
+        $self->doLog( "Huho... Thread " . $t->tid . " still working though...",
             'daemon', 'error' );
     };
 
-    $this->initThreadHook();
+    $self->initThreadHook();
 
     $SIG{ALRM} = sub {
         local $| = 1;
         print time, ": Caught SIGALRM in thread\n";
     };
 
-    $this->doLog( "In SockTDaemon main loop", 'socket' );
+    $self->doLog( "In SockTDaemon main loop", 'socket' );
 
     my $data;
 
-    while ( my $client = $this->{server}->accept() ) {
-        $this->{socks_status}{$client} = 'connected';
+    while ( my $client = $self->{server}->accept() ) {
+        $self->{socks_status}{$client} = 'connected';
 
         if (\$client =~ m/REF(0x[a-f0-9]+)/  ) {
             print STDERR "Got conenction from: ".$1."\n";
         }
         my $client_on = 1;
         $SIG{'PIPE'} = sub {
-            $this->doLog( "closing client socket, got PIPE signal", 'socket' );
-            $this->{socks_status}{$client} .= ',PIPE received';
-            if (defined($this->{sock_timer}{$client})) {
-                my $interval = tv_interval($this->{sock_timer}{$client});
+            $self->doLog( "closing client socket, got PIPE signal", 'socket' );
+            $self->{socks_status}{$client} .= ',PIPE received';
+            if (defined($self->{sock_timer}{$client})) {
+                my $interval = tv_interval($self->{sock_timer}{$client});
                 my $time     = ( int( $interval * 10000 ) / 10000 );
-                $this->{socks_status}{$client} .= " ($time s.)";
+                $self->{socks_status}{$client} .= " ($time s.)";
             }
-            $this->doLog( 'connection closed by PIPE: '.$this->{socks_status}{$client}, 'socket' );
-            delete($this->{socks_status}{$client});
-            undef($this->{socks_status}{$client});
-            delete($this->{sock_timer}{$client});
-            undef($this->{sock_timer}{$client});
+            $self->doLog( 'connection closed by PIPE: '.$self->{socks_status}{$client}, 'socket' );
+            delete($self->{socks_status}{$client});
+            undef($self->{socks_status}{$client});
+            delete($self->{sock_timer}{$client});
+            undef($self->{sock_timer}{$client});
             $client->close();
             $client_on = 0;
         };
         my $rv = $client->recv( $data, 1024, 0 );
-        $this->{socks_status}{$client} .= ",received data($data)";
-        $this->{sock_timer}{$client} = [gettimeofday];
+        $self->{socks_status}{$client} .= ",received data($data)";
+        $self->{sock_timer}{$client} = [gettimeofday];
         if ( defined($rv) && length $data ) {
 
-            $this->doLog( 'GOT some data: ' . $data, 'socket', 'debug' );
+            $self->doLog( 'GOT some data: ' . $data, 'socket', 'debug' );
             $daemoncounts_{'queries'}++;
             my $result = '';
             if ( $data eq 'STATUS' ) {
-                $result = $this->getStatus();
+                $result = $self->getStatus();
             }
             if ( $result eq '' ) {
-                $result = $this->dataRead( $data, $this->{server} );
+                $result = $self->dataRead( $data, $self->{server} );
             }
-            if ($this->{long_response_time} > 0) {
-               my $interval = tv_interval($this->{sock_timer}{$client});
+            if ($self->{long_response_time} > 0) {
+               my $interval = tv_interval($self->{sock_timer}{$client});
                my $time     = ( int( $interval * 10000 ) / 10000 );
-               if ($time >= $this->{long_response_time}) {
-                   $this->doLog( 'Long response detected: '.$this->{socks_status}{$client}." took: ".$time." s.");
+               if ($time >= $self->{long_response_time}) {
+                   $self->doLog( 'Long response detected: '.$self->{socks_status}{$client}." took: ".$time." s.");
                }
             }
 
-            $this->{socks_status}{$client} .= ',data processed';
+            $self->{socks_status}{$client} .= ',data processed';
             ## only answer if client still here
             if ($client_on) {
                 $client->send($result);
                 $client->flush();
-                $this->{socks_status}{$client} .= ',response sent';
-                if (defined($this->{sock_timer}{$client})) {
-                    my $interval = tv_interval($this->{sock_timer}{$client});
+                $self->{socks_status}{$client} .= ',response sent';
+                if (defined($self->{sock_timer}{$client})) {
+                    my $interval = tv_interval($self->{sock_timer}{$client});
                     my $time     = ( int( $interval * 10000 ) / 10000 );
-                    $this->{socks_status}{$client} .= " ($time s.)";
+                    $self->{socks_status}{$client} .= " ($time s.)";
                 }
-                $this->doLog( 'connection closed by response sent: '.$this->{socks_status}{$client}, 'socket', 'debug' );
-                delete($this->{socks_status}{$client});
-                undef($this->{socks_status}{$client});
-                delete($this->{sock_timer}{$client});
-                undef($this->{sock_timer}{$client});
+                $self->doLog( 'connection closed by response sent: '.$self->{socks_status}{$client}, 'socket', 'debug' );
+                delete($self->{socks_status}{$client});
+                undef($self->{socks_status}{$client});
+                delete($self->{sock_timer}{$client});
+                undef($self->{sock_timer}{$client});
                 close($client);
-                $this->doLog( 'response sent, client socket closed ',
+                $self->doLog( 'response sent, client socket closed ',
                     'socket', 'debug' );
             }
         } else {
-            $this->{socks_status}{$client} .= ',end of data';
-            if (defined($this->{sock_timer}{$client})) {
-               my $interval = tv_interval($this->{sock_timer}{$client});
+            $self->{socks_status}{$client} .= ',end of data';
+            if (defined($self->{sock_timer}{$client})) {
+               my $interval = tv_interval($self->{sock_timer}{$client});
                my $time     = ( int( $interval * 10000 ) / 10000 );
-               $this->{socks_status}{$client} .= " ($time s.)";
+               $self->{socks_status}{$client} .= " ($time s.)";
             }
-            $this->doLog( 'connection closed by end of data: '.$this->{socks_status}{$client}, 'socket' );
-            delete($this->{socks_status}{$client});
-            undef($this->{socks_status}{$client});
-            delete($this->{sock_timer}{$client});
+            $self->doLog( 'connection closed by end of data: '.$self->{socks_status}{$client}, 'socket' );
+            delete($self->{socks_status}{$client});
+            undef($self->{socks_status}{$client});
+            delete($self->{sock_timer}{$client});
             undef(sock_timer{$client});
             close($client);
-            $this->doLog( "closed client connection", 'socket' );
+            $self->doLog( "closed client connection", 'socket' );
         }
     }
 }
 
-sub statusHook($this)
+sub statusHook($self)
 {
-    my $client = new SockClient( { 'socketpath' => $this->{socketpath} } );
+    my $client = new SockClient( { 'socketpath' => $self->{socketpath} } );
     return $client->query('STATUS');
 }
 
-sub getStatus($this)
+sub getStatus($self)
 {
-    my $counts = $this->getDaemonCounts();
+    my $counts = $self->getDaemonCounts();
 
-    my $res      = "Status of daemon: " . $this->{name} . "\n";
+    my $res      = "Status of daemon: " . $self->{name} . "\n";
     my $run_time = ( time() - $counts->{starttime} );
-    $res .= "  Running time: " . $this->format_time($run_time) . "\n";
+    $res .= "  Running time: " . $self->format_time($run_time) . "\n";
     $res .= "  Threads running: " . threads->list(threads::running) . "\n";
     $res .= "  Number of queries: " . $daemoncounts_{'queries'} . "\n";
-    $this->doLog($res);
+    $self->doLog($res);
     return $res;
 }
 
 ### Available hooks
-sub initThreadHook($this)
+sub initThreadHook($self)
 {
-    $this->doLog(
+    $self->doLog(
         'No initThreadHook redefined, using default one...',
         'socket'
     );
 }
 
-sub exitThreadHook($this)
+sub exitThreadHook($self)
 {
-    $this->doLog(
+    $self->doLog(
         'No exitThreadHook redefined, using default one...',
         'socket'
     );

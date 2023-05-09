@@ -34,46 +34,46 @@ sub new($class,$spec_thish)
 {
     my %spec_this = %$spec_thish;
 
-    my $this = {
+    my $self = {
         timeout => 5,
         socketpath => '/tmp/'.$class,
     };
 
     # add specific options of child object
     foreach my $sk (keys %spec_this) {
-        $this->{$sk} = $spec_this{$sk};
+        $self->{$sk} = $spec_this{$sk};
     }
 
-    bless $this, $class;
-    return $this;
+    bless $self, $class;
+    return $self;
 }
 
-sub connect($this)
+sub connect($self)
 {
     ## untaint some values
-    if ($this->{socketpath} =~ m/^(\S+)/) {
-        $this->{socketpath} = $1;
+    if ($self->{socketpath} =~ m/^(\S+)/) {
+        $self->{socketpath} = $1;
     }
-    if ($this->{timeout} =~ m/^(\d+)$/) {
-        $this->{timeout} = $1;
+    if ($self->{timeout} =~ m/^(\d+)$/) {
+        $self->{timeout} = $1;
     }
 
-    $this->{socket} = IO::Socket::UNIX->new(
-        Peer    => $this->{socketpath},
+    $self->{socket} = IO::Socket::UNIX->new(
+        Peer    => $self->{socketpath},
         Type    => SOCK_STREAM,
-        Timeout => $this->{timeout}
+        Timeout => $self->{timeout}
     ) or return 0;
 
     return 1;
 }
 
-sub query($this,$query)
+sub query($self,$query)
 {
     my $sent = 0;
     my $tries = 1;
 
-    $this->connect() or return '_NOSERVER';
-    my $sock = $this->{socket};
+    $self->connect() or return '_NOSERVER';
+    my $sock = $self->{socket};
 
     $sock->send($query) or return '_NOSERVER';
     $sock->flush();
@@ -83,7 +83,7 @@ sub query($this,$query)
 
     my $read_set = IO::Select::new();
     $read_set->add($sock);
-    my ($r_ready, $w_ready, $error) =  IO::Select->select($read_set, undef, undef, $this->{timeout});
+    my ($r_ready, $w_ready, $error) =  IO::Select->select($read_set, undef, undef, $self->{timeout});
 
     foreach my $s (@$r_ready) {
         my $buf;

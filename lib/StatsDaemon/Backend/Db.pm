@@ -40,31 +40,31 @@ my $_current_table_creating : shared = 0;
 
 sub new($class,$daemon)
 {
-    my $this = {
+    my $self = {
         'class' => $class,
         'daemon' => $daemon
     };
-    bless $this, $class;
+    bless $self, $class;
 
-    foreach my $option (keys %{ $this->{daemon} }) {
-        if (defined($this->{$option})) {
-            $this->{$option} = $this->{daemon}->{$option};
+    foreach my $option (keys %{ $self->{daemon} }) {
+        if (defined($self->{$option})) {
+            $self->{$option} = $self->{daemon}->{$option};
         }
     }
 
-    $this->doLog("backend loaded", 'statsdaemon');
+    $self->doLog("backend loaded", 'statsdaemon');
 
-    $this->{data} = $StatsDaemon::data_;
-    return $this;
+    $self->{data} = $StatsDaemon::data_;
+    return $self;
 }
 
-sub threadInit($this)
+sub threadInit($self)
 {
-    $this->doLog("backend thread initialization", 'statsdaemon');
-    $this->connectBackend();
+    $self->doLog("backend thread initialization", 'statsdaemon');
+    $self->connectBackend();
 }
 
-sub accessFlatElement($this,$elemen)
+sub accessFlatElement($self,$elemen)
 {
     my $value = 0;
 
@@ -75,69 +75,69 @@ sub accessFlatElement($this,$elemen)
                 " d, stats_subject s WHERE s.id=d.subject AND s.subject='" .
                 $element .
                 "' AND d.day=" .
-                $this->{daemon}->getCurrentDate()->{'day'};
-            $this->{daemon}->addStat( 'backend_read', 1 );
-            return '_NOBACKEND' if ( !$this->connectBackend() );
-            my %res = $this->{db}->getHashRow($query);
-            $this->doLog( 'Query executed: '.$query, 'statsdaemon', 'debug');
+                $self->{daemon}->getCurrentDate()->{'day'};
+            $self->{daemon}->addStat( 'backend_read', 1 );
+            return '_NOBACKEND' if ( !$self->connectBackend() );
+            my %res = $self->{db}->getHashRow($query);
+            $self->doLog( 'Query executed: '.$query, 'statsdaemon', 'debug');
             if ( $res{'id'} && $res{'value'} ) {
-                $this->{data}->{$element}->{'stable_id'} = $res{'id'};
+                $self->{data}->{$element}->{'stable_id'} = $res{'id'};
                 $value = $res{'value'};
             }
-            $this->doLog( 'loaded data for ' . $element . ' from backend',
+            $self->doLog( 'loaded data for ' . $element . ' from backend',
                 'statsdaemon', 'debug' );
      }
      return $value;
 }
 
-sub stabilizeFlatElement($this,$element)
+sub stabilizeFlatElement($self,$element)
 {
     my $table = '';
     if ( $_current_table_exists ) {
         $table = $_current_table;
     } else {
-        if ( $this->createCurrentTable() ) {
+        if ( $self->createCurrentTable() ) {
             $table = $_current_table;
         }
     }
     if ( $table eq '' ) {
-        $this->doLog(
+        $self->doLog(
             "Error: Current table cannot be found (probably being created)",
             'statsdaemon', 'error' );
         return '_CANNOTSTABILIZE';
     }
-    my $day = $this->{daemon}->getCurrentDate()->{'day'};
+    my $day = $self->{daemon}->getCurrentDate()->{'day'};
 
     ## find out if element already is registered, register it if not.
-    if (!defined($this->{data}->{$element}) ||
-         !defined($this->{data}->{$element}->{'stable_id'}) ||
-         (defined($this->{data}->{$element}->{'stable_id'}) && !$this->{data}->{$element}->{'stable_id'})
+    if (!defined($self->{data}->{$element}) ||
+         !defined($self->{data}->{$element}->{'stable_id'}) ||
+         (defined($self->{data}->{$element}->{'stable_id'}) && !$self->{data}->{$element}->{'stable_id'})
        ) {
         my $query =
           "SELECT id FROM stats_subject WHERE subject='" . $element . "'";
-        $this->{daemon}->addStat( 'backend_read', 1 );
-        return '_NOBACKEND' if ( !$this->connectBackend() );
-        my %res = $this->{db}->getHashRow($query);
+        $self->{daemon}->addStat( 'backend_read', 1 );
+        return '_NOBACKEND' if ( !$self->connectBackend() );
+        my %res = $self->{db}->getHashRow($query);
         if ( defined( $res{'id'} ) ) {
-            $this->{daemon}->setElementValueByName( $element, 'stable_id',
+            $self->{daemon}->setElementValueByName( $element, 'stable_id',
                 $res{'id'} );
         } else {
             $query = "INSERT INTO stats_subject SET subject='" . $element . "'";
-            return '_NOBACKEND' if ( !$this->connectBackend() );
-            if ( $this->{db}->execute($query) ) {
-                my $id = $this->{db}->getLastID();
-                $this->{daemon}->addStat( 'backend_write', 1 );
+            return '_NOBACKEND' if ( !$self->connectBackend() );
+            if ( $self->{db}->execute($query) ) {
+                my $id = $self->{db}->getLastID();
+                $self->{daemon}->addStat( 'backend_write', 1 );
                 if ($id) {
-                    $this->{daemon}->setElementValueByName( $element, 'stable_id',
+                    $self->{daemon}->setElementValueByName( $element, 'stable_id',
                         $id );
-                    $this->doLog(
+                    $self->doLog(
                         'registered new element ' . $element
                           . ' in backend with id '
                           . $id,
                         'statsdaemon', 'debug'
                     );
                 } else {
-                    $this->doLog(
+                    $self->doLog(
                         "Could not get subject ID for element: $element",
                         'statsdaemon', 'error' );
                 }
@@ -146,14 +146,14 @@ sub stabilizeFlatElement($this,$element)
                 my $query =
                     "SELECT id FROM stats_subject WHERE subject='" . $element
                   . "'";
-                $this->{daemon}->addStat( 'backend_read', 1 );
-                return '_NOBACKEND' if ( !$this->connectBackend() );
-                my %res = $this->{db}->getHashRow($query);
+                $self->{daemon}->addStat( 'backend_read', 1 );
+                return '_NOBACKEND' if ( !$self->connectBackend() );
+                my %res = $self->{db}->getHashRow($query);
                 if ( defined( $res{'id'} ) ) {
-                    $this->{daemon}->setElementValueByName( $element, 'stable_id',
+                    $self->{daemon}->setElementValueByName( $element, 'stable_id',
                         $res{'id'} );
                 } else {
-                    $this->doLog(
+                    $self->doLog(
                         "Could not insert subject for element: $element",
                         'statsdaemon', 'error' );
                 }
@@ -167,24 +167,24 @@ sub stabilizeFlatElement($this,$element)
         " SET day=" .
         $day .
         ", subject=" .
-        $this->{daemon}->getElementValueByName($element, 'stable_id') .
+        $self->{daemon}->getElementValueByName($element, 'stable_id') .
         ", value=" .
-        $this->{daemon}->getElementValueByName($element, 'value') .
+        $self->{daemon}->getElementValueByName($element, 'value') .
         " ON DUPLICATE KEY UPDATE value=" .
-        $this->{daemon}->getElementValueByName($element, 'value');
-    return '_NOBACKEND' if ( !$this->connectBackend() );
-    if ( !$this->{db}->execute($query) ) {
-        $this->doLog( "Could not stabilize statistic with query: '$query'",
+        $self->{daemon}->getElementValueByName($element, 'value');
+    return '_NOBACKEND' if ( !$self->connectBackend() );
+    if ( !$self->{db}->execute($query) ) {
+        $self->doLog( "Could not stabilize statistic with query: '$query'",
             'statsdaemon', 'error' );
         return '_CANNOTSTABILIZE';
     }
-    $this->{daemon}->addStat( 'backend_write', 1 );
-    $this->doLog( 'stabilized value for element ' . $element . ' in backend',
+    $self->{daemon}->addStat( 'backend_write', 1 );
+    $self->doLog( 'stabilized value for element ' . $element . ' in backend',
         'statsdaemon', 'debug' );
     return 'STABILIZED';
 }
 
-sub getStats($this,$start,$stop,$what,$data)
+sub getStats($self,$start,$stop,$what,$data)
 {
     ## defs
     my $base_subject = '---';
@@ -285,10 +285,10 @@ sub getStats($this,$start,$stop,$what,$data)
                 }
 
                 $query .= " group by d.subject";
-                $this->doLog( 'Using query: "'.$query.'"', 'statsdaemon', 'debug' );
-                $this->{daemon}->increaseLongRead();
-                my @results = $this->{db}->getListOfHash( $query, 1 );
-                $this->{daemon}->decreaseLongRead();
+                $self->doLog( 'Using query: "'.$query.'"', 'statsdaemon', 'debug' );
+                $self->{daemon}->increaseLongRead();
+                my @results = $self->{db}->getListOfHash( $query, 1 );
+                $self->{daemon}->decreaseLongRead();
                 foreach my $res (@results) {
                     if ( !$res->{'sm'} ) {
                         $res->{'sm'} = 0;
@@ -313,40 +313,40 @@ sub getStats($this,$start,$stop,$what,$data)
     return 'OK';
 }
 
-sub announceMonthChange($this)
+sub announceMonthChange($self)
 {
     $_current_table_exists = 0;
 }
 
-sub announceDayChange($this)
+sub announceDayChange($self)
 {
     return;
 }
 
 ## Database management
-sub connectBackend($this)
+sub connectBackend($self)
 {
-    return 1 if ( defined( $this->{db} ) && $this->{db}->ping() );
+    return 1 if ( defined( $self->{db} ) && $self->{db}->ping() );
 
-    $this->{db} = DB::connect( 'slave', 'mc_stats', 0 );
-    if ( !$this->{db}->ping() ) {
-        $this->doLog( "WARNING, could not connect to statistics database",
+    $self->{db} = DB::connect( 'slave', 'mc_stats', 0 );
+    if ( !$self->{db}->ping() ) {
+        $self->doLog( "WARNING, could not connect to statistics database",
             'statsdaemon', 'error' );
         return 0;
     }
-    $this->doLog( "Connected to statistics database", 'statsdaemon' );
+    $self->doLog( "Connected to statistics database", 'statsdaemon' );
 
     if ( $_current_table_exists == 0 ) {
-        $this->createCurrentTable();
+        $self->createCurrentTable();
     }
 
     my $query = "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
-    $this->{db}->execute($query);
+    $self->{db}->execute($query);
 
     return 1;
 }
 
-sub createCurrentTable($this)
+sub createCurrentTable($self)
 {
     if ( $_current_table_creating == 1 ) {
         return 0;
@@ -360,18 +360,18 @@ sub createCurrentTable($this)
       . "UNIQUE KEY `subject` (`subject`),"
       . "KEY `id` (`id`)"
       . ") ENGINE=MyISAM";
-    if ( !$this->{db}->execute($query) ) {
-        $this->doLog( "Cannot create subject table", 'statsdaemon', 'error' );
+    if ( !$self->{db}->execute($query) ) {
+        $self->doLog( "Cannot create subject table", 'statsdaemon', 'error' );
         $_current_table_creating = 0;
         return 0;
     }
 
     my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) =
       localtime time;
-    %{$this->{daemon}->getCurrentDate()} =
+    %{$self->{daemon}->getCurrentDate()} =
       ( 'day' => $mday, 'month' => $mon + 1, 'year' => $year + 1900 );
     my $table = "stats_"
-      . sprintf( '%.4d%.2d', $this->{daemon}->getCurrentDate()->{'year'}, $this->{daemon}->getCurrentDate()->{'month'} );
+      . sprintf( '%.4d%.2d', $self->{daemon}->getCurrentDate()->{'year'}, $self->{daemon}->getCurrentDate()->{'month'} );
 
     $query =
         "CREATE TABLE IF NOT EXISTS `$table` ("
@@ -381,14 +381,14 @@ sub createCurrentTable($this)
       . "PRIMARY KEY `day` (`day`,`subject`), "
       . "KEY `subject_idx` (`subject`) "
       . ") ENGINE=MyISAM";
-    $this->{daemon}->addStat( 'backend_write', 1 );
-    if ( !$this->{db}->execute($query) ) {
-        $this->doLog( "Cannot create table: " . $table, 'statsdaemon',
+    $self->{daemon}->addStat( 'backend_write', 1 );
+    if ( !$self->{db}->execute($query) ) {
+        $self->doLog( "Cannot create table: " . $table, 'statsdaemon',
             'error' );
         $_current_table_creating = 0;
         return 0;
     } else {
-        $this->doLog( 'Table ' . $table . " created", 'statsdaemon' );
+        $self->doLog( 'Table ' . $table . " created", 'statsdaemon' );
     }
     $_current_table_exists = 1;
     $_current_table = $table;
@@ -396,11 +396,11 @@ sub createCurrentTable($this)
     return 1;
 }
 
-sub doLog($this,$message,$given_set,$priority='info')
+sub doLog($self,$message,$given_set,$priority='info')
 {
-    my $msg = $this->{class}." ".$message;
-    if ($this->{daemon}) {
-        $this->{daemon}->doLog($msg, $given_set, $priority);
+    my $msg = $self->{class}." ".$message;
+    if ($self->{daemon}) {
+        $self->{daemon}->doLog($msg, $given_set, $priority);
     }
 }
 

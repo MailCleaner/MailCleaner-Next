@@ -46,15 +46,15 @@ sub new($statfile,$reset)
     my $rrd = RRD::Generic::create($statfile, \%things, $reset);
 
 
-    my $this = {
+    my $self = {
         statfile => $statfile,
         rrd => $rrd
     };
 
-    return bless $this, "RRD::Cpu24";
+    return bless $self, "RRD::Cpu24";
 }
 
-sub collect($this,$snmp)
+sub collect($self,$snmp)
 {
     my %things = (
         idle => '1.3.6.1.4.1.2021.11.53.0',
@@ -63,10 +63,10 @@ sub collect($this,$snmp)
         user => '1.3.6.1.4.1.2021.11.50.0',
     );
 
-    return RRD::Generic::collect($this->{rrd}, $snmp, \%things);
+    return RRD::Generic::collect($self->{rrd}, $snmp, \%things);
 }
 
-sub plot($this,$dir,$period,$leg)
+sub plot($self,$dir,$period,$leg)
 {
     my %things = (
         idle => ['stack', 'EEEEEE', 'EEEEEE', 'Idle', 'AVERAGE', '%10.2lf %%', ''],
@@ -77,7 +77,7 @@ sub plot($this,$dir,$period,$leg)
     my @order = ('system', 'user', 'nice', 'idle');
 
     my $legend = "\t\t        Last\t  Average\t\t   Max\\n";
-    return RRD::Generic::plot('cpu', $dir, $period, $leg, 'CPU usage [%]', 0, 100, $this->{rrd}, \%things, \@order, $legend);
+    return RRD::Generic::plot('cpu', $dir, $period, $leg, 'CPU usage [%]', 0, 100, $self->{rrd}, \%things, \@order, $legend);
 }
 
 1;

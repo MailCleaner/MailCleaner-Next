@@ -102,7 +102,7 @@ sub initialise
     }
 }
 
-sub Checks($this,$message)
+sub Checks($self,$message)
 {
     my $maxsize     = $UriRBLs::conf{'maxSize'};
     my $header_size = 0;

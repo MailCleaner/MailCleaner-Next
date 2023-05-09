@@ -78,7 +78,7 @@ sub create($class,$daemonname,$conffilepath,$spec_thish)
     my $debug   = 0;
     my $leaving = 0;
 
-    my $this = {
+    my $self = {
         name                 => $daemonname,
         prefork              => $prefork,
         allthreadsrestartin  => 10,
@@ -100,20 +100,20 @@ sub create($class,$daemonname,$conffilepath,$spec_thish)
         time_before_hardkill => 5,
         pidfile              => $pidfile
     };
-    bless $this, 'PreForkTDaemon';
+    bless $self, 'PreForkTDaemon';
 
     # add specific options of child object
     foreach my $sk ( keys %spec_this ) {
-        $this->{$sk} = $spec_this{$sk};
+        $self->{$sk} = $spec_this{$sk};
     }
 
     ## add log_sets
-    foreach my $set ( split( /,/, $this->{log_sets} ) ) {
-        push @{ $this->{'logged_sets'} }, $set;
+    foreach my $set ( split( /,/, $self->{log_sets} ) ) {
+        push @{ $self->{'logged_sets'} }, $set;
     }
 
     # do we need to dump configuration
-    my $file  = $this->{configfile};
+    my $file  = $self->{configfile};
     my $tfile = $file . "_template";
     if ( -f $tfile ) {
         my $template = ConfigTemplate::create( $tfile, $file );
@@ -121,12 +121,12 @@ sub create($class,$daemonname,$conffilepath,$spec_thish)
     }
 
     # replace with configuration file values
-    if ( open(my $CONFFILE, '<', $this->{configfile}) ) {
+    if ( open(my $CONFFILE, '<', $self->{configfile}) ) {
         while (<$CONFFILE>) {
             chomp;
             next if /^\#/;
             if (/^(\S+)\s*\=\s*(.*)$/) {
-                $this->{$1} = $2;
+                $self->{$1} = $2;
             }
         }
         close $CONFFILE;
@@ -134,59 +134,59 @@ sub create($class,$daemonname,$conffilepath,$spec_thish)
 
     ## make sure we have the correct owners for critical files:
     foreach my $file (('pidfile', 'logfile', 'socketpath')) {
-        if (defined($this->{$file}) && -f $this->{$file}) {
-            my $uid = getpwnam( $this->{'runasuser'});
-            my $gid = getgrnam( $this->{'runasgroup'});
-            chown $uid, $gid, $this->{$file};
+        if (defined($self->{$file}) && -f $self->{$file}) {
+            my $uid = getpwnam( $self->{'runasuser'});
+            my $gid = getgrnam( $self->{'runasgroup'});
+            chown $uid, $gid, $self->{$file};
         }
     }
 
-    $this->{log_prio_level} = $log_prio_levels{ $this->{log_priority} };
+    $self->{log_prio_level} = $log_prio_levels{ $self->{log_priority} };
 
-    $this->{'uid'} = $this->{'runasuser'} ? getpwnam( $this->{'runasuser'} ) : 0;
-    $this->{'gid'} = $this->{'runasgroup'} ? getgrnam( $this->{'runasgroup'} ) : 0;
+    $self->{'uid'} = $self->{'runasuser'} ? getpwnam( $self->{'runasuser'} ) : 0;
+    $self->{'gid'} = $self->{'runasgroup'} ? getgrnam( $self->{'runasgroup'} ) : 0;
 
     ## set our process name
-    $0 = $this->{name};
-    if ( $this->{'syslog_progname'} eq '' ) {
-        $this->{'syslog_progname'} = $this->{name};
+    $0 = $self->{name};
+    if ( $self->{'syslog_progname'} eq '' ) {
+        $self->{'syslog_progname'} = $self->{name};
     }
 
     ## init syslog if required
-    if ( $this->{'syslog_facility'} ne '' ) {
-        openlog( $this->{'syslog_progname'},
-            'ndelay,pid,nofatal', $this->{'syslog_facility'} );
-        $this->{'do_syslog'} = 1;
+    if ( $self->{'syslog_facility'} ne '' ) {
+        openlog( $self->{'syslog_progname'},
+            'ndelay,pid,nofatal', $self->{'syslog_facility'} );
+        $self->{'do_syslog'} = 1;
     }
-    return $this;
+    return $self;
 }
 
-sub initDaemon($this)
+sub initDaemon($self)
 {
     my $result = 'not started';
 
     ## change user and group if needed
-    if ( $this->{'gid'} ) {
-        ( $(, $) ) = ( $this->{'gid'}, $this->{'gid'} );
-        $( == $this->{'gid'} && $) == $this->{'gid'}
-          or die "Can't set GID " . $this->{'gid'};
-        $) = $this->{'gid'};
+    if ( $self->{'gid'} ) {
+        ( $(, $) ) = ( $self->{'gid'}, $self->{'gid'} );
+        $( == $self->{'gid'} && $) == $self->{'gid'}
+          or die "Can't set GID " . $self->{'gid'};
+        $) = $self->{'gid'};
     }
-    if ( $this->{'uid'} ) {
-        ( $<, $> ) = ( $this->{'uid'}, $this->{'uid'} );
-        $< == $this->{'uid'} && $> == $this->{'uid'}
-          or die "Can't set UID " . $this->{'uid'};
+    if ( $self->{'uid'} ) {
+        ( $<, $> ) = ( $self->{'uid'}, $self->{'uid'} );
+        $< == $self->{'uid'} && $> == $self->{'uid'}
+          or die "Can't set UID " . $self->{'uid'};
     }
-    $this->doLog(
-        'Set UID to ' . $this->{'runasgroup'} . "(" . $< . ")",
+    $self->doLog(
+        'Set UID to ' . $self->{'runasgroup'} . "(" . $< . ")",
         'daemon'
     );
-    $this->doLog(
-        'Set GID to ' . $this->{'runasgroup'} . "(" . $( . ")",
+    $self->doLog(
+        'Set GID to ' . $self->{'runasgroup'} . "(" . $( . ")",
         'daemon'
     );
 
-    my @pids = $this->readPidFile();
+    my @pids = $self->readPidFile();
 
     require Proc::ProcessTable;
     my $t = Proc::ProcessTable->new();
@@ -195,7 +195,7 @@ sub initDaemon($this)
     foreach my $p ( @{ $t->table } ) {
         my $cmndline = $p->{'cmndline'};
         $cmndline =~ s/\s*$//g;
-        if ($cmndline eq $this->{'name'}) {
+        if ($cmndline eq $self->{'name'}) {
             if ($p->{'pid'} == $$) {
                 next;
             } elsif (scalar(grep(/$p->{'pid'}/,@pids))) {
@@ -211,25 +211,25 @@ sub initDaemon($this)
         return output("not started", @errors);
     }
 
-    $this->doLog( 'Initializing Daemon', 'daemon' );
+    $self->doLog( 'Initializing Daemon', 'daemon' );
 
 # first install some critical signal handler so that main script wont get killed
     $SIG{ALRM} =
-      sub { $this->doLog( "Got alarm signal.. nothing to do", 'daemon' ); };
+      sub { $self->doLog( "Got alarm signal.. nothing to do", 'daemon' ); };
     $SIG{PIPE} = sub {
-        $this->doLog( "Got PIPE signal.. nothing to do", 'daemon' );
+        $self->doLog( "Got PIPE signal.. nothing to do", 'daemon' );
     };
 
-    if ( $this->{daemonize} ) {
+    if ( $self->{daemonize} ) {
 
         # first daemonize
         my $pid = fork;
         if ($pid) {
             # parent
-            open(my $fh, '>>', $this->{pidfile});
+            open(my $fh, '>>', $self->{pidfile});
             print $fh $pid;
             close $fh;
-            $this->doLog( 'Deamonized with PID ' . $pid, 'daemon' );
+            $self->doLog( 'Deamonized with PID ' . $pid, 'daemon' );
             $result = "started.";
             return output($result,@errors);
             exit();
@@ -248,22 +248,22 @@ sub initDaemon($this)
         }
     } else {
         my $pid = $$;
-        open(my $fh, '>>', $this->{pidfile});
+        open(my $fh, '>>', $self->{pidfile});
         print $fh $pid;
         close $fh;
     }
 
-    $this->preForkHook();
-    $this->forkChildren();
+    $self->preForkHook();
+    $self->forkChildren();
 }
 
-sub exitDaemon($this)
+sub exitDaemon($self)
 {
     my $result = 'not stopped';
-    my $time_before_hardkill = $this->{time_before_hardkill};
+    my $time_before_hardkill = $self->{time_before_hardkill};
 
     my @errors;
-    my @pids = $this->readPidFile();
+    my @pids = $self->readPidFile();
 
     require Proc::ProcessTable;
     my $t = Proc::ProcessTable->new();
@@ -273,7 +273,7 @@ sub exitDaemon($this)
     foreach my $p ( @{ $t->table } ) {
         my $cmndline = $p->{'cmndline'};
         $cmndline =~ s/\s*$//g;
-        if ($cmndline eq $this->{'name'}) {
+        if ($cmndline eq $self->{'name'}) {
             if ($p->{'pid'} == $$) {
                 next;
             }
@@ -325,20 +325,20 @@ sub exitDaemon($this)
     return output($result,@errors);
 }
 
-sub status($this)
+sub status($self)
 {
-    $this->statusHook();
+    $self->statusHook();
 }
 
-sub getDaemonCounts($this)
+sub getDaemonCounts($self)
 {
     return $daemoncounts_;
 }
 
-sub readPidFile($this)
+sub readPidFile($self)
 {
     my @pids;
-    if ( open(my $PIDFILE, '<', $this->{pidfile}) ) {
+    if ( open(my $PIDFILE, '<', $self->{pidfile}) ) {
         while (<$PIDFILE>) {
             if (/(\d+)/) {
                 push @pids, $1;
@@ -349,16 +349,16 @@ sub readPidFile($this)
     return @pids;
 }
 
-sub forkChildren($this)
+sub forkChildren($self)
 {
     $SIG{'TERM'} = sub {
-        $this->doLog(
+        $self->doLog(
             'Main thread got a TERM signal. Proceeding to shutdown...',
             'daemon' );
 
         foreach my $t ( threads->list(threads::running) ) {
-            if ( $this->{clean_thread_exit} ) {
-                $this->doLog( "Sending TERM signal to thread " . $t->tid,
+            if ( $self->{clean_thread_exit} ) {
+                $self->doLog( "Sending TERM signal to thread " . $t->tid,
                     'daemon' );
                 $t->kill('TERM')
                   ; ## does not always work, TERM signal cannot interrupt accept() call in thread
@@ -367,31 +367,31 @@ sub forkChildren($this)
             }
         }
 
-        $this->postKillHook();
+        $self->postKillHook();
 
         while ( threads->list() > 0 ) {
             my $thread_count = threads->list();
-            $this->doLog( "Still $thread_count threads running...", 'daemon' );
+            $self->doLog( "Still $thread_count threads running...", 'daemon' );
             sleep 1;
         }
 
         while ( threads->list(threads::running) > 0 ) {
             my $thread_count = threads->list(threads::running);
-            $this->doLog( "Still $thread_count threads running...", 'daemon' );
+            $self->doLog( "Still $thread_count threads running...", 'daemon' );
             sleep 1;
         }
-        $this->doLog( "All threads finished!", 'daemon' );
+        $self->doLog( "All threads finished!", 'daemon' );
         foreach my $t ( threads->list(threads::joinable) ) {
-            $this->doLog( "Joining thread " . $t->tid, 'daemon' );
+            $self->doLog( "Joining thread " . $t->tid, 'daemon' );
             my $res = $t->join();
         }
 
         ## let our child class a chance do clean up stuff
-        $this->exitHook();
+        $self->exitHook();
 
-        $this->doLog( "All threads finished and joined. ", 'daemon' );
-        $this->doLog( 'Bye !',                             'daemon' );
-        $this->closeLog();
+        $self->doLog( "All threads finished and joined. ", 'daemon' );
+        $self->doLog( 'Bye !',                             'daemon' );
+        $self->closeLog();
         exit();
     };
 
@@ -401,71 +401,71 @@ sub forkChildren($this)
             last;
         }
         my $thread_count = threads->list(threads::running);
-        for ( $thread_count .. $this->{prefork} - 1 ) {
-            $this->makeNewChild();
-            sleep $this->{interval};
+        for ( $thread_count .. $self->{prefork} - 1 ) {
+            $self->makeNewChild();
+            sleep $self->{interval};
         }
 
-        $this->doLog(
+        $self->doLog(
             "Population check done ("
               . $thread_count
               . "), waiting "
-              . $this->{'allthreadsrestartin'}
+              . $self->{'allthreadsrestartin'}
               . " seconds for next check..",
             'daemon', 'debug'
         );
 
-        sleep $this->{'allthreadsrestartin'};
+        sleep $self->{'allthreadsrestartin'};
     }
-    $this->doLog( "Error, in main thread neverland !", 'daemon', 'error' );
+    $self->doLog( "Error, in main thread neverland !", 'daemon', 'error' );
 }
 
-sub makeNewChild($this)
+sub makeNewChild($self)
 {
     my $pid;
     my $sigset;
 
-    my $threadnumber = $this->getNbThreads() + 1;
-    $this->doLog(
-        "Lauching new thread ($threadnumber/" . $this->{prefork} . ") ...",
+    my $threadnumber = $self->getNbThreads() + 1;
+    $self->doLog(
+        "Lauching new thread ($threadnumber/" . $self->{prefork} . ") ...",
         'daemon' );
     ## mainLoopHook
-    my $t = threads->create( { 'void' => 1 }, sub { $this->mainLoopHook(); } );
+    my $t = threads->create( { 'void' => 1 }, sub { $self->mainLoopHook(); } );
 }
 
 #### Available Hooks
-sub mainLoopHook($this)
+sub mainLoopHook($self)
 {
     while (1) {
-        $this->doLog( 'In dummy main loop...', 'daemon' );
+        $self->doLog( 'In dummy main loop...', 'daemon' );
         sleep 5;
     }
 }
 
-sub preForkHook($this)
+sub preForkHook($self)
 {
-    $this->doLog( 'No preForkHook redefined, using default one...', 'daemon' );
+    $self->doLog( 'No preForkHook redefined, using default one...', 'daemon' );
     return 1;
 }
 
-sub exitHook($this)
+sub exitHook($self)
 {
-    $this->doLog( 'No exitHook redefined, using default one...', 'daemon' );
+    $self->doLog( 'No exitHook redefined, using default one...', 'daemon' );
     return 1;
 }
 
-sub postKillHook($this)
+sub postKillHook($self)
 {
-    $this->doLog( 'No postKillHook redefined, using default one...', 'daemon' );
+    $self->doLog( 'No postKillHook redefined, using default one...', 'daemon' );
     return 1;
 }
 
-sub statusHook($this)
+sub statusHook($self)
 {
     my @errors;
 
-    my @pids = $this->readPidFile();
-    my $time_before_hardkill = $this->{time_before_hardkill};
+    my @pids = $self->readPidFile();
+    my $time_before_hardkill = $self->{time_before_hardkill};
 
     require Proc::ProcessTable;
     my $t = Proc::ProcessTable->new();
@@ -473,7 +473,7 @@ sub statusHook($this)
     foreach my $p ( @{ $t->table } ) {
         my $cmndline = $p->{'cmndline'};
         $cmndline =~ s/\s*$//g;
-        if ($cmndline eq $this->{'name'}) {
+        if ($cmndline eq $self->{'name'}) {
             if ($p->{'pid'} == $$) {
                 next;
             } elsif (scalar(grep(/$p->{'pid'}/,@pids))) {
@@ -512,52 +512,52 @@ sub statusHook($this)
 }
 
 #### Threads tools
-sub getNbThreads($this)
+sub getNbThreads($self)
 {
     my @tlist = threads->list;
     if (@tlist) {
-        $this->{nbthreads} = @tlist;
-        return $this->{nbthreads};
+        $self->{nbthreads} = @tlist;
+        return $self->{nbthreads};
     }
     return 0;
 }
 
-sub getThreadID($this)
+sub getThreadID($self)
 {
     my $t = threads->self;
     return $t->tid;
 }
 
 ##### Log management
-sub doLog($this,$message,$given_set,$priority='info')
+sub doLog($self,$message,$given_set,$priority='info')
 {
-    foreach my $set ( @{ $this->{logged_sets} } ) {
+    foreach my $set ( @{ $self->{logged_sets} } ) {
         if ( $set eq 'all' || !defined($given_set) || $set eq $given_set ) {
-            if ( $log_prio_levels{$priority} <= $this->{log_prio_level} ) {
-                $this->doEffectiveLog($message);
+            if ( $log_prio_levels{$priority} <= $self->{log_prio_level} ) {
+                $self->doEffectiveLog($message);
             }
             last;
         }
     }
 }
 
-sub doEffectiveLog($this,$message)
+sub doEffectiveLog($self,$message)
 {
     foreach my $line ( split( /\n/, $message ) ) {
-        if ( $this->{logfile} ne '' ) {
-            $this->writeLogToFile($line);
+        if ( $self->{logfile} ne '' ) {
+            $self->writeLogToFile($line);
         }
-        if ( $this->{'syslog_facility'} ne '' && $this->{'syslog_progname'} ne '' ) {
-            syslog( 'info', '(' . $this->getThreadID() . ') ' . $line );
+        if ( $self->{'syslog_facility'} ne '' && $self->{'syslog_progname'} ne '' ) {
+            syslog( 'info', '(' . $self->getThreadID() . ') ' . $line );
         }
     }
 }
 
-sub writeLogToFile($this,$message)
+sub writeLogToFile($self,$message)
 {
     chomp($message);
 
-    if ( $this->{logfile} eq '' ) {
+    if ( $self->{logfile} eq '' ) {
         return;
     }
 
@@ -569,13 +569,13 @@ sub writeLogToFile($this,$message)
 
     if ( !defined( fileno($LOGGERLOG) ) ) {
 
-        if ( -f $this->{logfile} ) {
-            open($LOGGERLOG, '>>', $this->{logfile});
+        if ( -f $self->{logfile} ) {
+            open($LOGGERLOG, '>>', $self->{logfile});
         } else {
-            open($LOGGERLOG, '>>', "/tmp/$this->{logfile}");
+            open($LOGGERLOG, '>>', "/tmp/$self->{logfile}");
             $| = 1;
         }
-        $this->doLog( 'Log file has been opened, hello !', 'daemon' );
+        $self->doLog( 'Log file has been opened, hello !', 'daemon' );
     }
     my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) =
       localtime(time);
@@ -584,18 +584,18 @@ sub writeLogToFile($this,$message)
     my $date = sprintf( "%d-%.2d-%.2d %.2d:%.2d:%.2d",
         $year, $mon, $mday, $hour, $min, $sec );
     flock( $LOGGERLOG, $LOCK_EX );
-    print $LOGGERLOG "$date (" . $this->getThreadID() . ") " . $message . "\n";
+    print $LOGGERLOG "$date (" . $self->getThreadID() . ") " . $message . "\n";
     flock( $LOGGERLOG, $LOCK_UN );
 }
 
-sub closeLog($this)
+sub closeLog($self)
 {
-    $this->doLog( 'Closing log file now.', 'daemon' );
+    $self->doLog( 'Closing log file now.', 'daemon' );
     close $LOGGERLOG;
     exit;
 }
 
-sub format_time($this,$time)
+sub format_time($self,$time)
 {
     my $res     = '';
     my $hours   = int( $time / ( 60 * 60 ) );
@@ -608,13 +608,13 @@ sub format_time($this,$time)
 }
 
 ##### profiling
-sub profile_start($this,$var)
+sub profile_start($self,$var)
 {
     return unless $PROFILE;
     $prof_start{$var} = [gettimeofday];
 }
 
-sub profile_stop($this,$var)
+sub profile_stop($self,$var)
 {
     return unless $PROFILE;
     return unless defined( $prof_start{$var} );
@@ -624,14 +624,14 @@ sub profile_stop($this,$var)
     return $time;
 }
 
-sub profile_output($this)
+sub profile_output($self)
 {
     return unless $PROFILE;
     my $out = "";
     foreach my $var ( keys %prof_res ) {
         $out .= " ($var:" . $prof_res{$var} . "s)";
     }
-    $this->doLog($out);
+    $self->doLog($out);
 }
 
 sub output

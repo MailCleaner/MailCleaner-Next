@@ -36,7 +36,7 @@ my @mailattributes = ('mail', 'maildrop', 'mailAlternateAddress', 'mailalternate
 
 sub create($server,$port,$params)
 {
-    my $this = {
+    my $self = {
         error_text => "",
         error_code => -1,
         server => '',
@@ -49,86 +49,86 @@ sub create($server,$port,$params)
         version => 3
     };
 
-    $this->{server} = $server;
+    $self->{server} = $server;
     if ($port > 0 ) {
-        $this->{port} = $port;
+        $self->{port} = $port;
     }
     my @fields = split /:/, $params;
     if ($fields[4] && $fields[4] =~ /^[01]$/) {
-        $this->{use_ssl} = $fields[4];
+        $self->{use_ssl} = $fields[4];
     }
     if ($fields[0]) {
-        $this->{base} = $fields[0];
+        $self->{base} = $fields[0];
     }
     if ($fields[1]) {
-        $this->{attribute} = $fields[1];
+        $self->{attribute} = $fields[1];
     }
     if ($fields[2]) {
-        $this->{binduser} = $fields[2];
+        $self->{binduser} = $fields[2];
     }
     if ($fields[3]) {
-        $this->{bindpassword} = $fields[3];
-        $this->{bindpassword} =~ s/__C__/:/;
+        $self->{bindpassword} = $fields[3];
+        $self->{bindpassword} =~ s/__C__/:/;
     }
     if ($fields[5] && $fields[5] == 2) {
-        $this->{version} = 2;
+        $self->{version} = 2;
     }
 
-    bless $this, "SMTPAuthenticator::LDAP";
-    return $this;
+    bless $self, "SMTPAuthenticator::LDAP";
+    return $self;
 }
 
-sub authenticate($this,$username,$password)
+sub authenticate($self,$username,$password)
 {
     my $scheme = 'ldap';
-    if ($this->{use_ssl} > 0) {
+    if ($self->{use_ssl} > 0) {
         $scheme = 'ldaps';
     }
-    #print "connecting to $scheme://".$this->{server}.":".$this->{port}."\n";
-    my $ldap = Net::LDAP->new ( $this->{server}, port=>$this->{port}, scheme=>$scheme, timeout=>30, debug=>0 );
+    #print "connecting to $scheme://".$self->{server}.":".$self->{port}."\n";
+    my $ldap = Net::LDAP->new ( $self->{server}, port=>$self->{port}, scheme=>$scheme, timeout=>30, debug=>0 );
 
     if (!$ldap) {
-        $this->{'error_text'} = "Cannot contact LDAP/AD server at $scheme://".$this->{server}.":".$this->{port};
+        $self->{'error_text'} = "Cannot contact LDAP/AD server at $scheme://".$self->{server}.":".$self->{port};
         return 0;
     }
 
-    my $userdn = $this->getDN($username);
+    my $userdn = $self->getDN($username);
     return 0 if ($userdn eq '');
 
     my $mesg = $ldap->bind ( $userdn,
         password => $password,
-        version => $this->{version}
+        version => $self->{version}
     );
 
-    $this->{'error_code'} = $mesg->code;
-    $this->{'error_text'} = $mesg->error_text;
+    $self->{'error_code'} = $mesg->code;
+    $self->{'error_text'} = $mesg->error_text;
     if ($mesg->code == 0) {
         return 1;
     }
     return 0;
 }
 
-sub getDN($this,$username)
+sub getDN($self,$username)
 {
     my $scheme = 'ldap';
-    if ($this->{use_ssl} > 0) {
+    if ($self->{use_ssl} > 0) {
         $scheme = 'ldaps';
     }
 
-    my $ldap = Net::LDAP->new ( $this->{server}, port=>$this->{port}, scheme=>$scheme, timeout=>30, debug=>0 );
+    my $ldap = Net::LDAP->new ( $self->{server}, port=>$self->{port}, scheme=>$scheme, timeout=>30, debug=>0 );
     my $mesg;
-    if (! $this->{binduser} eq '') {
-        $mesg = $ldap->bind($this->{binduser}, password => $this->{bindpassword}, version => $this->{version});
+    if (! $self->{binduser} eq '') {
+        $mesg = $ldap->bind($self->{binduser}, password => $self->{bindpassword}, version => $self->{version});
     } else {
         $mesg = $ldap->bind ;
     }
     if ( $mesg->code ) {
-        $this->{'error_text'} = "Could not search for user DN (bind error)";
+        $self->{'error_text'} = "Could not search for user DN (bind error)";
         return '';
     }
-    $mesg = $ldap->search (base => $this->{base}, scope => 'sub', filter => "(".$this->{attribute}."=$username)");
+    $mesg = $ldap->search (base => $self->{base}, scope => 'sub', filter => "(".$self->{attribute}."=$username)");
     if ( $mesg->code ) {
-        $this->{'error_text'} = "Could not search for user DN (search error)";
+        $self->{'error_text'} = "Could not search for user DN (search error)";
         return '';
     }
     my $numfound = $mesg->count ;
@@ -137,55 +137,55 @@ sub getDN($this,$username)
         my $entry = $mesg->entry(0);
         $dn = $entry->dn ;
     } else {
-        $this->{'error_text'} = "No such user ($username)";
+        $self->{'error_text'} = "No such user ($username)";
     }
     $ldap->unbind;   # take down session
     return $dn ;
 }
 
-sub fetchLinkedAddressesFromEmail($this,$email)
+sub fetchLinkedAddressesFromEmail($self,$email)
 {
     my $filter = '(|';
     foreach my $att (@mailattributes) {
         $filter .= '('.$att.'='.$email.')('.$att.'='.'smtp:'.$email.')';
     }
     $filter .= ')';
-    return $this->fetchLinkedAddressFromFilter($filter);
+    return $self->fetchLinkedAddressFromFilter($filter);
 }
 
-sub fetchLinkedAddressesFromUsername($this,$username)
+sub fetchLinkedAddressesFromUsername($self,$username)
 {
-    my $filter = $this->{attribute}."=".$username;
-    return $this->fetchLinkedAddressFromFilter($filter);
+    my $filter = $self->{attribute}."=".$username;
+    return $self->fetchLinkedAddressFromFilter($filter);
 }
 
-sub fetchLinkedAddressFromFilter($this,$filter)
+sub fetchLinkedAddressFromFilter($self,$filter)
 {
     my @addresses;
 
     my $scheme = 'ldap';
-    if ($this->{use_ssl} > 0) {
+    if ($self->{use_ssl} > 0) {
         $scheme = 'ldaps';
     }
 
-    my $ldap = Net::LDAP->new ( $this->{server}, port=>$this->{port}, scheme=>$scheme, timeout=>30, debug=>0 );
+    my $ldap = Net::LDAP->new ( $self->{server}, port=>$self->{port}, scheme=>$scheme, timeout=>30, debug=>0 );
     my $mesg;
     if (!$ldap) {
         $mesg = 'Cannot open LDAP session';
         return @addresses;
     }
-    if (! $this->{binduser} eq '') {
-        $mesg = $ldap->bind($this->{binduser}, password => $this->{bindpassword}, version => $this->{version});
+    if (! $self->{binduser} eq '') {
+        $mesg = $ldap->bind($self->{binduser}, password => $self->{bindpassword}, version => $self->{version});
     } else {
         $mesg = $ldap->bind ;
     }
     if ( $mesg->code ) {
-        $this->{'error_text'} = "Could not bind";
+        $self->{'error_text'} = "Could not bind";
         return @addresses;
     }
-    $mesg = $ldap->search (base => $this->{base}, scope => 'sub', filter => $filter);
+    $mesg = $ldap->search (base => $self->{base}, scope => 'sub', filter => $filter);
     if ( $mesg->code ) {
-        $this->{'error_text'} = "Could not search";
+        $self->{'error_text'} = "Could not search";
         return @addresses;
     }
     my $numfound = $mesg->count ;
@@ -201,7 +201,7 @@ sub fetchLinkedAddressFromFilter($this,$filter)
             }
         }
     } else {
-        #$this->{'error_text'} = "No data for filter ($filter)";
+        #$self->{'error_text'} = "No data for filter ($filter)";
     }
     $ldap->unbind;   # take down session
     return @addresses;

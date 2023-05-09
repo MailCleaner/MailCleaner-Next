@@ -97,13 +97,13 @@ sub new($class,$myspec_thish)
     }
 
     ## call parent class creation
-    my $this = $class->SUPER::new( $spec_this->{'name'}, undef, $spec_this );
-    bless $this, 'StatsDaemon';
+    my $self = $class->SUPER::new( $spec_this->{'name'}, undef, $spec_this );
+    bless $self, 'StatsDaemon';
 
     ##
-    $this->{history_avoid_keys} =~ s/\'//gi;
-    foreach my $o (split(/\s*,\s*/, $this->{history_avoid_keys})) {
-        push @{$this->{history_avoid_keys_a}}, $o;
+    $self->{history_avoid_keys} =~ s/\'//gi;
+    foreach my $o (split(/\s*,\s*/, $self->{history_avoid_keys})) {
+        push @{$self->{history_avoid_keys_a}}, $o;
     }
 
     ## set startup shared variables
@@ -111,94 +111,94 @@ sub new($class,$myspec_thish)
       localtime time;
     %current_date_ =
       ( 'day' => $mday, 'month' => $mon + 1, 'year' => $year + 1900 );
-    $set_socks_available_ = $this->{'prefork'};
+    $set_socks_available_ = $self->{'prefork'};
 
-    if ($this->{reserve_set_socks} >= $this->{prefork}) {
-        $this->{reserve_set_socks} = $this->{prefork}-1;
+    if ($self->{reserve_set_socks} >= $self->{prefork}) {
+        $self->{reserve_set_socks} = $self->{prefork}-1;
     }
 
     my $data_ = &share( {} );
-    $this->{data_} = $data_;
-    return $this;
+    $self->{data_} = $data_;
+    return $self;
 }
 
-sub preForkHook($this)
+sub preForkHook($self)
 {
-   my $backend_class = 'StatsDaemon::Backend::'.ucfirst($this->{backend_type});
+   my $backend_class = 'StatsDaemon::Backend::'.ucfirst($self->{backend_type});
 
    if (! eval "require $backend_class") {
        die('Backend type does not exists: '.$backend_class);
    }
-   $this->{backend_object} = $backend_class->new($this);
+   $self->{backend_object} = $backend_class->new($self);
 
-   $this->SUPER::preForkHook();
+   $self->SUPER::preForkHook();
 }
 
 ### define specific hooks
-sub exitHook($this)
+sub exitHook($self)
 {
-   $this->SUPER::exitHook();
+   $self->SUPER::exitHook();
 
-   $this->doLog('Close called, stabilizing and cleaning data...', 'statsdaemon');
-   $this->stabilizeFlatAll();
-   $this->doLog('Data stabilized. Can shutdown cleanly.', 'statsdaemon');
+   $self->doLog('Close called, stabilizing and cleaning data...', 'statsdaemon');
+   $self->stabilizeFlatAll();
+   $self->doLog('Data stabilized. Can shutdown cleanly.', 'statsdaemon');
 
 }
 
-sub initThreadHook($this)
+sub initThreadHook($self)
 {
-    $this->doLog( 'StatsDaemon thread initialization...', 'statsdaemon' );
-    $this->{backend_object}->threadInit();
+    $self->doLog( 'StatsDaemon thread initialization...', 'statsdaemon' );
+    $self->{backend_object}->threadInit();
 
     $last_stable_ = time();
 
     return;
 }
 
-sub exitThreadHook($this)
+sub exitThreadHook($self)
 {
-    $this->doLog( 'StatsDaemon thread exiting hook...', 'statsdaemon' );
+    $self->doLog( 'StatsDaemon thread exiting hook...', 'statsdaemon' );
     return;
 }
 
-sub postKillHook($this)
+sub postKillHook($self)
 {
     return;
 }
 
-sub statusHook($this)
+sub statusHook($self)
 {
     my $res = '-------------------'."\n";
     $res .= 'Current statistics:'."\n";
     $res .= '-------------------' ."\n";
 
-    $res .= $this->SUPER::statusHook();
+    $res .= $self->SUPER::statusHook();
     require StatsClient;
     my $client = new StatsClient();
     $res .= $client->query('GETINTERNALSTATS');
-    #$res .= $this->logStats();
+    #$res .= $self->logStats();
 
     $res .= '-------------------' ."\n";
 
-    $this->doLog($res, 'statsdaemon');
+    $self->doLog($res, 'statsdaemon');
 
     return $res;
 }
 
 ####### Main processing
-sub dataRead($this,$data)
+sub dataRead($self,$data)
 {
-    my $data_ = $this->{data_};
+    my $data_ = $self->{data_};
 
-    $this->doLog(
+    $self->doLog(
         "Got $set_socks_available_ available set sockets",
         'statsdaemon', 'debug'
     );
 
-    $this->doLog( "Received datas: $data", 'statsdaemon', 'debug' );
+    $self->doLog( "Received datas: $data", 'statsdaemon', 'debug' );
     my $ret = 'NOTHINGDONE';
 
-    $this->addStat( 'queries', 1 );
+    $self->addStat( 'queries', 1 );
 
     ## check if we changed day
     my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) =
@@ -206,20 +206,20 @@ sub dataRead($this,$data)
     $year += 1900;
     $mon  += 1;
     if ( $year != $current_date_{'year'} || $mon != $current_date_{'month'} ) {
-        $this->{backend_object}->announceMonthChange();
+        $self->{backend_object}->announceMonthChange();
     }
     if ( $mday != $current_date_{'day'} ) {
         if ( !$changing_day_ ) {
             $changing_day_ = 1;
             ## stabilize all and reset full %data_
-            $this->doLog(
+            $self->doLog(
                 'Day change initialized, stabilizing and clearing data...',
                 'statsdaemon'
             );
-            $this->stabilizeFlatAll();
-            $this->clearAllData();
+            $self->stabilizeFlatAll();
+            $self->clearAllData();
             $current_date_{'day'} = $mday;
-            $this->doLog( 'Day change done', 'statsdaemon' );
+            $self->doLog( 'Day change done', 'statsdaemon' );
             $changing_day_ = 0;
         } else {
             return '_RETRY';
@@ -234,16 +234,16 @@ sub dataRead($this,$data)
         $element = lc($element);
         my $value = $2;
 
-        my $valh = $this->accessFlatElement( $element, 1 );
-        $this->addElementValue( $valh, $value );
-        $this->addStat( 'queries_add', 1 );
-        $this->setElementValue( $data_->{$element}, 'stable', 0 );
-        $this->checkForStabilization($element);
+        my $valh = $self->accessFlatElement( $element, 1 );
+        $self->addElementValue( $valh, $value );
+        $self->addStat( 'queries_add', 1 );
+        $self->setElementValue( $data_->{$element}, 'stable', 0 );
+        $self->checkForStabilization($element);
 
         ## check if its time to stabilize all
         my $time = time();
-        if ( $time - $last_stable_ > $this->{'stabilize_every'} ) {
-            $this->stabilizeFlatAll();
+        if ( $time - $last_stable_ > $self->{'stabilize_every'} ) {
+            $self->stabilizeFlatAll();
         }
 
         return "ADDED " . $valh->{'value'};
@@ -256,8 +256,8 @@ sub dataRead($this,$data)
         $element =~ s/'/\\'/;
         $element = lc($element);
 
-        my $valh = $this->accessFlatElement( $element, 0 );
-        $this->addStat( 'queries_get', 1 );
+        my $valh = $self->accessFlatElement( $element, 0 );
+        $self->addStat( 'queries_get', 1 );
         return $valh->{'value'};
     }
 
@@ -269,13 +269,13 @@ sub dataRead($this,$data)
         my $fromdate = $2;
         my $todate   = $3;
 
-        if ( $set_socks_available_ > $this->{reserve_set_socks} ) {
+        if ( $set_socks_available_ > $self->{reserve_set_socks} ) {
             $set_socks_available_--;
-            my $ret = $this->calcStats( $element, $fromdate, $todate );
+            my $ret = $self->calcStats( $element, $fromdate, $todate );
             $set_socks_available_++;
             return $ret;
         } else {
-            return '_NOSOCKAVAILABLE '.$set_socks_available_." <=> ".$this->{reserve_set_socks};
+            return '_NOSOCKAVAILABLE '.$set_socks_available_." <=> ".$self->{reserve_set_socks};
         }
     }
 
@@ -286,25 +286,25 @@ sub dataRead($this,$data)
         $element =~ s/'/\\'/;
         $element = lc($element);
         if ($element) {
-            return $this->stabilizeFlatElement($element);
+            return $self->stabilizeFlatElement($element);
         } else {
-            return $this->stabilizeFlatAll();
+            return $self->stabilizeFlatAll();
         }
     }
 
     ## DUMP data
     if ( $data =~ m/^DUMP/i ) {
-        return $this->dumpData();
+        return $self->dumpData();
     }
 
     ## CLEAR command
     if ( $data =~ m/^CLEAR/i ) {
-        return $this->clearAllData();
+        return $self->clearAllData();
     }
 
     ## GETINTERNALSTATS command
     if ( $data =~ m/^GETINTERNALSTATS/i ) {
-        return $this->getStats();
+        return $self->getStats();
     }
 
     return "_UNKNOWNCOMMAND";
@@ -314,9 +314,9 @@ sub dataRead($this,$data)
 
 ## stats data management
 
-sub createElement($this,$element)
+sub createElement($self,$element)
 {
-    my $data_ = $this->{data_};
+    my $data_ = $self->{data_};
 
     if ( !defined( $data_->{$element} ) ) {
 
@@ -329,90 +329,90 @@ sub createElement($this,$element)
     }
 }
 
-sub setElementValue($this,$element,$key,$value)
+sub setElementValue($self,$element,$key,$value)
 {
     lock($element);
     $element->{$key} = $value;
 }
 
-sub setElementValueByName($this,$element,$key,$value)
+sub setElementValueByName($self,$element,$key,$value)
 {
-    my $data_ = $this->{data_};
-    $this->setElementValue($data_->{$element}, $key, $value);
+    my $data_ = $self->{data_};
+    $self->setElementValue($data_->{$element}, $key, $value);
 }
 
-sub getElementValueByName($this,$element,$key)
+sub getElementValueByName($self,$element,$key)
 {
-    my $data_ = $this->{data_};
+    my $data_ = $self->{data_};
     return $data_->{$element}->{$key};
 }
 
-sub addElementValue($this,$element,$value)
+sub addElementValue($self,$element,$value)
 {
     lock($element);
     $element->{'value'} += $value;
 }
 
-sub accessFlatElement($this,$element)
+sub accessFlatElement($self,$element)
 {
-    my $data_ = $this->{data_};
+    my $data_ = $self->{data_};
 
     if ( !defined( $data_->{$element} ) ) {
 
-        $this->createElement($element);
+        $self->createElement($element);
         lock(%{$data_->{$element}});
 
         ## try to load data from backend
-        my $value = $this->{backend_object}->accessFlatElement($element);
+        my $value = $self->{backend_object}->accessFlatElement($element);
         if ($value =~ /[^0-9.]/) {
-           $this->doLog('element '.$element. ' could not be fetched from backend, return is: ' .$value. '. Setting value to 0.',
+           $self->doLog('element '.$element. ' could not be fetched from backend, return is: ' .$value. '. Setting value to 0.',
                  'statsdaemon', 'error');
            $value = 0;
         }
-        $this->setElementValue($data_->{$element},'value', $value);
+        $self->setElementValue($data_->{$element},'value', $value);
 
     }
-    $this->setElementValue($data_->{$element},'last_access', time());
+    $self->setElementValue($data_->{$element},'last_access', time());
     return $data_->{$element};
 }
 
-sub checkForStabilization($this,$element)
+sub checkForStabilization($self,$element)
 {
-    my $data_ = $this->{data_};
+    my $data_ = $self->{data_};
 
     my $time = time();
     if (defined($data_->{$element}->{'last_stable'})) {
         if ( $time - $data_->{$element}->{'last_stable'} >
-            $this->{'max_unstable_time'} )
+            $self->{'max_unstable_time'} )
         {
-            $this->stabilizeFlatElement($element);
+            $self->stabilizeFlatElement($element);
             return 1;
         }
     }
     return 0;
 }
 
-sub stabilizeFlatElement($this,$element)
+sub stabilizeFlatElement($self,$element)
 {
-    foreach my $unwantedkey ( @{ $this->{history_avoid_keys_a} } ) {
+    foreach my $unwantedkey ( @{ $self->{history_avoid_keys_a} } ) {
         if ($element =~ m/\:$unwantedkey$/) {
             return 'UNWANTEDKEY';
         }
     }
-    my $data_ = $this->{data_};
+    my $data_ = $self->{data_};
 
-    if ($this->getLongReadCount() > 0 ) {
-        $this->doLog('Delaying stabilization because long read is running', 'statsdaemon');
+    if ($self->getLongReadCount() > 0 ) {
+        $self->doLog('Delaying stabilization because long read is running', 'statsdaemon');
         return '_LONGREADRUNNING';
     }
-    $this->addStat( 'stabilize_element', 1 );
+    $self->addStat( 'stabilize_element', 1 );
 
     if ( defined($data_->{$element}->{'stable'}) && $data_->{$element}->{'stable'} > 0 && !$changing_day_) {
-        $this->setElementValue( $data_->{$element}, 'stable_id',      1 );
-        $this->setElementValue( $data_->{$element}, 'last_stable', time() );
-        $this->setElementValue( $data_->{$element}, 'last_access', time() );
+        $self->setElementValue( $data_->{$element}, 'stable_id',      1 );
+        $self->setElementValue( $data_->{$element}, 'last_stable', time() );
+        $self->setElementValue( $data_->{$element}, 'last_access', time() );
 
-        $this->doLog(
+        $self->doLog(
             'not stabilizing value for element ' . $element
               . ' in backend because already stable',
             'statsdaemon', 'debug'
@@ -420,39 +420,39 @@ sub stabilizeFlatElement($this,$element)
         return 'ALREADYSTABLE';
     }
 
-    my $stret = $this->{backend_object}->stabilizeFlatElement($element);
+    my $stret = $self->{backend_object}->stabilizeFlatElement($element);
 
     if ($stret =~ /^_/) {
         return $stret;
     }
 
-    $this->setElementValue( $data_->{$element}, 'stable',      1 );
-    $this->setElementValue( $data_->{$element}, 'last_stable', time() );
-    $this->setElementValue( $data_->{$element}, 'last_access', time() );
+    $self->setElementValue( $data_->{$element}, 'stable',      1 );
+    $self->setElementValue( $data_->{$element}, 'last_stable', time() );
+    $self->setElementValue( $data_->{$element}, 'last_access', time() );
 
     return $stret;
 }
 
-sub stabilizeFlatAll($this)
+sub stabilizeFlatAll($self)
 {
-    my $data_ = $this->{data_};
+    my $data_ = $self->{data_};
     my $start_time = [gettimeofday];
     if ( $backend_infos_{'stabilizing'} > 0 ) {
         return 'ALREADYSTABILIZING';
     }
 
-    if ($this->getLongReadCount() > 0 ) {
-        $this->doLog('Delaying stabilization because long read is running', 'statsdaemon', 'debug');
+    if ($self->getLongReadCount() > 0 ) {
+        $self->doLog('Delaying stabilization because long read is running', 'statsdaemon', 'debug');
         return '_LONGREADRUNNING';
     }
 
     $backend_infos_{'stabilizing'} = 1;
-    $this->addStat( 'stabilize_all', 1 );
+    $self->addStat( 'stabilize_all', 1 );
     my $more = '';
     if ($changing_day_ > 0) {
         $more = ' (changing day)';
     }
-    $this->doLog( 'Started stabilization of all data'.$more.'...',
+    $self->doLog( 'Started stabilization of all data'.$more.'...',
         'statsdaemon' );
 
     my $stcount = 0;
@@ -463,10 +463,10 @@ sub stabilizeFlatAll($this)
     my $stablecount = 0;
     while( my ($el, $value) = each(%{$data_})) {
         $elcount++;
-        $this->doLog( 'Testing element ' . $el, 'statsdaemon', 'debug' );
+        $self->doLog( 'Testing element ' . $el, 'statsdaemon', 'debug' );
         if ( !defined($data_->{$el}->{'stable'}) || $changing_day_
               || (defined($data_->{$el}->{'stable'}) && !$data_->{$el}->{'stable'} )) {
-            my $stret = $this->stabilizeFlatElement($el);
+            my $stret = $self->stabilizeFlatElement($el);
             if ($stret eq 'STABILIZED') {
                 $stcount++;
             } elsif ($stret eq 'ALREADYSTABLE') {
@@ -481,11 +481,11 @@ sub stabilizeFlatAll($this)
             if (defined($data_->{$el}->{'last_access'})) {
                 lock(%{$data_->{$el}});
                 my $delta = time() - $data_->{$el}->{'last_access'};
-                if ($this->{purge_limit} && $delta > $this->{purge_limit} && $data_->{$el}->{'stable'}) {
-                    $this->doLog('Purging element '.$el, 'statsdaemon', 'debug');
-                    my $stret = $this->stabilizeFlatElement($el);
+                if ($self->{purge_limit} && $delta > $self->{purge_limit} && $data_->{$el}->{'stable'}) {
+                    $self->doLog('Purging element '.$el, 'statsdaemon', 'debug');
+                    my $stret = $self->stabilizeFlatElement($el);
                     if ($stret !~ /^_/) {
-                        my $fret = $this->freeElement($el);
+                        my $fret = $self->freeElement($el);
                         if ($fret eq 'OK') {
                             $purgedcount++;
                         } else {
@@ -499,22 +499,22 @@ sub stabilizeFlatAll($this)
 
     my $interval = tv_interval($start_time);
     my $sttime = ( int( $interval * 10000 ) / 10000 );
-    $this->doLog( 'Finished stabilization of all data ('.$elcount.' elements, '.$stablecount.' stable, '.$stcount.' stabilized, '.$unwantedcount.' unwanted, '.$errorcount.' errors, '.$purgedcount.' purged in '.$sttime.' s.)',
+    $self->doLog( 'Finished stabilization of all data ('.$elcount.' elements, '.$stablecount.' stable, '.$stcount.' stabilized, '.$unwantedcount.' unwanted, '.$errorcount.' errors, '.$purgedcount.' purged in '.$sttime.' s.)',
         'statsdaemon' );
     $last_stable_ = time();
     $backend_infos_{'stabilizing'} = 0;
     return 'ALLSTABILIZED';
 }
 
-sub clearAllData($this)
+sub clearAllData($self)
 {
     if ( $clearing_ > 0 ) {
         return;
     }
 
-    my $data_ = $this->{data_};
+    my $data_ = $self->{data_};
 
-    $this->doLog( 'Started clearing of all data...', 'statsdaemon' );
+    $self->doLog( 'Started clearing of all data...', 'statsdaemon' );
     $clearing_ = 1;
     lock %{$data_};
     while( my ($el, $value) = each(%{$data_})) {
@@ -522,13 +522,13 @@ sub clearAllData($this)
         $data_->{$el}->{'stable'} = 0;
     }
     $clearing_ = 0;
-    $this->doLog( 'Finished clearing of all data.', 'statsdaemon' );
+    $self->doLog( 'Finished clearing of all data.', 'statsdaemon' );
     return 'CLEARED';
 }
 
-sub freeElement($this,$el)
+sub freeElement($self,$el)
 {
-    my $data_ = $this->{data_};
+    my $data_ = $self->{data_};
 
     if (!defined($data_->{$el})) {
        return '_UNDEF';
@@ -547,15 +547,15 @@ sub freeElement($this,$el)
     return 'OK';
 }
 
-sub dumpData($this)
+sub dumpData($self)
 {
-    my $data_ = $this->{data_};
+    my $data_ = $self->{data_};
 
     while( my ($el, $value) = each(%{$data_})) {
-        $this->doLog(' - '.$el, 'statsdaemon');
+        $self->doLog(' - '.$el, 'statsdaemon');
     }
 }
-sub calcStats($this,$what,$begin,$end)
+sub calcStats($self,$what,$begin,$end)
 {
     if ( $what !~ m/^[a-zA-Z0-9@._\-,*:]+$/ ) {
         return '_BADUSAGEWHAT';
@@ -603,10 +603,10 @@ sub calcStats($this,$what,$begin,$end)
 
     ## if we need today's stats, stabilize all before querying
     if ( $stop >= $today ) {
-        $this->stabilizeFlatAll();
+        $self->stabilizeFlatAll();
     }
 
-    my $ret = $this->{backend_object}->getStats($start, $stop, $what, \%data);
+    my $ret = $self->{backend_object}->getStats($start, $stop, $what, \%data);
     if ($ret ne 'OK') {
         return $ret;
     }
@@ -626,19 +626,19 @@ sub calcStats($this,$what,$begin,$end)
 
 }
 
-sub increaseLongRead($this)
+sub increaseLongRead($self)
 {
     lock %backend_infos_;
     $backend_infos_{'long_read'}++;
     return;
 }
-sub decreaseLongRead($this)
+sub decreaseLongRead($self)
 {
     lock %backend_infos_;
     $backend_infos_{'long_read'}--;
     return;
 }
-sub getLongReadCount($this)
+sub getLongReadCount($self)
 {
     return $backend_infos_{'long_read'};
 }
@@ -661,7 +661,7 @@ sub addDate($in,$add)
     return $enddate;
 }
 
-sub getCurrentDate($this)
+sub getCurrentDate($self)
 {
     return \%current_date_;
 }
@@ -671,7 +671,7 @@ sub isChangingDay
     return $changing_day_;
 }
 ####### Internal stats management
-sub addStat($this,$what,$amount)
+sub addStat($self,$what,$amount)
 {
     lock %stats_;
     if ( !defined( $stats_{$what} ) ) {
@@ -681,14 +681,14 @@ sub addStat($this,$what,$amount)
     return 1;
 }
 
-sub getStats($this)
+sub getStats($self)
 {
     lock %stats_;
 
-    my $data_ = $this->{data_};
+    my $data_ = $self->{data_};
 
     my $res = '  Total number of elements in memory: ' . keys( %{$data_} )."\n";
-    $res .= '  Current data size: '.$this->getDataSize()."\n";
+    $res .= '  Current data size: '.$self->getDataSize()."\n";
     $res .= '  Total GET queries: ' . $stats_{'queries_get'} ."\n";
     $res .= '  Total ADD queries: ' . $stats_{'queries_add'} ."\n";
     $res .= '  Total element stabilizations: ' . $stats_{'stabilize_element'}."\n";
@@ -700,14 +700,14 @@ sub getStats($this)
     return $res;
 }
 
-sub logStats($this)
+sub logStats($self)
 {
-    return $this->getStats();
+    return $self->getStats();
 }
 
-sub getDataSize($this)
+sub getDataSize($self)
 {
-    my $data_ = $this->{data_};
+    my $data_ = $self->{data_};
     my $size = 0;
     while( my ($el, $value) = each(%{$data_})) {
         $size += total_size($el);

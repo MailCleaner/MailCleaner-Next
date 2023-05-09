@@ -52,55 +52,55 @@ sub new($class,$init,$config,$spec_thish)
         $udpspec_this->{$sk} = $spec_this{$sk};
     }
 
-    my $this = $class->SUPER::create($class, $config, $udpspec_this);
+    my $self = $class->SUPER::create($class, $config, $udpspec_this);
 
-    bless $this, $class;
-    return $this;
+    bless $self, $class;
+    return $self;
 }
 
-sub preForkHook($this)
+sub preForkHook($self)
 {
     ## bind to UDP port
-    $this->{server} = IO::Socket::INET->new(
+    $self->{server} = IO::Socket::INET->new(
         LocalAddr => '127.0.0.1',
-        LocalPort => $this->{port},
+        LocalPort => $self->{port},
         Proto     => 'udp',
         Timeout => 10
-    ) or die "Couldn't be an udp server on port ".$this->{port}." : $@\n";
-    $this->{server}->autoflush ( 1 ) ;
-    $this->logMessage("Listening on port ".$this->{port});
+    ) or die "Couldn't be an udp server on port ".$self->{port}." : $@\n";
+    $self->{server}->autoflush ( 1 ) ;
+    $self->logMessage("Listening on port ".$self->{port});
 
     return 1;
 }
 
-sub mainLoopHook($this)
+sub mainLoopHook($self)
 {
     require Mail::SpamAssassin::Timeout;
 
-    $this->logMessage("In UDPTDaemon main loop");
+    $self->logMessage("In UDPTDaemon main loop");
 
     my $read_set = new IO::Select;
-    $read_set->add($this->{server});
+    $read_set->add($self->{server});
 
     my $t = threads->self;
-    $this->{tid} = $t->tid;
+    $self->{tid} = $t->tid;
 
     my $data;
-    while ($this->{server}->recv($data, 1024)) {
-        my($port, $ipaddr) = sockaddr_in($this->{server}->peername);
+    while ($self->{server}->recv($data, 1024)) {
+        my($port, $ipaddr) = sockaddr_in($self->{server}->peername);
         my $hishost = gethostbyaddr($ipaddr, AF_INET);
         chomp($data);
-        my $result =  $this->dataRead($data, $this->{server});
-        $this->{server}->send($result."\n");
+        my $result =  $self->dataRead($data, $self->{server});
+        $self->{server}->send($result."\n");
     }
 
     return 1;
 }
 
-sub exitHook($this)
+sub exitHook($self)
 {
-    close ($this->{server});
-    $this->logMessage("Listener socket closed");
+    close ($self->{server});
+    $self->logMessage("Listener socket closed");
     return 1;
 }
 

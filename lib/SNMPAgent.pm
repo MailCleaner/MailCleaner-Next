@@ -281,7 +281,7 @@ sub writeLogToFile($message)
     flock( $LOGGERLOG, $LOCK_UN );
 }
 
-sub closeLog($this)
+sub closeLog($self)
 {
     doLog( 'Closing log file now.', 'daemon' );
     close $LOGGERLOG;

@@ -33,7 +33,7 @@ sub new($class,$spec_thish)
 {
     my %spec_this = %$spec_thish;
 
-    my $this = {
+    my $self = {
         port => -1,
         timeout => 5,
         socket => '',
@@ -41,34 +41,34 @@ sub new($class,$spec_thish)
 
     # add specific options of child object
     foreach my $sk (keys %spec_this) {
-        $this->{$sk} = $spec_this{$sk};
+        $self->{$sk} = $spec_this{$sk};
     }
 
-    bless $this, $class;
-    return $this;
+    bless $self, $class;
+    return $self;
 }
 
-sub connect($this)
+sub connect($self)
 {
-    $this->{socket} = IO::Socket::INET->new(
+    $self->{socket} = IO::Socket::INET->new(
         PeerAddr => '127.0.0.1',
-        PeerPort => $this->{port},
+        PeerPort => $self->{port},
         Proto     => 'udp',
-        Timeout => $this->{timeout}
-    ) or die "Couldn't be an udp server on port ".$this->{port}." : $@\n";
+        Timeout => $self->{timeout}
+    ) or die "Couldn't be an udp server on port ".$self->{port}." : $@\n";
 
     return 0;
 }
 
-sub query($this,$query)
+sub query($self,$query)
 {
     my $sent = 0;
     my $tries = 1;
     while ($tries < 2 && ! $sent) {
         $tries++;
         my $write_set = new IO::Select;
-        $write_set->add($this->{socket});
-        my ($r_ready, $w_ready, $error) =  IO::Select->select(undef, $write_set, undef, $this->{timeout});
+        $write_set->add($self->{socket});
+        my ($r_ready, $w_ready, $error) =  IO::Select->select(undef, $write_set, undef, $self->{timeout});
         foreach my $sock (@$w_ready) {
             $sock->send($query."\n");
             $write_set->remove($sock);
@@ -76,7 +76,7 @@ sub query($this,$query)
         }
         if (! $sent) {
             if ($tries < 2) {
-                $this->connect();
+                $self->connect();
                 next;
             }
             return '_NOSOCKET';
@@ -86,9 +86,9 @@ sub query($this,$query)
     my $msg;
 
     my $read_set = new IO::Select;
-    $read_set->add($this->{socket});
+    $read_set->add($self->{socket});
 
-    my ($r_ready, $w_ready, $error) =  IO::Select->select($read_set, undef, undef, $this->{timeout});
+    my ($r_ready, $w_ready, $error) =  IO::Select->select($read_set, undef, undef, $self->{timeout});
     foreach my $sock (@$r_ready) {
         my $buf = <$sock>;
         if ($buf) {
@@ -102,15 +102,15 @@ sub query($this,$query)
     return '_TIMEOUT';
 }
 
-sub ping($this)
+sub ping($self)
 {
-    return 1 if ($this->{socket});
+    return 1 if ($self->{socket});
     return 0;
 }
 
-sub close($this)
+sub close($self)
 {
-    close($this->{socket});
+    close($self->{socket});
     return 1;
 }
 

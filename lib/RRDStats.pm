@@ -46,7 +46,7 @@ sub new($hostname)
     $slave_db->disconnect();
     my $community = $row{'community'};
 
-    my $this = {
+    my $self = {
         hostname => $hostname,
         spooldir => $spooldir,
         pictdir => $pictdir,
@@ -54,104 +54,104 @@ sub new($hostname)
         stats => \%stats,
         community => $community
         };
-    bless $this, "RRDStats";
+    bless $self, "RRDStats";
 
-    if (!$this->create_stats_dir()) {
+    if (!$self->create_stats_dir()) {
         print "WARNING, CANNOT CREATE STAT DIR\n";
     }
-    if (!$this->create_graph_dir()) {
+    if (!$self->create_graph_dir()) {
         print "WARNING, CANNOT CREATE STAT DIR\n";
     }
-    if (!$this->connectSNMP()) {
+    if (!$self->connectSNMP()) {
         print "WARNING, CANNOT CONNECT TO SNMP\n";
     }
 
-    return $this;
+    return $self;
 }
 
-sub createRRD($this,$type)
+sub createRRD($self,$type)
 {
     if ($type eq 'cpu') {
         my $res = `uname -r`;
         if ($res =~ m/^2.4/) {
             require RRD::Cpu24;
-            $this->{stats}{$type} = &RRD::Cpu24::new($this->{spooldir}, 0);
+            $self->{stats}{$type} = &RRD::Cpu24::new($self->{spooldir}, 0);
         } else {
             require RRD::Cpu;
-            $this->{stats}{$type} = &RRD::Cpu::new($this->{spooldir}, 0);
+            $self->{stats}{$type} = &RRD::Cpu::new($self->{spooldir}, 0);
         }
     } elsif ($type eq 'load') {
         require RRD::Load;
-        $this->{stats}{$type} = &RRD::Load::new($this->{spooldir}, 0);
+        $self->{stats}{$type} = &RRD::Load::new($self->{spooldir}, 0);
     } elsif ($type eq 'network') {
         require RRD::Network;
-        $this->{stats}{$type} = &RRD::Network::new($this->{spooldir}, 0);
+        $self->{stats}{$type} = &RRD::Network::new($self->{spooldir}, 0);
     } elsif ($type eq 'memory') {
         require RRD::Memory;
-        $this->{stats}{$type} = &RRD::Memory::new($this->{spooldir}, 0);
+        $self->{stats}{$type} = &RRD::Memory::new($self->{spooldir}, 0);
     } elsif ($type eq 'disks') {
         require RRD::Disk;
-        $this->{stats}{$type} = &RRD::Disk::new($this->{spooldir}, 0);
+        $self->{stats}{$type} = &RRD::Disk::new($self->{spooldir}, 0);
     } elsif ($type eq 'messages') {
         require RRD::Messages;
-        $this->{stats}{$type} = &RRD::Messages::new($this->{spooldir}, 0);
+        $self->{stats}{$type} = &RRD::Messages::new($self->{spooldir}, 0);
     } elsif ($type eq 'spools') {
         require RRD::Spools;
-        $this->{stats}{$type} = &RRD::Spools::new($this->{spooldir}, 0);
+        $self->{stats}{$type} = &RRD::Spools::new($self->{spooldir}, 0);
     }
 }
 
-sub collect($this,$type)
+sub collect($self,$type)
 {
-    if (defined($this->{stats}->{$type})) {
-        $this->{stats}->{$type}->collect($this->{snmp_session});
+    if (defined($self->{stats}->{$type})) {
+        $self->{stats}->{$type}->collect($self->{snmp_session});
     }
 }
 
-sub plot($this,$type,$mode)
+sub plot($self,$type,$mode)
 {
     my @ranges = ('day', 'week');
     if ($mode eq 'daily') {
         @ranges = ('month', 'year');
     }
-    if (defined($this->{stats}->{$type})) {
+    if (defined($self->{stats}->{$type})) {
         for my $time (@ranges) {
-            #$this->{stats}->{$type}->plot($this->{pictdir}, $time, 0);
-            $this->{stats}->{$type}->plot($this->{pictdir}, $time, 1);
+            #$self->{stats}->{$type}->plot($self->{pictdir}, $time, 0);
+            $self->{stats}->{$type}->plot($self->{pictdir}, $time, 1);
         }
     }
 }
 
 
-sub create_stats_dir($this)
+sub create_stats_dir($self)
 {
     my $conf = ReadConfig::getInstance();
-    my $dir = $this->{spooldir};
+    my $dir = $self->{spooldir};
     if ( ! -d $dir) {
        return mkdir $dir;
     }
     return 1;
 }
 
-sub create_graph_dir($this)
+sub create_graph_dir($self)
 {
     my $conf = ReadConfig::getInstance();
-    my $dir = $this->{pictdir};
+    my $dir = $self->{pictdir};
     if ( ! -d $dir) {
        return mkdir $dir;
     }
     return 1;
 }
 
-sub connectSNMP($this)
+sub connectSNMP($self)
 {
-    if (defined($this->{snmp_session})) {
+    if (defined($self->{snmp_session})) {
         return 1;
     }
 
     my ($session, $error) = Net::SNMP->session(
-        -hostname => $this->{hostname},
-        -community => $this->{'community'},
+        -hostname => $self->{hostname},
+        -community => $self->{'community'},
         -port => 161,
         -timeout => 5,
         -version => 2,
@@ -161,7 +161,7 @@ sub connectSNMP($this)
        print "WARNING, CANNOT CONTACT SNMP HOST\n";
        return 0;
     }
-    $this->{snmp_session} = $session;
+    $self->{snmp_session} = $session;
     return 1;
 }
 

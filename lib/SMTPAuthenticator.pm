@@ -125,7 +125,7 @@ sub create($username)
         $auth = SMTPAuthenticator::NoAuth::create('', '','');
     }
 
-    my $this = {
+    my $self = {
         username => $realusername,
         domain => $domain,
         auth => $auth,
@@ -133,23 +133,23 @@ sub create($username)
         cachefile => $cachefile
     };
 
-    bless $this, "SMTPAuthenticator";
-    return $this;
+    bless $self, "SMTPAuthenticator";
+    return $self;
 }
 
-sub authenticate($this,$password,$ip)
+sub authenticate($self,$password,$ip)
 {
-    if ($this->{authorized}) {
+    if ($self->{authorized}) {
 
         my $create_cache_record = 0;
         my $cachedb = undef;
-        my $cachetime = $this->{domain}->getPref('smtp_auth_cachetime');
+        my $cachetime = $self->{domain}->getPref('smtp_auth_cachetime');
         if ($cachetime > 0) {
             my $present = 0;
-            if (-f $this->{cachefile}) {
+            if (-f $self->{cachefile}) {
                 $present = 1;
             }
-            $cachedb = DBI->connect("dbi:SQLite:".$this->{cachefile},"","",{PrintError=>0,InactiveDestroy=>1});
+            $cachedb = DBI->connect("dbi:SQLite:".$self->{cachefile},"","",{PrintError=>0,InactiveDestroy=>1});
             if (!$present) {
                 ## create database
                 $cachedb->do("CREATE TABLE cache (username TEXT, domain TEXT, password TEXT, count INTEGER, last TIMESTAMP, first TIMESTAMP)");
@@ -160,21 +160,21 @@ sub authenticate($this,$password,$ip)
 
             ## check for entry
             my $sql = "SELECT password, count, last, first FROM cache WHERE username=? and domain=? and password=?";
-            my $username_hash = md5_hex($this->{username});
-            my $domain_hash = md5_hex($this->{domain}->{name});
+            my $username_hash = md5_hex($self->{username});
+            my $domain_hash = md5_hex($self->{domain}->{name});
             my $pass_hash = md5_hex($password);
             my $res = $cachedb->selectrow_hashref($sql,undef,$username_hash, $domain_hash, $pass_hash);
             if (defined($res)) {
                 ## first check expiracy
                 my $delta = time - $res->{first};
                 if ($delta <= $cachetime) {
-                    ::Auth_log("Authentication passed for user ".$this->{username}." on domain ".$this->{domain}->{name}." [$ip] (cached)");
+                    ::Auth_log("Authentication passed for user ".$self->{username}." on domain ".$self->{domain}->{name}." [$ip] (cached)");
                     return 1;
                 } else {
                     $sql = "DELETE FROM cache WHERE username=? and domain=?";
                     my $sth = $cachedb->prepare($sql);
                     $sth->execute($username_hash, $domain_hash);
-                    ::Auth_log("Record cache expired for user ".$this->{username}." on domain ".$this->{domain}->{name}." [$ip], deleted and proceeding to real authentication.");
+                    ::Auth_log("Record cache expired for user ".$self->{username}." on domain ".$self->{domain}->{name}." [$ip], deleted and proceeding to real authentication.");
                     $create_cache_record = 1;
                 }
             } else {
@@ -183,14 +183,14 @@ sub authenticate($this,$password,$ip)
         }
 
         my $start_time = [gettimeofday];
-        if ($this->{auth}->authenticate($this->{username}, $password)) {
+        if ($self->{auth}->authenticate($self->{username}, $password)) {
 
             my $interval = tv_interval( $start_time );
             my $time     = ( int( $interval * 10000 ) / 10000 );
 
             if ($cachetime > 0 && $cachedb) {
-                my $username_hash = md5_hex($this->{username});
-                my $domain_hash = md5_hex($this->{domain}->{name});
+                my $username_hash = md5_hex($self->{username});
+                my $domain_hash = md5_hex($self->{domain}->{name});
                 my $pass_hash = md5_hex($password);
                 my $now = time;
                 if ($create_cache_record) {
@@ -203,24 +203,24 @@ sub authenticate($this,$password,$ip)
                     $sth->execute($username_hash, $domain_hash);
                 }
             }
-            ::Auth_log("Authentication passed for user ".$this->{username}." on domain ".$this->{domain}->{name}." [$ip] in $time s.");
+            ::Auth_log("Authentication passed for user ".$self->{username}." on domain ".$self->{domain}->{name}." [$ip] in $time s.");
             return 1;
         }
         my $interval = tv_interval( $start_time );
         my $time     = ( int( $interval * 10000 ) / 10000 );
-        my $error = $this->{auth}->{error_text};
+        my $error = $self->{auth}->{error_text};
         chomp($error);
-        ::Auth_log("Authentication failed for user ".$this->{username}." on domain ".$this->{domain}->{name}." ($error) [$ip] in $time s.");
+        ::Auth_log("Authentication failed for user ".$self->{username}." on domain ".$self->{domain}->{name}." ($error) [$ip] in $time s.");
         return 0;
     }
-    $this->{auth}->{error_text} = 'Authentication not allowed for this domain';
-    ::Auth_log("Authentication not allowed for the domain ".$this->{domain}->{name});
+    $self->{auth}->{error_text} = 'Authentication not allowed for this domain';
+    ::Auth_log("Authentication not allowed for the domain ".$self->{domain}->{name});
     return 0;
 }
 
-sub getErrorText($this)
+sub getErrorText($self)
 {
-    my $msg = $this->{auth}->{error_text};
+    my $msg = $self->{auth}->{error_text};
     chomp($msg);
     return $msg;
 }

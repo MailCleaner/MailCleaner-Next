@@ -45,21 +45,21 @@ sub new($class)
     my $conf = ReadConfig::getInstance();
     $spec_this->{socketpath} = $conf->getOption('VARDIR')."/run/prefdaemon.sock";
 
-    my $this = $class->SUPER::new($spec_this);
+    my $self = $class->SUPER::new($spec_this);
 
-    bless $this, $class;
-    return $this;
+    bless $self, $class;
+    return $self;
 }
 
-sub setTimeout($this,$timeout)
+sub setTimeout($self,$timeout)
 {
    return 0 if ($timeout !~ m/^\d+$/);
-   $this->{timeout} = $timeout;
+   $self->{timeout} = $timeout;
    return 1;
 }
 
 ## fetch a pref by calling de pref daemon
-sub getPref($this,$object,$pref)
+sub getPref($self,$object,$pref)
 {
     if ($object !~ m/^[-_.!\$#=*&\@a-z0-9]+$/i) {
         return '_BADOBJECT';
@@ -70,12 +70,12 @@ sub getPref($this,$object,$pref)
 
     my $query = "PREF $object $pref";
 
-    my $result = $this->query($query);
+    my $result = $self->query($query);
     return $result;
 }
 
 ## fetch a pref, just like getPref but force pref daemon to fetch domain pref if user pref is not found or not set
-sub getRecursivePref($this,$object,$pref)
+sub getRecursivePref($self,$object,$pref)
 {
     if ($object !~ m/^[-_.!\$#=*&\@a-z0-9]+$/i) {
         return '_BADOBJECT';
@@ -86,11 +86,11 @@ sub getRecursivePref($this,$object,$pref)
 
     my $query = "PREF $object $pref R";
 
-    my $result = $this->query($query);
+    my $result = $self->query($query);
     return $result;
 }
 
-sub extractSRSAddress($this,$sender)
+sub extractSRSAddress($self,$sender)
 {
     my $sep = '[=+-]';
     my @segments;
@@ -121,7 +121,7 @@ sub extractSRSAddress($this,$sender)
     return $sender;
 }
 
-sub extractVERP($this,$sender)
+sub extractVERP($self,$sender)
 {
     if ($sender =~ /^[^\+]+\+.+=[a-z0-9\-\.]+\.[a-z]+/i) {
         $sender =~ s/([^\+]+)\+.+=[a-z0-9\-]{2,}\.[a-z]{2,}\@([a-z0-9\-]{2,}\.[a-z]{2,})/$1\@$2/i;
@@ -129,7 +129,7 @@ sub extractVERP($this,$sender)
     return $sender;
 }
 
-sub extractSubAddress($this,$sender)
+sub extractSubAddress($self,$sender)
 {
     if ($sender =~ /^[^\+]+\+.+=[a-z0-9\-\.]+\.[a-z]+/i) {
         $sender =~ s/([^\+]+)\+.+\@([a-z0-9\-]{2,}\.[a-z]{2,})/$1\@$2/i;
@@ -137,19 +137,19 @@ sub extractSubAddress($this,$sender)
     return $sender;
 }
 
-sub extractSender($this,$sender)
+sub extractSender($self,$sender)
 {
     my $orig = $sender;
-    $sender = $this->extractSRSAddress($sender);
-    $sender = $this->extractVERP($sender);
-    $sender = $this->extractSubAddress($sender);
+    $sender = $self->extractSRSAddress($sender);
+    $sender = $self->extractVERP($sender);
+    $sender = $self->extractSubAddress($sender);
     if ($orig eq $sender) {
         return 0;
     }
     return $sender;
 }
 
-sub isWhitelisted($this,$object,$sender)
+sub isWhitelisted($self,$object,$sender)
 {
     if ($object !~ m/^[-_.!\$+#=*&\@a-z0-9]+$/i) {
         return '_BADOBJECT';
@@ -157,12 +157,12 @@ sub isWhitelisted($this,$object,$sender)
 
     my $query = "WHITE $object $sender";
     my $result;
-    if (my $result = $this->query("WHITE $object $sender")) {
+    if (my $result = $self->query("WHITE $object $sender")) {
         return $result;
     }
-    $sender = $this->extractSender($sender);
+    $sender = $self->extractSender($sender);
     if ($sender) {
-        if ($result = $this->query("WHITE $object $sender")) {
+        if ($result = $self->query("WHITE $object $sender")) {
             return $result;
         }
     } else {
@@ -170,19 +170,19 @@ sub isWhitelisted($this,$object,$sender)
     }
 }
 
-sub isWarnlisted($this,$object,$sender)
+sub isWarnlisted($self,$object,$sender)
 {
     if ($object !~ m/^[-_.!\$+#=*&\@a-z0-9]+$/i) {
         return '_BADOBJECT';
     }
 
     my $result;
-    if (my $result = $this->query("WARN $object $sender")) {
+    if (my $result = $self->query("WARN $object $sender")) {
         return $result;
     }
-    $sender = $this->extractSender($sender);
+    $sender = $self->extractSender($sender);
     if ($sender) {
-        if ($result = $this->query("WARN $object $sender")) {
+        if ($result = $self->query("WARN $object $sender")) {
             return $result;
         }
     } else {
@@ -190,7 +190,7 @@ sub isWarnlisted($this,$object,$sender)
     }
 }
 
-sub isBlacklisted($this,$object,$sender)
+sub isBlacklisted($self,$object,$sender)
 {
     if ($object !~ m/^[-_.!\$+#=*&\@a-z0-9]+$/i) {
         return '_BADOBJECT';
@@ -198,12 +198,12 @@ sub isBlacklisted($this,$object,$sender)
 
     my $query = "BLACK $object $sender";
     my $result;
-    if (my $result = $this->query("BLACK $object $sender")) {
+    if (my $result = $self->query("BLACK $object $sender")) {
         return $result;
     }
-    $sender = $this->extractSender($sender);
+    $sender = $self->extractSender($sender);
     if ($sender) {
-        if ($result = $this->query("BLACK $object $sender")) {
+        if ($result = $self->query("BLACK $object $sender")) {
             return $result;
         }
     } else {
@@ -211,10 +211,10 @@ sub isBlacklisted($this,$object,$sender)
     }
 }
 
-sub logStats($this)
+sub logStats($self)
 {
     my $query = 'STATS';
-    return $this->query($query);
+    return $self->query($query);
 }
 
 1;

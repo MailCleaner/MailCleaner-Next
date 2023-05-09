@@ -35,7 +35,7 @@ sub create
 
     my @field_domain_o = ('name', 'destination', 'callout', 'altcallout', 'adcheck', 'forward_by_mx', 'greylist');
 
-    my $this = {
+    my $self = {
         my %prefs => (),
         my %field_domain => (),
         'name' => '',
@@ -43,15 +43,15 @@ sub create
         my @params => ()
     };
 
-    bless $this, "ElementMappers::DomainMapper";
-    $this->{prefs}{'name'} = '';
-    $this->{prefs}{'destination'} = '';
-    $this->{field_domain} = {'name' => 1, 'destination' => 1, 'callout' => 1, 'altcallout' => 1, 'adcheck' => 1, 'forward_by_mx' => 1, 'greylist' => 1};
+    bless $self, "ElementMappers::DomainMapper";
+    $self->{prefs}{'name'} = '';
+    $self->{prefs}{'destination'} = '';
+    $self->{field_domain} = {'name' => 1, 'destination' => 1, 'callout' => 1, 'altcallout' => 1, 'adcheck' => 1, 'forward_by_mx' => 1, 'greylist' => 1};
 
-    return $this;
+    return $self;
 }
 
-sub setNewDefault($this,$defstr)
+sub setNewDefault($self,$defstr)
 {
     foreach my $data (split('\s', $defstr)) {
         if ($data =~ m/(\S+):(\S+)/) {
@@ -59,69 +59,69 @@ sub setNewDefault($this,$defstr)
             my $key = $1;
             $val =~ s/__S__/ /g;
             $val =~ s/__P__/:/g;
-            $this->{prefs}{$key} = $val;
+            $self->{prefs}{$key} = $val;
         }
     }
 }
 
-sub checkElementExistence($this,$name)
+sub checkElementExistence($self,$name)
 {
     my $check_query = "SELECT name, prefs FROM domain WHERE name='$name'";
-    my %check_res = $this->{db}->getHashRow($check_query);
+    my %check_res = $self->{db}->getHashRow($check_query);
     if (defined($check_res{'prefs'})) {
         return $check_res{'prefs'};
     }
 }
 
-sub processElement($this,$name,$flags='',$params='')
+sub processElement($self,$name,$flags='',$params='')
 {
     my $update = 1;
     $update = 0 if ($flags =~ m/noupdate/ );
 
-    $this->{params} = ();
-    $this->{prefs}{'name'} = $name;
+    $self->{params} = ();
+    $self->{prefs}{'name'} = $name;
     if ($params) {
         foreach my $el (split(':', $params) ) {
             chomp($el);
             $el =~ s/^\s+//;
             #print "\nSetting param: $el from $params\n";
-            push @{$this->{params}}, $el;
+            push @{$self->{params}}, $el;
         }
     }
 
     my $pref = 0;
-    $pref = $this->checkElementExistence($name);
+    $pref = $self->checkElementExistence($name);
     if ($pref > 0) {
         return 1 if (! $update );
-        return $this->updateElement($name, $pref);
+        return $self->updateElement($name, $pref);
     }
-    return $this->addNewElement($name);
+    return $self->addNewElement($name);
 }
 
-sub updateElement($this,$name,$pref)
+sub updateElement($self,$name,$pref)
 {
-    my $set_prefquery = $this->getPrefQuery();
+    my $set_prefquery = $self->getPrefQuery();
     if (! $set_prefquery eq '') {
         my $prefquery = "UPDATE domain_pref SET ".$set_prefquery." WHERE id=".$pref;
-        $this->{db}->execute($prefquery);
+        $self->{db}->execute($prefquery);
         print $prefquery."\n";
     }
 
-    my $set_domquery = $this->getDomQuery();
+    my $set_domquery = $self->getDomQuery();
     if (! $set_domquery eq '') {
         my $dom_query = "UPDATE domain SET ".$set_domquery." WHERE name='$name'";
-        $this->{db}->execute($dom_query);
+        $self->{db}->execute($dom_query);
         print $dom_query."\n";
     }
 }
 
-sub getPrefQuery($this)
+sub getPrefQuery($self)
 {
     my $set_prefquery = '';
-    foreach my $datak (keys %{$this->{prefs}}) {
-        if (! defined($this->{field_domain}{$datak})) {
-            my $val = $this->{prefs}{$datak};
-            $val =~ s/PARAM(\d+)/$this->{params}[$1-1]/g;
+    foreach my $datak (keys %{$self->{prefs}}) {
+        if (! defined($self->{field_domain}{$datak})) {
+            my $val = $self->{prefs}{$datak};
+            $val =~ s/PARAM(\d+)/$self->{params}[$1-1]/g;
             $set_prefquery .= "$datak='".$val."', ";
         }
     }
@@ -129,13 +129,13 @@ sub getPrefQuery($this)
     return $set_prefquery;
 }
 
-sub getDomQuery($this)
+sub getDomQuery($self)
 {
     my $set_domquery = '';
-    foreach my $datak (keys %{$this->{prefs}}) {
-        if (defined($this->{field_domain}{$datak})) {
-            my $val = $this->{prefs}{$datak};
-            $val =~ s/PARAM(\d+)/$this->{params}[$1-1]/g;
+    foreach my $datak (keys %{$self->{prefs}}) {
+        if (defined($self->{field_domain}{$datak})) {
+            my $val = $self->{prefs}{$datak};
+            $val =~ s/PARAM(\d+)/$self->{params}[$1-1]/g;
             $set_domquery .= "$datak='".$val."', ";
         }
     }
@@ -143,37 +143,37 @@ sub getDomQuery($this)
     return $set_domquery;
 }
 
-sub addNewElement($this,$name)
+sub addNewElement($self,$name)
 {
-    my $set_prefquery = $this->getPrefQuery();
+    my $set_prefquery = $self->getPrefQuery();
     my $prefquery = "INSERT INTO domain_pref SET id=NULL";
     if (! $set_prefquery eq '') {
         $prefquery .= " , ".$set_prefquery;
     }
     print $prefquery."\n";
-    $this->{db}->execute($prefquery.";");
+    $self->{db}->execute($prefquery.";");
 
     my $getid = "SELECT LAST_INSERT_ID() as id;";
-    my %res = $this->{db}->getHashRow($getid);
+    my %res = $self->{db}->getHashRow($getid);
     if (!defined($res{'id'})) {
         print "WARNING ! could not get last inserted id!\n";
         return;
     }
     my $prefid = $res{'id'};
 
-    my $set_domquery = $this->getDomQuery();
+    my $set_domquery = $self->getDomQuery();
     my $query  = "INSERT INTO domain SET prefs=".$prefid;
     if (! $set_domquery eq '') {
         $query .= ", ".$set_domquery;
     }
-    $this->{db}->execute($query);
+    $self->{db}->execute($query);
     print $query."\n";
 }
 
-sub deleteElement($this,$name)
+sub deleteElement($self,$name)
 {
     my $getprefid = "SELECT prefs FROM domain WHERE name='$name'";
-    my %res = $this->{db}->getHashRow($getprefid);
+    my %res = $self->{db}->getHashRow($getprefid);
     if (!defined($res{'prefs'})) {
         print "WARNING ! could not get preferences id for: $name!\n";
         return;
@@ -181,18 +181,18 @@ sub deleteElement($this,$name)
     my $prefid = $res{'prefs'};
 
     my $deletepref = "DELETE FROM domain_pref WHERE id=$prefid";
-    $this->{db}->execute($deletepref);
+    $self->{db}->execute($deletepref);
     print $deletepref."\n";
     my $deletedomain = "DELETE FROM domain WHERE name='$name'";
-    $this->{db}->execute($deletedomain);
+    $self->{db}->execute($deletedomain);
     print $deletedomain."\n";
     return;
 }
 
-sub getExistingElements($this)
+sub getExistingElements($self)
 {
     my $query = "SELECT name FROM domain";
-    my @res = $this->{db}->getList($query);
+    my @res = $self->{db}->getList($query);
 
     return @res;
 }

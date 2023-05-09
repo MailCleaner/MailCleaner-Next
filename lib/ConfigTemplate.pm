@@ -60,7 +60,7 @@ sub create($templatefile,$targetfile)
     my %subtemplates = ();
     my %conditions = ();
 
-    my $this = {
+    my $self = {
         templatefile => $templatefile,
         targetfile => $targetfile,
         %replacements => (),
@@ -68,26 +68,26 @@ sub create($templatefile,$targetfile)
         %conditions => ()
     };
 
-    bless $this, "ConfigTemplate";
+    bless $self, "ConfigTemplate";
 
-    $this->preParseTemplate();
-    return $this;
+    $self->preParseTemplate();
+    return $self;
 }
 
 ###
 # preparse template and variables
 # @return   boolean     true on success, false on failure
 ###
-sub preParseTemplate($this)
+sub preParseTemplate($self)
 {
     my $in_template = "";
-    return 0 if (!open(my $FILE, '<', $this->{templatefile}));
+    return 0 if (!open(my $FILE, '<', $self->{templatefile}));
     while (<$FILE>) {
         my $line = $_;
 
         if ($line =~ /\_\_TMPL\_([A-Z0-9]+)\_START\_\_/) {
             $in_template = $1;
-            $this->{subtemplates}{$in_template} = "";
+            $self->{subtemplates}{$in_template} = "";
             next;
         }
         if ($line =~ /\_\_TMPL\_([A-Z0-9]+)\_STOP\_\_/) {
@@ -95,7 +95,7 @@ sub preParseTemplate($this)
             next;
         }
         if ($in_template !~ /^$/) {
-            $this->{subtemplates}{$in_template} .= $line;
+            $self->{subtemplates}{$in_template} .= $line;
             next;
         }
     }
@@ -103,10 +103,10 @@ sub preParseTemplate($this)
     return 1;
 }
 
-sub getSubTemplate($this,$tmplname)
+sub getSubTemplate($self,$tmplname)
 {
-    if (defined($this->{subtemplates}{$tmplname})) {
-        return $this->{subtemplates}{$tmplname};
+    if (defined($self->{subtemplates}{$tmplname})) {
+        return $self->{subtemplates}{$tmplname};
     }
     return "";
 }
@@ -116,12 +116,12 @@ sub getSubTemplate($this,$tmplname)
 # @param    replace     array_h    handle of array of rplacements with tag as keys
 # @return               boolean    true on success, false on failure
 ###
-sub setReplacements($this,$replace_h)
+sub setReplacements($self,$replace_h)
 {
     my %replace = %{$replace_h};
 
     foreach my $tag (keys %replace) {
-        $this->{replacements}{$tag} = $replace{$tag};
+        $self->{replacements}{$tag} = $replace{$tag};
     }
     return 1;
 }
@@ -129,9 +129,9 @@ sub setReplacements($this,$replace_h)
 ###
 # dump to destination file
 ###
-sub dump($this)
+sub dump($self)
 {
-    return 0 if (!open(my $FILE, '<', $this->{templatefile}));
+    return 0 if (!open(my $FILE, '<', $self->{templatefile}));
 
     my $ret;
     my $in_hidden = 0;
@@ -144,7 +144,7 @@ sub dump($this)
         $lc++;
 
         if ($line =~ /__IF__\s+(\S+)/) {
-            if ($this->getCondition($1)) {
+            if ($self->getCondition($1)) {
                 push @if_hist, $1;
             } else {
                 push @if_hist, "!".$1;
@@ -156,7 +156,7 @@ sub dump($this)
         # __IF__ condition True, do nothing until __FI__
         if ($line =~ /__ELSE__\s+(\S+)/) {
             unless (scalar(@if_hist)) {
-                die "__ELSE__ $1 without preceeding __IF__ (".$this->{templatefile}.":$lc)\n";
+                die "__ELSE__ $1 without preceeding __IF__ (".$self->{templatefile}.":$lc)\n";
             }
             if ($if_hist[scalar(@if_hist)-1] eq $1) {
                 $if_hist[scalar(@if_hist)-1] = '!' . $if_hist[scalar(@if_hist)-1];
@@ -165,14 +165,14 @@ sub dump($this)
                 $if_hist[scalar(@if_hist)-1] =~ s/^!//;
                 $if_hidden--;
             } else {
-                die "__ELSE__ tag $1 without preceeding __IF__ (".$this->{templatefile}.":$lc)\n";
+                die "__ELSE__ tag $1 without preceeding __IF__ (".$self->{templatefile}.":$lc)\n";
             }
             next;
         }
 
         if ($line =~/__FI__/) {
             unless (scalar(@if_hist)) {
-                die "__FI__ without preceeding __IF__ (".$this->{templatefile}.":$lc)\n";
+                die "__FI__ without preceeding __IF__ (".$self->{templatefile}.":$lc)\n";
             }
             if ($if_hist[scalar(@if_hist)-1] =~ /^!/) {
                 $if_hidden--;
@@ -247,12 +247,12 @@ sub dump($this)
     );
 
     ## replace given tags
-    foreach my $tag (keys %{$this->{replacements}}) {
-        if (!defined($this->{replacements}{$tag})) {
-            $this->{replacements}{$tag} = "";
+    foreach my $tag (keys %{$self->{replacements}}) {
+        if (!defined($self->{replacements}{$tag})) {
+            $self->{replacements}{$tag} = "";
         }
         if ( defined ($ret) ) {
-            $ret =~ s/$tag/$this->{replacements}{$tag}/g;
+            $ret =~ s/$tag/$self->{replacements}{$tag}/g;
         }
     }
 
@@ -263,25 +263,25 @@ sub dump($this)
     }
 
     if ( defined ($ret) ) {
-        return 0 if (!open(my $TARGET, '>', $this->{targetfile}));
+        return 0 if (!open(my $TARGET, '>', $self->{targetfile}));
         print $TARGET $ret;
         close $TARGET;
     }
     my $uid = getpwnam( 'mailcleaner' );
     my $gid = getgrnam( 'mailcleaner' );
-    chown $uid, $gid, $this->{targetfile};
+    chown $uid, $gid, $self->{targetfile};
     return 1;
 }
 
-sub setCondition($this,$condition,$value)
+sub setCondition($self,$condition,$value)
 {
-    $this->{conditions}{$condition} = $value;
+    $self->{conditions}{$condition} = $value;
 }
 
-sub getCondition($this,$condition)
+sub getCondition($self,$condition)
 {
-    if (defined($this->{conditions}{$condition})) {
-        return $this->{conditions}{$condition};
+    if (defined($self->{conditions}{$condition})) {
+        return $self->{conditions}{$condition};
     }
     return 0;
 }

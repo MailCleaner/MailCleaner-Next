@@ -111,7 +111,7 @@ sub initialise
     }
 }
 
-sub Checks($this,$message)
+sub Checks($self,$message)
 {
     my $RBLsaysspam = 0;
 

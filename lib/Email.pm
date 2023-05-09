@@ -52,7 +52,7 @@ sub create($address, $domain)
     	return;
     }
 
-    my $this = {
+    my $self = {
         address => $address,
         domain => $domain,
         prefs => \%prefs,
@@ -61,27 +61,27 @@ sub create($address, $domain)
         #prefdaemon => $pref_daemon,
     };
 
-    bless $this, "Email";
-    return $this;
+    bless $self, "Email";
+    return $self;
 }
 
-sub getPref($this,$pref,$default)
+sub getPref($self,$pref,$default)
 {
-    if (!defined($this->{prefs}) || !defined($this->{prefs}{$pref})) {
+    if (!defined($self->{prefs}) || !defined($self->{prefs}{$pref})) {
         my $prefclient = PrefClient->new();
         $prefclient->setTimeout(2);
-        my $dpref = $prefclient->getRecursivePref($this->{address}, $pref);
+        my $dpref = $prefclient->getRecursivePref($self->{address}, $pref);
         if ($dpref !~ /^_/ && $dpref !~ /(NOTSET|NOTFOUND)/) {
-            $this->{prefs}->{$pref} = $dpref;
+            $self->{prefs}->{$pref} = $dpref;
             return $dpref;
         }
-        $this->loadPrefs();
+        $self->loadPrefs();
     }
 
-    if (defined($this->{prefs}->{$pref}) && $this->{prefs}->{$pref} !~ /(NOTSET|NOTFOUND)/ ) {
-        return $this->{prefs}->{$pref};
+    if (defined($self->{prefs}->{$pref}) && $self->{prefs}->{$pref} !~ /(NOTSET|NOTFOUND)/ ) {
+        return $self->{prefs}->{$pref};
     }
-    my $dpref = $this->{d}->getPref($pref, $default);
+    my $dpref = $self->{d}->getPref($pref, $default);
     if (defined($dpref) && $dpref !~ /(NOTSET|NOTFOUND)/) {
         return $dpref;
     }
@@ -91,40 +91,40 @@ sub getPref($this,$pref,$default)
     return "";
 }
 
-sub getDomainObject($this)
+sub getDomainObject($self)
 {
-    return $this->{d};
+    return $self->{d};
 }
 
-sub getAddress($this)
+sub getAddress($self)
 {
-    return $this->{address};
+    return $self->{address};
 }
 
-sub getUser($this)
+sub getUser($self)
 {
-    if (!$this->{user}) {
-        $this->{user} = User::create($this->{address});
+    if (!$self->{user}) {
+        $self->{user} = User::create($self->{address});
     }
-    return $this->{user};
+    return $self->{user};
 }
 
-sub getUserPref($this,$pref)
+sub getUserPref($self,$pref)
 {
-    $this->getUser();
-    if ($this->{user}) {
-        return $this->{user}->getPref($pref);
+    $self->getUser();
+    if ($self->{user}) {
+        return $self->{user}->getPref($pref);
     }
     return;
 }
 
-sub loadPrefs($this)
+sub loadPrefs($self)
 {
     require DB;
     my $db = DB::connect('slave', 'mc_config', 0);
 
-    my $to = $this->{address};
-    my $to_domain = $this->{domain};
+    my $to = $self->{address};
+    my $to_domain = $self->{domain};
     my %res;
 
     if ($db && $db->ping()) {
@@ -137,11 +137,11 @@ sub loadPrefs($this)
 	    return 0;
 	}
 	foreach my $p (keys %res) {
-	    $this->{prefs}->{$p} = $res{$p};
+	    $self->{prefs}->{$p} = $res{$p};
 	}
 }
 
-sub hasInWhiteWarnList($this,$type,$sender)
+sub hasInWhiteWarnList($self,$type,$sender)
 {
     $sender =~ s/\'//g;
 
@@ -151,7 +151,7 @@ sub hasInWhiteWarnList($this,$type,$sender)
     	if (! $sysprefs->getPref('enable_warnlists')) {
     	    return 0;
     	}
-    	if (! $this->{d}->getPref('enable_warnlists') && ! $this->getPref('has_warnlist')) {
+    	if (! $self->{d}->getPref('enable_warnlists') && ! $self->getPref('has_warnlist')) {
     	    return 0;
     	}
         $filename = 'warn.list';
@@ -159,7 +159,7 @@ sub hasInWhiteWarnList($this,$type,$sender)
         if (! $sysprefs->getPref('enable_whitelists')) {
     	    return 0;
     	}
-    	if (! $this->{d}->getPref('enable_whitelists') && ! $this->getPref('has_whitelist')) {
+    	if (! $self->{d}->getPref('enable_whitelists') && ! $self->getPref('has_whitelist')) {
     	    return 0;
         }
     } elsif ($type =~ /^blacklist$/) {
@@ -174,46 +174,46 @@ sub hasInWhiteWarnList($this,$type,$sender)
     $prefclient->setTimeout(2);
     my $retvalues = {'GLOBAL' => 1, 'DOMAIN' => 2, 'USER' => 3 };
     if ($type eq 'whitelist') {
-        my $result = $prefclient->isWhitelisted($this->{address}, $sender);
+        my $result = $prefclient->isWhitelisted($self->{address}, $sender);
         if ($result =~ m/^LISTED (USER|DOMAIN|GLOBAL)/ ) {
             return $retvalues->{$1};
         } elsif ($result =~ /^_/) {
-            return $this->loadedIsWWListed('white', $sender);
+            return $self->loadedIsWWListed('white', $sender);
         }
         return 0;
     }
     if ($type eq 'warnlist') {
-        my $result = $prefclient->isWarnlisted($this->{address}, $sender);
+        my $result = $prefclient->isWarnlisted($self->{address}, $sender);
         if ($result =~ m/^LISTED (USER|DOMAIN|GLOBAL)/ ) {
             return $retvalues->{$1};
         } elsif ($result =~ /^_/) {
-            return $this->loadedIsWWListed('warn', $sender);
+            return $self->loadedIsWWListed('warn', $sender);
         }
         return 0;
     }
     if ($type eq 'blacklist') {
-        my $result = $prefclient->isBlacklisted($this->{address}, $sender);
+        my $result = $prefclient->isBlacklisted($self->{address}, $sender);
         if ($result =~ m/^LISTED (USER|DOMAIN|GLOBAL)/ ) {
             return $retvalues->{$1};
         } elsif ($result =~ /^_/) {
-            return $this->loadedIsWWListed('black', $sender);
+            return $self->loadedIsWWListed('black', $sender);
         }
         return 0;
     }
 
 }
 
-sub loadedIsWWListed($this,$type,$sender)
+sub loadedIsWWListed($self,$type,$sender)
 {
     require DB;
     my $db = DB::connect('slave', 'mc_config', 0);
 
-    my $to = $this->{address};
+    my $to = $self->{address};
     $sender =~ s/[^a-zA-Z0-9.\-_=+@]//g;
     my %res;
 
     if ($db && $db->ping()) {
-	    my $query = "SELECT sender FROM wwlists WHERE recipient='".$this->{address}."' AND type='$type' AND status=1";
+	    my $query = "SELECT sender FROM wwlists WHERE recipient='".$self->{address}."' AND type='$type' AND status=1";
 	    my @senders = $db->getListOfHash($query);
 	    foreach my $listedsender (@senders) {
 	        if (Email::listMatch($listedsender->{'sender'}, $sender)) {
@@ -221,7 +221,7 @@ sub loadedIsWWListed($this,$type,$sender)
 	        }
 	    }
 
-	    $query = "SELECT sender FROM wwlists WHERE recipient='@".$this->{domain}."' AND type='$type' AND status=1";
+	    $query = "SELECT sender FROM wwlists WHERE recipient='@".$self->{domain}."' AND type='$type' AND status=1";
             @senders = $db->getListOfHash($query);
 	    foreach my $listedsender (@senders) {
 	        if (Email::listMatch($listedsender->{'sender'}, $sender)) {
@@ -264,7 +264,7 @@ sub listMatch($reg,$sender)
     return 0;
 }
 
-sub inWW($this,$type,$sender,$destination)
+sub inWW($self,$type,$sender,$destination)
 {
     my $prefclient = PrefClient->new();
     $prefclient->setTimeout(2);
@@ -281,21 +281,21 @@ sub inWW($this,$type,$sender,$destination)
     return 0;
 }
 
-sub sendWarnlistHit($this,$sender,$reason,$msgid)
+sub sendWarnlistHit($self,$sender,$reason,$msgid)
 {
     require MailTemplate;
-    my $template = MailTemplate::create('warnhit', 'warnhit', $this->{d}->getPref('summary_template'), \$this, $this->getPref('language'), 'html');
+    my $template = MailTemplate::create('warnhit', 'warnhit', $self->{d}->getPref('summary_template'), \$self, $self->getPref('language'), 'html');
 
     my %level = (1 => 'system', 2 => 'domain', 3 => 'user');
     my %replace = (
         '__SENDER__' => $sender,
         '__REASON__' => $level{$reason},
-        '__ADDRESS__' => $this->{address},
-        '__LANGUAGE__' => $this->getPref('language'),
+        '__ADDRESS__' => $self->{address},
+        '__LANGUAGE__' => $self->getPref('language'),
         '__ID__' => $msgid
     );
 
-    my $from = $this->{d}->getPref('support_email');
+    my $from = $self->{d}->getPref('support_email');
     if ($from eq "") {
     	my $sys = SystemPref::getInstance();
         $from = $sys->getPref('summary_from');
@@ -304,10 +304,10 @@ sub sendWarnlistHit($this,$sender,$reason,$msgid)
     return $template->send();
 }
 
-sub sendWWHitNotice($this,$whitelisted,$warnlisted,$sender,$msgh)
+sub sendWWHitNotice($self,$whitelisted,$warnlisted,$sender,$msgh)
 {
     require MailTemplate;
-    my $template = MailTemplate::create('warnhit', 'noticehit', $this->{d}->getPref('summary_template'), \$this, 'en', 'text');
+    my $template = MailTemplate::create('warnhit', 'noticehit', $self->{d}->getPref('summary_template'), \$self, 'en', 'text');
 
     my $reason = 'whitelist';
     my $level = $whitelisted;
@@ -319,11 +319,11 @@ sub sendWWHitNotice($this,$whitelisted,$warnlisted,$sender,$msgh)
     my %replace = (
         '__LEVEL__' => $levels{$level},
         '__LIST__' => $reason,
-        '__TO__' => $this->{address},
+        '__TO__' => $self->{address},
         '__SENDER__' => $sender
     );
 
-    my $admin = $this->{d}->getPref('support_email');
+    my $admin = $self->{d}->getPref('support_email');
     if ($admin eq "") {
     	my $sys = SystemPref::getInstance();
         $admin = $sys->getPref('analyse_to');
@@ -334,15 +334,15 @@ sub sendWWHitNotice($this,$whitelisted,$warnlisted,$sender,$msgh)
     return $template->send();
 }
 
-sub getLinkedAddresses($this)
+sub getLinkedAddresses($self)
 {
     my %addresses;
 
-    if (!$this->{user}) {
-        $this->{user} = User::create($this->{address});
+    if (!$self->{user}) {
+        $self->{user} = User::create($self->{address});
     }
 
-    return $this->{user}->getAddresses();
+    return $self->{user}->getAddresses();
 }
 
 1;

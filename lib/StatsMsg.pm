@@ -31,78 +31,78 @@ my @statdata_ = ('spam', 'highspam', 'virus', 'name', 'other', 'clean', 'bytes')
 
 sub new($class)
 {
-    my $this = {};
+    my $self = {};
 
     foreach my $st (@statdata_) {
-        $this->{$st} = 0;
+        $self->{$st} = 0;
     }
 
-    $this->{'msgs'} = 1;
+    $self->{'msgs'} = 1;
 
-    bless $this, $class;
-    return $this;
+    bless $self, $class;
+    return $self;
 }
 
 sub setStatus
 {
-    my ($this, $isspam, $ishigh, $virusinfected, $nameinfected, $otherinfected, $size) = @_;
+    my ($self, $isspam, $ishigh, $virusinfected, $nameinfected, $otherinfected, $size) = @_;
 
-    if ($isspam) { $this->setAsSpam(); }
-    if ($ishigh) { $this->setAsHighSpam(); }
-    if ($virusinfected) { $this->setAsVirus(); }
-    if ($nameinfected) { $this->setAsName(); }
-    if ($otherinfected) { $this->setAsOther(); }
-    $this->setBytes($size);
+    if ($isspam) { $self->setAsSpam(); }
+    if ($ishigh) { $self->setAsHighSpam(); }
+    if ($virusinfected) { $self->setAsVirus(); }
+    if ($nameinfected) { $self->setAsName(); }
+    if ($otherinfected) { $self->setAsOther(); }
+    $self->setBytes($size);
 }
 
-sub setAsSpam($this)
+sub setAsSpam($self)
 {
-    $this->{'spam'} = 1;
+    $self->{'spam'} = 1;
 }
 
-sub setAsHighSpam($this)
+sub setAsHighSpam($self)
 {
-    $this->{'highspam'} = 1;
+    $self->{'highspam'} = 1;
 }
 
-sub setAsVirus($this)
+sub setAsVirus($self)
 {
-    $this->{'virus'} = 1;
+    $self->{'virus'} = 1;
 }
 
-sub setAsName($this)
+sub setAsName($self)
 {
-    $this->{'name'} = 1;
+    $self->{'name'} = 1;
 }
 
-sub setAsOther($this)
+sub setAsOther($self)
 {
-    $this->{'other'} = 1;
+    $self->{'other'} = 1;
 }
 
-sub setBytes($this,$bytes)
+sub setBytes($self,$bytes)
 {
-    $this->{'bytes'} = $bytes;
+    $self->{'bytes'} = $bytes;
 }
 
-sub getString($this)
+sub getString($self)
 {
-    $this->{'clean'} = 1;
-    if ( $this->{'spam'} + $this->{'highspam'} + $this->{'virus'} + $this->{'name'} + $this->{'ohter'} > 0) {
-        $this->{'clean'} = 0;
+    $self->{'clean'} = 1;
+    if ( $self->{'spam'} + $self->{'highspam'} + $self->{'virus'} + $self->{'name'} + $self->{'ohter'} > 0) {
+        $self->{'clean'} = 0;
     }
-    my $str = $this->{'msgs'}."|";
+    my $str = $self->{'msgs'}."|";
     foreach my $st (@statdata_) {
-        $str .= $this->{$st}."|";
+        $str .= $self->{$st}."|";
     }
     $str =~ s/\|$//;
     return $str;
 }
 
-sub doUpdate($this,$client,$to,$update_domain,$update_global)
+sub doUpdate($self,$client,$to,$update_domain,$update_global)
 {
-    print STDERR "\ncalled: ".'ADD '.$to.' '.$this->getString().' '.$update_domain.' '.$update_global."\n";
-    return $client->query('ADD '.$to.' '.$this->getString().' '.$update_domain.' '.$update_global);
+    print STDERR "\ncalled: ".'ADD '.$to.' '.$self->getString().' '.$update_domain.' '.$update_global."\n";
+    return $client->query('ADD '.$to.' '.$self->getString().' '.$update_domain.' '.$update_global);
 }
 
 1;

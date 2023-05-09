@@ -42,7 +42,7 @@ sub create($server,$port,$params)
     if ($port < 1 ) {
         $port = 110;
     }
-    my $this = {
+    my $self = {
         error_text => "",
         error_code => -1,
         server => $server,
@@ -50,16 +50,16 @@ sub create($server,$port,$params)
         use_ssl => $use_ssl
     };
 
-    bless $this, "SMTPAuthenticator::POP3";
-    return $this;
+    bless $self, "SMTPAuthenticator::POP3";
+    return $self;
 }
 
-sub authenticate($this,$username,$password)
+sub authenticate($self,$username,$password)
 {
     my $pop = new Mail::POP3Client(
-        HOST     => $this->{server},
-        PORT     => $this->{port},
-        USESSL   => $this->{use_ssl},
+        HOST     => $self->{server},
+        PORT     => $self->{port},
+        USESSL   => $self->{use_ssl},
     );
 
     $pop->User( $username );
@@ -67,15 +67,15 @@ sub authenticate($this,$username,$password)
     my $code = $pop->Connect();
 
     if ($code > 0) {
-        $this->{'error_code'} = 0;
-        $this->{'error_text'} = "";
+        $self->{'error_code'} = 0;
+        $self->{'error_text'} = "";
         #print "code: $code => ".$pop->Message()."\n";
         return 1;
     }
     $pop->Message();
 
-    $this->{'error_code'} = $code;
-    $this->{'error_text'} = $pop->Message();
+    $self->{'error_code'} = $code;
+    $self->{'error_text'} = $pop->Message();
     return 0;
 }
 

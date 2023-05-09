@@ -76,7 +76,7 @@ sub create($server,$port,$params)
         $passfield = 'password';
     }
 
-    my $this = {
+    my $self = {
         error_code => -1,
         error_text => "",
         server => $server,
@@ -93,16 +93,16 @@ sub create($server,$port,$params)
         dsn => $dsn
     };
 
-    bless $this, "SMTPAuthenticator::SQL";
-    return $this;
+    bless $self, "SMTPAuthenticator::SQL";
+    return $self;
 }
 
-sub authenticate($this,$username,$password)
+sub authenticate($self,$username,$password)
 {
-    my $dbh = DBI->connect($this->{dsn}, $this->{dbuser}, $this->{dbpass}, {RaiseError => 0, PrintError => 0});
+    my $dbh = DBI->connect($self->{dsn}, $self->{dbuser}, $self->{dbpass}, {RaiseError => 0, PrintError => 0});
     if (! $dbh ) {
-        $this->{'error_code'} = 1;
-        $this->{'error_text'} = 'Could not connect to SQL server';
+        $self->{'error_code'} = 1;
+        $self->{'error_text'} = 'Could not connect to SQL server';
         return 0;
     }
 
@@ -113,20 +113,20 @@ sub authenticate($this,$username,$password)
         #  $username = $1;
         $domain = $2;
     }
-    my $query = "SELECT ".$this->{passfield}." AS pass FROM ".$this->{dbtable}." WHERE ".$this->{loginfield}."='".$username."' AND domain='".$domain."'";
+    my $query = "SELECT ".$self->{passfield}." AS pass FROM ".$self->{dbtable}." WHERE ".$self->{loginfield}."='".$username."' AND domain='".$domain."'";
 
     my $sth = $dbh->prepare($query);
     if (!$sth) {
-        $this->{'error_code'} = 2;
-        $this->{'error_text'} = 'Could not prepare query';
+        $self->{'error_code'} = 2;
+        $self->{'error_text'} = 'Could not prepare query';
         $dbh->disconnect() if ($dbh);
         return 0;
     }
     my $res = $sth->execute();
     my $ret = $sth->fetchrow_hashref();
     if (! $ret) {
-        $this->{'error_code'} = 2;
-        $this->{'error_text'} = "Bad username or password ($username)";
+        $self->{'error_code'} = 2;
+        $self->{'error_text'} = "Bad username or password ($username)";
         $sth->finish();
         $dbh->disconnect() if ($dbh);
         return 0;
@@ -139,8 +139,8 @@ sub authenticate($this,$username,$password)
         }
     }
 
-    $this->{'error_code'} = 3;
-    $this->{'error_text'} = "Bad username or password ($username)";
+    $self->{'error_code'} = 3;
+    $self->{'error_text'} = "Bad username or password ($username)";
 
     $sth->finish();
     $dbh->disconnect() if ($dbh);

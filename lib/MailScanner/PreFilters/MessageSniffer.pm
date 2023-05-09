@@ -110,7 +110,7 @@ sub initialise
     }
 }
 
-sub Checks($this,$message)
+sub Checks($self,$message)
 {
     my $maxsize = $MessageSniffer::conf{'maxSize'};
     if ($maxsize > 0 && $message->{size} > $maxsize) {
@@ -154,15 +154,15 @@ sub Checks($this,$message)
         my ($fh, $filename) = tempfile( DIR => $MessageSniffer::conf{'tmpDir'} );
 
         # spew our mail into the temp file
-        my $SNF_fh = IO::File->new( $filename, "w" ) || $this->clean_die($filename, "Unable to create temporary file '" . $filename . "'");
-        $SNF_fh->print($mailtext) || $this->clean_die($filename, "Unable to write to temporary file '" .    $filename . "'");
-        $SNF_fh->close || $this->clean_die($filename, "Unable to close temporary file '" .    $filename . "'");
+        my $SNF_fh = IO::File->new( $filename, "w" ) || $self->clean_die($filename, "Unable to create temporary file '" . $filename . "'");
+        $SNF_fh->print($mailtext) || $self->clean_die($filename, "Unable to write to temporary file '" .    $filename . "'");
+        $SNF_fh->close || $self->clean_die($filename, "Unable to close temporary file '" .    $filename . "'");
 
         # Change permissions.
-        my $cnt = chmod(0666, $filename) || $this->clean_die($filename, "Unable to change permissions of temporary file '" .    $filename . "'");
+        my $cnt = chmod(0666, $filename) || $self->clean_die($filename, "Unable to change permissions of temporary file '" .    $filename . "'");
 
         # xci_scan connects to SNFServer with XCI to scan the message
-        $SNF_XCI_Return = $this->xci_scan( $filename, $message->{clientip} );
+        $SNF_XCI_Return = $self->xci_scan( $filename, $message->{clientip} );
 
         MailScanner::Log::DebugLog("$MODULE returned: succes = ".$SNF_XCI_Return->{success}.", code = ".$SNF_XCI_Return->{code}.", message = ".$SNF_XCI_Return->{message});
 
@@ -209,7 +209,7 @@ sub dispose
 
 sub xci_scan
 {
-    my ($this, $file, $ip ) = @_;
+    my ($self, $file, $ip ) = @_;
     return undef unless $file;
 
     my $ret_hash = {
@@ -220,17 +220,17 @@ sub xci_scan
         xml         => undef
     };
 
-    my $xci = $this->connect_socket(
+    my $xci = $self->connect_socket(
         $MessageSniffer::conf{'SFNHost'},
         $MessageSniffer::conf{'SFNPort'}
-    ) or return $this->err_hash("cannot connect to socket ($!)");
+    ) or return $self->err_hash("cannot connect to socket ($!)");
 
     if ($ip =~ m/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/) {
         $xci->print("<snf><xci><scanner><scan file='$file' xhdr='yes' ip='$ip'/></scanner></xci></snf>\n");
     } else {
         $xci->print("<snf><xci><scanner><scan file='$file' xhdr='yes'/></scanner></xci></snf>\n");
     }
-    my $rc = $ret_hash->{xml} = $this->socket_response($xci, $file);
+    my $rc = $ret_hash->{xml} = $self->socket_response($xci, $file);
     $xci->close;
 
     if ( $rc =~ /^<snf><xci><scanner><result code='(\d*)'>/ ) {
@@ -248,7 +248,7 @@ sub xci_scan
 
 sub connect_socket
 {
-    my ($this, $host, $port ) = @_;
+    my ($self, $host, $port ) = @_;
     return undef unless $host and $port;
     my $protoname = 'tcp';      # Proto should default to tcp but it's not expensive to specify
 
@@ -267,7 +267,7 @@ sub connect_socket
 # returns scalar string
 sub socket_response
 {
-    my ( $this, $rs, $file ) = @_;
+    my ( $self, $rs, $file ) = @_;
     my $buf = '';
 
     eval {
@@ -295,7 +295,7 @@ sub socket_response
 # return an error message for xci_scan
 sub err_hash
 {
-    my ( $this, $message ) = @_;
+    my ( $self, $message ) = @_;
 
     return {
         success => undef,
@@ -306,7 +306,7 @@ sub err_hash
 
 sub clean_die
 {
-     my ( $this, $file, $message ) = @_;
+     my ( $self, $file, $message ) = @_;
      unlink($file);
      MailScanner::Log::InfoLog("$MODULE failed with error ".$message);
      exit(1);

@@ -37,23 +37,23 @@ sub create($server,$port,$params)
     if ($port < 1 ) {
         $port = 25;
     }
-    my $this = {
+    my $self = {
         error_text => "",
         error_code => -1,
         server => $server,
         port => $port
     };
 
-    bless $this, "SMTPAuthenticator::SMTP";
-    return $this;
+    bless $self, "SMTPAuthenticator::SMTP";
+    return $self;
 }
 
-sub authenticate($this,$username,$password)
+sub authenticate($self,$username,$password)
 {
     my $smtp;
-    unless ($smtp = Net::SMTP_auth->new($this->{server}.":".$this->{port})) {
-        $this->{'error_code'} = 0;
-        $this->{'error_text'} = 'Cannot connect to server: '.$this->{server}.' on port '.$this->{port};
+    unless ($smtp = Net::SMTP_auth->new($self->{server}.":".$self->{port})) {
+        $self->{'error_code'} = 0;
+        $self->{'error_text'} = 'Cannot connect to server: '.$self->{server}.' on port '.$self->{port};
         return 0;
     }
 
@@ -64,13 +64,13 @@ sub authenticate($this,$username,$password)
     }
 
     if ($smtp->auth($auth_type, $username, $password)) {
-        $this->{'error_code'} = 0;
-        $this->{'error_text'} = '';
+        $self->{'error_code'} = 0;
+        $self->{'error_text'} = '';
         $smtp->quit();
         return 1;
     }
-    $this->{'error_code'} = 1;
-    $this->{'error_text'} = 'Authentication failed';
+    $self->{'error_code'} = 1;
+    $self->{'error_text'} = 'Authentication failed';
     $smtp->quit();
     return 0;
 }

@@ -51,7 +51,7 @@ sub new($class,$daemon)
 {
     my $conf = ReadConfig::getInstance();
 
-    my $this = {
+    my $self = {
         'class' => $class,
         'daemon' => $daemon,
         'data' => undef,
@@ -62,63 +62,63 @@ sub new($class,$daemon)
         'template_database' => $conf->getOption('SRCDIR').'/lib/StatsDaemon/Backend/data/stat_template.sqlite'
     };
 
-    bless $this, $class;
+    bless $self, $class;
 
-    foreach my $option (keys %{ $this->{daemon} }) {
-        if (defined($this->{$option})) {
-            $this->{$option} = $this->{daemon}->{$option};
+    foreach my $option (keys %{ $self->{daemon} }) {
+        if (defined($self->{$option})) {
+            $self->{$option} = $self->{daemon}->{$option};
         }
     }
-    foreach my $o (split(/\s*,\s*/, $this->{history_avoid_keys})) {
-        push @{$this->{history_avoid_keys_a}}, $o;
+    foreach my $o (split(/\s*,\s*/, $self->{history_avoid_keys})) {
+        push @{$self->{history_avoid_keys_a}}, $o;
     }
-    if (! -d $this->{basepath}) {
-        mkpath($this->{basepath});
-        $this->doLog("base path created: ".$this->{basepath});
+    if (! -d $self->{basepath}) {
+        mkpath($self->{basepath});
+        $self->doLog("base path created: ".$self->{basepath});
     }
-    $this->doLog("backend loaded", 'statsdaemon');
+    $self->doLog("backend loaded", 'statsdaemon');
 
-    $this->{data} = $StatsDaemon::data_;
-    return $this;
+    $self->{data} = $StatsDaemon::data_;
+    return $self;
 }
 
-sub threadInit($this)
+sub threadInit($self)
 {
-    $this->doLog("backend thread initialization", 'statsdaemon');
+    $self->doLog("backend thread initialization", 'statsdaemon');
 }
 
-sub accessFlatElement($this,$element)
+sub accessFlatElement($self,$element)
 {
     my $value = 0;
 
-    my ($path, $file, $base, $el_key) = $this->getPathFileBaseAndKeyFromElement($element);
+    my ($path, $file, $base, $el_key) = $self->getPathFileBaseAndKeyFromElement($element);
     if (! -f $file) {
         return $value;
     }
-    my $dbh = $this->connectToDB($file);
+    my $dbh = $self->connectToDB($file);
     if (defined($dbh)) {
         my $current_date = sprintf( '%.4d%.2d%.2d',
-                               $this->{daemon}->getCurrentDate()->{'year'},
-                               $this->{daemon}->getCurrentDate()->{'month'},
-                               $this->{daemon}->getCurrentDate()->{'day'});
+                               $self->{daemon}->getCurrentDate()->{'year'},
+                               $self->{daemon}->getCurrentDate()->{'month'},
+                               $self->{daemon}->getCurrentDate()->{'day'});
         my $query = 'SELECT value FROM stat WHERE date='.$current_date.' AND key=\''.$el_key.'\'';
         my $res = $dbh->selectrow_hashref($query);
-        $this->{daemon}->addStat( 'backend_read', 1 );
+        $self->{daemon}->addStat( 'backend_read', 1 );
         if (defined($res) && defined($res->{'value'})) {
             $value = $res->{'value'};
         }
         $dbh->disconnect;
     } else {
-        $this->doLog( "Cannot connect to database: " . $file, 'statsdaemon',
+        $self->doLog( "Cannot connect to database: " . $file, 'statsdaemon',
             'error' );
     }
     return $value;
 }
 
-sub stabilizeFlatElement($this,$element)
+sub stabilizeFlatElement($self,$element)
 {
-    my ($path, $file, $base, $el_key) = $this->getPathFileBaseAndKeyFromElement($element);
-    foreach my $unwantedkey ( @{ $this->{history_avoid_keys_a} } ) {
+    my ($path, $file, $base, $el_key) = $self->getPathFileBaseAndKeyFromElement($element);
+    foreach my $unwantedkey ( @{ $self->{history_avoid_keys_a} } ) {
         if ($el_key eq $unwantedkey) {
             return 'UNWANTEDKEY';
         }
@@ -128,65 +128,65 @@ sub stabilizeFlatElement($this,$element)
         mkpath($path);
     }
 
-    my $dbh = $this->connectToDB($file);
+    my $dbh = $self->connectToDB($file);
     if (defined($dbh)) {
         my $current_date = sprintf( '%.4d%.2d%.2d',
-                               $this->{daemon}->getCurrentDate()->{'year'},
-                               $this->{daemon}->getCurrentDate()->{'month'},
-                               $this->{daemon}->getCurrentDate()->{'day'});
+                               $self->{daemon}->getCurrentDate()->{'year'},
+                               $self->{daemon}->getCurrentDate()->{'month'},
+                               $self->{daemon}->getCurrentDate()->{'day'});
         my $query = 'REPLACE INTO stat (date,key,value) VALUES(?,?,?)';
-        my $nbrows =  $dbh->do($query, undef, $current_date, $el_key, $this->{daemon}->getElementValueByName($element, 'value'));
+        my $nbrows =  $dbh->do($query, undef, $current_date, $el_key, $self->{daemon}->getElementValueByName($element, 'value'));
         if (!defined($nbrows)) {
-            $this->doLog( "Could not update database: " . $query, 'statsdaemon', 'error' );
+            $self->doLog( "Could not update database: " . $query, 'statsdaemon', 'error' );
         }
         $dbh->disconnect;
-        $this->{daemon}->addStat( 'backend_write', 1 );
+        $self->{daemon}->addStat( 'backend_write', 1 );
     } else {
-        $this->doLog( "Cannot connect to database: " . $file, 'statsdaemon', 'error' );
+        $self->doLog( "Cannot connect to database: " . $file, 'statsdaemon', 'error' );
         return '_CANNOTCONNECTDB';
     }
 
     return 'STABILIZED';
 }
 
-sub getStats($this,$start,$stop,$what,$data)
+sub getStats($self,$start,$stop,$what,$data)
 {
     return 'OK';
 }
 
-sub announceMonthChange($this)
+sub announceMonthChange($self)
 {
     return;
 }
 
-sub doLog($this,$message,$given_set,$priority='info')
+sub doLog($self,$message,$given_set,$priority='info')
 {
-    my $msg = $this->{class}." ".$message;
-    if ($this->{daemon}) {
-        $this->{daemon}->doLog($msg, $given_set, $priority);
+    my $msg = $self->{class}." ".$message;
+    if ($self->{daemon}) {
+        $self->{daemon}->doLog($msg, $given_set, $priority);
     }
 }
 
-sub getPathFileBaseAndKeyFromElement($this,$element)
+sub getPathFileBaseAndKeyFromElement($self,$element)
 {
     my @els = split(/:/, $element);
     my $key = pop @els;
 
-    my $path = $this->{basepath}.'/'.join('/',@els);
-    my $file = $path.'/'.$this->{dbfilename};
+    my $path = $self->{basepath}.'/'.join('/',@els);
+    my $file = $path.'/'.$self->{dbfilename};
     my $base = join(':', @els);
     return (lc($path), lc($file), lc($base), lc($key));
 }
 
-sub connectToDB($this,$file)
+sub connectToDB($self,$file)
 {
     if (! -f $file) {
-        copy($this->{template_database}, $file);
+        copy($self->{template_database}, $file);
     }
 
     my $dbh = DBI->connect("dbi:SQLite:dbname=".$file,"","");
     if (!$dbh) {
-        $this->doLog( "Cannot create database: " . $file, 'statsdaemon',
+        $self->doLog( "Cannot create database: " . $file, 'statsdaemon',
             'error' );
         return undef;
     }

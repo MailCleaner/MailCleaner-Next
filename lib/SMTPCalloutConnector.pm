@@ -55,39 +55,39 @@ sub create($domainname)
         return;
     }
 
-    my $this = {
+    my $self = {
         'domain' => $domain,
         'last_message' => $last_message,
         'useable' => $useable,
         'default_on_error' => 1 ## we accept in case of any failure, to avoid false positives
     };
 
-    bless $this, "SMTPCalloutConnector";
-    return $this;
+    bless $self, "SMTPCalloutConnector";
+    return $self;
 }
 
-sub verify($this,$address)
+sub verify($self,$address)
 {
-    if (! $this->{useable}) {
-        return $this->{default_on_error};
+    if (! $self->{useable}) {
+        return $self->{default_on_error};
     }
     if (!defined($address) || $address !~ m/@/) {
-        $this->{last_message} = 'the address to check is invalid';
-        return $this->{default_on_error};
+        $self->{last_message} = 'the address to check is invalid';
+        return $self->{default_on_error};
     }
-    my $type = $this->{domain}->getPref('extcallout_type');
+    my $type = $self->{domain}->getPref('extcallout_type');
     if (!defined($type) || $type eq '' || $type eq 'NOTFOUND') {
-        $this->{last_message} = 'no external callout type defined';
-        return $this->{default_on_error};
+        $self->{last_message} = 'no external callout type defined';
+        return $self->{default_on_error};
     }
     my $class = "SMTPCalloutConnector::".ucfirst($type);
     if (! eval "require $class") {
-        $this->{last_message} = 'define external callout type does not exists';
-        return $this->{default_on_error};
+        $self->{last_message} = 'define external callout type does not exists';
+        return $self->{default_on_error};
     }
 
     my @callout_params = ();
-    my $params = $this->{domain}->getPref('extcallout_param');
+    my $params = $self->{domain}->getPref('extcallout_param');
     foreach my $p (split /:/, $params) {
         if ($p eq 'NOTFOUND') {
             next;
@@ -100,16 +100,16 @@ sub verify($this,$address)
 
     if ($connector->isUseable()) {
         my $res = $connector->verify($address);
-        $this->{last_message} = $connector->lastMessage();
+        $self->{last_message} = $connector->lastMessage();
         return $res;
     }
-    $this->{last_message} = $connector->lastMessage();
-    return $this->{default_on_error};
+    $self->{last_message} = $connector->lastMessage();
+    return $self->{default_on_error};
 }
 
-sub lastMessage($this)
+sub lastMessage($self)
 {
-    my $msg = $this->{last_message};
+    my $msg = $self->{last_message};
     chomp($msg);
     return $msg;
 }

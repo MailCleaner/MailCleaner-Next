@@ -41,35 +41,35 @@ sub create($name)
 {
     my %prefs;
 
-    my $this = {
+    my $self = {
         name => $name,
         prefs => \%prefs,
     };
 
-    bless $this, "Domain";
-    return $this;
+    bless $self, "Domain";
+    return $self;
 }
 
-sub getPref($this,$pref,$default)
+sub getPref($self,$pref,$default)
 {
-    if (!defined($this->{prefs}) || !defined($this->{prefs}{$pref})) {
+    if (!defined($self->{prefs}) || !defined($self->{prefs}{$pref})) {
 
         my $prefclient = PrefClient->new();
         $prefclient->setTimeout(2);
-        my $dpref = $prefclient->getPref($this->{name}, $pref);
+        my $dpref = $prefclient->getPref($self->{name}, $pref);
         if (defined($dpref) && $dpref !~ /^_/) {
             if ($pref eq 'support_email' && $dpref eq 'NOTFOUND') {
                 $dpref = '';
             }
-            $this->{prefs}->{$pref} = $dpref;
+            $self->{prefs}->{$pref} = $dpref;
             return $dpref;
         }
         ## fallback loading
-        $this->loadPrefs();
+        $self->loadPrefs();
     }
 
-    if (defined($this->{prefs}->{$pref})) {
-        return $this->{prefs}->{$pref};
+    if (defined($self->{prefs}->{$pref})) {
+        return $self->{prefs}->{$pref};
     }
     if (defined($default)) {
         return $default;
@@ -77,12 +77,12 @@ sub getPref($this,$pref,$default)
     return "";
 }
 
-sub loadPrefs($this)
+sub loadPrefs($self)
 {
     my $conf = ReadConfig::getInstance();
-    my $preffile = $conf->getOption('VARDIR')."/spool/mailcleaner/prefs/".$this->{name}."/prefs.list";
+    my $preffile = $conf->getOption('VARDIR')."/spool/mailcleaner/prefs/".$self->{name}."/prefs.list";
 
-    my @dlist = ($this->{name}, '*', '_joker', '_global');
+    my @dlist = ($self->{name}, '*', '_joker', '_global');
 
     ## try to load from db
     require DB;
@@ -95,7 +95,7 @@ sub loadPrefs($this)
             %res = $db->getHashRow($query);
             if ( %res && $res{id} ) {
                 foreach my $p (keys %res) {
-                    $this->{prefs}->{$p} = $res{$p};
+                    $self->{prefs}->{$p} = $res{$p};
                 }
                 return 1;
             }
@@ -119,13 +119,13 @@ sub loadPrefs($this)
     }
     while (<$PREFFILE>) {
         if (/^(\S+)\s+(.*)$/) {
-            $this->{prefs}->{$1} = $2;
+            $self->{prefs}->{$1} = $2;
         }
     }
     close $PREFFILE;
 }
 
-sub dumpPrefs($this,$slave_db=0)
+sub dumpPrefs($self,$slave_db=0)
 {
     require DB;
 
@@ -136,14 +136,14 @@ sub dumpPrefs($this,$slave_db=0)
         p.spam_tag, p.language, p.report_template, p.support_email, p.delivery_type,
         p.enable_whitelists, p.enable_warnlists, p.enable_blacklists, p.notice_wwlists_hit,
         p.warnhit_template FROM domain d, domain_pref p WHERE d.prefs=p.id AND d.name='".
-        $this->{name}."'";
+        $self->{name}."'";
 
     my %res = $slave_db->getHashRow($query);
 
-    $this->dumpPrefsFromRow(\%res);
+    $self->dumpPrefsFromRow(\%res);
 }
 
-sub dumpPrefsFromRow($this,$row)
+sub dumpPrefsFromRow($self,$row)
 {
     my %res = %{$row};
 
@@ -151,7 +151,7 @@ sub dumpPrefsFromRow($this,$row)
         print "CANNOTFINDPREFS";
     }
     my $conf = ReadConfig::getInstance();
-    my $prefdir = $conf->getOption('VARDIR')."/spool/mailcleaner/prefs/".$this->{name};
+    my $prefdir = $conf->getOption('VARDIR')."/spool/mailcleaner/prefs/".$self->{name};
     my $preffile = $prefdir."/prefs.list";
 
     my $mcuid = getpwnam('mailcleaner');
@@ -185,20 +185,20 @@ sub dumpPrefsFromRow($this,$row)
     chown $mcuid, $mcuid, $preffile;
 
     ## dump ldap callout file
-    if ($this->getPref('adcheck') eq 'true') {
+    if ($self->getPref('adcheck') eq 'true') {
 
         my $syspref = SystemPref::getInstance();
         my $conf = ReadConfig::getInstance();
         my $ldapserver = $syspref->getPref('ad_server');
         my ($ad_basedn, $ad_binddn, $ad_pass) = split(':', $syspref->getPref('ad_param'));
 
-        if ($this->getPref('ldapcallout') ne 'NOTFOUND' && $this->getPref('ldapcallout') != 0) {
+        if ($self->getPref('ldapcallout') ne 'NOTFOUND' && $self->getPref('ldapcallout') != 0) {
             print "specific ldap config\n";
         }
 
         my $template = ConfigTemplate::create(
             "etc/exim/ldapcallout_template",
-            $conf->getOption('VARDIR')."/spool/mailcleaner/callout/".$this->getPref('name').".ldapcallout"
+            $conf->getOption('VARDIR')."/spool/mailcleaner/callout/".$self->getPref('name').".ldapcallout"
         );
 
         my %rep;
@@ -207,8 +207,8 @@ sub dumpPrefsFromRow($this,$row)
         $rep{'__AD_SERVERS__'} = $ldapserver;
         $rep{'__AD_BASEDN__'} = $ad_basedn;
 
-        my $specserver = $this->getPref('ldapcalloutserver');
-        my $specparams = $this->getPref('ldapcalloutparam');
+        my $specserver = $self->getPref('ldapcalloutserver');
+        my $specparams = $self->getPref('ldapcalloutparam');
         if ($specserver ne '') {
             $rep{'__AD_SERVERS__'} = $specserver;
         }
@@ -224,7 +224,7 @@ sub dumpPrefsFromRow($this,$row)
     }
 }
 
-sub dumpLocalAddresses($this,$slave_db=0)
+sub dumpLocalAddresses($self,$slave_db=0)
 {
     my $mcuid = getpwnam('mailcleaner');
     require DB;
@@ -234,9 +234,9 @@ sub dumpLocalAddresses($this,$slave_db=0)
     if (!$slave_db) {
         $slave_db = DB::connect('slave', 'mc_config');
     }
-    my $query = "SELECT e.address FROM email e WHERE e.address LIKE '%@".$this->{name}."'";
+    my $query = "SELECT e.address FROM email e WHERE e.address LIKE '%@".$self->{name}."'";
 
-    my $file = $conf->getOption('VARDIR')."/spool/mailcleaner/addresses/".$this->{name}.".addresslist";
+    my $file = $conf->getOption('VARDIR')."/spool/mailcleaner/addresses/".$self->{name}.".addresslist";
     if ( !open(my $OUTFILE, '>', $file) ) {
         if (-e $file) { ## in case we cannot write to file, try to remove it
             unlink($file);

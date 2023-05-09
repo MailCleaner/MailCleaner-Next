@@ -47,17 +47,17 @@ sub getInstance
 sub new
 {
     %config_options = readConfig();
-    my $this = {
+    my $self = {
         configs => \%config_options
     };
 
-    return bless $this, "ReadConfig";
+    return bless $self, "ReadConfig";
 }
 
-sub getOption($this,$o)
+sub getOption($self,$o)
 {
-    if (exists($this->{configs}->{$o})) {
-        return $this->{configs}->{$o};
+    if (exists($self->{configs}->{$o})) {
+        return $self->{configs}->{$o};
     }
     return "";
 }

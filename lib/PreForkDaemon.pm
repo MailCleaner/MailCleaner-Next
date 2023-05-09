@@ -56,7 +56,7 @@ sub create($class,$daemonname,$conffilepath,$spec_thish)
     my $prefork = 5;
     my $debug = 0;
 
-    my $this = {
+    my $self = {
         name => $daemonname,
         server => '',
         pidfile => $pidfile,
@@ -74,11 +74,11 @@ sub create($class,$daemonname,$conffilepath,$spec_thish)
         finishedforked => 0,
         interval => 10
     };
-    $this->{shared} = {};
+    $self->{shared} = {};
 
     # add specific options of child object
     foreach my $sk (keys %spec_this) {
-        $this->{$sk} = $spec_this{$sk};
+        $self->{$sk} = $spec_this{$sk};
     }
 
     # replace with configuration file values
@@ -87,24 +87,24 @@ sub create($class,$daemonname,$conffilepath,$spec_thish)
             chomp;
             next if /^\#/;
             if (/^(\S+)\s*\=\s*(.*)$/) {
-                $this->{$1} = $2;
+                $self->{$1} = $2;
             }
         }
         close $CONFFILE;
     }
 
-    bless $this, $class;
+    bless $self, $class;
 
-    $0 = $this->{name};
-    return $this;
+    $0 = $self->{name};
+    return $self;
 }
 
-sub createShared($this)
+sub createShared($self)
 {
-    if ($this->{needshared}) {
+    if ($self->{needshared}) {
 
         ## first, clear shared
-        $this->clearSystemShared();
+        $self->clearSystemShared();
 
         my %options = (
              create     => 'yes',
@@ -113,13 +113,13 @@ sub createShared($this)
              destroy    => 0
         );
 
-        my $glue = $this->{glue};
+        my $glue = $self->{glue};
         my %sharedhash;
         # set shared memory
         tie %sharedhash, 'IPC::Shareable', $glue, { %options } or die "server: tie failed\n";
-        $this->{shared} = \%sharedhash;
-        $this->initShared(\%sharedhash);
-        $this->{sharedcreated} = 1;
+        $self->{shared} = \%sharedhash;
+        $self->initShared(\%sharedhash);
+        $self->{sharedcreated} = 1;
     }
     return 1;
 }
@@ -129,7 +129,7 @@ my %children = ();  # keys are current child process IDs
 my $children = 0;   # current number of children
 my %shared;
 
-sub REAPER($this)
+sub REAPER($self)
 {
     $SIG{CHLD} = \&REAPER;
     my $pid = wait;
@@ -137,43 +137,43 @@ sub REAPER($this)
     delete $children{$pid};
 }
 
-sub HUNTSMAN($this)
+sub HUNTSMAN($self)
 {
     local($SIG{CHLD}) = 'IGNORE';
 
-    while (! $this->{finishedforked}) {
-        $this->logMessage('Not yet finished forking...');
+    while (! $self->{finishedforked}) {
+        $self->logMessage('Not yet finished forking...');
         sleep 2;
     }
 
     for my $pid (keys %children) {
         kill 'INT', $pid;
-        $this->logMessage("Child $pid shut down");
+        $self->logMessage("Child $pid shut down");
     }
 
-    if ($this->{clearshared} > 0) {
+    if ($self->{clearshared} > 0) {
         IPC::Shareable->clean_up_all;
     }
-    $this->logMessage('Daemon shut down');
+    $self->logMessage('Daemon shut down');
     exit;
 }
 
-sub logMessage($this,$message)
+sub logMessage($self,$message)
 {
-    $this->doLog($message);
+    $self->doLog($message);
 }
 
-sub logDebug($this,$message)
+sub logDebug($self,$message)
 {
-    $this->doLog($message) if ($this->{debug});
+    $self->doLog($message) if ($self->{debug});
 }
 
-sub doLog($this,$message)
+sub doLog($self,$message)
 {
     my $LOGGERLOG;
-    open($LOGGERLOG, '>>', $this->{logfile});
+    open($LOGGERLOG, '>>', $self->{logfile});
     if ( !defined(fileno($LOGGERLOG))) {
-        open($LOGGERLOG, '>>', "/tmp/".$this->{logfile});
+        open($LOGGERLOG, '>>', "/tmp/".$self->{logfile});
         $| = 1;
     }
     my $date=`date "+%Y-%m-%d %H:%M:%S"`;
@@ -182,51 +182,51 @@ sub doLog($this,$message)
     close $LOGGERLOG;
 }
 
-sub initDaemon($this)
+sub initDaemon($self)
 {
-    $this->logMessage('Initializing Daemon');
+    $self->logMessage('Initializing Daemon');
     # first daemonize
     my $pid = fork;
     if ($pid) {
-        my $cmd = "echo $pid > ".$this->{pidfile};
+        my $cmd = "echo $pid > ".$self->{pidfile};
         `$cmd`;
     }
     exit if $pid;
     die "Couldn't fork: $!" unless defined($pid);
-    $this->logMessage('Deamonized');
+    $self->logMessage('Deamonized');
 
     ## preForkHook
-    $this->preForkHook();
+    $self->preForkHook();
 
     # and then fork children
-    $this->forkChildren();
+    $self->forkChildren();
 
     return 0;
 }
 
-sub forkChildren($this)
+sub forkChildren($self)
 {
     # Fork off our children.
-    for (1 .. $this->{prefork}) {
-         $this->makeNewChild();
-         sleep $this->{interval};
+    for (1 .. $self->{prefork}) {
+         $self->makeNewChild();
+         sleep $self->{interval};
     }
 
     # Install signal handlers.
-    $SIG{CHLD} = sub { $this->REAPER(); };
-    $SIG{INT}  = $SIG{TERM} = sub { $this->HUNTSMAN(); };
+    $SIG{CHLD} = sub { $self->REAPER(); };
+    $SIG{INT}  = $SIG{TERM} = sub { $self->HUNTSMAN(); };
 
-    $this->{finishedforked} = 1;
+    $self->{finishedforked} = 1;
     # And maintain the population.
     while (1) {
         sleep;    # wait for a signal (i.e., child's death)
-        for (my $i = $children; $i < $this->{prefork}; $i++) {
-            $this->makeNewChild(); # top up the child pool
+        for (my $i = $children; $i < $self->{prefork}; $i++) {
+            $self->makeNewChild(); # top up the child pool
         }
     }
 }
 
-sub makeNewChild($this)
+sub makeNewChild($self)
 {
     my $pid;
     my $sigset;
@@ -251,23 +251,23 @@ sub makeNewChild($this)
         sigprocmask(SIG_UNBLOCK, $sigset) or die "Can't unblock SIGINT for fork: $!\n";
 
         # get shared memory
-        if ($this->{needshared} && $this->{sharedcreated}) {
+        if ($self->{needshared} && $self->{sharedcreated}) {
             my %options = (
                 create      => 0,
                 exclusive   => 0,
                 mode        => 0644,
                 destroy     => 0,
             );
-            my $glue = $this->{glue};
+            my $glue = $self->{glue};
             # set shared memory
             tie %shared, 'IPC::Shareable', $glue, { %options }; # or die "server: tie failed\n";
-            $this->{shared} = \%shared;
+            $self->{shared} = \%shared;
         }
 
-        $SIG{ALRM} = sub { $this->exitChild(); };
+        $SIG{ALRM} = sub { $self->exitChild(); };
         alarm 10;
         ## mainLoopHook
-        $this->mainLoopHook();
+        $self->mainLoopHook();
 
         # tidy up gracefully and finish
 
@@ -278,43 +278,43 @@ sub makeNewChild($this)
     }
 }
 
-sub clearSystemShared($this)
+sub clearSystemShared($self)
 {
-    my $cmd = "ipcrm -M ".$this->{gluevalue};
+    my $cmd = "ipcrm -M ".$self->{gluevalue};
     `$cmd 2>&1 > /dev/null`;
-    $cmd = "ipcrm -S ".$this->{gluevalue};
+    $cmd = "ipcrm -S ".$self->{gluevalue};
     `$cmd 2>&1 > /dev/null`;
 
     sleep 2;
 }
 
-sub preForkHook($this)
+sub preForkHook($self)
 {
-    $this->logMessage('No preForkHook redefined, using default one...');
+    $self->logMessage('No preForkHook redefined, using default one...');
     return 1;
 }
 
 
-sub mainLoopHook($this)
+sub mainLoopHook($self)
 {
     while(1) {
         sleep 5;
-        $this->logMessage('No mainLoopHook redefined, waiting in default loop...');
+        $self->logMessage('No mainLoopHook redefined, waiting in default loop...');
     }
     return 1;
 }
 
-sub exit($this)
+sub exit($self)
 {
-     $this->logMessage('Exit called');
-     $this->logMessage('...');
+     $self->logMessage('Exit called');
+     $self->logMessage('...');
 
-     my $ppid = `cat $this->{pidfile}`;
+     my $ppid = `cat $self->{pidfile}`;
      kill 'INT', $ppid;
      return 1;
 }
 
-sub exitChild($this)
+sub exitChild($self)
 {
     return;
 }

@@ -92,7 +92,7 @@ sub create
         $path = $conf->getOption('SRCDIR')."/templates/$directory/default/$lang/$filename";
     }
 
-    my $this = {
+    my $self = {
         path => $path,
         to => $to,
         from => $from,
@@ -106,26 +106,26 @@ sub create
         %attachedpicts => ()
     };
 
-    bless $this, "MailTemplate";
+    bless $self, "MailTemplate";
 
     # first read main text part (also included in html version)
-    $this->preParseTemplate($path.".txt");
-    $this->{headers}->{Subject} =~ s/\?\?ADDRESS/$to/;
+    $self->preParseTemplate($path.".txt");
+    $self->{headers}->{Subject} =~ s/\?\?ADDRESS/$to/;
     # then parse other parte if needed
     if ($type eq 'html' && -d $path."_parts") {
         if ( opendir(my $DIR, $path."_parts")) {
             while (defined(my $file = readdir($DIR))) {
                 chomp($file);
                 next if ($file !~ /\.(txt|html)$/);
-                $this->preParseTemplate($path."_parts/".$file);
+                $self->preParseTemplate($path."_parts/".$file);
             }
         close($DIR);
         }
     } else {
-        $this->{type} = 'text';
+        $self->{type} = 'text';
     }
 
-    return $this;
+    return $self;
 }
 
 ###
@@ -133,7 +133,7 @@ sub create
 # @param     file    string        filename to preparse
 # @return                boolean     true on success, false on failure
 ###
-sub preParseTemplate($this,$file)
+sub preParseTemplate($self,$file)
 {
     my $in_headers = 1;
     my $in_template = "";
@@ -142,7 +142,7 @@ sub preParseTemplate($this,$file)
         my $line = $_;
         if ($in_headers) {
             if ($line =~ /^(\S+)\:\ (.*)$/) {
-                $this->{headers}{$1} = $2;
+                $self->{headers}{$1} = $2;
                 next;
             } else {
                 $in_headers = 0;
@@ -152,12 +152,12 @@ sub preParseTemplate($this,$file)
         }
 
         if ($line =~ /__DEFAULT__ ([A-Z0-9]+) (.*)/) {
-            $this->{values}{$1} = $2;
+            $self->{values}{$1} = $2;
             next;
         }
         if ($line =~ /\?\?START\_([A-Z0-9]+)/ ||    $line =~ /\_\_TMPL\_([A-Z0-9]+)\_START\_\_/) {
             $in_template = $1;
-            $this->{subtemplates}{$in_template} = "";
+            $self->{subtemplates}{$in_template} = "";
             next;
         }
         if ($line =~ /\?\?END\_([A-Z0-9]+)/ ||    $line =~ /\_\_TMPL\_([A-Z0-9]+)\_STOP\_\_/) {
@@ -165,7 +165,7 @@ sub preParseTemplate($this,$file)
             next;
         }
         if ($in_template !~ /^$/) {
-            $this->{subtemplates}{$in_template} .= $line;
+            $self->{subtemplates}{$in_template} .= $line;
             next;
         }
     }
@@ -178,10 +178,10 @@ sub preParseTemplate($this,$file)
 # @param    $name   string    name of the sub template
 # @return           string    value of the sub template
 ###
-sub getSubTemplate($this,$name)
+sub getSubTemplate($self,$name)
 {
-    if (defined($this->{subtemplates}{$name})) {
-        return $this->{subtemplates}{$name};
+    if (defined($self->{subtemplates}{$name})) {
+        return $self->{subtemplates}{$name};
     }
     return "";
 }
@@ -191,31 +191,31 @@ sub getSubTemplate($this,$name)
 # @param    replace array_h    handle of array of rplacements with tag as keys
 # @return           boolean    true on success, false on failure
 ###
-sub setReplacements($this,$replace_h)
+sub setReplacements($self,$replace_h)
 {
     my %replace = %{$replace_h};
 
     foreach my $tag (keys %replace) {
-        $this->{replacements}{$tag} = $replace{$tag};
+        $self->{replacements}{$tag} = $replace{$tag};
     }
     return 1;
 }
 
-sub setDestination($this,$destination)
+sub setDestination($self,$destination)
 {
-    $this->{to} = $destination;
+    $self->{to} = $destination;
     return 1;
 }
 
-sub setLanguage($this,$lang)
+sub setLanguage($self,$lang)
 {
-    $this->{language} = $lang;
+    $self->{language} = $lang;
     return 1;
 }
 
-sub addAttachement($this,$type,$parth)
+sub addAttachement($self,$type,$parth)
 {
-    $this->{sup_part} = $$parth;
+    $self->{sup_part} = $$parth;
     return 1;
 }
 
@@ -224,9 +224,9 @@ sub addAttachement($this,$type,$parth)
 # @param    destination if set, will override the default destination address
 # @return   boolean     true on success, false on failure
 ###
-sub send($this,$dest,$retries=1)
+sub send($self,$dest,$retries=1)
 {
-    my $to = $this->{to};
+    my $to = $self->{to};
     if (defined($dest) && $dest =~ /^\S+\@\S+$/) {
         $to = $dest;
     }
@@ -235,18 +235,18 @@ sub send($this,$dest,$retries=1)
 
     ## first add the main text part
     my $subject = "";
-    if (defined($this->{headers}{Subject})) {
-        $subject = $this->{headers}{Subject};
+    if (defined($self->{headers}{Subject})) {
+        $subject = $self->{headers}{Subject};
     }
-    my $main_text_part = $this->getMainTextPart();
-    my $from = $this->{from};
+    my $main_text_part = $self->getMainTextPart();
+    my $from = $self->{from};
     my $mime_msg;
     my $txt = "";
     my %headers;
 
-    if ($this->{type} eq 'text') {
+    if ($self->{type} eq 'text') {
 
-        if ($this->{sup_part} eq "") {
+        if ($self->{sup_part} eq "") {
 
             $txt = $main_text_part;
             $txt = encode("utf8", $txt);
@@ -271,11 +271,11 @@ sub send($this,$dest,$retries=1)
                 Charset => 'utf-8',
                 Encoding        => "quoted-printable",
             ) or return 0;
-            if (! $this->{sup_part} eq "") {
+            if (! $self->{sup_part} eq "") {
                 $mime_msg->attach(
                     Type => 'application/text',
                     Filename => 'message.txt',
-                    Data => $this->{sup_part}
+                    Data => $self->{sup_part}
                 );
             }
             $mime_msg->replace('X-Mailer', 'MailCleaner');
@@ -289,18 +289,18 @@ sub send($this,$dest,$retries=1)
              Type        =>'multipart/related',
         ) or return 0;
 
-        my @parts = $this->getUseableParts();
+        my @parts = $self->getUseableParts();
         foreach my $part (@parts) {
             if ($part =~ /\.(txt|text)$/i) {
                 ## add text part
-                my $body = $this->parseTemplate($this->{path}."_parts/$part");
+                my $body = $self->parseTemplate($self->{path}."_parts/$part");
                 $mime_msg->attach(
                     Type => 'TEXT',
                     Data => $body
                 );
             } elsif ($part =~ /\.(html|htm)$/i) {
                 ## add html part
-                my $body = $this->parseTemplate($this->{path}."_parts/$part");
+                my $body = $self->parseTemplate($self->{path}."_parts/$part");
                 $mime_msg->attach(
                     Type => 'text/html',
                     Charset => 'utf-8',
@@ -309,37 +309,37 @@ sub send($this,$dest,$retries=1)
                 );
             } elsif ($part =~ /\.gif$/i) {
                 ## add gif part
-                if (defined($this->{attachedpicts}{$part})) {
+                if (defined($self->{attachedpicts}{$part})) {
                     $mime_msg->attach(
                         Type => 'image/gif',
                         Id     => '<'.$part.'>',
-                        Path => $this->{path}."_parts/$part"
+                        Path => $self->{path}."_parts/$part"
                     );
                 }
             } elsif ($part =~ /\.(jpg|jpeg)$/i) {
                 ## add jpeg part
-                if (defined($this->{attachedpicts}{$part})) {
+                if (defined($self->{attachedpicts}{$part})) {
                     $mime_msg->attach(
                         Type => 'image/jpeg',
                         Id     => '<'.$part.'>',
-                        Path => $this->{path}."_parts/$part"
+                        Path => $self->{path}."_parts/$part"
                     );
                 }
             } elsif ($part =~ /\.png$/i) {
                 # add png part
-                if (defined($this->{attachedpicts}{$part})) {
+                if (defined($self->{attachedpicts}{$part})) {
                     $mime_msg->attach(
                         Type => 'image/png',
                         Id     => '<'.$part.'>',
-                        Path => $this->{path}."_parts/$part"
+                        Path => $self->{path}."_parts/$part"
                     );
                 }
             }
-            if (! $this->{sup_part} eq "") {
+            if (! $self->{sup_part} eq "") {
                 $mime_msg->attach(
                     Type => 'application/text',
                     Filename => 'message.txt',
-                    Data => $this->{sup_part}
+                    Data => $self->{sup_part}
                 );
             }
         }
@@ -397,26 +397,26 @@ sub send($this,$dest,$retries=1)
 # get the main text part body
 # @return    string    part body
 ###
-sub getMainTextPart($this)
+sub getMainTextPart($self)
 {
-    my $file = $this->{path}.".txt";
-    return $this->parseTemplate($file);
+    my $file = $self->{path}.".txt";
+    return $self->parseTemplate($file);
 }
 
-sub getDefaultValue($this,$value)
+sub getDefaultValue($self,$value)
 {
-    return $this->{values}{$value} || "";
+    return $self->{values}{$value} || "";
 }
 
 ###
 # get the parts
 # @return     array     array of useable parts files
 ###
-sub getUseableParts($this)
+sub getUseableParts($self)
 {
     my @ret = ();
     # first add html parts
-    if ( opendir(my $DIR, $this->{path}."_parts")) {
+    if ( opendir(my $DIR, $self->{path}."_parts")) {
         while (defined(my $file = readdir($DIR))) {
             chomp($file);
             next if ($file !~ /\.(htm|html)$/i);
@@ -425,7 +425,7 @@ sub getUseableParts($this)
         close($DIR);
     }
     # next add text part
-    if ( opendir(my $DIR, $this->{path}."_parts")) {
+    if ( opendir(my $DIR, $self->{path}."_parts")) {
         while (defined(my $file = readdir($DIR))) {
             chomp($file);
             next if ($file !~ /\.(txt|text)$/i);
@@ -434,7 +434,7 @@ sub getUseableParts($this)
         close($DIR);
     }
     # finally add pictures
-    if ( opendir(my $DIR, $this->{path}."_parts")) {
+    if ( opendir(my $DIR, $self->{path}."_parts")) {
         while (defined(my $file = readdir($DIR))) {
             chomp($file);
             next if ($file !~ /\.(gif|jpg|jpeg|png)$/i);
@@ -450,7 +450,7 @@ sub getUseableParts($this)
 # @param    $template    string     template file to use
 # @return                string     body text
 ###
-sub parseTemplate($this,$template)
+sub parseTemplate($self,$template)
 {
     return "" if (!open(my $FILE, '<', $template));
 
@@ -499,17 +499,17 @@ sub parseTemplate($this,$template)
         '__MAILCLEANERURL__' => $baseurl,
         '__FORCEURL__' => $baseurl,
         '__STOREID__' => $conf->getOption('HOSTID'),
-        '__ADDRESS__' => $this->{to},
-        '__LANGUAGE__' => $this->{language},
+        '__ADDRESS__' => $self->{to},
+        '__LANGUAGE__' => $self->{language},
         '__SPAMNBDAYS__' => $sys->getPref('days_to_keep_spams'),
     );
 
     ## replace given tags
-    foreach my $tag (keys %{$this->{replacements}}) {
-        $ret =~ s/$tag/$this->{replacements}{$tag}/g;
+    foreach my $tag (keys %{$self->{replacements}}) {
+        $ret =~ s/$tag/$self->{replacements}{$tag}/g;
         if ($tag =~ /\_\_(\S+)\_\_/) {
             my $tag2 = "\\?\\?$1";
-            $ret =~ s/$tag2/$this->{replacements}{$tag}/g;
+            $ret =~ s/$tag2/$self->{replacements}{$tag}/g;
         }
     }
 
@@ -525,7 +525,7 @@ sub parseTemplate($this,$template)
     foreach my $rline (@lines) {
         while ($rline =~ /cid:(\S+.(jpe?g|gif|png))(.*)/ ) {
              $rline = $3;
-             $this->{attachedpicts}{$1} = 1;
+             $self->{attachedpicts}{$1} = 1;
         }
     }
 

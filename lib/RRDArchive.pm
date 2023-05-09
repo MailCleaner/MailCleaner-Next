@@ -64,7 +64,7 @@ sub new($id,$name,$type,$hosts_status)
         mkpath($spooldir);
     }
 
-    my $this = {
+    my $self = {
         'id' => $id,
         'name' => $name,
         'type' => $type,
@@ -78,28 +78,28 @@ sub new($id,$name,$type,$hosts_status)
         'community' => $community
     };
 
-    bless $this, "RRDArchive";
+    bless $self, "RRDArchive";
 
-    return $this;
+    return $self;
 }
 
-sub addElement($this,$element)
+sub addElement($self,$element)
 {
     $element->{'name'} =~ s/\s/_/g;
-    push @{$this->{'elements'}}, $element;
+    push @{$self->{'elements'}}, $element;
 }
 
-sub createDatabases($this)
+sub createDatabases($self)
 {
-    foreach my $h (@{$this->{'hosts'}}) {
-        my $dbfile = $this->{'spooldir'}."/".$h.".rrd";
-        push @{$this->{'databases'}}, {'host' => $h, 'rrd' => $this->createDatabase($dbfile)};
+    foreach my $h (@{$self->{'hosts'}}) {
+        my $dbfile = $self->{'spooldir'}."/".$h.".rrd";
+        push @{$self->{'databases'}}, {'host' => $h, 'rrd' => $self->createDatabase($dbfile)};
     }
-    my $gdbfile = $this->{'spooldir'}."/global.rrd";
-    $this->{'globaldatabase'} = $this->createDatabase($gdbfile);
+    my $gdbfile = $self->{'spooldir'}."/global.rrd";
+    $self->{'globaldatabase'} = $self->createDatabase($gdbfile);
 }
 
-sub createDatabase($this,$file)
+sub createDatabase($self,$file)
 {
     my $rrd = RRDTool::OO->new( file => $file );
     if ( -f $file) {
@@ -108,7 +108,7 @@ sub createDatabase($this,$file)
 
     ## add elements
     my @options;
-    foreach my $element (@{$this->{elements}}) {
+    foreach my $element (@{$self->{elements}}) {
         @options = (@options,
             data_source => {
                 name => $element->{'name'},
@@ -215,7 +215,7 @@ sub createDatabase($this,$file)
         @options
     );
 
-    foreach my $element (@{$this->{elements}}) {
+    foreach my $element (@{$self->{elements}}) {
 
         if ($element->{'type'} eq 'COUNTER' || $element->{'type'} eq 'DERIVE') {
             eval {
@@ -228,40 +228,40 @@ sub createDatabase($this,$file)
     return $rrd;
 }
 
-sub collect($this,$dynamic)
+sub collect($self,$dynamic)
 {
-    if (!defined($this->{'globaldatabase'})) {
-        $this->createDatabases();
+    if (!defined($self->{'globaldatabase'})) {
+        $self->createDatabases();
     }
 
     if (keys %{$dynamic} < 1) {
-        $$dynamic = $this->getDynamicOids();
+        $$dynamic = $self->getDynamicOids();
     }
 
     my %globalvalues;
 
-        foreach my $db (@{$this->{databases}}) {
+        foreach my $db (@{$self->{databases}}) {
             my %values;
-            foreach my $element (@{$this->{elements}}) {
+            foreach my $element (@{$self->{elements}}) {
 
-            my $value = $this->getSNMPValue($db->{'host'}, $element->{'oid'}, $dynamic);
+            my $value = $self->getSNMPValue($db->{'host'}, $element->{'oid'}, $dynamic);
 
             $values{$element->{'name'}} = $value;
             $globalvalues{$element->{'name'}} += $value;
         }
         $db->{'rrd'}->update(values => {%values});
     }
-    $this->{'globaldatabase'}->update(values => {%globalvalues});
+    $self->{'globaldatabase'}->update(values => {%globalvalues});
 }
 
-sub getSNMPValue($this,$host,$oids,$dynamic)
+sub getSNMPValue($self,$host,$oids,$dynamic)
 {
     if (defined($host_failed{$host}) && $host_failed{$host} > 0) {
         print "Host '$host' is not available!\n";
         return 0;
     }
-    if (!defined($this->{snmp}->{$host})) {
-        $this->connectSNMP($host);
+    if (!defined($self->{snmp}->{$host})) {
+        $self->connectSNMP($host);
     }
 
     my $value;
@@ -283,8 +283,8 @@ sub getSNMPValue($this,$host,$oids,$dynamic)
         if (! defined $oid) {
                 return 0;
         }
-        my $result = $this->{snmp}->{$host}->get_request(-varbindlist => [$oid]);
-        my $error = $this->{snmp}->{$host}->error();
+        my $result = $self->{snmp}->{$host}->get_request(-varbindlist => [$oid]);
+        my $error = $self->{snmp}->{$host}->error();
         if (defined($error) && ! $error eq "") {
             print "Error found: $error\n";
             $host_failed{$host} = 1;
@@ -304,9 +304,9 @@ sub getSNMPValue($this,$host,$oids,$dynamic)
     return $value;
 }
 
-sub connectSNMP($this,$host)
+sub connectSNMP($self,$host)
 {
-    if (defined($this->{snmp}->{$host})) {
+    if (defined($self->{snmp}->{$host})) {
         return 1;
     }
 
@@ -315,7 +315,7 @@ sub connectSNMP($this,$host)
     }
     my ($session, $error) = Net::SNMP->session(
         -hostname => $host,
-        -community => $this->{'community'},
+        -community => $self->{'community'},
         -port => 161,
         -timeout => 5,
         -version => 2,
@@ -325,40 +325,40 @@ sub connectSNMP($this,$host)
         print "WARNING, CANNOT CONTACT SNMP HOST\n";
         return 0;
     }
-    $this->{snmp}->{$host} = $session;
+    $self->{snmp}->{$host} = $session;
     return 1;
 }
 
-sub getDynamicOids($this,$dynamic_oids)
+sub getDynamicOids($self,$dynamic_oids)
 {
-    foreach my $h (@{$this->{'hosts'}}) {
-        $this->getDynamicOidsForHost($h, $dynamic_oids);
+    foreach my $h (@{$self->{'hosts'}}) {
+        $self->getDynamicOidsForHost($h, $dynamic_oids);
     }
     return 1;
 }
 
-sub getDynamicOidsForHost($this,$host,$dynamic_oids)
+sub getDynamicOidsForHost($self,$host,$dynamic_oids)
 {
-    if (!defined($this->{snmp}->{$host})) {
-        $this->connectSNMP($host);
+    if (!defined($self->{snmp}->{$host})) {
+        $self->connectSNMP($host);
     }
 
     my %partitions = ('OS' => '/', 'DATA' => '/var');
     foreach my $part (keys %partitions) {
         ## first find out partition devices
-        my $part_index = $this->getIndexOf($host, 'UCD-SNMP-MIB::dskPath', $partitions{$part});
+        my $part_index = $self->getIndexOf($host, 'UCD-SNMP-MIB::dskPath', $partitions{$part});
         if (!defined $part_index) {
             next;
         }
         $dynamic_oids->{$host}->{$part.'_USAGE'} = $part_index;
-        my $part_device = $this->getValueOfOid($host, 'UCD-SNMP-MIB::dskDevice.'.$part_index);
+        my $part_device = $self->getValueOfOid($host, 'UCD-SNMP-MIB::dskDevice.'.$part_index);
         if (! defined $part_device) {
             next;
         }
         if ($part_device =~ m/^\/dev\/(\S+)/ ) {
             $dynamic_oids->{$host}->{$part.'_DEVICE'} = $1;
         }
-        my $ios_index = $this->getIndexOf($host, 'UCD-DISKIO-MIB::diskIODevice', $dynamic_oids->{$host}->{$part.'_DEVICE'});
+        my $ios_index = $self->getIndexOf($host, 'UCD-DISKIO-MIB::diskIODevice', $dynamic_oids->{$host}->{$part.'_DEVICE'});
         if (defined $ios_index) {
             $dynamic_oids->{$host}->{$part.'_IO'} = $ios_index;
         }
@@ -366,7 +366,7 @@ sub getDynamicOidsForHost($this,$host,$dynamic_oids)
 
     my %interfaces = ('IF' => 'eth\d+');
     foreach my $int (keys %interfaces) {
-        my $if_index = $this->getIndexOf($host, 'IF-MIB::ifDescr', $interfaces{$int});
+        my $if_index = $self->getIndexOf($host, 'IF-MIB::ifDescr', $interfaces{$int});
         if (defined $if_index) {
             $dynamic_oids->{$host}->{$int} = $if_index;
         }
@@ -375,10 +375,10 @@ sub getDynamicOidsForHost($this,$host,$dynamic_oids)
     return 1;
 }
 
-sub getIndexOf($this,$host,$givenbaseoid,$search)
+sub getIndexOf($self,$host,$givenbaseoid,$search)
 {
-    if (!defined($this->{snmp}->{$host})) {
-        $this->connectSNMP($host);
+    if (!defined($self->{snmp}->{$host})) {
+        $self->connectSNMP($host);
     }
 
     if (!defined $search) {
@@ -392,7 +392,7 @@ sub getIndexOf($this,$host,$givenbaseoid,$search)
     }
     my $nextoid = $baseoid;
     while (defined($nextoid) && Net::SNMP::oid_base_match($baseoid, $nextoid)) {
-        my $result = $this->{snmp}->{$host}->get_next_request(-varbindlist => [$nextoid]);
+        my $result = $self->{snmp}->{$host}->get_next_request(-varbindlist => [$nextoid]);
         if ($result) {
             foreach my $k (keys %{$result}) {
                 if ($search && $result->{$k} =~ m/^$search$/) {
@@ -403,21 +403,21 @@ sub getIndexOf($this,$host,$givenbaseoid,$search)
                 }
             }
         }
-        my @table = $this->{snmp}->{$host}->var_bind_names;
+        my @table = $self->{snmp}->{$host}->var_bind_names;
         $nextoid = $table[0];
     }
 }
 
-sub getValueOfOid($this,$host,$givenoid)
+sub getValueOfOid($self,$host,$givenoid)
 {
-    if (!defined($this->{snmp}->{$host})) {
-        $this->connectSNMP($host);
+    if (!defined($self->{snmp}->{$host})) {
+        $self->connectSNMP($host);
     }
     my $oid = SNMP::translateObj($givenoid);
     if (! defined $oid) {
         return undef;
     }
-    my $result = $this->{snmp}->{$host}->get_request(-varbindlist => [$oid]);
+    my $result = $self->{snmp}->{$host}->get_request(-varbindlist => [$oid]);
     if ($result && defined($result->{$oid})) {
         return $result->{$oid};
     }

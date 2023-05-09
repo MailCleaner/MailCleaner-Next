@@ -44,24 +44,24 @@ sub new($statfile,$reset)
     );
     my $rrd = RRD::Generic::create($statfile, \%things, $reset);
 
-    my $this = {
+    my $self = {
         statfile => $statfile,
         rrd => $rrd
     };
 
-    return bless $this, "RRD::Load";
+    return bless $self, "RRD::Load";
 }
 
-sub collect($this,$snmp)
+sub collect($self,$snmp)
 {
     my %things = (
         load => '1.3.6.1.4.1.2021.10.1.3.2'
     );
 
-    return RRD::Generic::collect($this->{rrd}, $snmp, \%things);
+    return RRD::Generic::collect($self->{rrd}, $snmp, \%things);
 }
 
-sub plot($this,$dir,$period,$leg)
+sub plot($self,$dir,$period,$leg)
 {
     my %things = (
         load => ['area', 'EB9C48', 'BA3614', 'Load', 'AVERAGE', '%10.2lf', ''],
@@ -69,7 +69,7 @@ sub plot($this,$dir,$period,$leg)
     my @order = ('load');
 
     my $legend = "\t\t     Last\t   Average\t\t  Max\\n";
-    return RRD::Generic::plot('load', $dir, $period, $leg, 'System Load', 0, 0, $this->{rrd}, \%things, \@order, $legend);
+    return RRD::Generic::plot('load', $dir, $period, $leg, 'System Load', 0, 0, $self->{rrd}, \%things, \@order, $legend);
 }
 
 1;
