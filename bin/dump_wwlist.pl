@@ -28,17 +28,26 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+my ($conf, $SRCDIR, $VARDIR);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR');
+    $VARDIR = $conf->getOption('VARDIR');
+    unshift(@INC, $SRCDIR."/lib");
 }
 
-require ReadConfig;
+use lib_utils qw( create_and_open );
+use File::Path qw( make_path );
+
 require DB;
 
-my $conf = ReadConfig::getInstance();
-my $op = $conf->getOption('SRCDIR');
 my $uid = getpwnam( 'mailcleaner' );
 my $gid = getgrnam( 'mailcleaner' );
 
@@ -49,13 +58,13 @@ if (!defined($what)) {
 my $to = "";
 my $filepath = $conf->getOption('VARDIR')."/spool/mailcleaner/prefs/";
 if ($what =~ /^\@([a-zA-Z0-9\.\_\-]+)$/) {
-  $to = $what;
-  $filepath .= $1."/_global/";
+    $to = $what;
+    $filepath .= $1."/_global/";
 } elsif ($what =~ /^([a-zA-Z0-9\.\_\-]+)\@([a-zA-Z0-9\.\_\-]+)/) {
-  $to = $what;
-  $filepath .= $2."/".$1."@".$2."/";
+    $to = $what;
+    $filepath .= $2."/".$1."@".$2."/";
 } else {
-  $filepath .= "_global/";
+    $filepath .= "_global/";
 }
 
 my $slave_db = DB::connect('slave', 'mc_config');
@@ -66,55 +75,32 @@ $slave_db->disconnect();
 print "DUMPSUCCESSFUL";
 exit 0;
 
-#####################################
-## dumpWWFiles
-
 sub dumpWWFiles($to,$filepath)
 {
+    my @types = ('warn', 'white');
 
-  my @types = ('warn', 'white');
+    foreach my $type (@types) {
+        my @list = $slave_db->getList("SELECT sender FROM wwlists WHERE
+            status=1 AND type='".$type."' AND recipient='".$to."'"
+        );
 
-  foreach my $type (@types) {
-    ## get list
-    my @list = $slave_db->getList("SELECT sender FROM wwlists WHERE
-                                               status=1 AND type='".$type."'
-                                               AND recipient='".$to."'");
+        my $file = $filepath."/".$type.".list";
+        if ( -f $file) {
+            unlink $file;
+        }
 
-    # first remove file if exists
-    my $file = $filepath."/".$type.".list";
-    if ( -f $file) {
-       unlink $file;
+        next unless (scalar(@list));
+
+        make_path($filepath, {'mode'=>'0710','user'=>'mailcleaner','group'=>'mailcleaner'});
+
+        my $WWFILE;
+        confess "Failed to open $file\n" unless ($WWFILE = ${create_and_open($file)});
+
+        foreach my $entry (@list) {
+            print $WWFILE "$entry\n";
+        }
+
+        close $WWFILE;
     }
-
-    # exit if list empty
-    if (!@list) {
-       next;
-    }
-
-    # create directory if needed
-    createDirs($filepath);
-
-    # and write the file down
-    if ( !open(my $WWFILE, '>', $file) ) {
-      return 0;
-    }
-
-    foreach my $entry (@list) {
-      print $WWFILE "$entry\n";
-    }
-
-    close $WWFILE;
-    chown 'mailcleaner', $file;
-  }
-  return 1;
-}
-
-#####################################
-## createDir
-
-sub createDirs($path)
-{
-  my $cmd = "mkdir -p $path";
-  my $res = `$cmd`;
-  chown chown $uid, $gid, $path;
+    return 1;
 }
