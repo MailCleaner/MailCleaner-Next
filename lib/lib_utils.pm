@@ -21,35 +21,47 @@
 #
 #   This module will just read the configuration file
 
+package lib_utils;
+
 use v5.36;
 use strict;
 use warnings;
 use utf8;
-
+use Carp qw(confess);
 use File::Path qw/make_path/;
+use File::Touch;
 
-sub is_into
+use Exporter qw(import);
+use base 'Exporter';
+our @EXPORT = qw(
+    is_into
+    slurp_file
+    create_lockfile
+    remove_lockfile
+    create_and_open
+    valid_rfc822_email
+);
+
+# TODO: this is just `grep`...?
+sub is_into($what, @list)
 {
-        my ($what, @list) = @_;
-
-        foreach my $c (@list) {
-                if ($c eq $what) {
-                        return(1);
-                }
+    foreach my $c (@list) {
+        if ($c eq $what) {
+            return(1);
         }
+    }
 
-        return(0);
+    return(0);
 }
-
 
 # Returns 0 if $file cannot be opened
 # (1, $file content) otherwise
-sub Slurp_file
+sub slurp_file($file)
 {
-    my ($file) = @_;
     my @contains = ();
 
-    if ( ! open(my $FILE, '<', $file) ) {
+    my $FILE;
+    if ( ! open($FILE, '<', $file) ) {
         return (0, @contains);
     }
 
@@ -60,87 +72,101 @@ sub Slurp_file
     return(1, @contains)
 }
 
-
-sub create_lock_file
+# TODO: why two similar functions?
+sub create_lock_file($fullpathname, $timeout, $process_name)
 {
-        my ($fullpathname, $timeout, $process_name) = @_;
+    my $FILE;
+    return 0 if ( ! open($FILE, '>', $fullpathname) );
+    print $FILE "$$\n";
+    print $FILE "$timeout\n$process_name\n" if ( defined($timeout) && defined($process_name) );
+    close $FILE;
 
-        return 0 if ( ! open(my $FILE, '>', $fullpathname) );
-        print $FILE "$$\n";
-        print $FILE "$timeout\n$process_name\n"          if ( defined($timeout) && defined($process_name) );
-        close $FILE;
-
-        return 1;
+    return 1;
 }
 
-sub create_lockfile
+sub create_lockfile($filename, $path="/var/mailcleaner/spool/tmp", $timeout=10, $process_name=$$)
 {
-        my ($filename, $path, $timeout, $process_name) = @_;
-        my $fullpathname;
+    if ( $path !~ /^\// ) {
+        $path = '/var/mailcleaner/spool/tmp/' . $path;
+    }
+    $path .= '/' if ($path  !~ /\/$/);
+    make_path($path, {mode => '0710'});
 
-        return 0 if ( ! defined($filename) );
+    my $fullpathname = $path . $filename;
 
-        # Creating full path for this file
-        if ( ! defined($path) ) {
-                $path = '/var/mailcleaner/spool/tmp/';
-        } elsif ( $path !~ /^\// ) {
-                $path = '/var/mailcleaner/spool/tmp/' . $path;
-        }
-
-        $path .= '/' if ($path  !~ /\/$/);
-        make_path($path, {mode => '0777'});
-
-        $fullpathname = $path . $filename;
-
-        # if the lock file is not already existing, we create it
-        if ( ! -e $fullpathname ) {
-                my $rc = create_lock_file($fullpathname, $timeout, $process_name);
-
-                return $rc;
-        # if it is already existing, we check if we can remove it
-        } else {
-                # Slurp fichier
-                my ($rc, $pid, $old_timeout, $old_process_name) = Slurp_file($fullpathname);
-                return 0 if ($rc == 0);
-
-                # If the file exists and there is no defined timeout, we cannot go
-                if ( ! defined ($old_timeout) ) {
-                        return 0;
-                }
-
-                # If we can remove the old lock file
-                if ( time - $old_timeout > 0) {
-			kill 'KILL', $pid;
-			unlink $fullpathname;
-
-			$rc = create_lock_file($fullpathname, $timeout, $process_name);
-                        return $rc;
-                } else {
-                        return 0;
-                }
-        }
-}
-
-sub remove_lockfile
-{
-        my ($filename, $path) = @_;
-        my $fullpathname;
-
-        return 0 if ( ! defined($filename) );
-
-        # Creating full path for this file
-        if ( ! defined($path) ) {
-                $path = '/var/mailcleaner/spool/tmp/';
-        } elsif ( $path !~ /^\// ) {
-                $path = '/var/mailcleaner/spool/tmp/' . $path;
-        }
-
-        $path .= '/' if ($path  !~ /\/$/);
-        $fullpathname = $path . $filename;
-
-        my $rc = unlink $fullpathname;
+    # if the lock file is not already existing, we create it
+    if ( ! -e $fullpathname ) {
+        my $rc = create_lock_file($fullpathname, $timeout, $process_name);
 
         return $rc;
+    # if it is already existing, we check if we can remove it
+    } else {
+        # slurp file
+        my ($rc, $pid, $old_timeout, $old_process_name) = slurp_file($fullpathname);
+        return 0 if ($rc == 0);
+
+        # If the file exists and there is no defined timeout, we cannot go
+        if ( ! defined ($old_timeout) ) {
+            return 0;
+        }
+
+        # If we can remove the old lock file
+        if ( time - $old_timeout > 0) {
+			      kill 'KILL', $pid;
+			      unlink $fullpathname;
+			      $rc = create_lock_file($fullpathname, $timeout, $process_name);
+            return $rc;
+        } else {
+            return 0;
+        }
+    }
+}
+
+sub remove_lockfile($filename, $path)
+{
+    my $fullpathname;
+
+    return 0 if ( ! defined($filename) );
+
+    # Creating full path for this file
+    if ( ! defined($path) ) {
+        $path = '/var/mailcleaner/spool/tmp/';
+    } elsif ( $path !~ /^\// ) {
+        $path = '/var/mailcleaner/spool/tmp/' . $path;
+    }
+
+    $path .= '/' if ($path  !~ /\/$/);
+    $fullpathname = $path . $filename;
+
+    my $rc = unlink $fullpathname;
+
+    return $rc;
+}
+
+sub create_and_open($file, $method=">", $chown='mailcleaner:mailcleaner', $chmod="0664")
+{
+    my ($uid, $gid) = split(/:/,$chown);
+    $uid = getpwnam( $uid );
+    $gid = getgrnam( $gid );
+    my ($path,$filename) = $file =~ m#(.*)/([^/]*)$#;
+    $path = getcwd().'/'.$path unless ($path =~ m#^/#);
+
+    if ( ! -d $path ) {
+        confess ("Failed to create $path\n") unless (make_path($path, {mode => $chmod, user => $uid, group => $gid}));
+    }
+    if ( -e $path.'/'.$filename ) {
+        if ( ! -w $path.'/'.$filename ) {
+            chmod($chmod, $path.'/'.$filename);
+        }
+    } else {
+        confess("Failed to create $path/$filename\n") unless touch("$path/$filename");
+    }
+    die("Failed to give ownership of $path/$filename to $uid:$gid\n") unless chown($uid, $gid, $path.'/'.$filename);
+    if (open (my $fh, $method, $path.'/'.$filename)) {
+        return \$fh;
+    } else {
+        confess("Failed to open $path/$filename for writing: $!\n");
+    }
 }
 
 # https://www.ex-parrot.com/~pdw/Mail-RFC822-Address.html

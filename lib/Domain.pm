@@ -114,7 +114,8 @@ sub loadPrefs($self)
     if (!$found) {
         return 0;
     }
-    if ( !open(my $PREFFILE, '<', $preffile) ) {
+    my $PREFFILE;
+    if ( !open($PREFFILE, '<', $preffile) ) {
         return 0;
     }
     while (<$PREFFILE>) {
@@ -169,7 +170,8 @@ sub dumpPrefsFromRow($self,$row)
         my $gid = getgrnam( 'mailcleaner' );
         chown $uid, $gid, $prefdir;
     }
-    if ( !open(my $PREFFILE, '>', $preffile) ) {
+    my $PREFFILE;
+    if ( !open($PREFFILE, '>', $preffile) ) {
         print "CANNOTWRITEPREFFILE";
         return 0;
     }
@@ -237,7 +239,8 @@ sub dumpLocalAddresses($self,$slave_db=0)
     my $query = "SELECT e.address FROM email e WHERE e.address LIKE '%@".$self->{name}."'";
 
     my $file = $conf->getOption('VARDIR')."/spool/mailcleaner/addresses/".$self->{name}.".addresslist";
-    if ( !open(my $OUTFILE, '>', $file) ) {
+    my $OUTFILE;
+    if ( !open($OUTFILE, '>', $file) ) {
         if (-e $file) { ## in case we cannot write to file, try to remove it
             unlink($file);
         }

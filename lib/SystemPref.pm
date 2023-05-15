@@ -28,6 +28,7 @@ use utf8;
 require Exporter;
 require ReadConfig;
 require DB;
+use File::Path qw(make_path);
 use strict;
 
 our @ISA = qw(Exporter);
@@ -37,21 +38,19 @@ our $VERSION = 1.0;
 my $oneTrueSelf;
 
 ## singleton stuff
-sub getInstance
+sub getInstance($oneTrueSelf=create())
 {
-    if (! $oneTrueSelf) {
-        $oneTrueSelf = create();
-    }
     return $oneTrueSelf;
 }
 
-sub create($name)
+sub create($name="SystemPref")
 {
     my %prefs;
 
     my $conf = ReadConfig::getInstance();
-    my $preffile = $conf->getOption('VARDIR')."/spool/mailcleaner/prefs/_global/prefs.list";
     my $prefdir = $conf->getOption('VARDIR')."/spool/mailcleaner/prefs/_global/";
+    make_path($prefdir, {'mode'=>'0710', 'user'=>'mailcleaner', 'group'=>'mailcleaner'});
+    my $preffile = $prefdir."/prefs.list";
     my $self = {
         name => $name,
         prefdir => $prefdir,
@@ -94,7 +93,8 @@ sub loadPrefs($self)
         return 0;
     }
 
-    if ( !open(my $PREFFILE, $self->{preffile}) ) {
+    my $PREFFILE;
+    if ( !open($PREFFILE, $self->{preffile}) ) {
         return 0;
     }
     while (<$PREFFILE>) {
@@ -120,7 +120,8 @@ sub dumpPrefs($self)
     my $gid = getgrnam( 'mailcleaner' );
     chown $uid, $gid, $self->{prefdir};
 
-    if ( !open(my $PREFFILE, ">".$self->{preffile}) ) {
+    my $PREFFILE;
+    if ( !open($PREFFILE, ">".$self->{preffile}) ) {
         print "CANNOTWRITESYSTEMPREF\n";
         return 0;
     }
