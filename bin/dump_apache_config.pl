@@ -48,7 +48,7 @@ my $lasterror = "";
 
 my $dbh;
 $dbh = DBI->connect("DBI:MariaDB:database=mc_config;host=localhost;mariadb_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
-    "mailcleaner", "$config{MYMAILCLEANERPWD}", {RaiseError => 0, PrintError => 0}) or fatal_error("CANNOTCONNECTDB", $dbh->errstr);
+    "mailcleaner", "$config{MYMAILCLEANERPWD}", {RaiseError => 0, PrintError => 0}) or fatal_error("CANNOTCONNECTDB", "Failed to connect");
 
 my %sys_conf = get_system_config() or fatal_error("NOSYSTEMCONFIGURATIONFOUND", "no record found for system configuration");
 
@@ -86,11 +86,12 @@ sub dump_apache_file
     my $template_file = "$config{'SRCDIR'}${filetmpl}";
     my $target_file = "$config{'SRCDIR'}${filedst}";
 
-    if ( !open(my $TEMPLATE, '<', $template_file) ) {
+    my ($TEMPLATE, $TARGET);
+    if ( !open($TEMPLATE, '<', $template_file) ) {
         $lasterror = "Cannot open template file: $template_file";
         return 0;
     }
-    if ( !open(my $TARGET, '>', $target_file) ) {
+    if ( !open($TARGET, '>', $target_file) ) {
         $lasterror = "Cannot open target file: $target_file";
         close $template_file;
         return 0;
@@ -145,11 +146,12 @@ sub dump_soap_wsdl
     my $template_file = "$config{'SRCDIR'}/www/soap/htdocs/mailcleaner.wsdl_template";
     my $target_file = "$config{'SRCDIR'}/www/soap/htdocs/mailcleaner.wsdl";
 
-    if ( !open(my $TEMPLATE, '<', $template_file) ) {
+    my ($TEMPLATE, $TARGET);
+    if ( !open($TEMPLATE, '<', $template_file) ) {
         $lasterror = "Cannot open template file: $template_file";
         return 0;
     }
-    if ( !open(my $TARGET, '>', $target_file) ) {
+    if ( !open($TARGET, '>', $target_file) ) {
         $lasterror = "Cannot open target file: $target_file";
         close $template_file;
         return 0;
@@ -237,7 +239,7 @@ sub get_apache_config
 #############################
 sub fatal_error($msg,$full)
 {
-    print $msg . ($DEBUG ? "\n Full information: $full \n" : "\n");
+    print $msg . ($DEBUG ? "\nFull information: $full \n" : "\n");
 }
 
 #############################
