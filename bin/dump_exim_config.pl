@@ -475,7 +475,8 @@ sub dump_proxy_file
         }
         $str =~ s/\s*\:\s*$//;
 
-        if ( !open(my $TARGET, '>', $file) ) {
+        my $TARGET;
+        if ( !open($TARGET, '>', $file) ) {
             $lasterror = "Cannot open proxy file: $file";
             return 0;
         }
@@ -537,7 +538,7 @@ sub get_system_config
     $sconfig{'__SYSLOG_HOST__'} = $row{'syslog_host'};
     if ( -f '/usr/mailcleaner/etc/mailcleaner/syslog/force_syslog_on_this_host') {
         if (open(my $FH, '<', '/usr/mailcleaner/etc/mailcleaner/syslog/force_syslog_on_this_host') ) {
-            my $line = <FH>;
+            my $line = <$FH>;
             chomp $line;
             $sconfig{'__SYSLOG_HOST__'} = $line;
             close $FH;
@@ -600,7 +601,8 @@ sub dump_master_file
     my $m_h = shift;
     my %master = %$m_h;
 
-    if (!open(my $MASTERFILE, '>', $file)) {
+    my ($MASTERFILE);
+    if (!open($MASTERFILE, '>', $file)) {
         return 0;
     }
 
@@ -837,7 +839,7 @@ sub get_exim_config($stage)
         $bsrblsstring = $row{'bs_rbls'};
     }
 
-    my $dnslists = new MCDnsLists(\&log_dns, 1);
+    my $dnslists = MCDnsLists->new(\&log_dns, 1);
     $dnslists->loadRBLs( $conf->getOption('SRCDIR')."/etc/rbls",
         $rblsstring, 'IPRBL', '', '', '' , 'dump_exim');
 
@@ -852,7 +854,7 @@ sub get_exim_config($stage)
     }
     $rbl_exim_string =~ s/^\s*:\s*//;
 
-    my $bsdnslists = new MCDnsLists(\&log_dns, 1);
+    my $bsdnslists = MCDnsLists->new(\&log_dns, 1);
     $bsdnslists->loadRBLs( $conf->getOption('SRCDIR')."/etc/rbls",
         $bsrblsstring, 'BSRBL', '', '', '' , 'dump_exim');
 
@@ -966,7 +968,7 @@ sub dump_ignore_list($ignorehosts,$filename)
         }
         close $RBLFILE;
     } else {
-        print $STDERR "Failed to open $file\n";
+        print STDERR "Failed to open $file\n";
     }
 }
 
@@ -998,7 +1000,7 @@ sub dump_blacklists
             }
             close $FILE;
         } else {
-            print $STDERR "Failed to open $filepath: $!\n";
+            print STDERR "Failed to open $filepath: $!\n";
         }
     }
 }
@@ -1139,8 +1141,9 @@ sub dump_default_dkim($stage1_conf)
     if ( open(my $FILE, '>', $keyfile)) {
         if (defined($stage1_conf{'dkim_default_pkey'})) {
             if ( -e $keypath."/".$stage1_conf{'dkim_default_domain'}.".pkey" ) {
-                open(my $DEFAULT, '<', $keypath."/".$stage1_conf{'dkim_default_domain'}.".pkey");
-                while (<$DEFAULT>) {}
+                my $DEFAULT;
+                open($DEFAULT, '<', $keypath."/".$stage1_conf{'dkim_default_domain'}.".pkey");
+                while (<$DEFAULT>) {
                     print $FILE $_;
                 }
                 close $DEFAULT;
@@ -1201,7 +1204,7 @@ sub get_interfaces
 
 sub is_ipv6_disabled($interface)
 {
-    my $sysctl_result = `sysctl -a | grep disable_ipv6 | grep $interface`;
+    my $sysctl_result = `sysctl -a 2>&1 | grep disable_ipv6 | grep $interface`;
     if($sysctl_result =~ /^net\.ipv6\.conf\.$interface\.disable_ipv6\s=\s(\d)$/){
         return $1
     } else {
@@ -1209,9 +1212,8 @@ sub is_ipv6_disabled($interface)
     }
 }
 
-sub expand_host_string($string)
+sub expand_host_string($string,%args)
 {
-    my %args = @_;
     my $dns = GetDNS->new();
     return $dns->dumper($string,%args);
 }

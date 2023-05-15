@@ -35,9 +35,8 @@ use Data::Validate::IP;
 
 our $debug = 0;
 
-sub new
+sub new($class="GetDNS")
 {
-    my $class = shift || "GetDNS";
     my $resolver = Net::DNS::Resolver->new;
     my $validator = Data::Validate::IP->new;
 
@@ -51,14 +50,8 @@ sub new
     return $self;
 }
 
-sub dumper($self,$raw)
+sub dumper($self,$raw,%args)
 {
-    my %args = @_;
-
-    unless (defined($raw)) {
-        return ();
-    }
-
     unless (defined($args{'dumper'})) {
         $args{'dumper'} = 'unknown';
     }
@@ -200,11 +193,8 @@ sub dumper($self,$raw)
     return @list;
 }
 
-sub getA
+sub getA($self,$target)
 {
-    my $self = shift;
-    my $target = shift;
-
     my $res = $self->{'resolver'}->query($target, 'A');
     if (defined($res->{'answer'}->[0]->{'address'})) {
         return ($res->answer)[0]->address;
@@ -215,11 +205,8 @@ sub getA
     }
 }
 
-sub getAAAA
+sub getAAAA($self,$target)
 {
-    my $self = shift;
-    my $target = shift;
-
     my $res = $self->{'resolver'}->query($target, 'AAAA');
     if ($res) {
         return ($res->answer)[0]->address;
@@ -228,10 +215,8 @@ sub getAAAA
     return ();
 }
 
-sub getMX
+sub getMX($self,$target)
 {
-    my $self = shift;
-    my $target = shift;
     my @res  = mx($self->{'resolver'}, $target);
 
     my @ips = ();
@@ -255,10 +240,8 @@ sub getMX
     return $self->uniq(@ips);
 }
 
-sub getSPF
+sub getSPF($self,$target)
 {
-    my $self = shift;
-    my $target = shift;
     my $res  = $self->{'resolver'}->query($target, 'TXT');
 
     unless ($res) {
@@ -354,28 +337,18 @@ sub getSPF
     return $self->uniq(@ips);
 }
 
-sub validIP4
+sub validIP4($self,$target)
 {
-    my $self = shift;
-    my $target = shift;
-
     return $self->{'validator'}->is_ipv4($target);
 }
 
-sub validIP6
+sub validIP6($self,$target)
 {
-    my $self = shift;
-    my $target = shift;
-
     return $self->{'validator'}->is_ipv6($target);
 }
 
-sub inIPList
+sub inIPList($self,$target,@ips)
 {
-    my $self = shift;
-    my $target = shift;
-    my @ips = @_;
-
     my $version;
     if ($self->{'validator'}->is_ipv4($target)) {
         foreach my $range (@ips) {
@@ -407,12 +380,8 @@ sub inIPList
     return 0;
 }
 
-sub simplify
+sub simplify($self,$list,$exceptions)
 {
-    my $self = shift;
-    my $list = shift;
-    my $exceptions = shift;
-
     my ($wanted4, $wanted6) = $self->merge($list);
 
     unless (scalar(@{$exceptions})) {
@@ -578,10 +547,8 @@ sub simplify
     return ( @wanted4, @wanted6 );
 }
 
-sub merge
+sub merge($self,$list)
 {
-    my $self = shift;
-    my $list = shift;
     my (@ip4, @ip6);
     foreach (@{$list}) {
         if ($_ =~ m/:/) {
@@ -594,33 +561,32 @@ sub merge
     return ( \@ip4, \@ip6 );
 }
 
-sub ip4todec
+sub ip4todec($self,$ip4)
 {
-    my @bytes = split /\./, shift;
+    my @bytes = split /\./, $ip4;
     return ($bytes[0] << 24) + ($bytes[1] << 16) + ($bytes[2] << 8) + $bytes[3];
 }
 
-sub dectoip4
+sub dectoip4($self,$dec)
 {
-    my $decimal = shift;
     my @bytes;
-    push @bytes, (0+$decimal & 0xff000000) >> 24;
-    push @bytes, (0+$decimal & 0x00ff0000) >> 16;
-    push @bytes, (0+$decimal & 0x0000ff00) >>  8;
-    push @bytes, (0+$decimal & 0x000000ff);
+    push @bytes, (0+$dec & 0xff000000) >> 24;
+    push @bytes, (0+$dec & 0x00ff0000) >> 16;
+    push @bytes, (0+$dec & 0x0000ff00) >>  8;
+    push @bytes, (0+$dec & 0x000000ff);
     return join '.', @bytes;
 }
 
-sub ip6todec
+sub ip6todec($self,$ip6)
 {
-    my @bytes = split(/:/, expandip6(shift));
+    my @bytes = split(/:/, expandip6($ip6));
     my $decimal = 0;
     return (int128(hex($bytes[0])) << 112) + (int128(hex($bytes[1])) << 96) + (int128(hex($bytes[2])) << 80) + (int128(hex($bytes[3])) << 64) + (hex($bytes[4]) << 48) + (hex($bytes[5]) << 32) + (hex($bytes[6]) << 16) + hex($bytes[7]);
 }
 
-sub dectoip6
+sub dectoip6($self,$dec)
 {
-    my $decimal = int128(shift);
+    my $decimal = int128($dec);
     my @bytes;
     push( @bytes, sprintf("%x", ($decimal & 0xffff0000000000000000000000000000) >> 112) );
     push( @bytes, sprintf("%x", ($decimal & 0x0000ffff000000000000000000000000) >>  96) );
@@ -633,9 +599,8 @@ sub dectoip6
     return join ':', @bytes;
 }
 
-sub expandip6
+sub expandip6($self,$ip)
 {
-    my $ip = shift;
     if ($ip =~ m/^:/) {
         $ip = "0$ip";
     }
@@ -649,11 +614,8 @@ sub expandip6
     return $ip;
 }
 
-sub uniq
+sub uniq($self,@ips)
 {
-    my $self = shift;
-    my @ips = @_;
-
     my %ips;
     foreach (@ips) {
         $ips{$_} = 1;
