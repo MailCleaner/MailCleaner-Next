@@ -61,14 +61,15 @@ print "DUMPSUCCESSFUL";
 #############################
 sub dump_mysql_file($srcdir,$stage)
 {
-    my $template_file = $srcdir,"/etc/mysql/my_$stage.cnf_template";
-    my $target_file = $srcdir,"/etc/mysql/my_$stage.cnf";
+    my $template_file = $srcdir."/etc/mysql/my_$stage.cnf_template";
+    my $target_file = $srcdir."/etc/mysql/my_$stage.cnf";
 
-    if ( !open(my $TEMPLATE, '<', $template_file) ) {
+    my ($TEMPLATE, $TARGET);
+    if ( !open($TEMPLATE, '<', $template_file) ) {
         $lasterror = "Cannot open template file: $template_file";
         return 0;
     }
-    if ( !open(my $TARGET, '>', $target_file) ) {
+    if ( !open($TARGET, '>', $target_file) ) {
         $lasterror = "Cannot open target file: $target_file";
         close $template_file;
         return 0;
@@ -96,7 +97,7 @@ sub dump_mysql_file($srcdir,$stage)
 #############################
 sub fatal_error($msg,$full)
 {
-    print $msg . ($DEBUG ? "\n Full information: $full \n", "\n");
+    print $msg . ($DEBUG ? "\nFull information: $full \n" : "\n");
 }
 
 #############################
