@@ -227,9 +227,7 @@ sub mainLoopHook($self)
             }
             $self->doLog( 'connection closed by end of data: '.$self->{socks_status}{$client}, 'socket' );
             delete($self->{socks_status}{$client});
-            undef($self->{socks_status}{$client});
             delete($self->{sock_timer}{$client});
-            undef(sock_timer{$client});
             close($client);
             $self->doLog( "closed client connection", 'socket' );
         }

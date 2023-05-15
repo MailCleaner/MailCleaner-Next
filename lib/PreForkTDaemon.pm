@@ -567,7 +567,7 @@ sub writeLogToFile($self,$message)
     my $LOCK_UN = 8;
     $| = 1;
 
-    if ( !defined( fileno($LOGGERLOG) ) ) {
+    if ( !defined($LOGGERLOG) || !defined(fileno($LOGGERLOG)) || fileno($LOGGERLOG) != -1 ) {
 
         if ( -f $self->{logfile} ) {
             open($LOGGERLOG, '>>', $self->{logfile});

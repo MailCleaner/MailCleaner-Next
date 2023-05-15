@@ -268,7 +268,7 @@ sub findUriShortener($self,$line,$prelog)
     return $final_domain;
 }
 
-sub getNextLocation($self,$url)
+sub getNextLocation($self,$uri)
 {
     my ($domain, $get) = $uri =~ m#(?:(?:(?^:https?))://((?:(?:(?:(?:(?:[a-zA-Z0-9][-a-zA-Z0-9]*)?[a-zA-Z0-9])[.])*(?:[a-zA-Z][-a-zA-Z0-9]*[a-zA-Z0-9]|[a-zA-Z])[.]?)|(?:[0-9]+[.][0-9]+[.][0-9]+[.][0-9]+)))(?::(?:(?:[0-9]*)))?(?:/(((?:(?:(?:(?:[a-zA-Z0-9\-_.!~*'():@&=+$,]+|(?:%[a-fA-F0-9][a-fA-F0-9]))*)(?:;(?:(?:[a-zA-Z0-9\-_.!~*'():@&=+$,]+|(?:%[a-fA-F0-9][a-fA-F0-9]))*))*)(?:/(?:(?:(?:[a-zA-Z0-9\-_.!~*'():@&=+$,]+|(?:%[a-fA-F0-9][a-fA-F0-9]))*)(?:;(?:(?:[a-zA-Z0-9\-_.!~*'():@&=+$,]+|(?:%[a-fA-F0-9][a-fA-F0-9]))*))*))*))(?:[?](?:(?:(?:[;/?:@&=+$,a-zA-Z0-9\-_.!~*'()]+|(?:%[a-fA-F0-9][a-fA-F0-9]))*)))?))?)#mg;
     unless (defined($domain)) {
@@ -589,7 +589,7 @@ sub check_dns($self,$value,$type,$prelog,$maxhitcount=0,$maxbshitcount=1)
         kill -15, $pid;
         for ( $i = 0 ; $i < 5 ; $i++ ) {
             sleep 1;
-            waitpid( $pid, &POSIX::WNOHANG );
+            waitpid( $pid, &POSIX::WNOHANG() );
             ( $pid = 0 ), last unless kill( 0, $pid );
             kill -15, $pid;
         }
