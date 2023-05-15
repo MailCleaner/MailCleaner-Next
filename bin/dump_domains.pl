@@ -49,7 +49,7 @@ require ConfigTemplate;
 use File::Copy;
 use File::Path qw(make_path);
 use Time::HiRes qw(gettimeofday tv_interval);
-use lib_utils qw(create_and_open);
+use lib_utils qw(open_as);
 
 my $domain = shift;
 
@@ -249,26 +249,26 @@ sub dumpDomainsFile($d_ref,$tmproot)
         $REQUIREINCOMINGTLS, $DKIMFILE, $RELAYACCEPTEDDESTFILE
     );
 
-    $DOMAINSFILE = ${create_and_open("$tmproot/domains.list")};
-    $DKIMFILE = ${create_and_open("$tmproot/domains_to_dkim.list")};
-    $RELAYACCEPTEDDESTFILE = ${create_and_open("$tmproot/relay_accepteddest.list")};
-    $DOMAINSFILE = create_and_open("$tmproot/domains.list.new")->$*;
-    $DOMAINSFILESMARTHOST = ${create_and_open("$tmproot/domains_smarthost.list.new")};
-    $SNMPDOMAINSFILE = ${create_and_open("$tmproot/snmpdomains.list")};
-    $ALTCALLOUTFILE = ${create_and_open("$tmproot/domains_to_altcallout.list")};
-    $CALLOUTFILE = ${create_and_open("$tmproot/domains_to_callout.list")};
-    $EXTCALLOUTFILE = ${create_and_open("$tmproot/domains_to_extcallout.list")};
-    $ADDLISTCALLOUTFILE = ${create_and_open("$tmproot/domains_to_addlistcallout.list")};
-    $ADCHECKFILE = ${create_and_open("$tmproot/domains_to_adcheck.list")};
-    $MXEDFILE = ${create_and_open("$tmproot/domains_to_mx.list")};
-    $GREYLISTFILE = ${create_and_open("$tmproot/domains_to_greylist.list")};
-    $BATVCHECKFILE = ${create_and_open("$tmproot/domains_to_check_batv.list")};
-    $PREVENTSPOOFFILE = ${create_and_open("$tmproot/domains_to_prevent_spoof.list")};
-    $NOCAPSDOMAINS = ${create_and_open("$tmproot/no_caps_domains.list")};
-    $REQUIREOUTGOINGTLS = ${create_and_open("$tmproot/local_domains_require_outgoing_tls.list")};
-    $REQUIREINCOMINGTLS = ${create_and_open("$tmproot/local_domains_require_incoming_tls.list")};
-    $DKIMFILE = ${create_and_open("$tmproot/domains_to_dkim.list")};
-    $RELAYACCEPTEDDESTFILE = ${create_and_open("$tmproot/relay_accepteddest.list")};
+    $DOMAINSFILE = ${open_as("$tmproot/domains.list")};
+    $DKIMFILE = ${open_as("$tmproot/domains_to_dkim.list")};
+    $RELAYACCEPTEDDESTFILE = ${open_as("$tmproot/relay_accepteddest.list")};
+    $DOMAINSFILE = open_as("$tmproot/domains.list.new")->$*;
+    $DOMAINSFILESMARTHOST = ${open_as("$tmproot/domains_smarthost.list.new")};
+    $SNMPDOMAINSFILE = ${open_as("$tmproot/snmpdomains.list")};
+    $ALTCALLOUTFILE = ${open_as("$tmproot/domains_to_altcallout.list")};
+    $CALLOUTFILE = ${open_as("$tmproot/domains_to_callout.list")};
+    $EXTCALLOUTFILE = ${open_as("$tmproot/domains_to_extcallout.list")};
+    $ADDLISTCALLOUTFILE = ${open_as("$tmproot/domains_to_addlistcallout.list")};
+    $ADCHECKFILE = ${open_as("$tmproot/domains_to_adcheck.list")};
+    $MXEDFILE = ${open_as("$tmproot/domains_to_mx.list")};
+    $GREYLISTFILE = ${open_as("$tmproot/domains_to_greylist.list")};
+    $BATVCHECKFILE = ${open_as("$tmproot/domains_to_check_batv.list")};
+    $PREVENTSPOOFFILE = ${open_as("$tmproot/domains_to_prevent_spoof.list")};
+    $NOCAPSDOMAINS = ${open_as("$tmproot/no_caps_domains.list")};
+    $REQUIREOUTGOINGTLS = ${open_as("$tmproot/local_domains_require_outgoing_tls.list")};
+    $REQUIREINCOMINGTLS = ${open_as("$tmproot/local_domains_require_incoming_tls.list")};
+    $DKIMFILE = ${open_as("$tmproot/domains_to_dkim.list")};
+    $RELAYACCEPTEDDESTFILE = ${open_as("$tmproot/relay_accepteddest.list")};
 
     my @list;
     foreach my $domain_name ( keys %domains) {
@@ -331,7 +331,7 @@ sub dumpDomainsFile($d_ref,$tmproot)
         }
         my $addlistcallout = $domains{$domain_name}{addlistcallout};
         my $postersfile = $posterspath."/".$domain_name.".posters";
-        $ADDLISTPOSTERS = ${create_and_open("$postersfile")};
+        $ADDLISTPOSTERS = ${open_as("$postersfile")};
         if ( $addlistcallout eq "true" || $addlistcallout eq "1" ) {
             print $ADDLISTCALLOUTFILE $domain_name."\n";
             if (defined($domains{$domain_name}{addlist_posters})) {
@@ -357,7 +357,7 @@ sub dumpDomainsFile($d_ref,$tmproot)
             if (! -d "$tmproot/ldap_callouts") {
                 mkdir "$tmproot/ldap_callouts";
             }
-            if (my $LDAPCALLOUTDATA = ${create_and_open("$tmproot/ldap_callouts/$domain_name")}) {
+            if (my $LDAPCALLOUTDATA = ${open_as("$tmproot/ldap_callouts/$domain_name")}) {
                 if ($domains{$domain_name}{ldapcalloutserver}) {
                     print $LDAPCALLOUTDATA "server: ".$domains{$domain_name}{ldapcalloutserver}."\n";
                 }
@@ -437,7 +437,7 @@ sub dumpDomainsFile($d_ref,$tmproot)
                     print $DKIMFILE "mailcleaner\n";
                 }
                 if (defined($domains{$domain_name}{dkim_pkey}) && $domains{$domain_name}{dkim_pkey} ne '') {
-                    if (my $DKIMPKEY = ${create_and_open("$dkim_pkey_file")}) {
+                    if (my $DKIMPKEY = ${open_as("$dkim_pkey_file")}) {
                         print $DKIMPKEY $domains{$domain_name}{dkim_pkey}."\n";
                         close $DKIMPKEY;
                     }

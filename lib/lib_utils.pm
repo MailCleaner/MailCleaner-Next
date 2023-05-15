@@ -38,7 +38,7 @@ our @EXPORT = qw(
     slurp_file
     create_lockfile
     remove_lockfile
-    create_and_open
+    open_as
     valid_rfc822_email
 );
 
@@ -143,7 +143,7 @@ sub remove_lockfile($filename, $path)
     return $rc;
 }
 
-sub create_and_open($file, $method=">", $chown='mailcleaner:mailcleaner', $chmod="0664")
+sub open_as($file, $method=">", $chown='mailcleaner:mailcleaner', $chmod="0664")
 {
     my ($uid, $gid) = split(/:/,$chown);
     $uid = getpwnam( $uid );
@@ -154,15 +154,17 @@ sub create_and_open($file, $method=">", $chown='mailcleaner:mailcleaner', $chmod
     if ( ! -d $path ) {
         confess ("Failed to create $path\n") unless (make_path($path, {mode => $chmod, user => $uid, group => $gid}));
     }
-    if ( -e $path.'/'.$filename ) {
-        if ( ! -w $path.'/'.$filename ) {
-            chmod($chmod, $path.'/'.$filename);
-        }
-    } else {
+
+    confess ("$file does not exist\n") if ($method eq "<" && ! -e "$file");
+
+    if ( ! -e $path.'/'.$filename ) {
         confess("Failed to create $path/$filename\n") unless touch("$path/$filename");
     }
+
+    die("Failed to set mode for ${path}/${filename} to $uid:$gid\n") unless chmod($chmod, $path.'/'.$filename);
     die("Failed to give ownership of $path/$filename to $uid:$gid\n") unless chown($uid, $gid, $path.'/'.$filename);
-    if (open (my $fh, $method, $path.'/'.$filename)) {
+
+    if (open (my $fh, $method, "${path}/${filename}")) {
         return \$fh;
     } else {
         confess("Failed to open $path/$filename for writing: $!\n");

@@ -31,24 +31,35 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+our ($conf, $SRCDIR, $VARDIR, $MYMAILCLEANERPWD);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR');
+    $VARDIR = $conf->getOption('VARDIR');
+    $MYMAILCLEANERPWD = $conf->getOption('MYMAILCLEANERPWD');
+    unshift(@INC, $SRCDIR."/lib");
 }
+
+use lib_utils qw( open_as );
 
 use DBI();
 
 our $DEBUG = 1;
 
-my %config = readConfig("/etc/mailcleaner.conf");
-my $HOSTID=$config{HOSTID};
+my $HOSTID=$conf->getOption('HOSTID');
 
 my $lasterror = "";
 
 my $dbh;
-$dbh = DBI->connect("DBI:MariaDB:database=mc_config;host=localhost;mariadb_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
-    "mailcleaner", "$config{MYMAILCLEANERPWD}", {RaiseError => 0, PrintError => 0}) or fatal_error("CANNOTCONNECTDB", "Failed to connect");
+$dbh = DBI->connect("DBI:MariaDB:database=mc_config;host=localhost;mariadb_socket=${VARDIR}/run/mysql_slave/mysqld.sock",
+    "mailcleaner", $conf->getOption('MYMAILCLEANERPWD'), {RaiseError => 0, PrintError => 0}) or fatal_error("CANNOTCONNECTDB", "Failed to connect");
 
 my %sys_conf = get_system_config() or fatal_error("NOSYSTEMCONFIGURATIONFOUND", "no record found for system configuration");
 
@@ -57,53 +68,48 @@ my %apache_conf;
 
 dump_apache_file("/etc/apache/httpd.conf_template", "/etc/apache/httpd.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
 
-if (-e "$config{'SRCDIR'}/etc/apache/sites/mailcleaner.conf.disabled") {
-    unlink("$config{'SRCDIR'}/etc/apache/sites/mailcleaner.conf");
+if (-e "${SRCDIR}/etc/apache/sites/mailcleaner.conf.disabled") {
+    unlink("${SRCDIR}/etc/apache/sites/mailcleaner.conf");
 } else {
     dump_apache_file("/etc/apache/sites/mailcleaner.conf_template", "/etc/apache/sites/mailcleaner.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
 }
 
-if (-e "$config{'SRCDIR'}/etc/apache/sites/configurator.conf.disabled") {
-    unlink("$config{'SRCDIR'}/etc/apache/sites/configurator.conf");
+if (-e "${SRCDIR}/etc/apache/sites/configurator.conf.disabled") {
+    unlink("${SRCDIR}/etc/apache/sites/configurator.conf");
 } else {
     dump_apache_file("/etc/apache/sites/configurator.conf_template", "/etc/apache/sites/configurator.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
 }
 
 dump_soap_wsdl() or fatal_error("CANNOTDUMPWSDLFILE", $lasterror);
 
-dump_certificate($config{'SRCDIR'},$apache_conf{'tls_certificate_data'}, $apache_conf{'tls_certificate_key'}, $apache_conf{'tls_certificate_chain'});
+dump_certificate(${SRCDIR},$apache_conf{'tls_certificate_data'}, $apache_conf{'tls_certificate_key'}, $apache_conf{'tls_certificate_chain'});
 
 $dbh->disconnect();
 
 print "DUMPSUCCESSFUL";
 
 #############################
-sub dump_apache_file
+sub dump_apache_file($filetmpl, $filedst)
 {
-    my $filetmpl = shift;
-    my $filedst = shift;
-
-    my $template_file = "$config{'SRCDIR'}${filetmpl}";
-    my $target_file = "$config{'SRCDIR'}${filedst}";
+    my $template_file = "${SRCDIR}/${filetmpl}";
+    my $target_file = "${SRCDIR}/${filedst}";
 
     my ($TEMPLATE, $TARGET);
-    if ( !open($TEMPLATE, '<', $template_file) ) {
-        $lasterror = "Cannot open template file: $template_file";
-        return 0;
+    unless ( $TEMPLATE = ${open_as($template_file, '<')} ) {
+        confess("Cannot open template file: $template_file");
     }
-    if ( !open($TARGET, '>', $target_file) ) {
-        $lasterror = "Cannot open target file: $target_file";
+    unless ( $TARGET = ${open_as($target_file)} ) {
         close $template_file;
-        return 0;
+        confess("Cannot open target file: $target_file");
     }
 
     my $inssl = 0;
     while(<$TEMPLATE>) {
         my $line = $_;
 
-        $line =~ s/__VARDIR__/$config{'VARDIR'}/g;
-        $line =~ s/__SRCDIR__/$config{'SRCDIR'}/g;
-        $line =~ s/__DBPASSWD__/$config{'MYMAILCLEANERPWD'}/g;
+        $line =~ s/__VARDIR__/${VARDIR}/g;
+        $line =~ s/__SRCDIR__/${SRCDIR}/g;
+        $line =~ s/__DBPASSWD__/${MYMAILCLEANERPWD}/g;
 
         foreach my $key (keys %sys_conf) {
             $line =~ s/$key/$sys_conf{$key}/g;
@@ -140,11 +146,11 @@ sub dump_apache_file
     return 1;
 }
 
-sub dump_soap_wsdl
+sub dump_soap_wsdl()
 {
 
-    my $template_file = "$config{'SRCDIR'}/www/soap/htdocs/mailcleaner.wsdl_template";
-    my $target_file = "$config{'SRCDIR'}/www/soap/htdocs/mailcleaner.wsdl";
+    my $template_file = "${SRCDIR}/www/soap/htdocs/mailcleaner.wsdl_template";
+    my $target_file = "${SRCDIR}/www/soap/htdocs/mailcleaner.wsdl";
 
     my ($TEMPLATE, $TARGET);
     if ( !open($TEMPLATE, '<', $template_file) ) {
@@ -172,7 +178,7 @@ sub dump_soap_wsdl
 }
 
 #############################
-sub get_system_config
+sub get_system_config()
 {
     my %config;
 
@@ -204,7 +210,7 @@ sub get_system_config
 }
 
 #############################
-sub get_apache_config
+sub get_apache_config()
 {
     my %config;
 
@@ -274,26 +280,4 @@ sub dump_certificate($srcdir,$cert,$key,$chain)
             close $FILE;
         }
     }
-}
-
-#############################
-sub readConfig($configfile)
-{
-    my %config;
-    my ($var, $value);
-
-    open (my $CONFIG, '<', $configfile) or die "Cannot open $configfile: $!\n";
-    while (<$CONFIG>) {
-        chomp;              # no newline
-        s/#.*$//;           # no comments
-        s/^\*.*$//;         # no comments
-        s/;.*$//;           # no comments
-        s/^\s+//;           # no leading white
-        s/\s+$//;           # no trailing white
-        next unless length; # anything left?
-        my ($var, $value) = split(/\s*=\s*/, $_, 2);
-        $config{$var} = $value;
-    }
-    close $CONFIG;
-    return %config;
 }
