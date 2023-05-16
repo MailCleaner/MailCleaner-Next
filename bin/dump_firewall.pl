@@ -116,7 +116,7 @@ sub get_masters_slaves()
 sub get_default_rules($rules)
 {
     my %rules = %{$rules};
-    
+
     foreach my $host (keys %masters_slaves) {
         next if ($host =~ /127\.0\.0\.1/ || $host =~ /^\:\:1$/);
 
