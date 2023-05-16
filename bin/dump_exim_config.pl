@@ -92,19 +92,7 @@ if (! $eximid ) {
 ## check for tmp dir
 my $tmpdir = ${VARDIR}."/spool/tmp/exim";
 if ( ! -d "$tmpdir") {
-    make_path("$tmpdir") or fatal_error("COULDNOTCREATETMPDIR", "could not create temporary directory");
-}
-if ( ! -d "${VARDIR}/spool/tmp/exim_stage1" ) {
-    make_path("${VARDIR}/spool/tmp/exim_stage1") or fatal_error("COULDNOTCREATETMPDIR", "could not create directory");
-}
-if ( ! -d "${VARDIR}/spool/tmp/exim_stage1/blacklists" ) {
-    make_path("${VARDIR}/spool/tmp/exim_stage1/blacklists") or fatal_error("COULDNOTCREATETMPDIR", "could not create directory");
-}
-if ( ! -d "${VARDIR}/spool/tmp/exim_stage1/rblwhitelists" ) {
-    make_path("${VARDIR}/spool/tmp/exim_stage1/rblwhitelists") or fatal_error("COULDNOTCREATETMPDIR", "could not create directory");
-}
-if ( ! -d "${VARDIR}/spool/tmp/exim_stage1/spamcwhitelists" ) {
-    make_path("${VARDIR}/spool/tmp/exim_stage1/spamcwhitelists") or fatal_error("COULDNOTCREATETMPDIR", "could not create directory");
+    make_path("$tmpdir", {'mode'=>0755,'user'=>'mailcleaner','group'=>'mailcleaner'}) or fatal_error("COULDNOTCREATETMPDIR", "could not create temporary directory");
 }
 
 my %sys_conf = get_system_config() or fatal_error("NOSYSTEMCONFIGURATIONFOUND", "no record found for system configuration");
@@ -123,6 +111,21 @@ my $exim_conf_lpd = dump_lists_ip_domain();
 my $syslog_restart = 0;
 foreach my $stage (@eximids) {
     if ($stage == 1) {
+        if ( ! -d "${VARDIR}/spool/tmp/exim" ) {
+            make_path("${VARDIR}/spool/tmp/exim_stage1", {'mode'=>0755,'user'=>'mailcleaner','group'=>'mailcleaner'}) or fatal_error("COULDNOTCREATETMPDIR", "could not create directory");
+        }
+        if ( ! -d "${VARDIR}/spool/tmp/exim_stage1" ) {
+            make_path("${VARDIR}/spool/tmp/exim_stage1", {'mode'=>0755,'user'=>'mailcleaner','group'=>'mailcleaner'}) or fatal_error("COULDNOTCREATETMPDIR", "could not create directory");
+        }
+        if ( ! -d "${VARDIR}/spool/tmp/exim_stage1/blacklists" ) {
+            make_path("${VARDIR}/spool/tmp/exim_stage1/blacklists", {'mode'=>0755,'user'=>'mailcleaner','group'=>'mailcleaner'}) or fatal_error("COULDNOTCREATETMPDIR", "could not create directory");
+        }
+        if ( ! -d "${VARDIR}/spool/tmp/exim_stage1/rblwhitelists" ) {
+            make_path("${VARDIR}/spool/tmp/exim_stage1/rblwhitelists", {'mode'=>0755,'user'=>'mailcleaner','group'=>'mailcleaner'}) or fatal_error("COULDNOTCREATETMPDIR", "could not create directory");
+        }
+        if ( ! -d "${VARDIR}/spool/tmp/exim_stage1/spamcwhitelists" ) {
+            make_path("${VARDIR}/spool/tmp/exim_stage1/spamcwhitelists", {'mode'=>0755,'user'=>'mailcleaner','group'=>'mailcleaner'}) or fatal_error("COULDNOTCREATETMPDIR", "could not create directory");
+        }
         ## dump the blacklists files
         dump_blacklists();
     }
@@ -890,6 +893,11 @@ sub get_exim_config($stage)
             $config{'__FULL_WHITELIST_HOSTS__'} .= $_ . ' ';
         }
         chomp($config{'__FULL_WHITELIST_HOSTS__'});
+    } else {
+        touch "${VARDIR}/spool/mailcleaner/full_whitelisted_hosts.list";
+    }
+    unless (-e "${VARDIR}/spool/mailcleaner/full_whitelisted_senders.list") {
+        touch "${VARDIR}/spool/mailcleaner/full_whitelisted_senders.list";
     }
     if ($config{'__FULL_WHITELIST_HOSTS__'} ne '') {
         $config{'__FULL_WHITELIST_HOSTS__'} = join(' ; ',expand_host_string($config{'__FULL_WHITELIST_HOSTS__'},('dumper'=>'exim/full_whitelist_hosts')));
@@ -898,8 +906,8 @@ sub get_exim_config($stage)
     $config{'__FOLDING__'} = $row{'folding'};
     my $max_length;
     if ( -e '${SPMC}/exim_max_line_length' ) {
-        open(my $fh, '<', '${SPMC}/exim_max_line_length') ||
-            confess "Cannot open ${VARDIR}/spool/mailcleaner/full_whitelisted_hosts.list: $!";
+        open(my $fh, '<', "${SPMC}/exim_max_line_length") ||
+            confess "Cannot open ${SPMC}/exim_max_line_length: $!";
         $max_length = <$fh>;
         chomp($max_length);
         close($fh);
@@ -933,12 +941,15 @@ sub dump_blacklists()
         recipient_reject => 'blacklists/recipients',
         relay_refused_to_domain => 'blacklists/relaytodomains'
     );
+    unless ( -d $tmpdir."/blacklists" ) {
+        confess "Cannot mkdir $tmpdir/blacklists: $!" unless make_path($tmpdir."/blacklists",{'mode'=>0755,'user'=>'mailcleaner','group'=>'mailcleaner'});
+    }
     my %incoming_config = get_exim_config(1);
     foreach my $file (keys %files) {
         my $filepath = $tmpdir."/".$files{$file};
 
         my $FILE;
-        confess "Cannot open $file: $!" unless ($FILE = ${open_as($filepath)});
+        confess "Cannot open $file: $!" unless ($FILE = ${open_as($filepath,'>',0644)});
         if ($incoming_config{$file}) {
             if ($file =~ /host_reject/) {
                 foreach my $host (expand_host_string($incoming_config{$file},('dumper'=>'exim/dump_blacklists/'.$file))) {
@@ -1080,7 +1091,7 @@ sub dump_default_dkim($stage1_conf)
 {
     my $keypath = ${VARDIR}."/spool/tmp/mailcleaner/dkim";
     if (! -d $keypath) {
-        mkpath($keypath);
+        make_path($keypath);
     }
     my $keyfile = $keypath."/default.pkey";
     my ($FILE, $DEFAULT);

@@ -11,7 +11,7 @@ if [ "$VARDIR" = "" ]; then
 	VARDIR=/var/mailcleaner
 fi
 
-DAEMON=/opt/exim4/bin/exim
+DAEMON=/sbin/exim
 PIDFILE=$VARDIR/run/exim_stage2.pid
 CONFIGFILE=$VARDIR/spool/tmp/exim/exim_stage2.conf
 QUEUETIME=5m
@@ -20,7 +20,14 @@ NAME="Exim stage 2"
 test -x $DAEMON || exit 0
 
 prepare() {
+	if [ ! -d $VARDIR/log/exim_stage2 ]; then
+		mkdir $VARDIR/log/exim_stage2
+		chown mailcleaner:mailcleaner $VARDIR/log/exim_stage2 >/dev/null 2>&1
+		touch $VARDIR/log/exim_stage2/mainlog
+		touch $VARDIR/log/exim_stage2/rejectlog
+	fi
 	chown mailcleaner:mailcleaner $VARDIR/log/exim_stage2/mainlog >/dev/null 2>&1
+	chown mailcleaner:mailcleaner $VARDIR/log/exim_stage2/rejectlog >/dev/null 2>&1
 
 	$SRCDIR/bin/dump_exim_config.pl 2 >/dev/null 2>&1
 	chown -R mailcleaner:mailcleaner $VARDIR/spool/mailcleaner/*.list >/dev/null 2>&1

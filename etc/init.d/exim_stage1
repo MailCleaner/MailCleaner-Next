@@ -11,7 +11,7 @@ if [ "$VARDIR" = "" ]; then
 	VARDIR=/var/mailcleaner
 fi
 
-DAEMON=/opt/exim4/bin/exim
+DAEMON=/sbin/exim4
 PIDFILE=$VARDIR/run/exim_stage1.pid
 CONFIGFILE=$VARDIR/spool/tmp/exim/exim_stage1.conf
 QUEUETIME=5m
@@ -20,6 +20,11 @@ NAME="Exim stage 1"
 test -x $DAEMON || exit 0
 
 prepare() {
+	if [ ! -d $VARDIR/log/exim_stage1 ]; then
+		mkdir $VARDIR/log/exim_stage1
+		touch $VARDIR/log/exim_stage1/mainlog
+		touch $VARDIR/log/exim_stage1/rejectlog
+	fi
 	chown mailcleaner:mailcleaner $VARDIR/log/exim_stage1/mainlog >/dev/null 2>&1
 	chown mailcleaner:mailcleaner $VARDIR/log/exim_stage1/rejectlog >/dev/null 2>&1
 
@@ -29,6 +34,7 @@ prepare() {
 
 	if [ ! -d $VARDIR/spool/tmp/exim_stage1 ]; then
 		mkdir $VARDIR/spool/tmp/exim_stage1
+		chown mailcleaner:mailcleaner $VARDIR/spool/tmp/exim_stage1
 	fi
 
 	if [ ! -d $VARDIR/spool/tmp/exim_stage1/auth_cache ]; then
@@ -36,8 +42,13 @@ prepare() {
 		chown mailcleaner:mailcleaner $VARDIR/spool/tmp/exim_stage1/auth_cache
 	fi
 
+	if [ ! -d $VARDIR/spool/tmp/exim ]; then
+		mkdir $VARDIR/spool/tmp/exim >/dev/null 2>&1
+		chown mailcleaner:mailcleaner $VARDIR/spool/tmp/exim
+	fi
 	if [ ! -d $VARDIR/spool/tmp/exim/blacklists ]; then
 		mkdir $VARDIR/spool/tmp/exim/blacklists
+		chown mailcleaner:mailcleaner $VARDIR/spool/tmp/exim/blacklists
 	fi
 
 	touch $VARDIR/spool/tmp/exim/frozen_senders
@@ -50,14 +61,13 @@ prepare() {
 
 	for f in hosts senders; do
 		touch $VARDIR/spool/tmp/exim/blacklists/$f
+		chown mailcleaner:mailcleaner $VARDIR/spool/tmp/exim/blacklists/$f
 	done
 
 	## copy certs
-	if [ ! -d $VARDIR/spool/tmp/exim ]; then
-		mkdir $VARDIR/spool/tmp/exim >/dev/null 2>&1
-	fi
 	if [ ! -d $VARDIR/spool/tmp/exim/certs ]; then
 		mkdir $VARDIR/spool/tmp/exim/certs >/dev/null 2>&1
+		chown mailcleaner:mailcleaner $VARDIR/spool/tmp/exim/certs
 	fi
 	rm $VARDIR/spool/tmp/exim/certs/*.* >/dev/null 2>&1
 	cp $SRCDIR/etc/exim/certs/*.* $VARDIR/spool/tmp/exim/certs/
