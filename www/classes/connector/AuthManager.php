@@ -10,8 +10,8 @@
  * requires PEAR's Auth class
  */
 require_once("Pear/Auth.php");
-require_once 'Log.php';
-require_once 'Log/observer.php';
+require_once("Pear/Log.php");
+require_once("Pear/Log/observer.php");
 
 /**
  * This class is the main authenticator factory

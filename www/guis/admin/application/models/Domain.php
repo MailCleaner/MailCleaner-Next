@@ -947,7 +947,7 @@ class Default_Model_Domain
 		realpath(APPLICATION_PATH . '/../../../../classes'),
 		get_include_path(),
 		]));
-		require_once('Log.php');
+		require_once('Pear/Log.php');
 		require_once('domain/Domain.php');
 		require_once('helpers/DM_SlaveConfig.php');
 		require_once('system/SystemConfig.php');
@@ -1007,7 +1007,7 @@ class Default_Model_Domain
 		realpath(APPLICATION_PATH . '/../../../../classes'),
 		get_include_path(),
 		]));
-		require_once('Log.php');
+		require_once('Pear/Log.php');
 		require_once('connector/AddressFetcher.php');
 		require_once('helpers/DM_SlaveConfig.php');
 		require_once('system/SystemConfig.php');
@@ -1041,7 +1041,7 @@ class Default_Model_Domain
 		realpath(APPLICATION_PATH . '/../../../../classes'),
 		get_include_path(),
 		]));
-		require_once('Log.php');
+		require_once('Pear/Log.php');
 		require_once('connector/AddressFetcher.php');
 		require_once('helpers/DM_SlaveConfig.php');
 		require_once('system/SystemConfig.php');
@@ -1098,7 +1098,7 @@ class Default_Model_Domain
 		realpath(APPLICATION_PATH . '/../../../../classes'),
 		get_include_path(),
 		]));
-		require_once('Log.php');
+		require_once('Pear/Log.php');
 		require_once('domain/Domain.php');
 		require_once('helpers/DM_SlaveConfig.php');
 		require_once('system/SystemConfig.php');
