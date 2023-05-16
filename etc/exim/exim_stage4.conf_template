@@ -39,7 +39,9 @@ __IF__ USETLS
 tls_advertise_hosts = *
 tls_certificate = __VARDIR__/spool/tmp/exim/certificate
 tls_privatekey = __VARDIR__/spool/tmp/exim/privatekey
-tls_require_ciphers = __CIPHERS__
+# TODO: pull updated GnuTLS ciphers from DB
+#tls_require_ciphers = __CIPHERS__
+tls_require_ciphers = SECURE256:+SECURE128:-VERS-TLS-ALL:+VERS-TLS1.2:-DHE-DSS:-CAMELLIA-128-CBC
 __ELSE__ USETLS
 tls_advertise_hosts =
 __FI__
