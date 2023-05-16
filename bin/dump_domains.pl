@@ -85,7 +85,7 @@ my $spoolroot = "$VARDIR/spool/mailcleaner";
 my $posterspath = $spoolroot."/addresses";
 foreach ($tmproot, $spoolroot, $posterspath) {
     if ( ! -d $_ ) {
-        die("NODESTINATIONFOLDERAVAILABLE $_\n") unless (make_path($_, {'mode'=>'0710', 'user'=>'mailcleaner', 'group' =>'mailcleaner'}));
+        die("NODESTINATIONFOLDERAVAILABLE $_\n") unless (make_path($_, {'mode'=>0755, 'user'=>'mailcleaner', 'group' =>'mailcleaner'}));
     }
 }
 

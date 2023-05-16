@@ -89,7 +89,7 @@ sub dumpWWFiles($to,$filepath)
 
         next unless (scalar(@list));
 
-        make_path($filepath, {'mode'=>'0710','user'=>'mailcleaner','group'=>'mailcleaner'});
+        make_path($filepath, {'mode'=>0755,'user'=>'mailcleaner','group'=>'mailcleaner'});
 
         my $WWFILE;
         confess "Failed to open $file\n" unless ($WWFILE = ${create_and_open($file)});

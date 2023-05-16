@@ -404,7 +404,7 @@ sub fetchGlobalPref($self,$object,$pref)
     return $result;
 }
 
-sub fetchBackendPref($self,$object,$pref)
+sub fetchBackendPref($self,$query,$pref)
 {
     return '_NOBACKEND' if ( !$self->connectBackend() );
 
@@ -424,7 +424,7 @@ sub getWWCacheKey($object)
     return md5_hex($object);
 }
 
-sub getObjectWWList($self,$object,$object,$sender)
+sub getObjectWWList($self,$type,$object,$sender)
 {
     ## first check if already cached
     my $iscachelisted = $self->getObjectCachedWW( $type, $object, $sender );

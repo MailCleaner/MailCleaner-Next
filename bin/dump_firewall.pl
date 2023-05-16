@@ -258,7 +258,7 @@ sub do_start_script($rules)
         my ($BLACK_IP, $BLACKLIST);
         if ( -e $blacklist_file ) {
             confess ("Failed to open $blacklist_file: $!\n") unless ($BLACK_IP = ${open_as($blacklist_file, "<")});
-            confess ("Failed to open $blacklist_script: $!\n") unless ($BLACKLIST = ${open_as($blacklist_script, ">>", "0755")});
+            confess ("Failed to open $blacklist_script: $!\n") unless ($BLACKLIST = ${open_as($blacklist_script, ">>", 0755)});
             if ( $blacklist == 0 ) {
                 print $BLACKLIST "#! /bin/sh\n\n";
                 print $BLACKLIST "$iptables -N BLACKLIST\n";
@@ -288,7 +288,7 @@ sub do_stop_script($rules)
     unlink($stop_script);
 
     my $STOP;
-    confess "Cannot open $stop_script" unless ( $STOP = ${open_as($stop_script, '>', '0755')} );
+    confess "Cannot open $stop_script" unless ( $STOP = ${open_as($stop_script, '>', 0755)} );
 
     print $STOP "#!/bin/sh\n";
 

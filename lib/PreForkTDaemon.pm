@@ -226,9 +226,13 @@ sub initDaemon($self)
         my $pid = fork;
         if ($pid) {
             # parent
-            open(my $fh, '>>', $self->{pidfile});
-            print $fh $pid;
-            close $fh;
+            my $fh;
+            if (open(my $fh, '>>', $self->{pidfile})) {
+                print $fh $pid;
+                close $fh;
+            } else {
+                print STDERR "Unable to log PID to $self->{pidfile}: $!\n";
+            }
             $self->doLog( 'Deamonized with PID ' . $pid, 'daemon' );
             $result = "started.";
             return output($result,@errors);
@@ -240,9 +244,9 @@ sub initDaemon($self)
             return output($result,@errors);
         } else {
             # child
-            open STDIN,  '/dev/null';
-            open STDOUT, '>>/dev/null';
-            open STDERR, '>>/dev/null';
+            open STDIN, '<', '/dev/null';
+            open STDOUT, '>>', '/dev/null';
+            open STDERR, '>>', '/dev/null';
             setsid();
             umask 0;
         }
@@ -567,25 +571,47 @@ sub writeLogToFile($self,$message)
     my $LOCK_UN = 8;
     $| = 1;
 
-    if ( !defined($LOGGERLOG) || !defined(fileno($LOGGERLOG)) || fileno($LOGGERLOG) != -1 ) {
-
-        if ( -f $self->{logfile} ) {
-            open($LOGGERLOG, '>>', $self->{logfile});
-        } else {
-            open($LOGGERLOG, '>>', "/tmp/$self->{logfile}");
-            $| = 1;
-        }
-        $self->doLog( 'Log file has been opened, hello !', 'daemon' );
+    if ( !defined($LOGGERLOG) || !fileno($LOGGERLOG) ) {
+        $self->openLog();
     }
-    my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) =
-      localtime(time);
+    my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) = localtime(time);
     $mon++;
     $year += 1900;
-    my $date = sprintf( "%d-%.2d-%.2d %.2d:%.2d:%.2d",
-        $year, $mon, $mday, $hour, $min, $sec );
+    my $date = sprintf( "%d-%.2d-%.2d %.2d:%.2d:%.2d", $year, $mon, $mday, $hour, $min, $sec );
     flock( $LOGGERLOG, $LOCK_EX );
     print $LOGGERLOG "$date (" . $self->getThreadID() . ") " . $message . "\n";
     flock( $LOGGERLOG, $LOCK_UN );
+}
+
+sub openLog($self)
+{
+    if ( !defined( $self->{'logfile'}) || $self->{'logfile'} eq '' ) {
+	      print STDERR "Module does not have a log file\n";
+	      $LOGGERLOG = &STDERR();
+    } else {
+        unless (open($LOGGERLOG, '>>', $self->{'logfile'})) {
+            print STDERR "Unable to open expected log $self->{logfile}\n";
+		        # Use temporary log
+		        my @path = split(/\//, $self->{'logfile'});
+		        shift(@path);
+		        my $file = pop(@path);
+		        my $d = '/tmp';
+		        foreach my $dir (@path) {
+		            $d .= "/$dir";
+		            unless ( -d $d ) {
+		                unless (mkdir($d)) {
+                        print STDERR "Cannot create $d: $!\n";
+                        $d = '/tmp';
+                        last;
+                    }
+                }
+	          }
+            open $LOGGERLOG, '>>', $d.'/'.$file;
+            print STDERR "Logging to $d/$file\n";
+        }
+        $| = 1;
+    }
+    print $LOGGERLOG "Log file has been opened, hello !\n", 'daemon';
 }
 
 sub closeLog($self)
@@ -634,9 +660,8 @@ sub profile_output($self)
     $self->doLog($out);
 }
 
-sub output
+sub output($result,@errors)
 {
-    my ($result,@errors) = @_;
     if (scalar @errors) {
         print STDOUT "$result\n  " . join("\n  ",@errors) . "\n";
         return 1;

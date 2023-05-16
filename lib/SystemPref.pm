@@ -49,7 +49,7 @@ sub create($name="SystemPref")
 
     my $conf = ReadConfig::getInstance();
     my $prefdir = $conf->getOption('VARDIR')."/spool/mailcleaner/prefs/_global/";
-    make_path($prefdir, {'mode'=>'0710', 'user'=>'mailcleaner', 'group'=>'mailcleaner'});
+    make_path($prefdir, {'mode'=>0755, 'user'=>'mailcleaner', 'group'=>'mailcleaner'});
     my $preffile = $prefdir."/prefs.list";
     my $self = {
         name => $name,

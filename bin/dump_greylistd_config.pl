@@ -94,7 +94,7 @@ sub dump_domain_to_avoid($domains)
     }
 
     my $dir = "${VARDIR}/spool/tmp/mailcleaner/";
-    make_path($dir, {'mode'=>'0710','user'=>$uid,'group'=>$gid}) unless ( -d $dir );
+    make_path($dir, {'mode'=>0755,'user'=>$uid,'group'=>$gid}) unless ( -d $dir );
     my $file = "${dir}/domains_to_avoid_greylist.list";
     my $DOMAINTOAVOID;
     confess "Cannot open $file: $!" unless ($DOMAINTOAVOID = ${open_as($file)} );
@@ -111,7 +111,7 @@ sub dump_greylistd_file($href)
     my %greylist_conf = %{$href};
 
     my $dir = "${SRCDIR}/etc/greylistd";
-    make_path($dir, {'mode'=>'0710','user'=>$uid,'group'=>$gid}) unless ( -e $dir );
+    make_path($dir, {'mode'=>0755,'user'=>$uid,'group'=>$gid}) unless ( -e $dir );
 
     my $template_file = "${dir}/greylistd.conf_template";
     my $target_file = "${dir}/greylistd.conf";

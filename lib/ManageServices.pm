@@ -1063,21 +1063,21 @@ sub writeLog($self,$message)
     $| = 1;
 
     if ( !defined($LOGGERLOG) || !fileno($LOGGERLOG) ) {
-    	if ( !defined( $self->{'module'}->{'logfile'}) || $self->{'module'}->{'logfile'} eq '' ) {
-	    print STDERR "Module does not have a log file\n";
-	    open($LOGGERLOG, '>>', &STDERR);
+    	  if ( !defined( $self->{'module'}->{'logfile'}) || $self->{'module'}->{'logfile'} eq '' ) {
+	          print STDERR "Module does not have a log file\n";
+	          open($LOGGERLOG, '>>', &STDERR);
         } else {
             unless (open($LOGGERLOG, '>>', $self->{'module'}->{'logfile'})) {
-		# Use temporary log
-		my @path = split(/\//, $self->{'module'}->{'logfile'});
-		shift(@path);
-		my $file = pop(@path);
-		my $d = '/tmp';
-		foreach my $dir (@path) {
-		    $d .= "/$dir";
-		    mkdir($d) if ( !-e $d );
-	        }
-            	open $LOGGERLOG, '>>', $d.'/'.$file;
+		            # Use temporary log
+		            my @path = split(/\//, $self->{'module'}->{'logfile'});
+		            shift(@path);
+		            my $file = pop(@path);
+		            my $d = '/tmp';
+		            foreach my $dir (@path) {
+		                $d .= "/$dir";
+		                mkdir($d) if ( !-e $d );
+	              }
+            	  open $LOGGERLOG, '>>', $d.'/'.$file;
             }
             $| = 1;
         }

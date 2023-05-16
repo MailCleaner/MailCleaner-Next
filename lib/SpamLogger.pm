@@ -93,14 +93,14 @@ sub processDatas($self,$datas)
 #####
 ## logSpam
 #####
-sub logSpam($self)
+sub logSpam($self, @fields)
 {
     my %msg;
 
     my $query = "LOG";
     my $params = "";
     foreach my $field (@fields) {
-        $msg{$field} = shift;
+        $msg{$field} = $_;
         if (defined($msg{$field})) {
             my $value = encode_base64($msg{$field});
             chomp($value);

@@ -71,7 +71,7 @@ confess "Unable to detect 'snfuser' group" unless $gid = getgrnam( 'snfuser' );
 
 our $dir = "$SRCDIR/etc/messagesniffer";
 unless ( -d $dir ) {
-    confess "Cannot create dir $dir: $!\n" unless make_path($dir, { 'mode' => '0755', 'user' => $uid, 'group' => $gid });
+    confess "Cannot create dir $dir: $!\n" unless make_path($dir, { 'mode' => 0755, 'user' => $uid, 'group' => $gid });
 }
 dump_file("SNFServer.xml");
 dump_file("identity.xml");
@@ -86,8 +86,8 @@ sub dump_file($file)
     my $target_file = "${dir}/${file}";
 
     my ($TEMPLATE, $TARGET);
-    confess "Cannot open $template_file: $!\n" unless ($TEMPLATE = ${open_as($template_file, '<', '0755', "snfuser:snfuser")});
-    confess "Cannot open $target_file: $!\n" unless ($TARGET = ${open_as($target_file, '>', '0755', "snfuser:snfuser")});
+    confess "Cannot open $template_file: $!\n" unless ($TEMPLATE = ${open_as($template_file, '<', 0755, "snfuser:snfuser")});
+    confess "Cannot open $target_file: $!\n" unless ($TARGET = ${open_as($target_file, '>', 0755, "snfuser:snfuser")});
 
     my $proxy_server = "";
     my $proxy_port = "";

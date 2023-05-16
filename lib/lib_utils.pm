@@ -90,7 +90,7 @@ sub create_lockfile($filename, $path="/var/mailcleaner/spool/tmp", $timeout=10, 
         $path = '/var/mailcleaner/spool/tmp/' . $path;
     }
     $path .= '/' if ($path  !~ /\/$/);
-    make_path($path, {mode => '0710'});
+    make_path($path, {mode => 0755});
 
     my $fullpathname = $path . $filename;
 
@@ -143,7 +143,7 @@ sub remove_lockfile($filename, $path)
     return $rc;
 }
 
-sub open_as($file, $method=">", $chmod="0664", $chown='mailcleaner:mailcleaner')
+sub open_as($file, $method=">", $chmod=0664, $chown='mailcleaner:mailcleaner')
 {
     my ($uid, $gid) = split(/:/,$chown);
     $uid = getpwnam( $uid );

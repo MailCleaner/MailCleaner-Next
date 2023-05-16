@@ -96,7 +96,7 @@ sub verify($self,$address)
         push @callout_params, $p;
     }
 
-    my $connector = new $class(\@callout_params);
+    my $connector = $class->new(\@callout_params);
 
     if ($connector->isUseable()) {
         my $res = $connector->verify($address);
