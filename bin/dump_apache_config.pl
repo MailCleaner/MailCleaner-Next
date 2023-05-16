@@ -86,8 +86,6 @@ dump_certificate(${SRCDIR},$apache_conf{'tls_certificate_data'}, $apache_conf{'t
 
 $dbh->disconnect();
 
-print "DUMPSUCCESSFUL";
-
 #############################
 sub dump_apache_file($filetmpl, $filedst)
 {

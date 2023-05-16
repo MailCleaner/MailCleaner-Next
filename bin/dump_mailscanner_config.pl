@@ -29,11 +29,22 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+my ($conf, $SRCDIR, $VARDIR, $MYMAILCLEANERPWD);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
+    confess "Failed to get DB password" unless ($MYMAILCLEANERPWD = $conf->getOption('MYMAILCLEANERPWD'));
 }
+
+use lib_utils qw(open_as);
 
 require ConfigTemplate;
 require DB;
@@ -41,7 +52,6 @@ require MCDnsLists;
 require GetDNS;
 
 my $db = DB::connect('slave', 'mc_config');
-our $conf = ReadConfig::getInstance();
 
 our $DEBUG = 1;
 my $lasterror = "";
@@ -64,14 +74,11 @@ dump_FuzzyOcr_config();
 dump_saplugins_conf();
 dump_dnsblacklists_conf();
 
-unlink($conf->getOption('SRCDIR')."/share/spamassassin/mailscanner.cf");
-symlink($conf->getOption('SRCDIR')."/etc/mailscanner/spam.assassin.prefs.conf", $conf->getOption('SRCDIR')."/share/spamassassin/mailscanner.cf");
-
-print "DUMPSUCCESSFUL";
-exit 0;
+unlink("${SRCDIR}/share/spamassassin/mailscanner.cf");
+symlink("${SRCDIR}/etc/mailscanner/spam.assassin.prefs.conf", "${SRCDIR}/share/spamassassin/mailscanner.cf");
 
 #############################
-sub get_system_config
+sub get_system_config()
 {
     my %config = ();
     my %row = $db->getHashRow("SELECT hostname, organisation, sysadmin, clientid, default_language, summary_from FROM system_conf");
@@ -87,7 +94,7 @@ sub get_system_config
 }
 
 #############################
-sub get_prefilters
+sub get_prefilters()
 {
     my @pfs;
 
@@ -96,7 +103,7 @@ sub get_prefilters
 }
 
 #############################
-sub get_ms_config
+sub get_ms_config()
 {
     my %row = $db->getHashRow(
         "SELECT scanners, scanner_timeout, silent, file_timeout, expand_tnef, deliver_bad_tnef,
@@ -160,26 +167,24 @@ sub get_ms_config
     }
     $config{'__BLOCKENCRYPT__'} = $row{'block_encrypt'};
     $config{'__BLOCKUNENCRYPT__'} = $row{'block_unencrypt'};
+    my $FH;
     if ($row{'allow_passwd_archives'} eq 'yes')   {
         $config{'__ALLOWPWDARCHIVES__'} = 'yes';
-        open(my $FH, '>', '/var/mailcleaner/spool/tmp/mailscanner/whitelist_password_archives');
-        print $FH "FromOrTo:\tdefault\tyes";
-        close $FH
+        unlink "${VARDIR}/spool/tmp/mailscanner/whitelist_password_archives" if ( -e "${VARDIR}/spool/tmp/mailscanner/whitelist_password_archives");
     } else {
-        $config{'__ALLOWPWDARCHIVES__'} = '/var/mailcleaner/spool/tmp/mailscanner/whitelist_password_archives';
-        if (open(my $FH, '>', '/var/mailcleaner/spool/tmp/mailscanner/whitelist_password_archives')) {
-            if (defined($row{wh_passwd_archives})) {
-                my @wh_dom = split('\n', $row{wh_passwd_archives});
-                foreach my $wh_dom (@wh_dom) {
-                    next if ( ! ($wh_dom =~ /\./) );
-                    print $FH "FromOrTo:\t$wh_dom\tyes\n";
-                }
+        $config{'__ALLOWPWDARCHIVES__'} = "${VARDIR}/spool/tmp/mailscanner/whitelist_password_archives";
+        unless ($FH = ${open_as($config{'__ALLOWPWDARCHIVES__'})}) {
+            confess "Cannot open $config{'__ALLOWPWDARCHIVES__'}: $!\n";
+        }
+        if (defined($row{wh_passwd_archives})) {
+            my @wh_dom = split('\n', $row{wh_passwd_archives});
+            foreach my $wh_dom (@wh_dom) {
+                next if ( ! ($wh_dom =~ /\./) );
+                print $FH "FromOrTo:\t$wh_dom\tyes\n";
             }
-            print $FH "FromOrTo:\tdefault\tno";
-            close $FH;
-	} else {
-	    die("Failed to open /var/mailcleaner/spool/tmp/mailscanner/whitelist_password_archives\n");
-	}
+        }
+        print $FH "FromOrTo:\tdefault\tno";
+        close $FH;
     }
 
     $config{'__ALLOWPARTIAL__'} = $row{'allow_partial'};
@@ -191,10 +196,10 @@ sub get_ms_config
     $config{'__ALLOWCODEBASE__'} = $row{'allow_codebase'};
     $config{'__NOTIFYSENDER__'} = $row{'notify_sender'};
 
-    if ($row{'silent_iframe'} eq "yes") { $config{'__SILENT__'} .= " HTML-IFrame";}
-    if ($row{'silent_form'} eq "yes") { $config{'__SILENT__'} .= " HTML-Form";}
-    if ($row{'silent_script'} eq "yes") { $config{'__SILENT__'} .= " HTML-Script";}
-    if ($row{'silent_codebase'} eq "yes") { $config{'__SILENT__'} .= " HTML-Codebase";}
+    $config{'__SILENT__'} .= " HTML-IFrame" if ($row{'silent_iframe'} eq "yes");
+    $config{'__SILENT__'} .= " HTML-Form" if ($row{'silent_form'} eq "yes");
+    $config{'__SILENT__'} .= " HTML-Script" if ($row{'silent_script'} eq "yes");
+    $config{'__SILENT__'} .= " HTML-Codebase" if ($row{'silent_codebase'} eq "yes");
 
     ## get memory size
     my $memsizestr = `cat /proc/meminfo | grep MemTotal`;
@@ -226,7 +231,7 @@ sub get_ms_config
 }
 
 #############################
-sub get_sa_config
+sub get_sa_config()
 {
     my %config;
 
@@ -281,7 +286,7 @@ sub get_sa_config
 }
 
 #############################
-sub get_active_scanners
+sub get_active_scanners()
 {
     my @list = $db->getListOfHash("SELECT name from scanner WHERE active=1");
     return "none" unless @list;
@@ -296,14 +301,14 @@ sub get_active_scanners
 }
 
 #############################
-sub get_dnslists
+sub get_dnslists()
 {
     my @list = $db->getListOfHash("SELECT name FROM dnslist WHERE active=1");
     return @list;
 }
 
 #############################
-sub dump_ms_file
+sub dump_ms_file()
 {
     my $template = ConfigTemplate::create(
         'etc/mailscanner/MailScanner.conf_template',
@@ -315,7 +320,7 @@ sub dump_ms_file
 }
 
 #############################
-sub dump_sa_file
+sub dump_sa_file()
 {
     my $template = ConfigTemplate::create(
         'etc/mailscanner/spam.assassin.prefs.conf_template',
@@ -380,7 +385,7 @@ sub dump_sa_file
 }
 
 #############################
-sub dump_prefilter_files
+sub dump_prefilter_files()
 {
     my $basedir=$conf->getOption('SRCDIR')."/etc/mailscanner/prefilters";
 
@@ -453,7 +458,7 @@ sub getPrefilterSpecConfig($prefilter,$replace)
 }
 
 #############################
-sub dump_virus_file
+sub dump_virus_file()
 {
     my $template = ConfigTemplate::create(
         'etc/mailscanner/virus.scanners.conf_template',
@@ -463,7 +468,7 @@ sub dump_virus_file
 }
 
 #############################
-sub dump_Oscar_config
+sub dump_Oscar_config()
 {
     my $template = ConfigTemplate::create(
         'etc/mailscanner/OscarOcr.cf_template',
@@ -473,7 +478,7 @@ sub dump_Oscar_config
 }
 
 #############################
-sub dump_FuzzyOcr_config
+sub dump_FuzzyOcr_config()
 {
     my $template = ConfigTemplate::create(
         'etc/mailscanner/FuzzyOcr.cf_template',
@@ -483,7 +488,7 @@ sub dump_FuzzyOcr_config
 }
 
 #############################
-sub dump_saplugins_conf
+sub dump_saplugins_conf()
 {
     my $template = ConfigTemplate::create(
         'etc/mailscanner/sa_plugins.pre',
@@ -514,7 +519,7 @@ sub getModuleStatus($module)
 }
 
 #############################
-sub dump_filename_config
+sub dump_filename_config()
 {
     my $template = ConfigTemplate::create(
         'etc/mailscanner/filename.rules.conf_template',
@@ -548,7 +553,7 @@ sub dump_filename_config
 }
 
 #############################
-sub dump_filetype_config
+sub dump_filetype_config()
 {
     my $template = ConfigTemplate::create(
         'etc/mailscanner/filetype.rules.conf_template',
@@ -576,7 +581,7 @@ sub dump_filetype_config
 }
 
 #############################
-sub dump_dnsblacklists_conf
+sub dump_dnsblacklists_conf()
 {
     my $template = ConfigTemplate::create(
         'etc/mailscanner/dnsblacklists.conf_template',
@@ -612,9 +617,8 @@ sub log_dns($str)
   #print $str."\n";
 }
 
-sub expand_host_string($string)
+sub expand_host_string($string, %args)
 {
-    my %args = @_;
     my $dns = GetDNS->new();
     return $dns->dumper($string,%args);
 }

@@ -29,56 +29,56 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+our ($conf, $SRCDIR, $VARDIR, $HOSTID);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
+    confess "Failed to get HOSTID from '/etc/mailcleaner.conf'" unless ($HOSTID = $conf->getOption('HOSTID'));
 }
 
-use DBI();
+use lib_utils qw(open_as);
 use File::Path qw(mkpath);
+require DB;
 require GetDNS;
 
 our $DEBUG = 1;
 
-my %config = readConfig("/etc/mailcleaner.conf");
 my $system_mibs_file = '/usr/share/snmp/mibs/MAILCLEANER-MIB.txt';
 if ( ! -d '/usr/share/snmp/mibs') {
  mkpath('/usr/share/snmp/mibs');
 }
-my $mc_mib_file = $config{'SRCDIR'}.'/www/guis/admin/public/downloads/MAILCLEANER-MIB.txt';
+my $mc_mib_file = "${SRCDIR}/www/guis/admin/public/downloads/MAILCLEANER-MIB.txt";
 
 my $lasterror = "";
 
-my $dbh;
-$dbh = DBI->connect(
-    "DBI:mysql:database=mc_config;host=localhost;mysql_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
-    "mailcleaner", "$config{MYMAILCLEANERPWD}", {RaiseError => 0, PrintError => 0}
-) or fatal_error("CANNOTCONNECTDB", $dbh->errstr);
+our $dbh = DB::connect('slave', 'mc_config');
 
 my %snmpd_conf;
-%snmpd_conf = get_snmpd_config() or fatal_error("NOSNMPDCONFIGURATIONFOUND", "no snmpd configuration found");
+confess "Error fetching snmp config: $!" unless %snmpd_conf = get_snmpd_config();
 
 my %master_hosts;
 %master_hosts = get_master_config();
 
-dump_snmpd_file() or fatal_error("CANNOTDUMPSNMPDFILE", $lasterror);
-
-$dbh->disconnect();
+confess "Error dumping snmp config: $!" unless dump_snmpd_file();
 
 if (-f $system_mibs_file) {
     unlink($system_mibs_file);
 }
 symlink($mc_mib_file,$system_mibs_file);
-print "DUMPSUCCESSFUL";
 
 #############################
-sub dump_snmpd_file
+sub dump_snmpd_file()
 {
-    my $stage = shift;
-
-    my $template_file = "$config{'SRCDIR'}/etc/snmp/snmpd.conf_template";
-    my $target_file = "$config{'SRCDIR'}/etc/snmp/snmpd.conf";
+    my $template_file = "${SRCDIR}/etc/snmp/snmpd.conf_template";
+    my $target_file = "${SRCDIR}/etc/snmp/snmpd.conf";
 
     my $ipv6 = 0;
     if (open(my $interfaces, '<', '/etc/network/interfaces')) {
@@ -91,15 +91,9 @@ sub dump_snmpd_file
         close($interfaces);
     }
 
-    if ( !open(my $TEMPLATE, '<', $template_file) ) {
-        $lasterror = "Cannot open template file: $template_file";
-        return 0;
-    }
-    if ( !open(my $TARGET, '>', $target_file) ) {
-        $lasterror = "Cannot open target file: $target_file";
-        close $template_file;
-        return 0;
-    }
+    my ($TEMPLATE, $TARGET);
+    confess "Cannot open $template_file: $!" unless ($TEMPLATE = ${open_as($template_file, '<')} );
+    confess "Cannot open $target_file: $!" unless ($TARGET = ${open_as($target_file)} );
 
     my @ips = expand_host_string($snmpd_conf{'__ALLOWEDIP__'}.' 127.0.0.1',('dumper'=>'snmp/allowedip'));
     foreach my $ip ( keys(%master_hosts) ) {
@@ -116,8 +110,8 @@ sub dump_snmpd_file
     while(<$TEMPLATE>) {
         my $line = $_;
 
-        $line =~ s/__VARDIR__/$config{'VARDIR'}/g;
-        $line =~ s/__SRCDIR__/$config{'SRCDIR'}/g;
+        $line =~ s/__VARDIR__/${VARDIR}/g;
+        $line =~ s/__SRCDIR__/${SRCDIR}/g;
 
         print $TARGET $line;
     }
@@ -139,79 +133,40 @@ sub get_snmpd_config
     my %config;
 
     my $sth = $dbh->prepare("SELECT allowed_ip, community, disks FROM snmpd_config");
-    $sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
+    confess "CANNOTEXECUTEQUERY $dbh->errstr" unless $sth->execute();
 
-    if ($sth->rows < 1) {
-                return;
-        }
-        my $ref = $sth->fetchrow_hashref() or return;
+    return unless ($sth->rows);
+    my $ref;
+    confess "CANNOTFETCHROWS $dbh->errstr" unless $ref = $sth->fetchrow_hashref();
 
     $config{'__ALLOWEDIP__'} = join(' ',expand_host_string($ref->{'allowed_ip'},('dumper'=>'snmp/allowedip')));
     $config{'__COMMUNITY__'} = $ref->{'community'};
     $config{'__DISKS__'} = $ref->{'disks'};
 
     $sth->finish();
-        return %config;
+    return %config;
 }
 
 #############################
 sub get_master_config
 {
-
     my %masters;
 
     my $sth = $dbh->prepare("SELECT hostname FROM master");
-    $sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
+    confess "CANNOTEXECUTEQUERY $dbh->errstr" unless $sth->execute();
 
-        if ($sth->rows < 1) {
-                return;
-        }
-    while (my $ref = $sth->fetchrow_hashref()) {
+    return unless ($sth->rows);
+    my $ref;
+    while ($ref = $sth->fetchrow_hashref()) {
         $masters{$ref->{'hostname'}} = 1;
     }
 
     $sth->finish();
-        return %masters;
+    return %masters;
 }
 
-#############################
-sub fatal_error($msg,$full)
+sub expand_host_string($string, %args)
 {
-    print $msg . ($DEBUG ? "\n Full information: $full \n" : "\n");
-}
-
-#############################
-sub print_usage
-{
-    print "Bad usage: dump_exim_config.pl [stage-id]\n\twhere stage-id is an integer between 0 and 4 (0 or null for all).\n";
-    exit(0);
-}
-
-#############################
-sub readConfig($configfile)
-{
-    my %config;
-    my ($var, $value);
-
-    open (my $CONFIG, '<', $configfile) or die "Cannot open $configfile: $!\n";
-    while (<$CONFIG>) {
-        chomp;              # no newline
-        s/#.*$//;           # no comments
-        s/^\*.*$//;         # no comments
-        s/;.*$//;           # no comments
-        s/^\s+//;           # no leading white
-        s/\s+$//;           # no trailing white
-        next unless length; # anything left?
-        my ($var, $value) = split(/\s*=\s*/, $_, 2);
-        $config{$var} = $value;
-    }
-    close $CONFIG;
-    return %config;
-}
-
-sub expand_host_string($string)
-{
-    my %args = @_;
     my $dns = GetDNS->new();
     return $dns->dumper($string,%args);
 }

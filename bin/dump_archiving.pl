@@ -28,13 +28,23 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+our ($conf, $SRCDIR, $VARDIR);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR');
+    $VARDIR = $conf->getOption('VARDIR');
+    unshift(@INC, $SRCDIR."/lib");
 }
 
-require ReadConfig;
+use lib_utils qw( open_as );
+
 require DB;
 require Domain;
 require SystemPref;
@@ -46,25 +56,19 @@ my $domain = shift;
 my $uid = getpwnam( 'mailcleaner' );
 my $gid = getgrnam( 'mailcleaner' );
 
-my $conf = ReadConfig::getInstance();
-my $op = $conf->getOption('SRCDIR');
-
 my $slave_db = DB::connect('slave', 'mc_config');
 
 dumpArchivedDomains();
 dumpCopyto();
 dumpBypassFiltering();
 
-
 $slave_db->disconnect();
-print "DUMPSUCCESSFUL";
-exit 0;
 
-sub dumpArchivedDomains
+sub dumpArchivedDomains()
 {
     my @adomains = $slave_db->getListOfHash("SELECT d.name FROM domain d, domain_pref dp WHERE dp.archive_mail='1' AND d.name != '__global__' AND d.prefs=dp.id");
 
-    my $archive_path = $conf->getOption('VARDIR')."/spool/tmp/exim_stage1/archiver";
+    my $archive_path = "${VARDIR}/spool/tmp/exim_stage1/archiver";
     if (! -d $archive_path) {
         mkdir($archive_path);
     }
@@ -75,7 +79,7 @@ sub dumpArchivedDomains
     my %doms;
     foreach my $d (@adomains) {
         my $domfile = $archive_path."/".$d->{'name'};
-        if ( open(my $DFILE, '>', $domfile) ) {
+        if ( my $DFILE = ${open_as($domfile)} ) {
             print $DFILE "*";
             close $DFILE;
             $doms{$d->{'name'}} = 1;
@@ -89,7 +93,7 @@ sub dumpArchivedDomains
             my $euser = $1;
             if (!defined($doms{$edom})) {
                 my $domfile = $archive_path."/".$edom;
-                if ( open(my $DFILE, '>>', $domfile) ) {
+                if ( my $DFILE = ${open_as($domfile, '>>')} ) {
                     print $DFILE $e->{'address'}."\n";
                     print $DFILE $euser."\n";
                     close $DFILE;
@@ -101,11 +105,11 @@ sub dumpArchivedDomains
     }
 }
 
-sub dumpCopyto
+sub dumpCopyto()
 {
     my @cdomains = $slave_db->getListOfHash("SELECT d.name, dp.copyto_mail FROM domain d, domain_pref dp WHERE dp.copyto_mail != '' AND d.name != '__global__' AND d.prefs=dp.id");
 
-    my $copyto_path = $conf->getOption('VARDIR')."/spool/tmp/exim_stage1/copyto";
+    my $copyto_path = "${VARDIR}/spool/tmp/exim_stage1/copyto";
     if (! -d $copyto_path) {
         mkdir($copyto_path);
     }
@@ -116,7 +120,7 @@ sub dumpCopyto
     my %doms;
     foreach my $d (@cdomains) {
         my $domfile = $copyto_path."/".$d->{'name'};
-        if ( open(my $DFILE, '>', $domfile) ) {
+        if ( my $DFILE = ${open_as($domfile)} ) {
             print $DFILE "*:".$d->{'copyto_mail'};
             close $DFILE;
             $doms{$d->{'name'}} = 1;
@@ -130,7 +134,7 @@ sub dumpCopyto
             my $euser = $1;
             if (!defined($doms{$edom})) {
                 my $domfile = $copyto_path."/".$edom;
-                if ( open(my $DFILE, '>>', $domfile) ) {
+                if ( my $DFILE = ${open_as($domfile, '>>')} ) {
                     print $DFILE $e->{'address'}.":".$e->{'copyto_mail'}."\n";
                     print $DFILE $euser.":".$e->{'copyto_mail'}."\n";
                     close $DFILE;
@@ -142,9 +146,9 @@ sub dumpCopyto
     }
 }
 
-sub dumpBypassFiltering
+sub dumpBypassFiltering()
 {
-    my $bypassfiltering_path = $conf->getOption('VARDIR')."/spool/tmp/exim_stage1/bypass";
+    my $bypassfiltering_path = "${VARDIR}/spool/tmp/exim_stage1/bypass";
 
     my @cemail = $slave_db->getListOfHash("SELECT e.address, p.bypass_filtering from email e, user_pref p WHERE p.bypass_filtering != '' AND e.pref=p.id");
 
@@ -160,7 +164,7 @@ sub dumpBypassFiltering
             my $edom = $2;
             my $euser = $1;
             my $domfile = $bypassfiltering_path."/".$edom;
-            if ( open(my $DFILE, '>>', $domfile) ) {
+            if ( my $DFILE = ${open_as($domfile, '>>')} ) {
                 print $DFILE $euser."\n";
                 close $DFILE;
             }

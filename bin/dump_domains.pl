@@ -28,6 +28,7 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
 my ($conf, $SRCDIR, $VARDIR);
 BEGIN {
@@ -42,6 +43,8 @@ BEGIN {
     unshift(@INC, $SRCDIR."/lib");
 }
 
+use lib_utils qw(open_as);
+
 require DB;
 require Domain;
 require SystemPref;
@@ -49,7 +52,6 @@ require ConfigTemplate;
 use File::Copy;
 use File::Path qw(make_path);
 use Time::HiRes qw(gettimeofday tv_interval);
-use lib_utils qw(open_as);
 
 my $domain = shift;
 
@@ -141,7 +143,6 @@ print_time('dumping_archiving');
 $previous_time = time();
 
 $slave_db->disconnect();
-print "DUMPSUCCESSFUL";
 
 sub parseDestinations($d_ref)
 {
@@ -217,9 +218,6 @@ sub parseDestinations($d_ref)
 
     return %domain_dest;
 }
-
-#####################################
-## dumpDomainsFile
 
 sub dumpDomainsFile($d_ref,$tmproot)
 {

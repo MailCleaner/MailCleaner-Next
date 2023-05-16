@@ -143,7 +143,7 @@ sub remove_lockfile($filename, $path)
     return $rc;
 }
 
-sub open_as($file, $method=">", $chown='mailcleaner:mailcleaner', $chmod="0664")
+sub open_as($file, $method=">", $chmod="0664", $chown='mailcleaner:mailcleaner')
 {
     my ($uid, $gid) = split(/:/,$chown);
     $uid = getpwnam( $uid );
@@ -161,8 +161,8 @@ sub open_as($file, $method=">", $chown='mailcleaner:mailcleaner', $chmod="0664")
         confess("Failed to create $path/$filename\n") unless touch("$path/$filename");
     }
 
-    die("Failed to set mode for ${path}/${filename} to $uid:$gid\n") unless chmod($chmod, $path.'/'.$filename);
-    die("Failed to give ownership of $path/$filename to $uid:$gid\n") unless chown($uid, $gid, $path.'/'.$filename);
+    confess "Failed to set mode for ${path}/${filename} to $uid:$gid\n" unless chmod($chmod, $path.'/'.$filename);
+    confess "Failed to give ownership of $path/$filename to $uid:$gid\n" unless chown($uid, $gid, $path.'/'.$filename);
 
     if (open (my $fh, $method, "${path}/${filename}")) {
         return \$fh;

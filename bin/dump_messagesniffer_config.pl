@@ -30,81 +30,77 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+our ($conf, $SRCDIR, $VARDIR, $HTTPPROXY, $MYMAILCLEANERPWD);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
+    $HTTPPROXY = $conf->getOption('HTTPPROXY') || '';
+    confess "Failed to get DB password" unless ($MYMAILCLEANERPWD = $conf->getOption('MYMAILCLEANERPWD'));
 }
 
-use DBI();
+use lib_utils qw(open_as);
+require DB;
 
 our $DEBUG = 1;
 
 my $lasterror;
 
-my %config = readConfig("/etc/mailcleaner.conf");
-
-my $dbh;
-$dbh = DBI->connect("DBI:mysql:database=mc_config;host=localhost;mysql_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
-                        "mailcleaner", "$config{MYMAILCLEANERPWD}", {RaiseError => 0, PrintError => 0})
-                or fatal_error("CANNOTCONNECTDB", $dbh->errstr);
+my $dbh = DB::connect('slave', 'mc_config');
 
 my %messagesniffer_conf;
 %messagesniffer_conf = get_messagesniffer_config() or fatal_error("NOMESSAGESNIFFERCONFIGURATIONFOUND", "no MessageSniffer configuration found");
 
 if (!defined($messagesniffer_conf{'__LICENSEID__'})) {
-  $messagesniffer_conf{'__LICENSEID__'} = '';
+    $messagesniffer_conf{'__LICENSEID__'} = '';
 }
 if (!defined($messagesniffer_conf{'__AUTHENTICATION__'})) {
-  $messagesniffer_conf{'__AUTHENTICATION__'} = '';
+    $messagesniffer_conf{'__AUTHENTICATION__'} = '';
 }
 
-my $uid = getpwnam( 'snfuser' );
-my $gid = getgrnam( 'snfuser' );
+our ($uid, $gid);
+confess "Unable to detect 'snfuser' user" unless $uid = getpwnam( 'snfuser' );
+confess "Unable to detect 'snfuser' group" unless $gid = getgrnam( 'snfuser' );
 
-dump_file($config{'SRCDIR'},"SNFServer.xml");
-chown $uid, $gid, "SNFServer.xml";
-dump_file($config{'SRCDIR'},"identity.xml");
-chown $uid, $gid, "identity.xml";
-dump_file($config{'SRCDIR'},"getRulebase");
-chown $uid, $gid, "getRulebase";
-
-chmod 0755, "$config{'SRCDIR'}/etc/messagesniffer/getRulebase";
+our $dir = "$SRCDIR/etc/messagesniffer";
+unless ( -d $dir ) {
+    confess "Cannot create dir $dir: $!\n" unless make_path($dir, { 'mode' => '0755', 'user' => $uid, 'group' => $gid });
+}
+dump_file("SNFServer.xml");
+dump_file("identity.xml");
+dump_file("getRulebase");
 
 $dbh->disconnect();
 
-print "DUMPSUCCESSFUL";
-
 #############################
-sub dump_file($srcdir,$file)
+sub dump_file($file)
 {
-    my $template_file = $srcdir."/etc/messagesniffer/".$file."_template";
-    my $target_file = $srcdir."/etc/messagesniffer/".$file;
+    my $template_file = "${dir}/${file}_template";
+    my $target_file = "${dir}/${file}";
 
-    if ( !open(my $TEMPLATE, '<', $template_file) ) {
-        $lasterror = "Cannot open template file: $template_file";
-        return 0;
-    }
-    if ( !open(my $TARGET, '>', $target_file) ) {
-        $lasterror = "Cannot open target file: $target_file";
-        close $template_file;
-        return 0;
-    }
+    my ($TEMPLATE, $TARGET);
+    confess "Cannot open $template_file: $!\n" unless ($TEMPLATE = ${open_as($template_file, '<', '0755', "snfuser:snfuser")});
+    confess "Cannot open $target_file: $!\n" unless ($TARGET = ${open_as($target_file, '>', '0755', "snfuser:snfuser")});
 
     my $proxy_server = "";
     my $proxy_port = "";
-    if (defined($config{'HTTPPROXY'})) {
-        if ($config{'HTTPPROXY'} =~ m/http\:\/\/(\S+)\:(\d+)/) {
-            $proxy_server = $1;
-            $proxy_port = $2;
-        }
+    if ($HTTPPROXY =~ m/http\:\/\/(\S+)\:(\d+)/) {
+        $proxy_server = $1;
+        $proxy_port = $2;
     }
 
     while(<$TEMPLATE>) {
         my $line = $_;
 
-        $line =~ s/__VARDIR__/$config{'VARDIR'}/g;
-        $line =~ s/__SRCDIR__/$config{'SRCDIR'}/g;
+        $line =~ s/__VARDIR__/${VARDIR}/g;
+        $line =~ s/__SRCDIR__/${SRCDIR}/g;
         if ($proxy_server =~ m/\S+/) {
             $line =~ s/\#HTTPProxyServer __HTTPPROXY__/HTTPProxyServer $proxy_server/g;
             $line =~ s/\#HTTPProxyPort __HTTPPROXYPORT__/HTTPProxyPort $proxy_port/g;
@@ -122,7 +118,7 @@ sub dump_file($srcdir,$file)
 }
 
 #############################
-sub get_messagesniffer_config
+sub get_messagesniffer_config()
 {
     my %config;
 
@@ -138,28 +134,5 @@ sub get_messagesniffer_config
     $config{'__AUTHENTICATION__'} = $ref->{'authentication'};
 
     $sth->finish();
-    return %config;
-}
-
-
-#############################
-sub readConfig($configfile)
-{
-    my %config;
-    my ($var, $value);
-
-    open (my $CONFIG, '<', $configfile) or die "Cannot open $configfile: $!\n";
-    while (<$CONFIG>) {
-        chomp;              # no newline
-        s/#.*$//;           # no comments
-        s/^\*.*$//;         # no comments
-        s/;.*$//;           # no comments
-        s/^\s+//;           # no leading white
-        s/\s+$//;           # no trailing white
-        next unless length; # anything left?
-        my ($var, $value) = split(/\s*=\s*/, $_, 2);
-        $config{$var} = $value;
-    }
-    close $CONFIG;
     return %config;
 }

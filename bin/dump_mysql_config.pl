@@ -29,22 +29,35 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+our ($conf, $SRCDIR, $VARDIR, $HOSTID);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
+    confess "Failed to get HOSTID from '/etc/mailcleaner.conf'" unless ($HOSTID = $conf->getOption('HOSTID'));
 }
+
+use lib_utils qw(open_as);
+use File::Path qw(make_path);
+require DB;
 
 our $DEBUG = 1;
 
-my %config = readConfig("/etc/mailcleaner.conf");
-
 ## added 10 for migration ease
-$config{'__MASTERID__'} = ($config{'HOSTID'} * 2) - 1 + 10;
-$config{'__SLAVEID__'} = $config{'HOSTID'} * 2 + 10;
+my %config;
+$config{'HOSTID'} = ${HOSTID};
+$config{'__MASTERID__'} = (${HOSTID} * 2) - 1 + 10;
+$config{'__SLAVEID__'} = ${HOSTID} * 2 + 10;
 
 ## Avoid having unsychronized database when starting a new VA
-my $FIRSTUPDATE_FLAG_RAN="$config{'VARDIR'}/run/configurator/updater4mc-ran";
+my $FIRSTUPDATE_FLAG_RAN="${VARDIR}/run/configurator/updater4mc-ran";
 if (-e $FIRSTUPDATE_FLAG_RAN){
     $config{'__BINARY_LOG_KEEP__'} = 21;
 } else {
@@ -53,33 +66,33 @@ if (-e $FIRSTUPDATE_FLAG_RAN){
 
 my $lasterror = "";
 
-dump_mysql_file($config{'SRCDIR'},'master') or fatal_error("CANNOTDUMPMYSQLFILE", $lasterror);
-dump_mysql_file($config{'SRCDIR'},'slave') or fatal_error("CANNOTDUMPMYSQLFILE", $lasterror);
-
-print "DUMPSUCCESSFUL";
+my @stages = ('master', 'slave');
+if (scalar(@ARGV)) {
+    use List::Util qw (uniq);
+    @stages = uniq(@ARGV);
+    foreach (@stages) {
+        confess "Invalid database $_" unless ($_ =~ /^(slave|master)$/);
+    }
+}
+foreach (@stages) {
+    confess "CANNOTDUMPMYSQLFILE" unless (dump_mysql_file($_,%config));
+}
 
 #############################
-sub dump_mysql_file($srcdir,$stage)
+sub dump_mysql_file($stage,%config)
 {
-    my $template_file = $srcdir."/etc/mysql/my_$stage.cnf_template";
-    my $target_file = $srcdir."/etc/mysql/my_$stage.cnf";
+    my $template_file = "${SRCDIR}/etc/mysql/my_$stage.cnf_template";
+    my $target_file = "${SRCDIR}/etc/mysql/my_$stage.cnf";
 
     my ($TEMPLATE, $TARGET);
-    if ( !open($TEMPLATE, '<', $template_file) ) {
-        $lasterror = "Cannot open template file: $template_file";
-        return 0;
-    }
-    if ( !open($TARGET, '>', $target_file) ) {
-        $lasterror = "Cannot open target file: $target_file";
-        close $template_file;
-        return 0;
-    }
+    confess "Cannot open $template_file: $!" unless ($TEMPLATE = ${open_as($template_file, '<')});
+    confess "Cannot open $target_file: $!" unless ($TARGET = ${open_as($target_file)});
 
     while(<$TEMPLATE>) {
         my $line = $_;
 
-        $line =~ s/__VARDIR__/$config{'VARDIR'}/g;
-        $line =~ s/__SRCDIR__/$config{'SRCDIR'}/g;
+        $line =~ s/__VARDIR__/${VARDIR}/g;
+        $line =~ s/__SRCDIR__/${SRCDIR}/g;
 
         foreach my $key (keys %config) {
             $line =~ s/$key/$config{$key}/g;
@@ -92,38 +105,4 @@ sub dump_mysql_file($srcdir,$stage)
     close $TARGET;
 
     return 1;
-}
-
-#############################
-sub fatal_error($msg,$full)
-{
-    print $msg . ($DEBUG ? "\nFull information: $full \n" : "\n");
-}
-
-#############################
-sub print_usage
-{
-    print "Bad usage: dump_mysql_config.pl\n";
-}
-
-#############################
-sub readConfig($configfile)
-{
-    my %config;
-    my ($var, $value);
-
-    open (my $CONFIG, '<', $configfile) or die "Cannot open $configfile: $!\n";
-    while (<$CONFIG>) {
-        chomp;              # no newline
-        s/#.*$//;           # no comments
-        s/^\*.*$//;         # no comments
-        s/;.*$//;           # no comments
-        s/^\s+//;           # no leading white
-        s/\s+$//;           # no trailing white
-        next unless length; # anything left?
-        my ($var, $value) = split(/\s*=\s*/, $_, 2);
-        $config{$var} = $value;
-    }
-    close $CONFIG;
-    return %config;
 }

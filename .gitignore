@@ -2,7 +2,31 @@
 
 ### MailCleaner ignore list
 *.conflict_*
+bin/watchdog/EE_mod*
+bin/watchdog/CUSTOM_mod*
+bin/watchdog/files.filter
 dbs.md5
+etc/autoconf/
+etc/exim/mc_binary/
+etc/exim/stage4/remove_headers
+etc/firewall
+etc/mailcleaner/version.def
+etc/messagesniffer
+etc/rbls
+etc/watchdog/EE_mod*
+etc/watchdog/CUSTOM_mod*
+etc/watchdog/*.disable
+etc/watchdog/files.filter
+share/newsld/siteconfig/
+share/spamassassin/
+updates/
+www-old
+www/framework/Zend-2011/
+www/framework/Zend-2015/
+www/framework/ZendX-2011/
+www/framework/ZendX-2015/
+www/guis/admin/public/downloads/watchdogs.html
+
 ### End of MailCleaner ignore list
 
 ### Emacs ###
@@ -64,26 +88,5 @@ Session.vim
 .netrwhist
 # auto-generated tag files
 tags
-
-bin/watchdog/EE_mod*
-bin/watchdog/CUSTOM_mod*
-bin/watchdog/files.filter
-etc/watchdog/EE_mod*
-etc/watchdog/CUSTOM_mod*
-etc/watchdog/*.disable
-etc/watchdog/files.filter
-www-old
-www/framework/Zend-2011/
-www/framework/Zend-2015/
-www/framework/ZendX-2011/
-www/framework/ZendX-2015/
-www/guis/admin/public/downloads/watchdogs.html
-etc/rbls/
-share/newsld/siteconfig/
-share/spamassassin/
-etc/autoconf/
-etc/exim/mc_binary/
-updates/
-etc/mailcleaner/version.def
 
 # End of https://www.gitignore.io/api/emacs,vim

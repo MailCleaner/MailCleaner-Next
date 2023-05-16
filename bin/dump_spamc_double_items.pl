@@ -21,37 +21,48 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+our ($conf, $SRCDIR, $VARDIR, $HOSTID);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
+    confess "Failed to get HOSTID from '/etc/mailcleaner.conf'" unless ($HOSTID = $conf->getOption('HOSTID'));
 }
+
+use lib_utils qw(open_as);
 
 my $i = 0;
 my $j = 0;
 
-unlink '/usr/mailcleaner/share/spamassassin/double_item_uri.cf';
+my $path = "$SRCDIR/share/spamassassin";
+exit if ( ! -f "$path/double_item_uri.txt" );
 
-exit if ( ! -f '/usr/mailcleaner/share/spamassassin/double_item_uri.txt' );
-
-open(my $FH_TXT, '<', '/usr/mailcleaner/share/spamassassin/double_item_uri.txt');
-open(my $RULES, '>', '/usr/mailcleaner/share/spamassassin/double_item_uri.cf');
+my ($FH_TXT, $RULES);
+confess "Cannot open $path/double_item_uri.txt" unless ($FH_TXT = ${open_as("$path/double_item_uri.txt",'<')});
+confess "Cannot open $path/double_item_uri.cf" unless ($RULES = ${open_as("$path/double_item_uri.cf")});
 while (<$FH_TXT>) {
-        $_ =~ s/^\s*//;
-        $_ =~ s/\s*$//;
-        next if ( $_ =~ m/^#/ );
-        my ($w1, $w2) = split(' ', $_);
-        next if ( ! defined($w2) );
-        print $RULES "# auto generated rule to prevent links containing both $w1 and $w2\n";
-        print $RULES "uri __MC_URI_DBL_ITEM_$i /$w1.*$w2/i\n";
-        $j = $i;
-        $i++;
-        print $RULES "uri __MC_URI_DBL_ITEM_$i /$w2.*$w1/i\n";
+    $_ =~ s/^\s*//;
+    $_ =~ s/\s*$//;
+    next if ( $_ =~ m/^#/ );
+    my ($w1, $w2) = split(' ', $_);
+    next if ( ! defined($w2) );
+    print $RULES "# auto generated rule to prevent links containing both $w1 and $w2\n";
+    print $RULES "uri __MC_URI_DBL_ITEM_$i /$w1.*$w2/i\n";
+    $j = $i;
+    $i++;
+    print $RULES "uri __MC_URI_DBL_ITEM_$i /$w2.*$w1/i\n";
 
-        print $RULES "\nmeta MC_URI_DBL_ITEM_$j ( __MC_URI_DBL_ITEM_$j || __MC_URI_DBL_ITEM_$i )\n";
-        print $RULES "describe MC_URI_DBL_ITEM_$j Link containing both $w1 and $w2\n";
-        print $RULES "score MC_URI_DBL_ITEM_$j 7.0\n\n";
-        $i++;
+    print $RULES "\nmeta MC_URI_DBL_ITEM_$j ( __MC_URI_DBL_ITEM_$j || __MC_URI_DBL_ITEM_$i )\n";
+    print $RULES "describe MC_URI_DBL_ITEM_$j Link containing both $w1 and $w2\n";
+    print $RULES "score MC_URI_DBL_ITEM_$j 7.0\n\n";
+    $i++;
 }
 close $FH_TXT;
 close $RULES;

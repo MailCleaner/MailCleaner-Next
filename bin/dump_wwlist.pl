@@ -53,7 +53,7 @@ my $gid = getgrnam( 'mailcleaner' );
 
 my $what = shift;
 if (!defined($what)) {
-  $what = "";
+    $what = "";
 }
 my $to = "";
 my $filepath = $conf->getOption('VARDIR')."/spool/mailcleaner/prefs/";
@@ -72,8 +72,6 @@ my $slave_db = DB::connect('slave', 'mc_config');
 dumpWWFiles($to, $filepath);
 
 $slave_db->disconnect();
-print "DUMPSUCCESSFUL";
-exit 0;
 
 sub dumpWWFiles($to,$filepath)
 {

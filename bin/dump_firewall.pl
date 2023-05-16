@@ -29,21 +29,29 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+my ($conf, $SRCDIR, $VARDIR, $MYMAILCLEANERPWD);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
+    confess "Failed to get DB password" unless ($MYMAILCLEANERPWD = $conf->getOption('MYMAILCLEANERPWD'));
 }
 
-use DBI();
+use lib_utils qw(open_as);
+
 use Net::DNS;
 require GetDNS;
+require DB;
 
 my $DEBUG = 1;
 
-my %config = readConfig("/etc/mailcleaner.conf");
-my $start_script = $config{'SRCDIR'}."/etc/firewall/start";
-my $stop_script = $config{'SRCDIR'}."/etc/firewall/stop";
 my %services = (
     'web' => ['80|443', 'TCP'],
     'mysql' => ['3306:3307', 'TCP'],
@@ -52,22 +60,12 @@ my %services = (
     'mail' => ['25', 'TCP'],
     'soap' => ['5132', 'TCP']
 );
-my $iptables = "/sbin/iptables";
-my $ip6tables = "/sbin/ip6tables";
+our $iptables = "/sbin/iptables";
+our $ip6tables = "/sbin/ip6tables";
 
-my $lasterror = "";
 my $has_ipv6 = 0;
 
-unlink($start_script);
-unlink($stop_script);
-
-my $dbh;
-$dbh = DBI->connect(
-    "DBI:mysql:database=mc_config;host=localhost;mysql_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
-    "mailcleaner",
-    "$config{MYMAILCLEANERPWD}",
-    {RaiseError => 0, PrintError => 0}
-) or fatal_error("CANNOTCONNECTDB", $dbh->errstr);
+my $dbh = DB::connect('slave', 'mc_config');
 
 my %masters_slaves = get_masters_slaves();
 
@@ -84,23 +82,20 @@ if (open(my $interfaces, '<', '/etc/network/interfaces')) {
     close($interfaces);
 }
 
-
 my %rules;
-get_default_rules();
-get_external_rules();
+get_default_rules(\%rules);
+get_external_rules(\%rules);
 
-do_start_script() or fatal_error("CANNOTDUMPMYSQLFILE", $lasterror);;
-do_stop_script();
-
-print "DUMPSUCCESSFUL";
+do_start_script(\%rules);
+do_stop_script(\%rules);
 
 ############################
-sub get_masters_slaves
+sub get_masters_slaves()
 {
     my %hosts;
 
     my $sth = $dbh->prepare("SELECT hostname from master");
-    $sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
+    confess("CANNOTEXECUTEQUERY $dbh->errstr") unless $sth->execute();
 
     while (my $ref = $sth->fetchrow_hashref() ) {
          $hosts{$ref->{'hostname'}} = 1;
@@ -108,7 +103,7 @@ sub get_masters_slaves
     $sth->finish();
 
     $sth = $dbh->prepare("SELECT hostname from slave");
-    $sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
+    confess("CANNOTEXECUTEQUERY $dbh->errstr") unless $sth->execute();
 
     while (my $ref = $sth->fetchrow_hashref() ) {
         $hosts{$ref->{'hostname'}} = 1;
@@ -118,8 +113,10 @@ sub get_masters_slaves
 
 }
 
-sub get_default_rules
+sub get_default_rules($rules)
 {
+    my %rules = %{$rules};
+    
     foreach my $host (keys %masters_slaves) {
         next if ($host =~ /127\.0\.0\.1/ || $host =~ /^\:\:1$/);
 
@@ -134,10 +131,11 @@ sub get_default_rules
     }
 }
 
-sub get_external_rules
+sub get_external_rules($rules)
 {
+    my %rules = %{$rules};
     my $sth = $dbh->prepare("SELECT service, port, protocol, allowed_ip FROM external_access");
-    $sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
+    confess("CANNOTEXECUTEQUERY $dbh->errstr") unless $sth->execute();
 
     while (my $ref = $sth->fetchrow_hashref() ) {
          #next if ($ref->{'allowed_ip'} !~ /^(\d+.){3}\d+\/?\d*$/);
@@ -166,7 +164,7 @@ sub get_external_rules
     }
     ## do we need obsolete SMTP SSL port ?
     $sth = $dbh->prepare("SELECT tls_use_ssmtp_port FROM mta_config where stage=1");
-    $sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
+    confess("CANNOTEXECUTEQUERY $dbh->errstr") unless $sth->execute();
     while (my $ref = $sth->fetchrow_hashref() ) {
         if ($ref->{'tls_use_ssmtp_port'} > 0) {
             foreach my $rulename (keys %rules) {
@@ -178,12 +176,14 @@ sub get_external_rules
     }
 }
 
-sub do_start_script
+sub do_start_script($rules)
 {
-    if ( !open(my $START, '>', $start_script) ) {
-         $lasterror = "Cannot open start script";
-         return 0;
-    }
+    my %rules = %{$rules};
+    my $start_script = "${SRCDIR}/etc/firewall/start";
+    unlink($start_script);
+
+    my $START;
+    confess "Cannot open $start_script" unless ( $START = ${open_as($start_script)} );
 
     print $START "#!/bin/sh\n";
 
@@ -255,41 +255,40 @@ sub do_start_script
     my $blacklist_script = '/usr/mailcleaner/etc/firewall/blacklist';
     unlink $blacklist_script;
     foreach my $blacklist_file (@blacklist_files) {
+        my ($BLACK_IP, $BLACKLIST);
         if ( -e $blacklist_file ) {
-            if ( open(my $BLACK_IP, '<', $blacklist_file) ) {
-                open(my $BLACKLIST, '>>', $blacklist_script);
-                if ( $blacklist == 0 ) {
-                    print $BLACKLIST "#! /bin/sh\n\n";
-                    print $BLACKLIST "$iptables -N BLACKLIST\n";
-                    print $BLACKLIST "$iptables -A BLACKLIST -j RETURN\n";
-                    print $BLACKLIST "$iptables -I INPUT 1 -j BLACKLIST\n\n";
-                }
+            confess ("Failed to open $blacklist_file: $!\n") unless ($BLACK_IP = ${open_as($blacklist_file, "<")});
+            confess ("Failed to open $blacklist_script: $!\n") unless ($BLACKLIST = ${open_as($blacklist_script, ">>", "0755")});
+            if ( $blacklist == 0 ) {
+                print $BLACKLIST "#! /bin/sh\n\n";
+                print $BLACKLIST "$iptables -N BLACKLIST\n";
+                print $BLACKLIST "$iptables -A BLACKLIST -j RETURN\n";
+                print $BLACKLIST "$iptables -I INPUT 1 -j BLACKLIST\n\n";
                 $blacklist = 1;
-                foreach my $IP (<BLACK_IP>) {
-                    chomp($IP);
-                    print $BLACKLIST "$iptables -I BLACKLIST 1 -s $IP -j DROP\n";
-                }
-                close $BLACKLIST;
-                close $BLACK_IP;
             }
+            foreach my $IP (<$BLACK_IP>) {
+                chomp($IP);
+                print $BLACKLIST "$iptables -I BLACKLIST 1 -s $IP -j DROP\n";
+            }
+            close $BLACKLIST;
+            close $BLACK_IP;
         }
     }
     if ( $blacklist == 1 ) {
-        chmod 0755, $blacklist_script;
         print $START "\n$blacklist_script\n";
     }
 
     close $START;
-
-    chmod 0755, $start_script;
 }
 
-sub do_stop_script
+sub do_stop_script($rules)
 {
-    if ( !open(my $STOP, ">$stop_script") ) {
-        $lasterror = "Cannot open stop script";
-        return 0;
-    }
+    my %rules = %{$rules};
+    my $stop_script = "${SRCDIR}/etc/firewall/stop";
+    unlink($stop_script);
+
+    my $STOP;
+    confess "Cannot open $stop_script" unless ( $STOP = ${open_as($stop_script, '>', '0755')} );
 
     print $STOP "#!/bin/sh\n";
 
@@ -310,10 +309,9 @@ sub do_stop_script
     }
 
     close $STOP;
-    chmod 0755, $stop_script;
 }
 
-sub getSubnets
+sub getSubnets()
 {
     my $ifconfig = `/sbin/ifconfig`;
     my @subs = ();
@@ -334,46 +332,8 @@ sub getSubnets
     return @subs;
 }
 
-#############################
-sub readConfig
+sub expand_host_string($string, %args)
 {
-    my $configfile = shift;
-    my %config;
-    my ($var, $value);
-
-    open (my $CONFIG, '<', $configfile) or die "Cannot open $configfile: $!\n";
-    while (<$CONFIG>) {
-        chomp;              # no newline
-        s/#.*$//;           # no comments
-        s/^\*.*$//;         # no comments
-        s/;.*$//;           # no comments
-        s/^\s+//;           # no leading white
-        s/\s+$//;           # no trailing white
-        next unless length; # anything left?
-        my ($var, $value) = split(/\s*=\s*/, $_, 2);
-        $config{$var} = $value;
-    }
-    close $CONFIG;
-    return %config;
-}
-
-#############################
-sub fatal_error
-{
-    my $msg = shift;
-    my $full = shift;
-
-    print $msg;
-    if ($DEBUG) {
-        print "\n Full information: $full \n";
-    }
-    exit(0);
-}
-
-sub expand_host_string
-{
-    my $string = shift;
-    my %args = @_;
     my $dns = GetDNS->new();
     return $dns->dumper($string,%args);
 }
