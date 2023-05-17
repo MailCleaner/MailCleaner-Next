@@ -1,18 +1,18 @@
 #!/bin/bash
 
-BACK=`pwd`
+BACK=$(pwd)
 if [ "$SRCDIR" = "" ]; then
-        SRCDIR=`grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3`
-        if [ "SRCDIR" = "" ]; then
-                SRCDIR=/var/mailcleaner
-        fi
+	SRCDIR=$(grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
+	if [ "SRCDIR" = "" ]; then
+		SRCDIR=/var/mailcleaner
+	fi
 fi
 
 if [ "$USEDEBS" = "Y" ]; then
-  echo -n " installing ldap binaries package...";
-  dpkg -i $SRCDIR/install/debs/mc-ldap*.deb &> /dev/null
-  echo "done.";
-  exit
+	echo -n " installing ldap binaries package..."
+	dpkg -i $SRCDIR/install/debs/mc-ldap*.deb &>/dev/null
+	echo "done."
+	exit
 fi
 
 cd $SRCDIR/install/src
@@ -28,9 +28,8 @@ make depend 2>&1
 make 2>&1
 make install 2>&1
 
-echo "/usr/ldap/lib" >> /etc/ld.so.conf
+echo "/usr/ldap/lib" >>/etc/ld.so.conf
 ldconfig 2>&1
 
 cd $BACK
 rm -rf $SRCDIR/install/src/openldap-2.3.20
-

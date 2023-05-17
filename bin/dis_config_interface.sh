@@ -21,8 +21,8 @@
 #           dis_config_interface.sh true|false
 
 if [ "$1" == "true" ]; then
-    mv /etc/network/interfaces.d/configif.conf /etc/network/interfaces.d/configif.conf.disabled 2>/dev/null
+	mv /etc/network/interfaces.d/configif.conf /etc/network/interfaces.d/configif.conf.disabled 2>/dev/null
 else
-    mv /etc/network/interfaces.d/configif.conf.disabled /etc/network/interfaces.d/configif.conf 2>/dev/null
+	mv /etc/network/interfaces.d/configif.conf.disabled /etc/network/interfaces.d/configif.conf 2>/dev/null
 fi
 exit 0

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-VARDIR=`grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3`
+VARDIR=$(grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 if [ "VARDIR" = "" ]; then
-  VARDIR=/var/mailcleaner
+	VARDIR=/var/mailcleaner
 fi
 
 rm -rf $VARDIR/log/exim_stage1/*
@@ -22,5 +22,3 @@ rm -rf $VARDIR/spool/exim_stage2/msglog/*
 rm -rf $VARDIR/spool/exim_stage4/db/*
 rm -rf $VARDIR/spool/exim_stage4/input/*
 rm -rf $VARDIR/spool/exim_stage4/msglog/*
-
-

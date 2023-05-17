@@ -1,8 +1,8 @@
 #!/bin/bash
 
-VARDIR=`grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3`
+VARDIR=$(grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 if [ "VARDIR" = "" ]; then
-  VARDIR=/var/mailcleaner
+	VARDIR=/var/mailcleaner
 fi
 
 DEFAULTUID=mailcleaner
@@ -18,30 +18,29 @@ DEFAULTGID=mailcleaner
 # no uid/gid check for now...
 
 function check_dir {
-        dir=$1
-        if [ "$2" = "" ]; then
-                uid=$DEFAULTUID
-        else
-                uid=$2
-        fi
-        if [ "$3" = "" ]; then
-                gid=$DEFAULTGID
-        else
-                gid=$3
-        fi
+	dir=$1
+	if [ "$2" = "" ]; then
+		uid=$DEFAULTUID
+	else
+		uid=$2
+	fi
+	if [ "$3" = "" ]; then
+		gid=$DEFAULTGID
+	else
+		gid=$3
+	fi
 
-        if [ ! -d $dir ]; then
-                echo "directory: $dir does not exists !"
+	if [ ! -d $dir ]; then
+		echo "directory: $dir does not exists !"
 		mkdir $dir
 		echo "directory: $dir created"
-        else
-                echo "directory $dir ok"
-        fi
+	else
+		echo "directory $dir ok"
+	fi
 
-        chown $uid:$gid $dir
+	chown $uid:$gid $dir
 }
 #########################################################
-
 
 ################
 ## BEGIN SCRIPT
@@ -149,4 +148,3 @@ check_dir $VARDIR/spool/clamspam clamav clamav
 
 check_dir $VARDIR/spool/dcc dcc dcc
 check_dir $VARDIR/run/dcc dcc dcc
-

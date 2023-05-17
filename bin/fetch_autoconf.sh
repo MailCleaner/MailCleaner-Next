@@ -23,9 +23,8 @@
 #   Usage:
 #           fetch_autoconf.sh [-r]
 
-usage()
-{
-    cat << EOF
+usage() {
+	cat <<EOF
 usage: $0 options
 
 This script will fetch the last MailCleaner demo configuration
@@ -37,27 +36,26 @@ EOF
 
 randomize=false
 
-while getopts ":r" OPTION
-do
-    case $OPTION in
-        r)
-            randomize=true
-            ;;
-        ?)
-            usage
-            exit
-            ;;
-    esac
+while getopts ":r" OPTION; do
+	case $OPTION in
+	r)
+		randomize=true
+		;;
+	?)
+		usage
+		exit
+		;;
+	esac
 done
 
 CONFFILE=/etc/mailcleaner.conf
-SRCDIR=`grep 'SRCDIR' $CONFFILE | cut -d ' ' -f3`
+SRCDIR=$(grep 'SRCDIR' $CONFFILE | cut -d ' ' -f3)
 if [ "$SRCDIR" = "" ]; then
-    SRCDIR="/opt/mailcleaner"
+	SRCDIR="/opt/mailcleaner"
 fi
-VARDIR=`grep 'VARDIR' $CONFFILE | cut -d ' ' -f3`
+VARDIR=$(grep 'VARDIR' $CONFFILE | cut -d ' ' -f3)
 if [ "$VARDIR" = "" ]; then
-    VARDIR="/var/mailcleaner"
+	VARDIR="/var/mailcleaner"
 fi
 
 . $SRCDIR/lib/lib_utils.sh
@@ -65,7 +63,7 @@ FILE_NAME=$(basename -- "$0")
 FILE_NAME="${FILE_NAME%.*}"
 ret=$(createLockFile "$FILE_NAME")
 if [[ "$ret" -eq "1" ]]; then
-    exit 0
+	exit 0
 fi
 
 . $SRCDIR/lib/updates/download_files.sh
@@ -77,12 +75,12 @@ fi
 MC_AUTOCONF_DIR=$SRCDIR/etc/autoconf/
 # Check if directory exists
 if [ ! -d "$MC_AUTOCONF_DIR" ]; then
-    mkdir $MC_AUTOCONF_DIR
+	mkdir $MC_AUTOCONF_DIR
 fi
 
 ret=$(downloadDatas "$MC_AUTOCONF_DIR" "mc_autoconfig" $randomize "null" "" "noexit")
 if [[ "$ret" -eq "1" ]]; then
-    log "Autoconf downloaded"
+	log "Autoconf downloaded"
 fi
 
 removeLockFile "$FILE_NAME"

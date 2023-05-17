@@ -22,22 +22,20 @@
 #   Usage:
 #           backup_config.sh
 
-
-VARDIR=`grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3`
+VARDIR=$(grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 if [ "VARDIR" = "" ]; then
-    VARDIR=/var/mailcleaner
+	VARDIR=/var/mailcleaner
 fi
-SRCDIR=`grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3`
+SRCDIR=$(grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 if [ "SRCDIR" = "" ]; then
-    SRCDIR=/var/mailcleaner
+	SRCDIR=/var/mailcleaner
 fi
 
-MYMAILCLEANERPWD=`grep 'MYMAILCLEANERPWD' /etc/mailcleaner.conf | cut -d ' ' -f3`
+MYMAILCLEANERPWD=$(grep 'MYMAILCLEANERPWD' /etc/mailcleaner.conf | cut -d ' ' -f3)
 
 BACKUPFILE=$1
 if [ "$BACKUPFILE" = "" ]; then
-    BACKUPFILE="mailcleaner_config_.sql"
+	BACKUPFILE="mailcleaner_config_.sql"
 fi
 
-/opt/mysql5/bin/mysqldump -u mailcleaner -p$MYMAILCLEANERPWD -S $VARDIR/run/mysql_master/mysqld.sock --ignore-table=mc_config.update_patch --ignore-table=mc_config.master --ignore-table=mc_config.slave --master-data=2 mc_config > $BACKUPFILE
-
+/opt/mysql5/bin/mysqldump -u mailcleaner -p$MYMAILCLEANERPWD -S $VARDIR/run/mysql_master/mysqld.sock --ignore-table=mc_config.update_patch --ignore-table=mc_config.master --ignore-table=mc_config.slave --master-data=2 mc_config >$BACKUPFILE

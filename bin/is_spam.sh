@@ -23,32 +23,31 @@
 #   Usage:
 #           is_spam.sh [-D] message_file
 
-
-SRCDIR=`grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3`
+SRCDIR=$(grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 if [ "SRCDIR" = "" ]; then
-  SRCDIR=/var/mailcleaner
+	SRCDIR=/var/mailcleaner
 fi
 
 DEBUG=""
 if [ "$1" = "-D" ]; then
-  echo "debugging...."
-  #DEBUG="-D rulesrun=255"
-  DEBUG="-D"
-  FILE=$2
+	echo "debugging...."
+	#DEBUG="-D rulesrun=255"
+	DEBUG="-D"
+	FILE=$2
 else
-  FILE=$1
+	FILE=$1
 fi
 
 if [ "$FILE" = "" ]; then
-  echo "usage: ./is_spam.sh [-D] message_file"
-  exit 1
+	echo "usage: ./is_spam.sh [-D] message_file"
+	exit 1
 fi
 
 if [ ! -f $FILE ]; then
-  echo "file is not useable"
-  exit 1
+	echo "file is not useable"
+	exit 1
 fi
 
-/usr/local/bin/spamassassin $DEBUG -t -p $SRCDIR/etc/mailscanner/spam.assassin.prefs.conf --siteconfigpath=$SRCDIR/share/spamassassin < $FILE
+/usr/local/bin/spamassassin $DEBUG -t -p $SRCDIR/etc/mailscanner/spam.assassin.prefs.conf --siteconfigpath=$SRCDIR/share/spamassassin <$FILE
 
 exit 0

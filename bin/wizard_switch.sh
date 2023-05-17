@@ -24,9 +24,8 @@
 #   Usage:
 #           wizard_switch.sh [-c <true|false>] [-b] [-s]
 
-usage()
-{
-    cat << EOF
+usage() {
+	cat <<EOF
 usage: $0 options
 
 This script will enable/disable access to the wizard
@@ -41,24 +40,22 @@ EOF
 # Get standard path
 CONFFILE=/etc/mailcleaner.conf
 
-SRCDIR=`grep 'SRCDIR' $CONFFILE | cut -d ' ' -f3`
+SRCDIR=$(grep 'SRCDIR' $CONFFILE | cut -d ' ' -f3)
 if [ "$SRCDIR" = "" ]; then
-    SRCDIR="/opt/mailcleaner"
+	SRCDIR="/opt/mailcleaner"
 fi
-VARDIR=`grep 'VARDIR' $CONFFILE | cut -d ' ' -f3`
+VARDIR=$(grep 'VARDIR' $CONFFILE | cut -d ' ' -f3)
 if [ "$VARDIR" = "" ]; then
-    VARDIR="/opt/mailcleaner"
+	VARDIR="/opt/mailcleaner"
 fi
 
-getWizardStatus()
-{
-    req=$(echo "SELECT count(*) FROM external_access WHERE service='configurator' AND port='4242' AND protocol='TCP' \G" | $SRCDIR/bin/mc_mysql -m mc_config | grep -v ". row" | cut -d ':' -f2)
+getWizardStatus() {
+	req=$(echo "SELECT count(*) FROM external_access WHERE service='configurator' AND port='4242' AND protocol='TCP' \G" | $SRCDIR/bin/mc_mysql -m mc_config | grep -v ". row" | cut -d ':' -f2)
 	[ "$req" -ge "1" ] && req=1
-    return $req
+	return $req
 }
 
-getStatus()
-{
+getStatus() {
 	getWizardStatus
 	status=$?
 	exit $status
@@ -66,21 +63,21 @@ getStatus()
 
 flagStatus=0
 while getopts "sbc:" OPTION; do
-    case $OPTION in
-        c)
-            enable=${OPTARG}
-            ;;
-        b)
-            batch=true
-            ;;
-        s)
-            flagStatus=1
-            ;;
-        ?)
-            usage
-            exit
-            ;;
-    esac
+	case $OPTION in
+	c)
+		enable=${OPTARG}
+		;;
+	b)
+		batch=true
+		;;
+	s)
+		flagStatus=1
+		;;
+	?)
+		usage
+		exit
+		;;
+	esac
 done
 
 if [ ! -z "$enable" ] && [ "$flagStatus" -eq "1" ]; then
@@ -122,7 +119,7 @@ status=$([ "$action" == "1" ] && echo "Enabling" || echo "Disabling")
 
 updateWizardStatus $action
 changed=$?
-[ "$changed" == "1" ] && $SRCDIR/etc/init.d/firewall restart &>> /dev/null # Restart only on changes
+[ "$changed" == "1" ] && $SRCDIR/etc/init.d/firewall restart &>>/dev/null # Restart only on changes
 
 getWizardStatus
 wizardStatus=$?

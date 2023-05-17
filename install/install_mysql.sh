@@ -1,18 +1,18 @@
 #!/bin/bash
 
-BACK=`pwd`
+BACK=$(pwd)
 if [ "$SRCDIR" = "" ]; then
-        SRCDIR=`grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3`
-        if [ "SRCDIR" = "" ]; then
-                SRCDIR=/var/mailcleaner
-        fi
+	SRCDIR=$(grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
+	if [ "SRCDIR" = "" ]; then
+		SRCDIR=/var/mailcleaner
+	fi
 fi
 
 if [ "$USEDEBS" = "Y" ]; then
-  echo -n " installing mysql binaries package...";
-  dpkg -i $SRCDIR/install/debs/mc-mysql*.deb &> /dev/null
-  echo "done.";
-  exit
+	echo -n " installing mysql binaries package..."
+	dpkg -i $SRCDIR/install/debs/mc-mysql*.deb &>/dev/null
+	echo "done."
+	exit
 fi
 
 cd $SRCDIR/install/src
@@ -20,8 +20,8 @@ cd $SRCDIR/install/src
 tar -xvzf mysql.tar.gz
 cd mysql-4.1.18
 
-export FLAGS="-O3 -mpentiumpro" 
-export CXX=gcc 
+export FLAGS="-O3 -mpentiumpro"
+export CXX=gcc
 export CXXFLAGS="-O3 -mpentiumpro -felide-constructors -fno-exceptions -fno-rtti"
 
 #./configure --prefix=/opt/mysql5 --sysconfdir=/opt/mysql5/etc --enable-assembler --with-mysqld-ldflags=-all-static \
@@ -39,7 +39,7 @@ make install 2>&1
 # to tell the system of the new libs
 
 #echo "/opt/mysql5/lib/mysql" >> /etc/ld.so.conf
-#ldconfig 
+#ldconfig
 
 #mkdir /var/mysql5 2>&1
 #chown mysql:mysql /var/mysql5 2>&1

@@ -23,16 +23,15 @@
 #   Usage:
 #       release_batch_emails.sh <sender>
 
-
-VARDIR=`grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3`
+VARDIR=$(grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 if [ "VARDIR" = "" ]; then
-    VARDIR=/var/mailcleaner
+	VARDIR=/var/mailcleaner
 fi
-SRCDIR=`grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3`
+SRCDIR=$(grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 if [ "SRCDIR" = "" ]; then
-    SRCDIR=/usr/mailcleaner
+	SRCDIR=/usr/mailcleaner
 fi
-MYMAILCLEANERPWD=`grep '^MYMAILCLEANERPWD' /etc/mailcleaner.conf | cut -d ' ' -f3`
+MYMAILCLEANERPWD=$(grep '^MYMAILCLEANERPWD' /etc/mailcleaner.conf | cut -d ' ' -f3)
 
 SOCKET=$VARDIR/run/mysql_slave/mysqld.sock
 COMMAND=/opt/mysql5/bin/mysql
@@ -44,10 +43,9 @@ fi
 QUERY="SELECT exim_id,to_user,to_domain FROM spam WHERE sender LIKE \"%$1%\";"
 
 results=($(echo "$QUERY" | $COMMAND -S $SOCKET -umailcleaner -p$MYMAILCLEANERPWD -N mc_spool))
-for ((i=0;i<${#results[@]};i=i+3)); do
+for ((i = 0; i < ${#results[@]}; i = i + 3)); do
 	id="${results[i]}"
-	to="${results[$((i+1))]}@${results[$((i+2))]}"
+	to="${results[$((i + 1))]}@${results[$((i + 2))]}"
 	echo -n "$id $to -> "
 	$SRCDIR/bin/force_message.pl $id $to
 done
-
