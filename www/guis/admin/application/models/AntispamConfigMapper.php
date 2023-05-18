@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -10,7 +11,7 @@
 
 class Default_Model_AntispamConfigMapper
 {
-	
+
     protected $_dbTable;
 
     public function setDbTable($dbTable)
@@ -42,7 +43,7 @@ class Default_Model_AntispamConfigMapper
         $row = $result->current();
         $mta->setId($id);
         foreach ($mta->getParamArray() as $key => $value) {
-        	$mta->setParam($key, $row[$key]);
+            $mta->setParam($key, $row[$key]);
         }
     }
 
@@ -58,10 +59,11 @@ class Default_Model_AntispamConfigMapper
         return $entries;
     }
 
-    public function save(Default_Model_AntispamConfig $mta) {
-       $data = $mta->getParamArray();
-       $res = '';
-       if (null === ($id = $mta->getId())) {
+    public function save(Default_Model_AntispamConfig $mta)
+    {
+        $data = $mta->getParamArray();
+        $res = '';
+        if (null === ($id = $mta->getId())) {
             unset($data['id']);
             $res = $this->getDbTable()->insert($data);
         } else {

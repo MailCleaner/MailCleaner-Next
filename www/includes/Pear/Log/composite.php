@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Header$
  * $Horde: horde/lib/Log/composite.php,v 1.2 2000/06/28 21:36:13 jon Exp $
@@ -29,7 +30,7 @@ class Log_composite extends Log
      * @var array
      * @access private
      */
-    var $_children = array();
+    var $_children = [];
 
 
     /**
@@ -42,9 +43,12 @@ class Log_composite extends Log
      *
      * @access public
      */
-    public function __construct($name, $ident = '', $conf = array(),
-                                $level = PEAR_LOG_DEBUG)
-    {
+    public function __construct(
+        $name,
+        $ident = '',
+        $conf = [],
+        $level = PEAR_LOG_DEBUG
+    ) {
         $this->_ident = $ident;
     }
 
@@ -193,7 +197,7 @@ class Log_composite extends Log
         }
 
         /* Notify the observers. */
-        $this->_announce(array('priority' => $priority, 'message' => $message));
+        $this->_announce(['priority' => $priority, 'message' => $message]);
 
         /* Return success if all of the open children logged the event. */
         return $success;
@@ -270,5 +274,4 @@ class Log_composite extends Log
 
         return true;
     }
-
 }

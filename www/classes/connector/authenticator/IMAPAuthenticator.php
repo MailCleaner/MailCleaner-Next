@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -16,34 +17,35 @@ require_once("Pear/Auth.php");
  * This will take care of authenticate user against an IMAPserver
  * @package mailcleaner
  */
-class IMAPAuthenticator extends AuthManager {
+class IMAPAuthenticator extends AuthManager
+{
 
     protected $exhaustive_ = false;
 
-    function create($domain) {
-       $settings = $domain->getConnectorSettings();
-       if (! $settings instanceof SimpleServerSettings) {
+    function create($domain)
+    {
+        $settings = $domain->getConnectorSettings();
+        if (!$settings instanceof SimpleServerSettings) {
             return false;
         }
 
-       $basedsn = '/imap/notls/norsh';
-       if ($settings->getSetting('usessl') == "true" || $settings->getSetting('usessl')) {
-         $basedsn = '/imap/ssl/novalidate-cert';
-       }
+        $basedsn = '/imap/notls/norsh';
+        if ($settings->getSetting('usessl') == "true" || $settings->getSetting('usessl')) {
+            $basedsn = '/imap/ssl/novalidate-cert';
+        }
 
-       $funct = array ("LoginDialog", "loginFunction");
-       $params = array (
-                        "host" => $settings->getSetting('server'),
-                        "port" => $settings->getSetting('port'),
-                        "baseDSN" => $basedsn,
-                        'enableLogging' => true,
-                        );
-      $this->auth_ = new Auth('IMAP', $params, $funct);
-      if ($this->auth_ instanceof Auth) {
-        $this->setUpAuth();
-        return true;
-      }
-      return false;
+        $funct = ["LoginDialog", "loginFunction"];
+        $params = [
+            "host" => $settings->getSetting('server'),
+            "port" => $settings->getSetting('port'),
+            "baseDSN" => $basedsn,
+            'enableLogging' => true,
+        ];
+        $this->auth_ = new Auth('IMAP', $params, $funct);
+        if ($this->auth_ instanceof Auth) {
+            $this->setUpAuth();
+            return true;
+        }
+        return false;
     }
 }
-?>

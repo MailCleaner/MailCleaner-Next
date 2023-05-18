@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -38,6 +39,4 @@ $application = new Zend_Application(
     APPLICATION_ENV,
     APPLICATION_PATH . '/api/configs/application.ini'
 );
-$application->bootstrap()
-            ->run();
-
+$application->bootstrap()->run();

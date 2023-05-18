@@ -1,4 +1,5 @@
 <?php
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 foldmethod=marker: */
 
 /**
@@ -52,7 +53,8 @@ require_once 'PEAR.php';
  * @link       http://pear.php.net/package/Auth
  * @since      Class available since Release 1.4.0
  */
-class Auth_Container_KADM5 extends Auth_Container {
+class Auth_Container_KADM5 extends Auth_Container
+{
 
     // {{{ properties
 
@@ -60,7 +62,7 @@ class Auth_Container_KADM5 extends Auth_Container {
      * Options for the class
      * @var string
      */
-    var $options = array();
+    var $options = [];
 
     // }}}
     // {{{ Auth_Container_KADM5()
@@ -78,7 +80,8 @@ class Auth_Container_KADM5 extends Auth_Container {
      * @param  $options associative array
      * @return object Returns an error object if something went wrong
      */
-    function Auth_Container_KADM5($options) {
+    function Auth_Container_KADM5($options)
+    {
         if (!extension_loaded('kadm5')) {
             return PEAR::raiseError("Cannot use Kerberos V authentication, KADM5 extension not loaded!", 41, PEAR_ERROR_DIE);
         }
@@ -113,9 +116,10 @@ class Auth_Container_KADM5 extends Auth_Container {
      * @param   string Password
      * @return  boolean
      */
-    function fetchData($username, $password) {
+    function fetchData($username, $password)
+    {
         $this->log('Auth_Container_KADM5::fetchData() called.', AUTH_LOG_DEBUG);
-        if ( ($username == NULL) || ($password == NULL) ) {
+        if (($username == NULL) || ($password == NULL)) {
             return false;
         }
 
@@ -138,7 +142,8 @@ class Auth_Container_KADM5 extends Auth_Container {
      *
      * @access private
      */
-    function _setDefaults() {
+    function _setDefaults()
+    {
         $this->options['hostname'] = 'localhost';
         $this->options['realm'] = NULL;
         $this->options['timeout'] = 10;
@@ -153,13 +158,14 @@ class Auth_Container_KADM5 extends Auth_Container {
      *
      * @access private
      */
-    function _checkServer() {
-        $fp = @fsockopen ($this->options['hostname'], 88, $errno, $errstr, $this->options['timeout']);
+    function _checkServer()
+    {
+        $fp = @fsockopen($this->options['hostname'], 88, $errno, $errstr, $this->options['timeout']);
         if (is_resource($fp)) {
             @fclose($fp);
         } else {
             $message = "Error connecting to Kerberos V server "
-                .$this->options['hostname'].":".$this->options['port'];
+                . $this->options['hostname'] . ":" . $this->options['port'];
             return PEAR::raiseError($message, 41, PEAR_ERROR_DIE);
         }
     }
@@ -167,5 +173,3 @@ class Auth_Container_KADM5 extends Auth_Container {
     // }}}
 
 }
-
-?>

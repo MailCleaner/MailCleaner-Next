@@ -1,4 +1,5 @@
 <?php
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 foldmethod=marker: */
 
 /**
@@ -72,7 +73,7 @@ class Auth_Container_Pear extends Auth_Container
      *
      * @var array
      */
-    var $karma = array();
+    var $karma = [];
 
     // }}}
     // {{{ Auth_Container_Pear() [constructor]
@@ -95,7 +96,7 @@ class Auth_Container_Pear extends Auth_Container
             if (is_array($data['karma'])) {
                 $this->karma = $data['karma'];
             } else {
-                $this->karma = array($data['karma']);
+                $this->karma = [$data['karma']];
             }
         }
 
@@ -135,10 +136,10 @@ class Auth_Container_Pear extends Auth_Container
         $salt = $resp['body'];
 
         $this->log('Auth_Container_PEAR::fetchData() calling validate.', AUTH_LOG_DEBUG);
-        $postOptions = array(
+        $postOptions = [
             'username' => $username,
             'password' => md5($salt . md5($password))
-        );
+        ];
         if (is_array($this->karma) && count($this->karma) > 0) {
             $postOptions['karma'] = implode(',', $this->karma);
         }
@@ -162,4 +163,3 @@ class Auth_Container_Pear extends Auth_Container
     // }}}
 
 }
-?>

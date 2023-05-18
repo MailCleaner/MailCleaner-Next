@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -10,7 +11,7 @@
 
 class Default_Model_GreylistConfigMapper
 {
-	
+
     protected $_dbTable;
 
     public function setDbTable($dbTable)
@@ -42,14 +43,15 @@ class Default_Model_GreylistConfigMapper
         $row = $result->current();
         $greylist->setId($id);
         foreach ($greylist->getParamArray() as $key => $value) {
-        	$greylist->setParam($key, $row[$key]);
+            $greylist->setParam($key, $row[$key]);
         }
     }
 
-    public function save(Default_Model_GreylistConfig $greylist) {
-       $data = $greylist->getParamArray();
-       $res = '';
-       if (null === ($id = $greylist->getId())) {
+    public function save(Default_Model_GreylistConfig $greylist)
+    {
+        $data = $greylist->getParamArray();
+        $res = '';
+        if (null === ($id = $greylist->getId())) {
             unset($data['id']);
             $res = $this->getDbTable()->insert($data);
         } else {

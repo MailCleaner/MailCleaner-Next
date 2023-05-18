@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -21,10 +22,10 @@ class Validate_DomainName extends Zend_Validate_Abstract
         $this->_setValue($value);
 
         if ($value == '') {
-        	return false;
+            return false;
         }
         if (preg_match('/^[a-z0-9\-_.]+$/', $value)) {
-        	return true;
+            return true;
         }
         $this->_error(self::MSG_DOMAINNAME);
         return false;

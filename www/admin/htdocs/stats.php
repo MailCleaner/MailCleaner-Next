@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -28,10 +29,10 @@ global $sysconf_;
 $form = new Form('filter', 'post', $_SERVER['PHP_SELF']);
 $posted = $form->getResult();
 if (!isset($posted['times'])) {
-  $posted['times'] = 'day';
+    $posted['times'] = 'day';
 }
 if (!isset($posted['stats'])) {
-  $posted['stats'] = 'all';
+    $posted['stats'] = 'all';
 }
 
 //create view
@@ -53,14 +54,14 @@ $stats_ = [
     $lang_->print_txt('ALL') => 'all',
 ];
 if (!isset($posted['stats'])) {
-  $posted['stats'] = 'all';
+    $posted['stats'] = 'all';
 }
 $times_ = [
-	$lang_->print_txt('DAY') => 'day',
-	$lang_->print_txt('WEEK') => 'week',
-	$lang_->print_txt('MONTH') => 'month',
-	$lang_->print_txt('YEAR') => 'year',
-	$lang_->print_txt('ALL') => 'all',
+    $lang_->print_txt('DAY') => 'day',
+    $lang_->print_txt('WEEK') => 'week',
+    $lang_->print_txt('MONTH') => 'month',
+    $lang_->print_txt('YEAR') => 'year',
+    $lang_->print_txt('ALL') => 'all',
 ];
 
 // and output the page
@@ -86,33 +87,36 @@ $template_->output($replace);
  * @param  $posted     array  values posted from the form
  * @return             string html string displaying the host block
  */
-function drawHosts($template, $posted) {
-  global $sysconf_;
-  global $lang_;
+function drawHosts($template, $posted)
+{
+    global $sysconf_;
+    global $lang_;
 
-  if (isset($hosts)) { unset($hosts); }
-  if (!isset($posted['host'])) {
-    $hosts_arr = $sysconf_->getSlavesName();
-    $hosts[current($hosts_arr)] = current($hosts_arr);
-  } else {
-    $hosts[$posted['host']] = $posted['host'];
-  }
-  if ($posted['host'] == "all") {
-    $hosts = $sysconf_->getSlavesName();
-  }
-
-  $ret = "";
-  $matches = [];
-  foreach ($hosts as $key => $val) {
-    $t = $template->getTemplate('HOST');
-    if (preg_match('/\_\_LANG\_([A-Z0-9]+)\_\_/', $t, $matches)) {
-        $t = preg_replace('/\_\_LANG\_([A-Z0-9]+)\_\_/', $lang_->print_txt($matches[1]), $t);
+    if (isset($hosts)) {
+        unset($hosts);
     }
-    $t = str_replace("__HOSTNAME__", $key, $t);
-    $t = str_replace("__STAT__", drawStat($template, $posted, $val), $t);
-    $ret .= $t;
-  }
-  return $ret;
+    if (!isset($posted['host'])) {
+        $hosts_arr = $sysconf_->getSlavesName();
+        $hosts[current($hosts_arr)] = current($hosts_arr);
+    } else {
+        $hosts[$posted['host']] = $posted['host'];
+    }
+    if ($posted['host'] == "all") {
+        $hosts = $sysconf_->getSlavesName();
+    }
+
+    $ret = "";
+    $matches = [];
+    foreach ($hosts as $key => $val) {
+        $t = $template->getTemplate('HOST');
+        if (preg_match('/\_\_LANG\_([A-Z0-9]+)\_\_/', $t, $matches)) {
+            $t = preg_replace('/\_\_LANG\_([A-Z0-9]+)\_\_/', $lang_->print_txt($matches[1]), $t);
+        }
+        $t = str_replace("__HOSTNAME__", $key, $t);
+        $t = str_replace("__STAT__", drawStat($template, $posted, $val), $t);
+        $ret .= $t;
+    }
+    return $ret;
 }
 
 /**
@@ -122,33 +126,38 @@ function drawHosts($template, $posted) {
  * @param  $host       string host to be processed
  * @return             string html string displaying the stats block
  */
-function drawStat($template, $posted, $host) {
-  global $stats_;
-  global $documentor;
+function drawStat($template, $posted, $host)
+{
+    global $stats_;
+    global $documentor;
 
-  if (isset($stats)) { unset($stats); }
-  if (!isset($posted['stats']) || $posted['stats'] == 'all') {
-    $stats = $stats_;
-  } else {
-    $key = array_search($posted['stats'], $stats_);
-    $stats[$key] = $posted['stats'];
-  }
-  $ret = "";
-
-  $matches = [];
-  foreach ($stats as $key => $val) {
-    if ($val == 'all') { continue; }
-    $t = $template->getTemplate('STAT');
-    if (preg_match('/\_\_LANG\_([A-Z0-9]+)\_\_/', $t, $matches)) {
-        $t = preg_replace('/\_\_LANG\_([A-Z0-9]+)\_\_/', $lang_->print_txt($matches[1]), $t);
+    if (isset($stats)) {
+        unset($stats);
     }
-    $t = str_replace("__STATNAME__", $key, $t);
-    $t = str_replace("__HELPPERIOD__", $documentor->help_button(strtoupper($val)), $t);
-    $t = str_replace("__PERIODS__", drawPeriod($template, $posted, $host, $val), $t);
-    $ret .= $t;
-   }
+    if (!isset($posted['stats']) || $posted['stats'] == 'all') {
+        $stats = $stats_;
+    } else {
+        $key = array_search($posted['stats'], $stats_);
+        $stats[$key] = $posted['stats'];
+    }
+    $ret = "";
 
-  return $ret;
+    $matches = [];
+    foreach ($stats as $key => $val) {
+        if ($val == 'all') {
+            continue;
+        }
+        $t = $template->getTemplate('STAT');
+        if (preg_match('/\_\_LANG\_([A-Z0-9]+)\_\_/', $t, $matches)) {
+            $t = preg_replace('/\_\_LANG\_([A-Z0-9]+)\_\_/', $lang_->print_txt($matches[1]), $t);
+        }
+        $t = str_replace("__STATNAME__", $key, $t);
+        $t = str_replace("__HELPPERIOD__", $documentor->help_button(strtoupper($val)), $t);
+        $t = str_replace("__PERIODS__", drawPeriod($template, $posted, $host, $val), $t);
+        $ret .= $t;
+    }
+
+    return $ret;
 }
 
 /**
@@ -159,28 +168,32 @@ function drawStat($template, $posted, $host) {
  * @param  $stat       string statistic type to be displayed
  * @return             string html string displaying the stats block
  */
-function drawPeriod($template, $posted, $host, $stat) {
-  global $times_;
+function drawPeriod($template, $posted, $host, $stat)
+{
+    global $times_;
 
-  if (isset($times)) { unset($times); }
-  if (!isset($posted['times']) || $posted['times'] == 'all') {
-    $times = $times_;
-  } else {
-    $times[$posted['times']] = $posted['times'];
-  }
-  $ret = "";
-  $matches = [];
-  foreach ($times as $key => $val) {
-    if ($val == 'all') { continue; }
-    $t = $template->getTemplate('PERIODS');
-    if (preg_match('/\_\_LANG\_([A-Z0-9]+)\_\_/', $t, $matches)) {
-        $t = preg_replace('/\_\_LANG\_([A-Z0-9]+)\_\_/', $lang_->print_txt($matches[1]), $t);
+    if (isset($times)) {
+        unset($times);
     }
-    $t = str_replace("__PERIODNAME__", $key, $t);
-    $t = str_replace("__IMAGE__", "/mrtg/".$host."/".$stat."-".$val."-full.png", $t);
-    //$t = str_replace("__IMAGEFULL__", "/mrtg/".$host."/".$stat."-".$val."-full.png", $t);
-    $ret .= $t;
-   }
-  return $ret;
+    if (!isset($posted['times']) || $posted['times'] == 'all') {
+        $times = $times_;
+    } else {
+        $times[$posted['times']] = $posted['times'];
+    }
+    $ret = "";
+    $matches = [];
+    foreach ($times as $key => $val) {
+        if ($val == 'all') {
+            continue;
+        }
+        $t = $template->getTemplate('PERIODS');
+        if (preg_match('/\_\_LANG\_([A-Z0-9]+)\_\_/', $t, $matches)) {
+            $t = preg_replace('/\_\_LANG\_([A-Z0-9]+)\_\_/', $lang_->print_txt($matches[1]), $t);
+        }
+        $t = str_replace("__PERIODNAME__", $key, $t);
+        $t = str_replace("__IMAGE__", "/mrtg/" . $host . "/" . $stat . "-" . $val . "-full.png", $t);
+        //$t = str_replace("__IMAGEFULL__", "/mrtg/".$host."/".$stat."-".$val."-full.png", $t);
+        $ret .= $t;
+    }
+    return $ret;
 }
-?>

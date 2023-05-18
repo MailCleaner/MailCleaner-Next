@@ -1,4 +1,5 @@
 <?php
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 foldmethod=marker: */
 
 /**
@@ -39,31 +40,31 @@ require_once "PEAR.php";
  *
  * This container takes an array of options of the following form:
  *
- * array(
- *   array(
+ * [
+ *   [
  *     'type'    => <standard container type name>,
  *     'options' => <normal array of options for container>,
- *   ),
- * );
+ *   ],
+ * ];
  *
  * Full example:
  *
- * $options = array(
- *   array(
+ * $options = [
+ *   [
  *     'type'    => 'DB',
- *     'options' => array(
+ *     'options' => [
  *       'dsn' => "mysql://user:password@localhost/database",
- *     ),
- *   ),
- *   array(
+ *     ],
+ *   ],
+ *   [
  *     'type'    => 'Array',
- *     'options' => array(
+ *     'options' => [
  *       'cryptType' => 'md5',
- *       'users'     => array(
+ *       'users'     => [
  *         'admin' => md5('password'),
- *       ),
- *     ),
- *   ),
+ *       ],
+ *     ],
+ *   ],
  * );
  *
  * $auth = new Auth('Multiple', $options);
@@ -77,7 +78,8 @@ require_once "PEAR.php";
  * @since      File available since Release 1.5.0
  */
 
-class Auth_Container_Multiple extends Auth_Container {
+class Auth_Container_Multiple extends Auth_Container
+{
 
     // {{{ properties
 
@@ -86,14 +88,14 @@ class Auth_Container_Multiple extends Auth_Container {
      *
      * @var array $options
      */
-    var $options = array();
+    var $options = [];
 
     /**
      * The instanciated containers
      *
      * @var array $containers
      */
-    var $containers = array();
+    var $containers = [];
 
     // }}}
     // {{{ Auth_Container_Multiple()
@@ -141,48 +143,39 @@ class Auth_Container_Multiple extends Auth_Container {
 
         foreach ($this->options as $key => $options) {
 
-            $this->log('Using Container '.$key.' of type '.$options['type'].'.', AUTH_LOG_DEBUG);
+            $this->log('Using Container ' . $key . ' of type ' . $options['type'] . '.', AUTH_LOG_DEBUG);
 
             if (isset($this->containers[$key]) && is_a($this->containers[$key], 'Auth_Container')) {
 
                 $container = &$this->containers[$key];
-
             } else {
 
                 $this->containers[$key] = &$this->_auth_obj->_factory($options['type'], $options['options']);
                 $this->containers[$key]->_auth_obj = &$this->_auth_obj;
                 $container = &$this->containers[$key];
-
             }
 
             $result = $container->fetchData($user, $pass);
 
             if (PEAR::isError($result)) {
 
-                $this->log('Container '.$key.': '.$result->getMessage(), AUTH_LOG_DEBUG);
+                $this->log('Container ' . $key . ': ' . $result->getMessage(), AUTH_LOG_DEBUG);
                 return $result;
-
             } elseif ($result == true) {
 
-                $this->log('Container '.$key.': Authentication successful.', AUTH_LOG_DEBUG);
+                $this->log('Container ' . $key . ': Authentication successful.', AUTH_LOG_DEBUG);
                 return true;
-
             } else {
 
-                $this->log('Container '.$key.': Authentication failed.', AUTH_LOG_DEBUG);
-
+                $this->log('Container ' . $key . ': Authentication failed.', AUTH_LOG_DEBUG);
             }
-
         }
 
         $this->log('Auth_Container_Multiple: All containers rejected user credentials.', AUTH_LOG_DEBUG);
 
         return false;
-
     }
 
     // }}}
 
 }
-
-?>

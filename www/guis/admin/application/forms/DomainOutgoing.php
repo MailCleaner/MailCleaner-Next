@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -35,8 +36,8 @@ class Default_Form_DomainOutgoing extends Zend_Form
         $this->setAttrib('id', 'domain_form');
         $panellist = new Zend_Form_Element_Select('domainpanel', [
             'required' => false,
-	    'filters' => ['StringTrim']
-	]);
+            'filters' => ['StringTrim']
+        ]);
         ## TODO: add specific validator
         $panellist->addValidator(new Zend_Validate_Alnum());
 
@@ -58,7 +59,7 @@ class Default_Form_DomainOutgoing extends Zend_Form
             'title' => $t->_("Allow a domain to use authenticated outgoing relay.\nOnly administrator can change that."),
             'uncheckedValue' => "0",
             'checkedValue' => "1",
-	]);
+        ]);
         // Only admin can enable outgoing relay
         $user_role = Zend_Registry::get('user')->getUserType();
         if ($user_role != 'administrator') {
@@ -76,8 +77,8 @@ class Default_Form_DomainOutgoing extends Zend_Form
             'required' => false,
             'size' => 8,
             'class' => 'fieldrighted',
-	    'filters' => ['Alnum', 'StringTrim']
-	]);
+            'filters' => ['Alnum', 'StringTrim']
+        ]);
         $smtpauthcachetime->setValue($this->_domain->getPref('smtp_auth_cachetime'));
         $smtpauthcachetime->addValidator(new Zend_Validate_Int());
         $this->addElement($smtpauthcachetime);
@@ -87,7 +88,7 @@ class Default_Form_DomainOutgoing extends Zend_Form
             'title' => $t->_("Accept only crypted SMTP sessions for outgoing relay"),
             'uncheckedValue' => "0",
             'checkedValue' => "1",
-	]);
+        ]);
         if ($this->_domain->getPref('require_outgoing_tls')) {
             $require_outgoing_tls->setChecked(true);
         }
@@ -97,7 +98,7 @@ class Default_Form_DomainOutgoing extends Zend_Form
             'label' => $t->_('Enable BATV') . " :",
             'uncheckedValue' => "0",
             'checkedValue' => "1",
-	]);
+        ]);
 
         if ($this->_domain->getPref('batv_check')) {
             $batv_check->setChecked(true);
@@ -108,8 +109,8 @@ class Default_Form_DomainOutgoing extends Zend_Form
             'label' => $t->_('BATV key') . " :",
             'required' => false,
             'size' => 30,
-	    'filters' => ['StringTrim']
-	]);
+            'filters' => ['StringTrim']
+        ]);
         $batv_secret->setValue($this->_domain->getPref('batv_secret'));
         $this->addElement($batv_secret);
         if (!$this->_domain->getPref('batv_check')) {
@@ -120,8 +121,8 @@ class Default_Form_DomainOutgoing extends Zend_Form
             'label' => $t->_('DKIM signing') . " :",
             'title' => $t->_("Enables the DKIM signing"),
             'required' => false,
-	    'filters' => ['StringTrim']
-	]);
+            'filters' => ['StringTrim']
+        ]);
 
         $dkim_signature->addMultiOption('_none', 'None');
 
@@ -134,9 +135,11 @@ class Default_Form_DomainOutgoing extends Zend_Form
         $dkim_signature->addMultiOption('_custom', 'Custom');
 
         $dkim_signature->setValue('_none');
-        if ($this->_domain->getPref('dkim_domain') == '_default' ||
+        if (
+            $this->_domain->getPref('dkim_domain') == '_default' ||
             ($this->_domain->getPref('dkim_domain') == $this->_mta->getParam('dkim_default_domain') &&
-                $this->_domain->getPref('dkim_selector') == $this->_mta->getParam('dkim_default_selector'))) {
+                $this->_domain->getPref('dkim_selector') == $this->_mta->getParam('dkim_default_selector'))
+        ) {
             $dkim_signature->setValue('_default');
         } else if ($this->_domain->getPref('dkim_domain') == $this->_domain->getParam('name')) {
             $dkim_signature->setValue($this->_domain->getParam('name'));
@@ -149,8 +152,8 @@ class Default_Form_DomainOutgoing extends Zend_Form
             'label' => $t->_('Domain') . " :",
             'required' => false,
             'size' => 30,
-	    'filters' => ['StringTrim']
-	]);
+            'filters' => ['StringTrim']
+        ]);
         $dkim_domain->setValue($this->_domain->getPref('dkim_domain'));
         $this->addElement($dkim_domain);
 
@@ -158,8 +161,8 @@ class Default_Form_DomainOutgoing extends Zend_Form
             'label' => $t->_('Selector') . " :",
             'required' => false,
             'size' => 30,
-	    'filters' => ['StringTrim']
-	]);
+            'filters' => ['StringTrim']
+        ]);
         $dkim_selector->setValue($this->_domain->getPref('dkim_selector'));
         $this->addElement($dkim_selector);
 
@@ -168,8 +171,8 @@ class Default_Form_DomainOutgoing extends Zend_Form
             'required' => false,
             'class' => 'pki_privatekey',
             'rows' => 7,
-	    'cols' => 50
-	]);
+            'cols' => 50
+        ]);
         $dkim_pkey->setValue($this->_domain->getPref('dkim_pkey'));
         require_once 'Validate/PKIPrivateKey.php';
         $dkim_pkey->addValidator(new Validate_PKIPrivateKey());
@@ -187,7 +190,7 @@ class Default_Form_DomainOutgoing extends Zend_Form
             'title' => $t->_("The relayed mails sent to domains that are not hosted on this server will be sent to the smarthost.\nOnly administrator can change that."),
             'uncheckedValue' => "0",
             'checkedValue' => "1",
-	]);
+        ]);
         // Only admin can enable outgoing relay
         $user_role = Zend_Registry::get('user')->getUserType();
         if ($user_role != 'administrator') {
@@ -200,46 +203,45 @@ class Default_Form_DomainOutgoing extends Zend_Form
         }
         $this->addElement($relay_smarthost);
 
-                require_once('Validate/SMTPHostList.php');
-                $servers_smarthost = new Zend_Form_Element_Textarea('servers_smarthost', [
-                      'label'    =>  $t->_('Server Realy Smarthost')." :",
-                      'title' => $t->_("Name or IP address of the smarthost server to relay to"),
-                      'required'   => false,
-                      'rows' => 5,
-                      'cols' => 30,
-		      'filters'    => ['StringToLower', 'StringTrim']
-		]);
-            $servers_smarthost->addValidator(new Validate_SMTPHostList());
-                $servers_smarthost->setValue($this->_domain->getDestinationFieldString_smarthost());
-                $this->addElement($servers_smarthost);
+        require_once('Validate/SMTPHostList.php');
+        $servers_smarthost = new Zend_Form_Element_Textarea('servers_smarthost', [
+            'label'    =>  $t->_('Server Realy Smarthost') . " :",
+            'title' => $t->_("Name or IP address of the smarthost server to relay to"),
+            'required'   => false,
+            'rows' => 5,
+            'cols' => 30,
+            'filters'    => ['StringToLower', 'StringTrim']
+        ]);
+        $servers_smarthost->addValidator(new Validate_SMTPHostList());
+        $servers_smarthost->setValue($this->_domain->getDestinationFieldString_smarthost());
+        $this->addElement($servers_smarthost);
 
-                $port_smarthost = new  Zend_Form_Element_Text('port_smarthost', [
-                    'label'    => $t->_('Destination port')." :",
-                    'required' => false,
-                    'size' => 4,
-		    'filters'    => ['Alnum', 'StringTrim']
-		]);
-            $port_smarthost->setValue($this->_domain->getDestinationPort_smarthost());
+        $port_smarthost = new  Zend_Form_Element_Text('port_smarthost', [
+            'label'    => $t->_('Destination port') . " :",
+            'required' => false,
+            'size' => 4,
+            'filters'    => ['Alnum', 'StringTrim']
+        ]);
+        $port_smarthost->setValue($this->_domain->getDestinationPort_smarthost());
         $port_smarthost->addValidator(new Zend_Validate_Int());
-            $this->addElement($port_smarthost);
+        $this->addElement($port_smarthost);
 
-            $multiple_smarthost = new Zend_Form_Element_Select('multiple_smarthost', [
-            'label'      => $t->_('Use multiple servers as')." :",
+        $multiple_smarthost = new Zend_Form_Element_Select('multiple_smarthost', [
+            'label'      => $t->_('Use multiple servers as') . " :",
             'title' => $t->_("Choose method to deliver mails to destination server"),
             'required'   => false,
-	    'filters'    => ['StringTrim']
-	    ]);
+            'filters'    => ['StringTrim']
+        ]);
 
         foreach ($this->_domain->getDestinationActionOptions() as $key => $value) {
-                $multiple_smarthost->addMultiOption($key, $t->_($key));
-                $options = $this->_domain->getDestinationActionOptions();
-                if (in_array($options[$key], $this->_domain->getActiveDestinationOptions())) {
-                    $multiple_smarthost->setValue($key);
-                }
+            $multiple_smarthost->addMultiOption($key, $t->_($key));
+            $options = $this->_domain->getDestinationActionOptions();
+            if (in_array($options[$key], $this->_domain->getActiveDestinationOptions())) {
+                $multiple_smarthost->setValue($key);
+            }
         }
         #$multiple_smarthost->setValue('');
         $this->addElement($multiple_smarthost);
-
     }
 
     public function setParams($request, $domain)
@@ -316,7 +318,7 @@ class Default_Form_DomainOutgoing extends Zend_Form
             $domain->setParam('relay_smarthost', $request->getParam('relay_smarthost'));
         }
 
-	$domain->setDestinationServersFieldString_smarthost($request->getParam('servers_smarthost'));
+        $domain->setDestinationServersFieldString_smarthost($request->getParam('servers_smarthost'));
         $domain->setDestinationPort_smarthost($request->getParam('port_smarthost'));
         $domain->setDestinationOption_smarthost($request->getParam('multiple_smarthost'));
 
@@ -340,9 +342,11 @@ class Default_Form_DomainOutgoing extends Zend_Form
     {
         $key = new Default_Model_PKI();
 
-        if ($this->_domain->getPref('dkim_domain') == '_default' ||
+        if (
+            $this->_domain->getPref('dkim_domain') == '_default' ||
             ($this->_domain->getPref('dkim_domain') == $this->_mta->getParam('dkim_default_domain') &&
-                $this->_domain->getPref('dkim_selector') == $this->_mta->getParam('dkim_default_selector'))) {
+                $this->_domain->getPref('dkim_selector') == $this->_mta->getParam('dkim_default_selector'))
+        ) {
             $this->dkim_domain = $this->_mta->getParam('dkim_default_domain');
             $this->dkim_selector = $this->_mta->getParam('dkim_default_selector');
             $key->setPrivateKey($this->_mta->getParam('dkim_default_pkey'));

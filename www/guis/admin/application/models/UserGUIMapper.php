@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -10,7 +11,7 @@
 
 class Default_Model_UserGUIMapper
 {
-	
+
     protected $_dbTable;
 
     public function setDbTable($dbTable)
@@ -43,14 +44,15 @@ class Default_Model_UserGUIMapper
 
         $conf->setId($id);
         foreach ($conf->getAvailableParams() as $key) {
-        	$conf->setParam($key, $row->$key);
+            $conf->setParam($key, $row->$key);
         }
     }
 
-    public function save(Default_Model_UserGUI $conf) {
-       $data = $conf->getParamArray();
-       $res = '';
-       if (null === ($id = $conf->getId())) {
+    public function save(Default_Model_UserGUI $conf)
+    {
+        $data = $conf->getParamArray();
+        $res = '';
+        if (null === ($id = $conf->getId())) {
             unset($data['id']);
             $res = $this->getDbTable()->insert($data);
         } else {
@@ -58,5 +60,4 @@ class Default_Model_UserGUIMapper
         }
         return $res;
     }
-
 }

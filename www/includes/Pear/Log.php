@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Header$
  * $Horde: horde/lib/Log.php,v 1.15 2000/06/29 23:39:45 jon Exp $
@@ -83,7 +84,7 @@ class Log
      * @var array
      * @access protected
      */
-    var $_listeners = array();
+    var $_listeners = [];
 
     /**
      * Starting depth to use when walking a backtrace in search of the
@@ -101,15 +102,17 @@ class Log
      * @var array
      * @access protected
      */
-    var $_formatMap = array('%{timestamp}'  => '%1$s',
-                            '%{ident}'      => '%2$s',
-                            '%{priority}'   => '%3$s',
-                            '%{message}'    => '%4$s',
-                            '%{file}'       => '%5$s',
-                            '%{line}'       => '%6$s',
-                            '%{function}'   => '%7$s',
-                            '%{class}'      => '%8$s',
-                            '%\{'           => '%%{');
+    var $_formatMap = [
+        '%{timestamp}'  => '%1$s',
+        '%{ident}'      => '%2$s',
+        '%{priority}'   => '%3$s',
+        '%{message}'    => '%4$s',
+        '%{file}'       => '%5$s',
+        '%{line}'       => '%6$s',
+        '%{function}'   => '%7$s',
+        '%{class}'      => '%8$s',
+        '%\{'           => '%%{'
+    ];
 
     public function __construct()
     {
@@ -140,9 +143,13 @@ class Log
      * @access public
      * @since Log 1.0
      */
-    public static function factory($handler, $name = '', $ident = '',
-                                   $conf = array(), $level = PEAR_LOG_DEBUG)
-    {
+    public static function factory(
+        $handler,
+        $name = '',
+        $ident = '',
+        $conf = [],
+        $level = PEAR_LOG_DEBUG
+    ) {
         $handler = strtolower($handler);
         $class = 'Log_' . $handler;
         $classfile = 'Log/' . $handler . '.php';
@@ -202,16 +209,25 @@ class Log
      * @access public
      * @since Log 1.0
      */
-    public static function singleton($handler, $name = '', $ident = '',
-                                     $conf = array(), $level = PEAR_LOG_DEBUG)
-    {
+    public static function singleton(
+        $handler,
+        $name = '',
+        $ident = '',
+        $conf = [],
+        $level = PEAR_LOG_DEBUG
+    ) {
         static $instances;
-        if (!isset($instances)) $instances = array();
+        if (!isset($instances)) $instances = [];
 
-        $signature = serialize(array($handler, $name, $ident, $conf, $level));
+        $signature = serialize([$handler, $name, $ident, $conf, $level]);
         if (!isset($instances[$signature])) {
-            $instances[$signature] = Log::factory($handler, $name, $ident,
-                                                  $conf, $level);
+            $instances[$signature] = Log::factory(
+                $handler,
+                $name,
+                $ident,
+                $conf,
+                $level
+            );
         }
 
         return $instances[$signature];
@@ -493,8 +509,10 @@ class Log
          * However, if log() was called from one of our "shortcut" functions,
          * we're going to need to go back an additional step.
          */
-        if (in_array($func, array('emerg', 'alert', 'crit', 'err', 'warning',
-                                  'notice', 'info', 'debug'))) {
+        if (in_array($func, [
+            'emerg', 'alert', 'crit', 'err', 'warning',
+            'notice', 'info', 'debug'
+        ])) {
             $bt2 = isset($bt[$depth + 2]) ? $bt[$depth + 2] : null;
 
             $file = is_array($bt1) ? $bt1['file'] : null;
@@ -512,7 +530,7 @@ class Log
         }
 
         /* Return a 4-tuple containing (file, line, function, class). */
-        return array($file, $line, $func, $class);
+        return [$file, $line, $func, $class];
     }
 
     /**
@@ -556,15 +574,17 @@ class Log
          * "argument swapping" capability to dynamically select and position
          * the variables which will ultimately appear in the log string.
          */
-        return sprintf($format,
-                       $timestamp,
-                       $this->_ident,
-                       $this->priorityToString($priority),
-                       $message,
-                       isset($file) ? $file : '',
-                       isset($line) ? $line : '',
-                       isset($func) ? $func : '',
-                       isset($class) ? $class : '');
+        return sprintf(
+            $format,
+            $timestamp,
+            $this->_ident,
+            $this->priorityToString($priority),
+            $message,
+            isset($file) ? $file : '',
+            isset($line) ? $line : '',
+            isset($func) ? $func : '',
+            isset($class) ? $class : ''
+        );
     }
 
     /**
@@ -579,7 +599,7 @@ class Log
      */
     function priorityToString($priority)
     {
-        $levels = array(
+        $levels = [
             PEAR_LOG_EMERG   => 'emergency',
             PEAR_LOG_ALERT   => 'alert',
             PEAR_LOG_CRIT    => 'critical',
@@ -588,7 +608,7 @@ class Log
             PEAR_LOG_NOTICE  => 'notice',
             PEAR_LOG_INFO    => 'info',
             PEAR_LOG_DEBUG   => 'debug'
-        );
+        ];
 
         return $levels[$priority];
     }
@@ -608,7 +628,7 @@ class Log
      */
     function stringToPriority($name)
     {
-        $levels = array(
+        $levels = [
             'emergency' => PEAR_LOG_EMERG,
             'alert'     => PEAR_LOG_ALERT,
             'critical'  => PEAR_LOG_CRIT,
@@ -617,7 +637,7 @@ class Log
             'notice'    => PEAR_LOG_NOTICE,
             'info'      => PEAR_LOG_INFO,
             'debug'     => PEAR_LOG_DEBUG
-        );
+        ];
 
         return $levels[strtolower($name)];
     }
@@ -804,8 +824,10 @@ class Log
      */
     function detach($observer)
     {
-        if (!is_a($observer, 'Log_observer') ||
-            !isset($this->_listeners[$observer->_id])) {
+        if (
+            !is_a($observer, 'Log_observer') ||
+            !isset($this->_listeners[$observer->_id])
+        ) {
             return false;
         }
 

@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -16,29 +17,30 @@ require_once("Pear/Auth.php");
  * This will take care of authenticate user against a Radius server
  * @package mailcleaner
  */
-class RadiusAuthenticator extends AuthManager {
+class RadiusAuthenticator extends AuthManager
+{
 
     protected $exhaustive_ = true;
 
-    function create($domain) {
-       $settings = $domain->getConnectorSettings();
-       if (! $settings instanceof RadiusSettings) {
+    function create($domain)
+    {
+        $settings = $domain->getConnectorSettings();
+        if (!$settings instanceof RadiusSettings) {
             return false;
         }
 
-       $ser = [  [$settings->getSetting('server'), $settings->getSetting('port'), $settings->getSetting('secret')] ];
+        $ser = [[$settings->getSetting('server'), $settings->getSetting('port'), $settings->getSetting('secret')]];
 
-       $funct = ["LoginDialog", "loginFunction"];
-       $params = [
-                        "servers" => $ser,
-                        "authtype" => $settings->getSetting('authtype')
-       ];
-      $this->auth_ = new Auth('RADIUS', $params, $funct);
-      if ($this->auth_ instanceof Auth) {
-        $this->setUpAuth();
-        return true;
-      }
-      return false;
+        $funct = ["LoginDialog", "loginFunction"];
+        $params = [
+            "servers" => $ser,
+            "authtype" => $settings->getSetting('authtype')
+        ];
+        $this->auth_ = new Auth('RADIUS', $params, $funct);
+        if ($this->auth_ instanceof Auth) {
+            $this->setUpAuth();
+            return true;
+        }
+        return false;
     }
 }
-?>

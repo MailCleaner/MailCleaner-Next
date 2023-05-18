@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MailCleaner
  *
@@ -25,7 +26,8 @@ class Default_Model_DbTable_UserPreference extends Zend_Db_Table_Abstract
     /**
      * Constructor
      */
-    public function __construct() {
-    	$this->_db = Zend_Registry::get('writedb');
+    public function __construct()
+    {
+        $this->_db = Zend_Registry::get('writedb');
     }
 }

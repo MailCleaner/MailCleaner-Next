@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Header$
  *
@@ -42,23 +43,23 @@ class Log_win extends Log
      * @var array
      * @access private
      */
-    var $_styles = array(
-                        PEAR_LOG_EMERG   => 'color: red;',
-                        PEAR_LOG_ALERT   => 'color: orange;',
-                        PEAR_LOG_CRIT    => 'color: yellow;',
-                        PEAR_LOG_ERR     => 'color: green;',
-                        PEAR_LOG_WARNING => 'color: blue;',
-                        PEAR_LOG_NOTICE  => 'color: indigo;',
-                        PEAR_LOG_INFO    => 'color: violet;',
-                        PEAR_LOG_DEBUG   => 'color: black;'
-                    );
+    var $_styles = [
+        PEAR_LOG_EMERG   => 'color: red;',
+        PEAR_LOG_ALERT   => 'color: orange;',
+        PEAR_LOG_CRIT    => 'color: yellow;',
+        PEAR_LOG_ERR     => 'color: green;',
+        PEAR_LOG_WARNING => 'color: blue;',
+        PEAR_LOG_NOTICE  => 'color: indigo;',
+        PEAR_LOG_INFO    => 'color: violet;',
+        PEAR_LOG_DEBUG   => 'color: black;'
+    ];
 
     /**
      * String buffer that holds line that are pending output.
      * @var array
      * @access private
      */
-    var $_buffer = array();
+    var $_buffer = [];
 
     /**
      * Constructs a new Log_win object.
@@ -69,10 +70,13 @@ class Log_win extends Log
      * @param int    $level    Log messages up to and including this level.
      * @access public
      */
-    public function __construct($name, $ident = '', $conf = array(),
-                                $level = PEAR_LOG_DEBUG)
-    {
-        $this->_id = md5(microtime().rand());
+    public function __construct(
+        $name,
+        $ident = '',
+        $conf = [],
+        $level = PEAR_LOG_DEBUG
+    ) {
+        $this->_id = md5(microtime() . rand());
         $this->_name = str_replace(' ', '_', $name);
         $this->_ident = $ident;
         $this->_mask = Log::UPTO($level);
@@ -89,7 +93,7 @@ class Log_win extends Log
             }
         }
 
-        register_shutdown_function(array(&$this, '_Log_win'));
+        register_shutdown_function([&$this, '_Log_win']);
     }
 
     /**
@@ -206,7 +210,7 @@ EOT;
         }
 
         /* Now that the buffer has been drained, clear it. */
-        $this->_buffer = array();
+        $this->_buffer = [];
     }
 
     /**
@@ -267,8 +271,11 @@ EOT;
 
         /* Build the output line that contains the log entry row. */
         $line  = '<tr>';
-        $line .= sprintf('<td>%s.%s</td>',
-                         strftime('%H:%M:%S', $sec), substr($usec, 2, 2));
+        $line .= sprintf(
+            '<td>%s.%s</td>',
+            strftime('%H:%M:%S', $sec),
+            substr($usec, 2, 2)
+        );
         if (!empty($this->_ident)) {
             $line .= '<td>' . $this->_ident . '</td>';
         }
@@ -278,9 +285,8 @@ EOT;
 
         $this->_writeln($line);
 
-        $this->_announce(array('priority' => $priority, 'message' => $message));
+        $this->_announce(['priority' => $priority, 'message' => $message]);
 
         return true;
     }
-
 }

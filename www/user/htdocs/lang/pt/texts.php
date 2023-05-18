@@ -1,4 +1,5 @@
 <?php
+
 $txt['NEWSLETTERSALLOW'] = "entregar";
 $txt['NEWSLETTERACCEPT'] = "Aceitar esta newsletter";
 $txt['SPAM_WHITELIST_DISABLED'] = "A lista não está ativada para este domínio (Contacte o seu administrador).";

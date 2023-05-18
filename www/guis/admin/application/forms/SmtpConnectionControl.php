@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -35,8 +36,8 @@ class Default_Form_SmtpConnectionControl extends ZendX_JQuery_Form
             'required' => false,
             'rows' => 5,
             'cols' => 30,
-	    'filters' => ['StringToLower', 'StringTrim']
-	]);
+            'filters' => ['StringToLower', 'StringTrim']
+        ]);
         $allowconnect->addValidator(new Validate_HostList());
         $allowconnect->setValue($this->_mta->getParam('smtp_conn_access'));
         $this->addElement($allowconnect);
@@ -48,8 +49,8 @@ class Default_Form_SmtpConnectionControl extends ZendX_JQuery_Form
             'required' => false,
             'rows' => 5,
             'cols' => 30,
-	    'filters' => ['StringToLower', 'StringTrim']
-	]);
+            'filters' => ['StringToLower', 'StringTrim']
+        ]);
         $allowrelay->addValidator(new Validate_HostList());
         $allowrelay->setValue($this->_mta->getParam('relay_from_hosts'));
 
@@ -66,7 +67,7 @@ class Default_Form_SmtpConnectionControl extends ZendX_JQuery_Form
             'label' => $t->_('Allow relaying from unknown domains') . " :",
             'uncheckedValue' => "0",
             'checkedValue' => "1",
-	]);
+        ]);
         if ($this->_mta->getParam('allow_relay_for_unknown_domains')) {
             $allow_relay_for_unknown_domains->setChecked(true);
         }
@@ -79,8 +80,8 @@ class Default_Form_SmtpConnectionControl extends ZendX_JQuery_Form
             'required' => false,
             'rows' => 5,
             'cols' => 30,
-	    'filters' => ['StringToLower', 'StringTrim']
-	]);
+            'filters' => ['StringToLower', 'StringTrim']
+        ]);
         $relay_refused_to_domains->addValidator(new Validate_DomainList());
         $relay_refused_to_domains->setValue($this->_mta->getParam('relay_refused_to_domains'));
         $this->addElement($relay_refused_to_domains);
@@ -91,8 +92,8 @@ class Default_Form_SmtpConnectionControl extends ZendX_JQuery_Form
             'required' => false,
             'rows' => 5,
             'cols' => 30,
-	    'filters' => ['StringToLower', 'StringTrim']
-	]);
+            'filters' => ['StringToLower', 'StringTrim']
+        ]);
         $rejecthosts->addValidator(new Validate_HostList());
         $rejecthosts->setValue($this->_mta->getParam('host_reject'));
         $this->addElement($rejecthosts);
@@ -104,8 +105,8 @@ class Default_Form_SmtpConnectionControl extends ZendX_JQuery_Form
             'required' => false,
             'rows' => 5,
             'cols' => 50,
-	    'filters' => ['StringToLower', 'StringTrim']
-	]);
+            'filters' => ['StringToLower', 'StringTrim']
+        ]);
         $rejectsenders->setValue($this->_mta->getParam('sender_reject'));
         $this->addElement($rejectsenders);
 
@@ -114,8 +115,8 @@ class Default_Form_SmtpConnectionControl extends ZendX_JQuery_Form
             'required' => false,
             'rows' => 5,
             'cols' => 50,
-	    'filters' => ['StringToLower', 'StringTrim']
-	]);
+            'filters' => ['StringToLower', 'StringTrim']
+        ]);
         $rejectusers->setValue($this->_mta->getParam('user_reject'));
         $this->addElement($rejectusers);
 
@@ -126,17 +127,16 @@ class Default_Form_SmtpConnectionControl extends ZendX_JQuery_Form
             'required' => false,
             'rows' => 5,
             'cols' => 50,
-	    'filters' => ['StringToLower', 'StringTrim']
-	]);
+            'filters' => ['StringToLower', 'StringTrim']
+        ]);
         $rejectrecipient->addValidator(new Validate_EmailList());
         $rejectrecipient->setValue($this->_mta->getParam('recipient_reject'));
         $this->addElement($rejectrecipient);
 
         $submit = new Zend_Form_Element_Submit('submit', [
-		'label' => $t->_('Submit')
-	]);
+            'label' => $t->_('Submit')
+        ]);
         $this->addElement($submit);
-
     }
 
     public function setParams($request, $mta)
@@ -152,7 +152,5 @@ class Default_Form_SmtpConnectionControl extends ZendX_JQuery_Form
         $mta->setparam('user_reject', $request->getParam('user_reject'));
         $mta->setparam('recipient_reject', $request->getParam('recipient_reject'));
         $mta->setparam('relay_refused_to_domains', $request->getParam('relay_refused_to_domains'));
-
     }
-
 }

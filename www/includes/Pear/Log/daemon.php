@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Header$
  *
@@ -70,15 +71,18 @@ class Log_daemon extends Log
      * @param int    $level Maximum level at which to log.
      * @access public
      */
-    public function __construct($name, $ident = '', $conf = array(),
-                                $level = PEAR_LOG_DEBUG)
-    {
+    public function __construct(
+        $name,
+        $ident = '',
+        $conf = [],
+        $level = PEAR_LOG_DEBUG
+    ) {
         /* Ensure we have a valid integer value for $name. */
         if (empty($name) || !is_int($name)) {
             $name = LOG_SYSLOG;
         }
 
-        $this->_id = md5(microtime().rand());
+        $this->_id = md5(microtime() . rand());
         $this->_name = $name;
         $this->_ident = $ident;
         $this->_mask = Log::UPTO($level);
@@ -100,7 +104,7 @@ class Log_daemon extends Log
         }
         $this->_proto = $this->_proto . '://';
 
-        register_shutdown_function(array(&$this, '_Log_daemon'));
+        register_shutdown_function([&$this, '_Log_daemon']);
     }
 
     /**
@@ -122,11 +126,12 @@ class Log_daemon extends Log
     {
         if (!$this->_opened) {
             $this->_opened = (bool)($this->_socket = @fsockopen(
-                                                $this->_proto . $this->_ip,
-                                                $this->_port,
-                                                $errno,
-                                                $errstr,
-                                                $this->_timeout));
+                $this->_proto . $this->_ip,
+                $this->_port,
+                $errno,
+                $errstr,
+                $this->_timeout
+            ));
         }
         return $this->_opened;
     }
@@ -178,7 +183,7 @@ class Log_daemon extends Log
 
         /* Set the facility level. */
         $facility_level = intval($this->_name) +
-                          intval($this->_toSyslog($priority));
+            intval($this->_toSyslog($priority));
 
         /* Prepend ident info. */
         if (!empty($this->_ident)) {
@@ -193,7 +198,7 @@ class Log_daemon extends Log
         /* Write to socket. */
         fwrite($this->_socket, '<' . $facility_level . '>' . $message . "\n");
 
-        $this->_announce(array('priority' => $priority, 'message' => $message));
+        $this->_announce(['priority' => $priority, 'message' => $message]);
     }
 
     /**
@@ -212,7 +217,7 @@ class Log_daemon extends Log
      */
     function _toSyslog($priority)
     {
-        static $priorities = array(
+        static $priorities = [
             PEAR_LOG_EMERG   => LOG_EMERG,
             PEAR_LOG_ALERT   => LOG_ALERT,
             PEAR_LOG_CRIT    => LOG_CRIT,
@@ -221,7 +226,7 @@ class Log_daemon extends Log
             PEAR_LOG_NOTICE  => LOG_NOTICE,
             PEAR_LOG_INFO    => LOG_INFO,
             PEAR_LOG_DEBUG   => LOG_DEBUG
-        );
+        ];
 
         /* If we're passed an unknown priority, default to LOG_INFO. */
         if (!is_int($priority) || !in_array($priority, $priorities)) {
@@ -230,5 +235,4 @@ class Log_daemon extends Log
 
         return $priorities[$priority];
     }
-
 }

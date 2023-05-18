@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -29,53 +30,53 @@ $spool = 0;
 $message = "";
 // check params and set values
 if (!isset($_GET['s'])) {
-  $error = "BADSPOOL (".$_GET['s'].")";
-  die($error);
+    $error = "BADSPOOL (" . $_GET['s'] . ")";
+    die($error);
 }
 $spoolid = $_GET['s'];
 
 if (!isset($_GET['sid']) || !preg_match('/^[a-z0-9]+$/', $_GET['sid'])) {
-  $error = "BADSESSIONID (".$_GET['sid'].")";
-  die($error);
+    $error = "BADSESSIONID (" . $_GET['sid'] . ")";
+    die($error);
 }
 $sid = $_GET['sid'];
 
 // connect to local soap service
 $soaper = new Soaper();
 if (!$soaper->load('127.0.0.1')) {
-  die("CANNOTCONTACTSOAP");
+    die("CANNOTCONTACTSOAP");
 }
 // check session
 $admin_name = $soaper->getSessionUser($sid);
 if ($admin_name == "") {
-  die('BADSESSION');
+    die('BADSESSION');
 }
 // and create the session user
 $admin_ = new Administrator();
 if (!$admin_->load($admin_name)) {
-  die("BADSESSIONUSER");
+    die("BADSESSIONUSER");
 }
 $_SESSION['admin'] = serialize($admin_);
 
 // create spooler object
 $spool = new Spooler();
 if (!$spool->load($spoolid)) {
-  die("CANNOTLOADSPOOL");
+    die("CANNOTLOADSPOOL");
 }
 
 // should we start a full queue run
-if (isset($_GET['m']) && $_GET['m']=='fa') {
-  $status = $spool->runQueue();
-  if ($status != 'OK') {
-    $error = $status;
-  }
+if (isset($_GET['m']) && $_GET['m'] == 'fa') {
+    $status = $spool->runQueue();
+    if ($status != 'OK') {
+        $error = $status;
+    }
 }
 // should we force only one message
-if (isset($_GET['m']) && $_GET['m']=='fo') {
-  $status = $spool->forceOne($_GET['mid']);
-  if ($status != 'OK') {
-    $error = $status;
-  }
+if (isset($_GET['m']) && $_GET['m'] == 'fo') {
+    $status = $spool->forceOne($_GET['mid']);
+    if ($status != 'OK') {
+        $error = $status;
+    }
 }
 // check the queue run status
 $message = $spool->queueRunStatus();
@@ -88,7 +89,7 @@ $template = $template_->getTemplate('MESSAGE');
 
 $template_->setCondition('CANFORCE', true);
 if ($spoolid == "MTA2") {
-  $template_->setCondition('CANFORCE', false);
+    $template_->setCondition('CANFORCE', false);
 }
 
 // prepare replacements
@@ -100,10 +101,9 @@ $replace = [
     '__SPOOL__' => $lang->print_txt($spoolid),
     '__DRAW_SPOOL__' => $spool->draw($template, $images, $sid),
     '__COUNT__' => $spool->getCount(),
-    '__LINK_REFRESH__' => "javascript:window.location.href='".$_SERVER['PHP_SELF']."?s=$spoolid&sid=$sid&p=$pid';",
-    '__LINK_FORCEALL__' => "javascript:window.location.href='".$_SERVER['PHP_SELF']."?s=$spoolid&sid=$sid&m=fa&p=$pid';"
+    '__LINK_REFRESH__' => "javascript:window.location.href='" . $_SERVER['PHP_SELF'] . "?s=$spoolid&sid=$sid&p=$pid';",
+    '__LINK_FORCEALL__' => "javascript:window.location.href='" . $_SERVER['PHP_SELF'] . "?s=$spoolid&sid=$sid&m=fa&p=$pid';"
 ];
 
 // output page
 $template_->output($replace);
-?>

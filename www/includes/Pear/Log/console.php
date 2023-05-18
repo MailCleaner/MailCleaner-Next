@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Header$
  *
@@ -71,10 +72,13 @@ class Log_console extends Log
      * @param int    $level    Log messages up to and including this level.
      * @access public
      */
-    public function __construct($name, $ident = '', $conf = array(),
-                                $level = PEAR_LOG_DEBUG)
-    {
-        $this->_id = md5(microtime().rand());
+    public function __construct(
+        $name,
+        $ident = '',
+        $conf = [],
+        $level = PEAR_LOG_DEBUG
+    ) {
+        $this->_id = md5(microtime() . rand());
         $this->_ident = $ident;
         $this->_mask = Log::UPTO($level);
 
@@ -92,9 +96,11 @@ class Log_console extends Log
         }
 
         if (!empty($conf['lineFormat'])) {
-            $this->_lineFormat = str_replace(array_keys($this->_formatMap),
-                                             array_values($this->_formatMap),
-                                             $conf['lineFormat']);
+            $this->_lineFormat = str_replace(
+                array_keys($this->_formatMap),
+                array_values($this->_formatMap),
+                $conf['lineFormat']
+            );
         }
 
         if (!empty($conf['timeFormat'])) {
@@ -106,7 +112,7 @@ class Log_console extends Log
          * shutdown function that will dump the buffer upon termination.
          */
         if ($this->_buffering) {
-            register_shutdown_function(array(&$this, '_Log_console'));
+            register_shutdown_function([&$this, '_Log_console']);
         }
     }
 
@@ -200,9 +206,12 @@ class Log_console extends Log
         $message = $this->_extractMessage($message);
 
         /* Build the string containing the complete log line. */
-        $line = $this->_format($this->_lineFormat,
-                               strftime($this->_timeFormat),
-                               $priority, $message) . "\n";
+        $line = $this->_format(
+            $this->_lineFormat,
+            strftime($this->_timeFormat),
+            $priority,
+            $message
+        ) . "\n";
 
         /*
          * If buffering is enabled, append this line to the output buffer.
@@ -215,7 +224,7 @@ class Log_console extends Log
         }
 
         /* Notify observers about this log message. */
-        $this->_announce(array('priority' => $priority, 'message' => $message));
+        $this->_announce(['priority' => $priority, 'message' => $message]);
 
         return true;
     }

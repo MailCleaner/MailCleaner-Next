@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -9,7 +10,7 @@
  */
 
 if ($_SERVER["REQUEST_METHOD"] == "HEAD") {
-  return 200;
+    return 200;
 }
 
 require_once("objects.php");
@@ -19,8 +20,8 @@ require_once("view/Template.php");
 global $user_;
 
 // check variables
-if (!isset($user_) || ! $user_ instanceof User) {
-  die ("NOUSER");
+if (!isset($user_) || !$user_ instanceof User) {
+    die("NOUSER");
 }
 
 // get posted values
@@ -34,9 +35,8 @@ $quarantine->setSettings($posted);
 // create view
 $template_ = new Template('summary.tmpl');
 $replace = [
-  '__MESSAGE__' => $quarantine->doSendSummary()
+    '__MESSAGE__' => $quarantine->doSendSummary()
 ];
 
 // display page
 $template_->output($replace);
-?>

@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -16,8 +17,8 @@ require_once("view/Template.php");
 
 $template = 1;
 // check parameters
-if (!isset($_GET['t']) || !is_numeric($_GET['t']) ) {
-  die ("BADPARAMS");
+if (!isset($_GET['t']) || !is_numeric($_GET['t'])) {
+    die("BADPARAMS");
 }
 // get the template file to use
 $template = $_GET['t'];
@@ -27,10 +28,9 @@ $template_ = new Template("custom_$template.tmpl");
 
 // prepare replacements
 $replace = [
-	"__LANG__" => $lang_->getLanguage(),
-	"__PRINT_USERNAME__" => $user_->getPref('username'),
-	"__PRINT_MAINADDRESS__" => $user_->getMainAddress()
+    "__LANG__" => $lang_->getLanguage(),
+    "__PRINT_USERNAME__" => $user_->getPref('username'),
+    "__PRINT_MAINADDRESS__" => $user_->getMainAddress()
 ];
 // display page
 $template_->output($replace);
-?>

@@ -1,4 +1,5 @@
 <?php
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 foldmethod=marker: */
 
 /**
@@ -26,5 +27,3 @@
  * Include Auth package
  */
 require_once 'Pear/Auth.php';
-
-?>

@@ -1,4 +1,5 @@
 <?php
+
 $htxt['MANUAL_FULL_NAME'] = 'mailcleaner_brukermanual.pdf';
 $htxt['MANUAL_FIRSTCONTACT_NAME'] = 'mailcleaner_hurtigguide.pdf';
 $htxt['MANUAL_GENERICCONCEPT_NAME'] = 'mailcleaner_hovedprinsipper.pdf';

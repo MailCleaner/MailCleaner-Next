@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -33,18 +34,18 @@ class Validate_DomainList extends Zend_Validate_Abstract
 
         $addresses = preg_split('/[,:\s]+/', $value);
         foreach ($addresses as $address) {
-          if ($address == '*') {
-          	continue;
-          }
-          if (preg_match('/^\^/', $address)) {
-          	continue;
-          }
-          $address = preg_replace('/\.?\*/', '', $address);
-          if (! $validator->isValid($address)) {
-          	  $this->domain = $address;
-          	  $this->_error(self::MSG_BADDOMAIN);
-              return false;
-          }
+            if ($address == '*') {
+                continue;
+            }
+            if (preg_match('/^\^/', $address)) {
+                continue;
+            }
+            $address = preg_replace('/\.?\*/', '', $address);
+            if (!$validator->isValid($address)) {
+                $this->domain = $address;
+                $this->_error(self::MSG_BADDOMAIN);
+                return false;
+            }
         }
         return true;
     }

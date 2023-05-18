@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -31,21 +32,21 @@ class Validate_EmailHeader extends Zend_Validate_Abstract
         $emailvalidator = new Zend_Validate_EmailAddress(Zend_Validate_Hostname::ALLOW_LOCAL);
 
         if (preg_match('/^\s*<?(\S+\@[^>]+)>?\s*$/', $value, $matches)) {
-        	if ($emailvalidator->isValid($matches[1])) {
-        		return true;
-        	}
-        	$this->email = $matches[1];
-        	$this->_error(self::MSG_BADEMAIL);
-        	return false;
+            if ($emailvalidator->isValid($matches[1])) {
+                return true;
+            }
+            $this->email = $matches[1];
+            $this->_error(self::MSG_BADEMAIL);
+            return false;
         }
 
         if (preg_match('/^.* <(\S+\@[^>]+)>\s*$/', $value, $matches)) {
-        	if ($emailvalidator->isValid($matches[1])) {
-        		return true;
-        	}
-        	$this->email = $matches[1];
-        	$this->_error(self::MSG_BADEMAIL);
-        	return false;
+            if ($emailvalidator->isValid($matches[1])) {
+                return true;
+            }
+            $this->email = $matches[1];
+            $this->_error(self::MSG_BADEMAIL);
+            return false;
         }
         $this->_error(self::MSG_EMAILHEADER);
         return false;

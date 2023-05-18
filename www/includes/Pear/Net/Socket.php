@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Net_Socket
  *
@@ -179,11 +180,23 @@ class Net_Socket extends PEAR
                 }
 
                 $addr = $this->addr . ':' . $this->port;
-                $fp = @stream_socket_client($addr, $errno, $errstr,
-                    $timeout, $flags, $context);
+                $fp = @stream_socket_client(
+                    $addr,
+                    $errno,
+                    $errstr,
+                    $timeout,
+                    $flags,
+                    $context
+                );
             } else {
-                $fp = @$openfunc($this->addr, $this->port, $errno,
-                    $errstr, $timeout, $context);
+                $fp = @$openfunc(
+                    $this->addr,
+                    $this->port,
+                    $errno,
+                    $errstr,
+                    $timeout,
+                    $context
+                );
             }
         } else {
             $fp = @$openfunc($this->addr, $this->port, $errno, $errstr, $timeout);
@@ -593,8 +606,13 @@ class Net_Socket extends PEAR
 
         $buf = @fread($this->fp, 4);
 
-        return sprintf('%d.%d.%d.%d', ord($buf[0]), ord($buf[1]),
-            ord($buf[2]), ord($buf[3]));
+        return sprintf(
+            '%d.%d.%d.%d',
+            ord($buf[0]),
+            ord($buf[1]),
+            ord($buf[2]),
+            ord($buf[3])
+        );
     }
 
     /**
@@ -685,8 +703,14 @@ class Net_Socket extends PEAR
         if ($state & NET_SOCKET_ERROR) {
             $except[] = $this->fp;
         }
-        if (false === ($sr = stream_select($read, $write, $except,
-                $tv_sec, $tv_usec))
+        if (
+            false === ($sr = stream_select(
+                $read,
+                $write,
+                $except,
+                $tv_sec,
+                $tv_usec
+            ))
         ) {
             return false;
         }
@@ -734,5 +758,4 @@ class Net_Socket extends PEAR
             return $this->raiseError($msg);
         }
     }
-
 }

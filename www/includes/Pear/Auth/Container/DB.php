@@ -1,4 +1,5 @@
 <?php
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 foldmethod=marker: */
 
 /**
@@ -55,7 +56,7 @@ class Auth_Container_DB extends Auth_Container
      * Additional options for the storage container
      * @var array
      */
-    var $options = array();
+    var $options = [];
 
     /**
      * DB object
@@ -118,12 +119,13 @@ class Auth_Container_DB extends Auth_Container
         } elseif (DB::isError($dsn)) {
             return PEAR::raiseError($dsn->getMessage(), $dsn->getCode());
         } else {
-            return PEAR::raiseError('The given dsn was not valid in file ' . __FILE__ . ' at line ' . __LINE__,
-                                    41,
-                                    PEAR_ERROR_RETURN,
-                                    null,
-                                    null
-                                    );
+            return PEAR::raiseError(
+                'The given dsn was not valid in file ' . __FILE__ . ' at line ' . __LINE__,
+                41,
+                PEAR_ERROR_RETURN,
+                null,
+                null
+            );
         }
 
         if (DB::isError($this->db) || PEAR::isError($this->db)) {
@@ -213,7 +215,7 @@ class Auth_Container_DB extends Auth_Container
         $this->options['dsn']         = '';
         $this->options['db_fields']   = '';
         $this->options['cryptType']   = 'md5';
-        $this->options['db_options']  = array();
+        $this->options['db_options']  = [];
         $this->options['db_where']    = '';
         $this->options['auto_quote']  = true;
     }
@@ -251,7 +253,7 @@ class Auth_Container_DB extends Auth_Container
         if (isset($this->options['db_fields'])) {
             if (is_array($this->options['db_fields'])) {
                 if ($this->options['auto_quote']) {
-                    $fields = array();
+                    $fields = [];
                     foreach ($this->options['db_fields'] as $field) {
                         $fields[] = $this->db->quoteIdentifier($field);
                     }
@@ -292,7 +294,7 @@ class Auth_Container_DB extends Auth_Container
      *                  challenge response password authentication
      * @return  mixed  Error object or boolean
      */
-    function fetchData($username, $password, $isChallengeResponse=false)
+    function fetchData($username, $password, $isChallengeResponse = false)
     {
         $this->log('Auth_Container_DB::fetchData() called.', AUTH_LOG_DEBUG);
         // Prepare for a database query
@@ -302,29 +304,31 @@ class Auth_Container_DB extends Auth_Container
         }
 
         // Find if db_fields contains a *, if so assume all columns are selected
-        if (is_string($this->options['db_fields'])
-            && strstr($this->options['db_fields'], '*')) {
+        if (
+            is_string($this->options['db_fields'])
+            && strstr($this->options['db_fields'], '*')
+        ) {
             $sql_from = "*";
         } else {
-            $sql_from = $this->options['final_usernamecol'].
-                ", ".$this->options['final_passwordcol'];
+            $sql_from = $this->options['final_usernamecol'] .
+                ", " . $this->options['final_passwordcol'];
 
             if (strlen($fields = $this->_quoteDBFields()) > 0) {
-                $sql_from .= ', '.$fields;
+                $sql_from .= ', ' . $fields;
             }
         }
 
-        $query = "SELECT ".$sql_from.
-                " FROM ".$this->options['final_table'].
-                " WHERE ".$this->options['final_usernamecol']." = ".$this->db->quoteSmart($username);
+        $query = "SELECT " . $sql_from .
+            " FROM " . $this->options['final_table'] .
+            " WHERE " . $this->options['final_usernamecol'] . " = " . $this->db->quoteSmart($username);
 
         // check if there is an optional parameter db_where
         if ($this->options['db_where'] != '') {
             // there is one, so add it to the query
-            $query .= " AND ".$this->options['db_where'];
+            $query .= " AND " . $this->options['db_where'];
         }
 
-        $this->log('Running SQL against DB: '.$query, AUTH_LOG_DEBUG);
+        $this->log('Running SQL against DB: ' . $query, AUTH_LOG_DEBUG);
 
         $res = $this->db->getRow($query, null, DB_FETCHMODE_ASSOC);
 
@@ -344,7 +348,7 @@ class Auth_Container_DB extends Auth_Container
         // If using Challenge Response md5 the pass with the secret
         if ($isChallengeResponse) {
             $res[$this->options['passwordcol']] = md5($res[$this->options['passwordcol']]
-                    .$this->_auth_obj->session['loginchallenege']);
+                . $this->_auth_obj->session['loginchallenege']);
 
             // UGLY cannot avoid without modifying verifyPassword
             if ($this->options['cryptType'] == 'md5') {
@@ -354,17 +358,21 @@ class Auth_Container_DB extends Auth_Container
             //print " Hashed Password [{$res[$this->options['passwordcol']]}]<br/>\n";
         }
 
-        if ($this->verifyPassword($password,
-                                  $res[$this->options['passwordcol']],
-                                  $this->options['cryptType'])) {
+        if ($this->verifyPassword(
+            $password,
+            $res[$this->options['passwordcol']],
+            $this->options['cryptType']
+        )) {
             // Store additional field values in the session
             foreach ($res as $key => $value) {
-                if ($key == $this->options['passwordcol'] ||
-                    $key == $this->options['usernamecol']) {
+                if (
+                    $key == $this->options['passwordcol'] ||
+                    $key == $this->options['usernamecol']
+                ) {
                     continue;
                 }
 
-                $this->log('Storing additional field: '.$key, AUTH_LOG_DEBUG);
+                $this->log('Storing additional field: ' . $key, AUTH_LOG_DEBUG);
 
                 // Use reference to the auth object if exists
                 // This is because the auth session variable can change so a
@@ -394,33 +402,36 @@ class Auth_Container_DB extends Auth_Container
             return PEAR::raiseError($err->getMessage(), $err->getCode());
         }
 
-        $retVal = array();
+        $retVal = [];
 
         // Find if db_fields contains a *, if so assume all col are selected
-        if (   is_string($this->options['db_fields'])
-            && strstr($this->options['db_fields'], '*')) {
+        if (
+            is_string($this->options['db_fields'])
+            && strstr($this->options['db_fields'], '*')
+        ) {
             $sql_from = "*";
         } else {
-            $sql_from = $this->options['final_usernamecol'].
-                ", ".$this->options['final_passwordcol'];
+            $sql_from = $this->options['final_usernamecol'] .
+                ", " . $this->options['final_passwordcol'];
 
             if (strlen($fields = $this->_quoteDBFields()) > 0) {
-                $sql_from .= ', '.$fields;
+                $sql_from .= ', ' . $fields;
             }
         }
 
-        $query = sprintf("SELECT %s FROM %s",
-                         $sql_from,
-                         $this->options['final_table']
-                         );
+        $query = sprintf(
+            "SELECT %s FROM %s",
+            $sql_from,
+            $this->options['final_table']
+        );
 
         // check if there is an optional parameter db_where
         if ($this->options['db_where'] != '') {
             // there is one, so add it to the query
-            $query .= " WHERE ".$this->options['db_where'];
+            $query .= " WHERE " . $this->options['db_where'];
         }
 
-        $this->log('Running SQL against DB: '.$query, AUTH_LOG_DEBUG);
+        $this->log('Running SQL against DB: ' . $query, AUTH_LOG_DEBUG);
 
         $res = $this->db->getAll($query, null, DB_FETCHMODE_ASSOC);
 
@@ -432,7 +443,7 @@ class Auth_Container_DB extends Auth_Container
                 $retVal[] = $user;
             }
         }
-        $this->log('Found '.count($retVal).' users.', AUTH_LOG_DEBUG);
+        $this->log('Found ' . count($retVal) . ' users.', AUTH_LOG_DEBUG);
         return $retVal;
     }
 
@@ -457,11 +468,15 @@ class Auth_Container_DB extends Auth_Container
             return PEAR::raiseError($err->getMessage(), $err->getCode());
         }
 
-        if (   isset($this->options['cryptType'])
-            && $this->options['cryptType'] == 'none') {
+        if (
+            isset($this->options['cryptType'])
+            && $this->options['cryptType'] == 'none'
+        ) {
             $cryptFunction = 'strval';
-        } elseif (   isset($this->options['cryptType'])
-                  && function_exists($this->options['cryptType'])) {
+        } elseif (
+            isset($this->options['cryptType'])
+            && function_exists($this->options['cryptType'])
+        ) {
             $cryptFunction = $this->options['cryptType'];
         } else {
             $cryptFunction = 'md5';
@@ -483,17 +498,18 @@ class Auth_Container_DB extends Auth_Container
             }
         }
 
-        $query = sprintf("INSERT INTO %s (%s, %s%s) VALUES (%s, %s%s)",
-                         $this->options['final_table'],
-                         $this->options['final_usernamecol'],
-                         $this->options['final_passwordcol'],
-                         $additional_key,
-                         $this->db->quoteSmart($username),
-                         $this->db->quoteSmart($password),
-                         $additional_value
-                         );
+        $query = sprintf(
+            "INSERT INTO %s (%s, %s%s) VALUES (%s, %s%s)",
+            $this->options['final_table'],
+            $this->options['final_usernamecol'],
+            $this->options['final_passwordcol'],
+            $additional_key,
+            $this->db->quoteSmart($username),
+            $this->db->quoteSmart($password),
+            $additional_value
+        );
 
-        $this->log('Running SQL against DB: '.$query, AUTH_LOG_DEBUG);
+        $this->log('Running SQL against DB: ' . $query, AUTH_LOG_DEBUG);
 
         $res = $this->query($query);
 
@@ -527,26 +543,27 @@ class Auth_Container_DB extends Auth_Container
         // check if there is an optional parameter db_where
         if ($this->options['db_where'] != '') {
             // there is one, so add it to the query
-            $where = " AND ".$this->options['db_where'];
+            $where = " AND " . $this->options['db_where'];
         } else {
             $where = '';
         }
 
-        $query = sprintf("DELETE FROM %s WHERE %s = %s %s",
-                         $this->options['final_table'],
-                         $this->options['final_usernamecol'],
-                         $this->db->quoteSmart($username),
-                         $where
-                         );
+        $query = sprintf(
+            "DELETE FROM %s WHERE %s = %s %s",
+            $this->options['final_table'],
+            $this->options['final_usernamecol'],
+            $this->db->quoteSmart($username),
+            $where
+        );
 
-        $this->log('Running SQL against DB: '.$query, AUTH_LOG_DEBUG);
+        $this->log('Running SQL against DB: ' . $query, AUTH_LOG_DEBUG);
 
         $res = $this->query($query);
 
         if (DB::isError($res)) {
-           return PEAR::raiseError($res->getMessage(), $res->getCode());
+            return PEAR::raiseError($res->getMessage(), $res->getCode());
         } else {
-          return true;
+            return true;
         }
     }
 
@@ -567,11 +584,15 @@ class Auth_Container_DB extends Auth_Container
             return PEAR::raiseError($err->getMessage(), $err->getCode());
         }
 
-        if (   isset($this->options['cryptType'])
-            && $this->options['cryptType'] == 'none') {
+        if (
+            isset($this->options['cryptType'])
+            && $this->options['cryptType'] == 'none'
+        ) {
             $cryptFunction = 'strval';
-        } elseif (   isset($this->options['cryptType'])
-                  && function_exists($this->options['cryptType'])) {
+        } elseif (
+            isset($this->options['cryptType'])
+            && function_exists($this->options['cryptType'])
+        ) {
             $cryptFunction = $this->options['cryptType'];
         } else {
             $cryptFunction = 'md5';
@@ -582,21 +603,22 @@ class Auth_Container_DB extends Auth_Container
         // check if there is an optional parameter db_where
         if ($this->options['db_where'] != '') {
             // there is one, so add it to the query
-            $where = " AND ".$this->options['db_where'];
+            $where = " AND " . $this->options['db_where'];
         } else {
             $where = '';
         }
 
-        $query = sprintf("UPDATE %s SET %s = %s WHERE %s = %s %s",
-                         $this->options['final_table'],
-                         $this->options['final_passwordcol'],
-                         $this->db->quoteSmart($password),
-                         $this->options['final_usernamecol'],
-                         $this->db->quoteSmart($username),
-                         $where
-                         );
+        $query = sprintf(
+            "UPDATE %s SET %s = %s WHERE %s = %s %s",
+            $this->options['final_table'],
+            $this->options['final_passwordcol'],
+            $this->db->quoteSmart($password),
+            $this->options['final_usernamecol'],
+            $this->db->quoteSmart($username),
+            $where
+        );
 
-        $this->log('Running SQL against DB: '.$query, AUTH_LOG_DEBUG);
+        $this->log('Running SQL against DB: ' . $query, AUTH_LOG_DEBUG);
 
         $res = $this->query($query);
 
@@ -619,21 +641,20 @@ class Auth_Container_DB extends Auth_Container
      */
     function supportsChallengeResponse()
     {
-        return in_array($this->options['cryptType'], array('md5', 'none', ''));
+        return in_array($this->options['cryptType'], ['md5', 'none', '']);
     }
 
     // }}}
     // {{{ getCryptType()
 
     /**
-      * Returns the selected crypt type for this container
-      */
+     * Returns the selected crypt type for this container
+     */
     function getCryptType()
     {
-        return($this->options['cryptType']);
+        return ($this->options['cryptType']);
     }
 
     // }}}
 
 }
-?>

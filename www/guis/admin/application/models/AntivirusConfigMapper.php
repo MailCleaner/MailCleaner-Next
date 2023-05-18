@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -10,7 +11,7 @@
 
 class Default_Model_AntivirusConfigMapper
 {
-	
+
     protected $_dbTable;
 
     public function setDbTable($dbTable)
@@ -42,14 +43,15 @@ class Default_Model_AntivirusConfigMapper
         $row = $result->current();
         $av->setId($id);
         foreach ($av->getParamArray() as $key => $value) {
-        	$av->setParam($key, $row[$key]);
+            $av->setParam($key, $row[$key]);
         }
     }
 
-    public function save(Default_Model_AntivirusConfig $av) {
-       $data = $av->getParamArray();
-       $res = '';
-       if (null === ($id = $av->getId())) {
+    public function save(Default_Model_AntivirusConfig $av)
+    {
+        $data = $av->getParamArray();
+        $res = '';
+        if (null === ($id = $av->getId())) {
             unset($data['id']);
             $res = $this->getDbTable()->insert($data);
         } else {

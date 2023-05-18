@@ -1,4 +1,5 @@
 <?php
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 foldmethod=marker: */
 
 /**
@@ -97,42 +98,42 @@ class Auth_Container_SOAP extends Auth_Container
      * @var array
      * @access private
      */
-    var $_requiredOptions = array(
-            'endpoint',
-            'namespace',
-            'method',
-            'encoding',
-            'usernamefield',
-            'passwordfield',
-            );
+    var $_requiredOptions = [
+        'endpoint',
+        'namespace',
+        'method',
+        'encoding',
+        'usernamefield',
+        'passwordfield',
+    ];
 
     /**
      * Options for the class
      * @var array
      * @access private
      */
-    var $_options = array();
+    var $_options = [];
 
     /**
      * Optional SOAP features
      * @var array
      * @access private
      */
-    var $_features = array();
+    var $_features = [];
 
     /**
      * The SOAP response
      * @var array
      * @access public
      */
-     var $soapResponse = array();
+    var $soapResponse = [];
 
     /**
      * The SOAP client
      * @var mixed
      * @access public
      */
-     var $soapClient = null;
+    var $soapClient = null;
 
     // }}}
     // {{{ Auth_Container_SOAP() [constructor]
@@ -191,9 +192,9 @@ class Auth_Container_SOAP extends Auth_Container
         }
 
         // assign username and password fields
-        $usernameField = new SOAP_Value($this->_options['usernamefield'],'string', $username);
-        $passwordField = new SOAP_Value($this->_options['passwordfield'],'string', $password);
-        $SOAPParams = array($usernameField, $passwordField);
+        $usernameField = new SOAP_Value($this->_options['usernamefield'], 'string', $username);
+        $passwordField = new SOAP_Value($this->_options['passwordfield'], 'string', $password);
+        $SOAPParams = [$usernameField, $passwordField];
 
         // assign optional features
         foreach ($this->_features as $fieldName => $fieldValue) {
@@ -202,10 +203,10 @@ class Auth_Container_SOAP extends Auth_Container
 
         // make SOAP call
         $this->soapResponse = $this->soapClient->call(
-                $this->_options['method'],
-                $SOAPParams,
-                array('namespace' => $this->_options['namespace'])
-                );
+            $this->_options['method'],
+            $SOAPParams,
+            ['namespace' => $this->_options['namespace']]
+        );
 
         if (!PEAR::isError($this->soapResponse)) {
             if ($this->_options['matchpasswords']) {
@@ -226,4 +227,3 @@ class Auth_Container_SOAP extends Auth_Container
     // }}}
 
 }
-?>

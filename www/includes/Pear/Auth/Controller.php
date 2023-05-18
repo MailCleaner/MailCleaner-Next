@@ -1,4 +1,5 @@
 <?php
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 foldmethod=marker: */
 
 /**
@@ -104,9 +105,9 @@ class Auth_Controller
      * @return void
      * @todo Add a list of urls which need redirection
      */
-    function Auth_Controller(&$auth_obj, $login='login.php', $default='index.php', $accessList=array())
+    function Auth_Controller(&$auth_obj, $login = 'login.php', $default = 'index.php', $accessList = [])
     {
-        $this->auth =& $auth_obj;
+        $this->auth = &$auth_obj;
         $this->_loginPage = $login;
         $this->_defaultPage = $default;
         @session_start();
@@ -114,7 +115,7 @@ class Auth_Controller
             $this->auth->setAuthData('returnUrl', $_GET['return']);
         }
 
-        if(!empty($_GET['authstatus']) && $this->auth->status == '') {
+        if (!empty($_GET['authstatus']) && $this->auth->status == '') {
             $this->auth->status = $_GET['authstatus'];
         }
     }
@@ -148,22 +149,22 @@ class Auth_Controller
         // else go to the default page
 
         $returnUrl = $this->auth->getAuthData('returnUrl');
-        if(!$returnUrl) {
+        if (!$returnUrl) {
             $returnUrl = $this->_defaultPage;
         }
 
         // Add some entropy to the return to make it unique
         // avoind problems with cached pages and proxies
-        if(strpos($returnUrl, '?') === false) {
+        if (strpos($returnUrl, '?') === false) {
             $returnUrl .= '?';
         }
         $returnUrl .= uniqid('');
 
         // Track the auth status
-        if($this->auth->status != '') {
-            $url .= '&authstatus='.$this->auth->status;
+        if ($this->auth->status != '') {
+            $url .= '&authstatus=' . $this->auth->status;
         }
-        header('Location:'.$returnUrl);
+        header('Location:' . $returnUrl);
         print("You could not be redirected to <a href=\"$returnUrl\">$returnUrl</a>");
     }
 
@@ -171,12 +172,12 @@ class Auth_Controller
     // {{{ redirectLogin()
 
     /**
-      * Redirects to the login Page if not authorised
-      *
-      * put return page on the query or in auth
-      *
-      * @return void
-      */
+     * Redirects to the login Page if not authorised
+     *
+     * put return page on the query or in auth
+     *
+     * @return void
+     */
     function redirectLogin()
     {
         // Go to the login Page
@@ -185,20 +186,20 @@ class Auth_Controller
         // the login page
 
         $url = $this->_loginPage;
-        if(strpos($url, '?') === false) {
+        if (strpos($url, '?') === false) {
             $url .= '?';
         }
 
-        if(!strstr($_SERVER['PHP_SELF'], $this->_loginPage)) {
-            $url .= 'return='.urlencode($_SERVER['PHP_SELF']);
+        if (!strstr($_SERVER['PHP_SELF'], $this->_loginPage)) {
+            $url .= 'return=' . urlencode($_SERVER['PHP_SELF']);
         }
 
         // Track the auth status
-        if($this->auth->status != '') {
-            $url .= '&authstatus='.$this->auth->status;
+        if ($this->auth->status != '') {
+            $url .= '&authstatus=' . $this->auth->status;
         }
 
-        header('Location:'.$url);
+        header('Location:' . $url);
         print("You could not be redirected to <a href=\"$url\">$url</a>");
     }
 
@@ -206,97 +207,93 @@ class Auth_Controller
     // {{{ start()
 
     /**
-      * Starts the Auth Procedure
-      *
-      * If the page requires login the user is redirected to the login page
-      * otherwise the Auth::start is called to initialize Auth
-      *
-      * @return void
-      * @todo Implement an access list which specifies which urls/pages need login and which do not
-      */
+     * Starts the Auth Procedure
+     *
+     * If the page requires login the user is redirected to the login page
+     * otherwise the Auth::start is called to initialize Auth
+     *
+     * @return void
+     * @todo Implement an access list which specifies which urls/pages need login and which do not
+     */
     function start()
     {
         // Check the accessList here
         // ACL should be a list of urls with allow/deny
         // If allow set allowLogin to false
         // Some wild card matching should be implemented ?,*
-        if(!strstr($_SERVER['PHP_SELF'], $this->_loginPage) && !$this->auth->checkAuth()) {
+        if (!strstr($_SERVER['PHP_SELF'], $this->_loginPage) && !$this->auth->checkAuth()) {
             $this->redirectLogin();
         } else {
             $this->auth->start();
             // Logged on and on login page
-            if(strstr($_SERVER['PHP_SELF'], $this->_loginPage) && $this->auth->checkAuth()){
+            if (strstr($_SERVER['PHP_SELF'], $this->_loginPage) && $this->auth->checkAuth()) {
                 $this->autoRedirectBack ?
                     $this->redirectBack() :
-                    null ;
+                    null;
             }
         }
-
-
     }
 
     // }}}
     // {{{ isAuthorised()
 
     /**
-      * Checks is the user is logged on
-      * @see Auth::checkAuth()
-      */
+     * Checks is the user is logged on
+     * @see Auth::checkAuth()
+     */
     function isAuthorised()
     {
-        return($this->auth->checkAuth());
+        return ($this->auth->checkAuth());
     }
 
     // }}}
     // {{{ checkAuth()
 
     /**
-      * Proxy call to auth
-      * @see Auth::checkAuth()
-      */
+     * Proxy call to auth
+     * @see Auth::checkAuth()
+     */
     function checkAuth()
     {
-        return($this->auth->checkAuth());
+        return ($this->auth->checkAuth());
     }
 
     // }}}
     // {{{ logout()
 
     /**
-      * Proxy call to auth
-      * @see Auth::logout()
-      */
+     * Proxy call to auth
+     * @see Auth::logout()
+     */
     function logout()
     {
-        return($this->auth->logout());
+        return ($this->auth->logout());
     }
 
     // }}}
     // {{{ getUsername()
 
     /**
-      * Proxy call to auth
-      * @see Auth::getUsername()
-      */
+     * Proxy call to auth
+     * @see Auth::getUsername()
+     */
     function getUsername()
     {
-        return($this->auth->getUsername());
+        return ($this->auth->getUsername());
     }
 
     // }}}
     // {{{ getStatus()
 
     /**
-      * Proxy call to auth
-      * @see Auth::getStatus()
-      */
+     * Proxy call to auth
+     * @see Auth::getStatus()
+     */
     function getStatus()
     {
-        return($this->auth->getStatus());
+        return ($this->auth->getStatus());
     }
 
     // }}}
 
 }
-
-?>

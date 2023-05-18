@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Header$
  *
@@ -55,18 +56,23 @@ class Log_display extends Log
      * @param int    $level    Log messages up to and including this level.
      * @access public
      */
-    public function __construct($name = '', $ident = '', $conf = array(),
-                                $level = PEAR_LOG_DEBUG)
-    {
-        $this->_id = md5(microtime().rand());
+    public function __construct(
+        $name = '',
+        $ident = '',
+        $conf = [],
+        $level = PEAR_LOG_DEBUG
+    ) {
+        $this->_id = md5(microtime() . rand());
         $this->_ident = $ident;
         $this->_mask = Log::UPTO($level);
 
         /* Start by configuring the line format. */
         if (!empty($conf['lineFormat'])) {
-            $this->_lineFormat = str_replace(array_keys($this->_formatMap),
-                                             array_values($this->_formatMap),
-                                             $conf['lineFormat']);
+            $this->_lineFormat = str_replace(
+                array_keys($this->_formatMap),
+                array_values($this->_formatMap),
+                $conf['lineFormat']
+            );
         }
 
         /* We may need to prepend a string to our line format. */
@@ -167,15 +173,16 @@ class Log_display extends Log
         }
 
         /* Build and output the complete log line. */
-        echo $this->_format($this->_lineFormat,
-                            strftime($this->_timeFormat),
-                            $priority,
-                            $message);
+        echo $this->_format(
+            $this->_lineFormat,
+            strftime($this->_timeFormat),
+            $priority,
+            $message
+        );
 
         /* Notify observers about this log message. */
-        $this->_announce(array('priority' => $priority, 'message' => $message));
+        $this->_announce(['priority' => $priority, 'message' => $message]);
 
         return true;
     }
-
 }

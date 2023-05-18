@@ -6,6 +6,6 @@
  * and open the template in the editor.
  */
 return [
-  'Newsletter has been allowed and released.' => 'Newsletter has been allowed and released.',
-  'The newsletter has been allowed and released. It should be delivered in your mailbox in a few minutes.' => 'The newsletter has been allowed and released. It should be delivered in your mailbox in a few minutes.'
+    'Newsletter has been allowed and released.' => 'Newsletter has been allowed and released.',
+    'The newsletter has been allowed and released. It should be delivered in your mailbox in a few minutes.' => 'The newsletter has been allowed and released. It should be delivered in your mailbox in a few minutes.'
 ];

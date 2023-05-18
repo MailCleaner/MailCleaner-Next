@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -10,7 +11,7 @@
 
 class Default_Model_FeatureRestrictionMapper
 {
-	
+
     protected $_dbTable;
 
     public function setDbTable($dbTable)
@@ -35,17 +36,17 @@ class Default_Model_FeatureRestrictionMapper
 
     public function fetchAll($params)
     {
-    	$restrictions = [];
-    	$query = $this->getDbTable()->select();
-    	    	
-    	if (isset($params['target']) && preg_match('/^(administrator|manager|hotline|user)$/', $params['target'])) {
-    		$query->where('target_level = ?', $params['target']);
-    	}
+        $restrictions = [];
+        $query = $this->getDbTable()->select();
+
+        if (isset($params['target']) && preg_match('/^(administrator|manager|hotline|user)$/', $params['target'])) {
+            $query->where('target_level = ?', $params['target']);
+        }
         $resultSet = $this->getDbTable()->fetchAll($query);
         foreach ($resultSet as $row) {
-        	$restrictions[$row['section']][$row['feature']] = ['target' => $row['target_level'], 'restricted' => $row['restricted']];
+            $restrictions[$row['section']][$row['feature']] = ['target' => $row['target_level'], 'restricted' => $row['restricted']];
         }
         return $restrictions;
     }
-
 }
+

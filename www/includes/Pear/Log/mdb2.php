@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Header$
  *
@@ -45,7 +46,7 @@ class Log_mdb2 extends Log
      * @var array
      * @access private
      */
-    var $_options = array('persistent' => true);
+    var $_options = ['persistent' => true];
 
     /**
      * Object holding the database handle.
@@ -95,13 +96,13 @@ class Log_mdb2 extends Log
      * @var array
      * @access private
      */
-    var $_types = array(
+    var $_types = [
         'id'        => 'integer',
         'logtime'   => 'timestamp',
         'ident'     => 'text',
         'priority'  => 'text',
         'message'   => 'clob'
-    );
+    ];
 
     /**
      * Constructs a new sql logging object.
@@ -112,10 +113,13 @@ class Log_mdb2 extends Log
      * @param int $level           Log messages up to and including this level.
      * @access public
      */
-    public function __construct($name, $ident = '', $conf = array(),
-                                $level = PEAR_LOG_DEBUG)
-    {
-        $this->_id = md5(microtime().rand());
+    public function __construct(
+        $name,
+        $ident = '',
+        $conf = [],
+        $level = PEAR_LOG_DEBUG
+    ) {
+        $this->_id = md5(microtime() . rand());
         $this->_table = $name;
         $this->_mask = Log::UPTO($level);
 
@@ -258,13 +262,13 @@ class Log_mdb2 extends Log
         $message = $this->_extractMessage($message);
 
         /* Build our set of values for this log entry. */
-        $values = array(
+        $values = [
             'id'       => $this->_db->nextId($this->_sequence),
             'logtime'  => MDB2_Date::mdbNow(),
             'ident'    => $this->_ident,
             'priority' => $priority,
             'message'  => $message
-        );
+        ];
 
         /* Execute the SQL query for this log entry insertion. */
         $this->_db->expectError(MDB2_ERROR_NOSUCHTABLE);
@@ -296,7 +300,7 @@ class Log_mdb2 extends Log
             }
         }
 
-        $this->_announce(array('priority' => $priority, 'message' => $message));
+        $this->_announce(['priority' => $priority, 'message' => $message]);
 
         return true;
     }
@@ -312,13 +316,13 @@ class Log_mdb2 extends Log
         $this->_db->loadModule('Manager', null, true);
         $result = $this->_db->manager->createTable(
             $this->_table,
-            array(
-                'id'        => array('type' => $this->_types['id']),
-                'logtime'   => array('type' => $this->_types['logtime']),
-                'ident'     => array('type' => $this->_types['ident']),
-                'priority'  => array('type' => $this->_types['priority']),
-                'message'   => array('type' => $this->_types['message'])
-            )
+            [
+                'id'        => ['type' => $this->_types['id']],
+                'logtime'   => ['type' => $this->_types['logtime']],
+                'ident'     => ['type' => $this->_types['ident']],
+                'priority'  => ['type' => $this->_types['priority']],
+                'message'   => ['type' => $this->_types['message']]
+            ]
         );
         if (PEAR::isError($result)) {
             return false;
@@ -327,7 +331,7 @@ class Log_mdb2 extends Log
         $result = $this->_db->manager->createIndex(
             $this->_table,
             'unique_id',
-            array('fields' => array('id' => true), 'unique' => true)
+            ['fields' => ['id' => true], 'unique' => true]
         );
         if (PEAR::isError($result)) {
             return false;
@@ -347,10 +351,12 @@ class Log_mdb2 extends Log
     function _prepareStatement()
     {
         $this->_statement = &$this->_db->prepare(
-                'INSERT INTO ' . $this->_table .
+            'INSERT INTO ' . $this->_table .
                 ' (id, logtime, ident, priority, message)' .
                 ' VALUES(:id, :logtime, :ident, :priority, :message)',
-                $this->_types, MDB2_PREPARE_MANIP);
+            $this->_types,
+            MDB2_PREPARE_MANIP
+        );
 
         /* Return success if we didn't generate an error. */
         return (PEAR::isError($this->_statement) === false);

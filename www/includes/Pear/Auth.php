@@ -1,4 +1,5 @@
 <?php
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 foldmethod=marker: */
 
 /**
@@ -85,7 +86,8 @@ define('AUTH_ADV_CHALLENGE', 3);
  * @version    Release: @package_version@  File: $Revision: 289651 $
  * @link       http://pear.php.net/package/Auth
  */
-class Auth {
+class Auth
+{
 
     // {{{ properties
 
@@ -151,11 +153,11 @@ class Auth {
     var $showLogin = true;
 
     /**
-      * Is Login Allowed from this page
-      *
-      * @var  bool
-      * @see setAllowLogin
-      */
+     * Is Login Allowed from this page
+     *
+     * @var  bool
+     * @see setAllowLogin
+     */
     var $allowLogin = true;
 
     /**
@@ -234,11 +236,11 @@ class Auth {
      * @var mixed Boolean to turn all advanced security options on or off
      *            Array containing named values turning specific advanced
      *            security features on or off individually
-     *              array(
+     *              [
      *                  AUTH_ADV_IPCHECK    => true,
      *                  AUTH_ADV_USERAGENT  => true,
      *                  AUTH_ADV_CHALLENGE  => true,
-     *              );
+     *              ];
      */
     var $advancedsecurity = false;
 
@@ -287,9 +289,9 @@ class Auth {
     var $authdata;
 
     /**
-      * How many times has checkAuth been called
-      * @var int
-      */
+     * How many times has checkAuth been called
+     * @var int
+     */
     var $authChecks = 0;
 
     /**
@@ -335,27 +337,27 @@ class Auth {
         $this->applyAuthOptions($options);
 
         // Start the session suppress error if already started
-        if(!session_id()){
+        if (!session_id()) {
             @session_start();
-            if(!session_id()) {
+            if (!session_id()) {
                 // Throw error
                 include_once 'PEAR.php';
                 PEAR::throwError('Session could not be started by Auth, '
-                        .'possibly headers are already sent, try putting '
-                        .'ob_start in the beginning of your script');
+                    . 'possibly headers are already sent, try putting '
+                    . 'ob_start in the beginning of your script');
             }
         }
 
         // Make Sure Auth session variable is there
-        if(!isset($_SESSION[$this->_sessionName])) {
-            $_SESSION[$this->_sessionName] = array();
+        if (!isset($_SESSION[$this->_sessionName])) {
+            $_SESSION[$this->_sessionName] = [];
         }
 
         // Assign Some globals to internal references, this will replace _importGlobalVariable
-        $this->session =& $_SESSION[$this->_sessionName];
-        $this->server =& $_SERVER;
-        $this->post =& $_POST;
-        $this->cookie =& $_COOKIE;
+        $this->session = &$_SESSION[$this->_sessionName];
+        $this->server = &$_SERVER;
+        $this->post = &$_POST;
+        $this->cookie = &$_COOKIE;
 
         if ($loginFunction != '' && is_callable($loginFunction)) {
             $this->loginFunction = $loginFunction;
@@ -366,15 +368,15 @@ class Auth {
         }
 
         if (is_object($storageDriver)) {
-            $this->storage =& $storageDriver;
+            $this->storage = &$storageDriver;
             // Pass a reference to auth to the container, ugly but works
             // this is used by the DB container to use method setAuthData not staticaly.
-            $this->storage->_auth_obj =& $this;
+            $this->storage->_auth_obj = &$this;
         } else {
             // $this->storage = $this->_factory($storageDriver, $options);
             //
             $this->storage_driver = $storageDriver;
-            $this->storage_options =& $options;
+            $this->storage_options = &$options;
         }
     }
 
@@ -382,18 +384,18 @@ class Auth {
     // {{{ applyAuthOptions()
 
     /**
-      * Set the Auth options
-      *
-      * Some options which are Auth specific will be applied
-      * the rest will be left for usage by the container
-      *
-      * @param array    An array of Auth options
-      * @return array   The options which were not applied
-      * @access private
-      */
+     * Set the Auth options
+     *
+     * Some options which are Auth specific will be applied
+     * the rest will be left for usage by the container
+     *
+     * @param array    An array of Auth options
+     * @return array   The options which were not applied
+     * @access private
+     */
     function &applyAuthOptions(&$options)
     {
-        if(is_array($options)){
+        if (is_array($options)) {
             if (!empty($options['sessionName'])) {
                 $this->_sessionName = $options['sessionName'];
                 unset($options['sessionName']);
@@ -422,32 +424,34 @@ class Auth {
                 $this->regenerateSessionId = $options['regenerateSessionId'];
             }
         }
-        return($options);
+        return ($options);
     }
 
     // }}}
     // {{{ _loadStorage()
 
     /**
-      * Load Storage Driver if not already loaded
-      *
-      * Suspend storage instantiation to make Auth lighter to use
-      * for calls which do not require login
-      *
-      * @return bool    True if the conainer is loaded, false if the container
-      *                 is already loaded
-      * @access private
-      */
+     * Load Storage Driver if not already loaded
+     *
+     * Suspend storage instantiation to make Auth lighter to use
+     * for calls which do not require login
+     *
+     * @return bool    True if the conainer is loaded, false if the container
+     *                 is already loaded
+     * @access private
+     */
     function _loadStorage()
     {
-        if(!is_object($this->storage)) {
-            $this->storage =& $this->_factory($this->storage_driver,
-                    $this->storage_options);
-            $this->storage->_auth_obj =& $this;
-            $this->log('Loaded storage container ('.$this->storage_driver.')', AUTH_LOG_DEBUG);
-            return(true);
+        if (!is_object($this->storage)) {
+            $this->storage = &$this->_factory(
+                $this->storage_driver,
+                $this->storage_options
+            );
+            $this->storage->_auth_obj = &$this;
+            $this->log('Loaded storage container (' . $this->storage_driver . ')', AUTH_LOG_DEBUG);
+            return (true);
         }
-        return(false);
+        return (false);
     }
 
     // }}}
@@ -466,7 +470,7 @@ class Auth {
     {
         $storage_class = 'Auth_Container_' . $driver;
         include_once 'Auth/Container/' . $driver . '.php';
-        $obj =& $storage_class->new($options);
+        $obj = &$storage_class->new($options);
         return $obj;
     }
 
@@ -490,17 +494,21 @@ class Auth {
     {
         $this->log('Auth::assignData() called.', AUTH_LOG_DEBUG);
 
-        if (   isset($this->post[$this->_postUsername])
-            && $this->post[$this->_postUsername] != '') {
+        if (
+            isset($this->post[$this->_postUsername])
+            && $this->post[$this->_postUsername] != ''
+        ) {
             $this->username = (get_magic_quotes_gpc() == 1
-                    ? stripslashes($this->post[$this->_postUsername])
-                    : $this->post[$this->_postUsername]);
+                ? stripslashes($this->post[$this->_postUsername])
+                : $this->post[$this->_postUsername]);
         }
-        if (   isset($this->post[$this->_postPassword])
-            && $this->post[$this->_postPassword] != '') {
+        if (
+            isset($this->post[$this->_postPassword])
+            && $this->post[$this->_postPassword] != ''
+        ) {
             $this->password = (get_magic_quotes_gpc() == 1
-                    ? stripslashes($this->post[$this->_postPassword])
-                    : $this->post[$this->_postPassword] );
+                ? stripslashes($this->post[$this->_postPassword])
+                : $this->post[$this->_postPassword]);
         }
     }
 
@@ -554,7 +562,7 @@ class Auth {
         // When the user has already entered a username, we have to validate it.
         if (!empty($this->username)) {
             if (true === $this->storage->fetchData($this->username, $this->password, $usingChap)) {
-                $this->session['challengekey'] = md5($this->username.$this->password);
+                $this->session['challengekey'] = md5($this->username . $this->password);
                 $login_ok = true;
                 $this->log('Successful login.', AUTH_LOG_INFO);
             }
@@ -563,8 +571,8 @@ class Auth {
         if (!empty($this->username) && $login_ok) {
             $this->setAuth($this->username);
             if (is_callable($this->loginCallback)) {
-                $this->log('Calling loginCallback ('.$this->loginCallback.').', AUTH_LOG_DEBUG);
-                call_user_func_array($this->loginCallback, array($this->username, &$this));
+                $this->log('Calling loginCallback (' . $this->loginCallback . ').', AUTH_LOG_DEBUG);
+                call_user_func_array($this->loginCallback, [$this->username, &$this]);
             }
         }
 
@@ -574,20 +582,20 @@ class Auth {
             $this->log('Incorrect login.', AUTH_LOG_INFO);
             $this->status = AUTH_WRONG_LOGIN;
             if (is_callable($this->loginFailedCallback)) {
-                $this->log('Calling loginFailedCallback ('.$this->loginFailedCallback.').', AUTH_LOG_DEBUG);
-                call_user_func_array($this->loginFailedCallback, array($this->username, &$this));
+                $this->log('Calling loginFailedCallback (' . $this->loginFailedCallback . ').', AUTH_LOG_DEBUG);
+                call_user_func_array($this->loginFailedCallback, [$this->username, &$this]);
             }
         }
 
         if ((empty($this->username) || !$login_ok) && $this->showLogin) {
             $this->log('Rendering Login Form.', AUTH_LOG_INFO);
             if (is_callable($this->loginFunction)) {
-                $this->log('Calling loginFunction ('.$this->loginFunction.').', AUTH_LOG_DEBUG);
-                call_user_func_array($this->loginFunction, array($this->username, $this->status, &$this));
+                $this->log('Calling loginFunction (' . $this->loginFunction . ').', AUTH_LOG_DEBUG);
+                call_user_func_array($this->loginFunction, [$this->username, $this->status, &$this]);
             } else {
                 // BC fix Auth used to use drawLogin for this
                 // call is sub classes implement this
-                if (is_callable(array($this, 'drawLogin'))) {
+                if (is_callable([$this, 'drawLogin'])) {
                     $this->log('Calling Auth::drawLogin()', AUTH_LOG_DEBUG);
                     return $this->drawLogin($this->username, $this);
                 }
@@ -653,12 +661,12 @@ class Auth {
      */
     function setSessionName($name = 'session')
     {
-        $this->_sessionName = '_auth_'.$name;
+        $this->_sessionName = '_auth_' . $name;
         // Make Sure Auth session variable is there
-        if(!isset($_SESSION[$this->_sessionName])) {
-            $_SESSION[$this->_sessionName] = array();
+        if (!isset($_SESSION[$this->_sessionName])) {
+            $_SESSION[$this->_sessionName] = [];
         }
-        $this->session =& $_SESSION[$this->_sessionName];
+        $this->session = &$_SESSION[$this->_sessionName];
     }
 
     // }}}
@@ -798,7 +806,7 @@ class Auth {
         if (!isset($this->session['data'])) {
             return null;
         }
-        if(!isset($name)) {
+        if (!isset($name)) {
             return $this->session['data'];
         }
         if (isset($name) && isset($this->session['data'][$name])) {
@@ -831,11 +839,11 @@ class Auth {
         }
 
         if (!isset($this->session) || !is_array($this->session)) {
-            $this->session = array();
+            $this->session = [];
         }
 
         if (!isset($this->session['data'])) {
-            $this->session['data'] = array();
+            $this->session['data'] = [];
         }
 
         $this->session['sessionip'] = isset($this->server['REMOTE_ADDR'])
@@ -850,11 +858,11 @@ class Auth {
 
         // This should be set by the container to something more safe
         // Like md5(passwd.microtime)
-        if(empty($this->session['challengekey'])) {
-            $this->session['challengekey'] = md5($username.microtime());
+        if (empty($this->session['challengekey'])) {
+            $this->session['challengekey'] = md5($username . microtime());
         }
 
-        $this->session['challengecookie'] = md5($this->session['challengekey'].microtime());
+        $this->session['challengecookie'] = md5($this->session['challengekey'] . microtime());
         setcookie('authchallenge', $this->session['challengecookie'], 0, '/');
 
         $this->session['registered'] = true;
@@ -867,18 +875,18 @@ class Auth {
     // {{{ setAdvancedSecurity()
 
     /**
-      * Enables advanced security checks
-      *
-      * Currently only ip change and useragent change
-      * are detected
-      * @todo Add challenge cookies - Create a cookie which changes every time
-      *       and contains some challenge key which the server can verify with
-      *       a session var cookie might need to be crypted (user pass)
-      * @param bool Enable or disable
-      * @return void
-      * @access public
-      */
-    function setAdvancedSecurity($flag=true)
+     * Enables advanced security checks
+     *
+     * Currently only ip change and useragent change
+     * are detected
+     * @todo Add challenge cookies - Create a cookie which changes every time
+     *       and contains some challenge key which the server can verify with
+     *       a session var cookie might need to be crypted (user pass)
+     * @param bool Enable or disable
+     * @return void
+     * @access public
+     */
+    function setAdvancedSecurity($flag = true)
     {
         $this->advancedsecurity = $flag;
     }
@@ -898,9 +906,11 @@ class Auth {
         $this->authChecks++;
         if (isset($this->session)) {
             // Check if authentication session is expired
-            if (   $this->expire > 0
+            if (
+                $this->expire > 0
                 && isset($this->session['timestamp'])
-                && ($this->session['timestamp'] + $this->expire) < time()) {
+                && ($this->session['timestamp'] + $this->expire) < time()
+            ) {
                 $this->log('Session Expired', AUTH_LOG_INFO);
                 $this->expired = true;
                 $this->status = AUTH_EXPIRED;
@@ -909,9 +919,11 @@ class Auth {
             }
 
             // Check if maximum idle time is reached
-            if (   $this->idle > 0
+            if (
+                $this->idle > 0
                 && isset($this->session['idle'])
-                && ($this->session['idle'] + $this->idle) < time()) {
+                && ($this->session['idle'] + $this->idle) < time()
+            ) {
                 $this->log('Session Idle Time Reached', AUTH_LOG_INFO);
                 $this->idled = true;
                 $this->status = AUTH_IDLED;
@@ -919,28 +931,34 @@ class Auth {
                 return false;
             }
 
-            if (   isset($this->session['registered'])
+            if (
+                isset($this->session['registered'])
                 && isset($this->session['username'])
                 && $this->session['registered'] == true
-                && $this->session['username'] != '') {
+                && $this->session['username'] != ''
+            ) {
                 Auth::updateIdle();
 
                 if ($this->_isAdvancedSecurityEnabled()) {
                     $this->log('Advanced Security Mode Enabled.', AUTH_LOG_DEBUG);
 
                     // Only Generate the challenge once
-                    if (   $this->authChecks == 1
-                        && $this->_isAdvancedSecurityEnabled(AUTH_ADV_CHALLENGE)) {
+                    if (
+                        $this->authChecks == 1
+                        && $this->_isAdvancedSecurityEnabled(AUTH_ADV_CHALLENGE)
+                    ) {
                         $this->log('Generating new Challenge Cookie.', AUTH_LOG_DEBUG);
                         $this->session['challengecookieold'] = $this->session['challengecookie'];
-                        $this->session['challengecookie'] = md5($this->session['challengekey'].microtime());
+                        $this->session['challengecookie'] = md5($this->session['challengekey'] . microtime());
                         setcookie('authchallenge', $this->session['challengecookie'], 0, '/');
                     }
 
                     // Check for ip change
-                    if (   $this->_isAdvancedSecurityEnabled(AUTH_ADV_IPCHECK)
+                    if (
+                        $this->_isAdvancedSecurityEnabled(AUTH_ADV_IPCHECK)
                         && isset($this->server['REMOTE_ADDR'])
-                        && $this->session['sessionip'] != $this->server['REMOTE_ADDR']) {
+                        && $this->session['sessionip'] != $this->server['REMOTE_ADDR']
+                    ) {
                         $this->log('Security Breach. Remote IP Address changed.', AUTH_LOG_INFO);
                         // Check if the IP of the user has changed, if so we
                         // assume a man in the middle attack and log him out
@@ -951,9 +969,11 @@ class Auth {
                     }
 
                     // Check for ip change (if connected via proxy)
-                    if (   $this->_isAdvancedSecurityEnabled(AUTH_ADV_IPCHECK)
+                    if (
+                        $this->_isAdvancedSecurityEnabled(AUTH_ADV_IPCHECK)
                         && isset($this->server['HTTP_X_FORWARDED_FOR'])
-                        && $this->session['sessionforwardedfor'] != $this->server['HTTP_X_FORWARDED_FOR']) {
+                        && $this->session['sessionforwardedfor'] != $this->server['HTTP_X_FORWARDED_FOR']
+                    ) {
                         $this->log('Security Breach. Forwarded For IP Address changed.', AUTH_LOG_INFO);
                         // Check if the IP of the user connecting via proxy has
                         // changed, if so we assume a man in the middle attack
@@ -965,9 +985,11 @@ class Auth {
                     }
 
                     // Check for useragent change
-                    if (   $this->_isAdvancedSecurityEnabled(AUTH_ADV_USERAGENT)
+                    if (
+                        $this->_isAdvancedSecurityEnabled(AUTH_ADV_USERAGENT)
                         && isset($this->server['HTTP_USER_AGENT'])
-                        && $this->session['sessionuseragent'] != $this->server['HTTP_USER_AGENT']) {
+                        && $this->session['sessionuseragent'] != $this->server['HTTP_USER_AGENT']
+                    ) {
                         $this->log('Security Breach. User Agent changed.', AUTH_LOG_INFO);
                         // Check if the User-Agent of the user has changed, if
                         // so we assume a man in the middle attack and log him out
@@ -981,9 +1003,11 @@ class Auth {
                     // this is the first time and check is skipped
                     // TODO when user open two pages similtaneuly (open in new window,open
                     // in tab) auth breach is caused find out a way around that if possible
-                    if (   $this->_isAdvancedSecurityEnabled(AUTH_ADV_CHALLENGE)
+                    if (
+                        $this->_isAdvancedSecurityEnabled(AUTH_ADV_CHALLENGE)
                         && isset($this->session['challengecookieold'])
-                        && $this->session['challengecookieold'] != $this->cookie['authchallenge']) {
+                        && $this->session['challengecookieold'] != $this->cookie['authchallenge']
+                    ) {
                         $this->log('Security Breach. Challenge Cookie mismatch.', AUTH_LOG_INFO);
                         $this->expired = true;
                         $this->status = AUTH_SECURITY_BREACH;
@@ -994,8 +1018,8 @@ class Auth {
                 }
 
                 if (is_callable($this->checkAuthCallback)) {
-                    $this->log('Calling checkAuthCallback ('.$this->checkAuthCallback.').', AUTH_LOG_DEBUG);
-                    $checkCallback = call_user_func_array($this->checkAuthCallback, array($this->username, &$this));
+                    $this->log('Calling checkAuthCallback (' . $this->checkAuthCallback . ').', AUTH_LOG_DEBUG);
+                    $checkCallback = call_user_func_array($this->checkAuthCallback, [$this->username, &$this]);
                     if ($checkCallback == false) {
                         $this->log('checkAuthCallback failed.', AUTH_LOG_INFO);
                         $this->expired = true;
@@ -1030,7 +1054,7 @@ class Auth {
     function staticCheckAuth($options = null)
     {
         static $staticAuth;
-        if(!isset($staticAuth)) {
+        if (!isset($staticAuth)) {
             $staticAuth = new Auth('null', $options);
         }
         $staticAuth->log('Auth::staticCheckAuth() called', AUTH_LOG_DEBUG);
@@ -1073,8 +1097,8 @@ class Auth {
         $this->log('Auth::logout() called.', AUTH_LOG_DEBUG);
 
         if (is_callable($this->logoutCallback) && isset($this->session['username'])) {
-            $this->log('Calling logoutCallback ('.$this->logoutCallback.').', AUTH_LOG_DEBUG);
-            call_user_func_array($this->logoutCallback, array($this->session['username'], &$this));
+            $this->log('Calling logoutCallback (' . $this->logoutCallback . ').', AUTH_LOG_DEBUG);
+            call_user_func_array($this->logoutCallback, [$this->session['username'], &$this]);
         }
 
         $this->username = '';
@@ -1109,9 +1133,9 @@ class Auth {
     function getUsername()
     {
         if (isset($this->session['username'])) {
-            return($this->session['username']);
+            return ($this->session['username']);
         }
-        return('');
+        return ('');
     }
 
     // }}}
@@ -1139,7 +1163,7 @@ class Auth {
      */
     function getPostUsernameField()
     {
-        return($this->_postUsername);
+        return ($this->_postUsername);
     }
 
     // }}}
@@ -1153,7 +1177,7 @@ class Auth {
      */
     function getPostPasswordField()
     {
-        return($this->_postPassword);
+        return ($this->_postPassword);
     }
 
     // }}}
@@ -1267,36 +1291,38 @@ class Auth {
 
         $this->_loadLogger();
 
-        $this->logger->log('AUTH: '.$message, $level);
+        $this->logger->log('AUTH: ' . $message, $level);
     }
 
     // }}}
     // {{{ _loadLogger()
 
     /**
-      * Load Log object if not already loaded
-      *
-      * Suspend logger instantiation to make Auth lighter to use
-      * for calls which do not require logging
-      *
-      * @return bool    True if the logger is loaded, false if the logger
-      *                 is already loaded
-      * @access private
-      */
+     * Load Log object if not already loaded
+     *
+     * Suspend logger instantiation to make Auth lighter to use
+     * for calls which do not require logging
+     *
+     * @return bool    True if the logger is loaded, false if the logger
+     *                 is already loaded
+     * @access private
+     */
     function _loadLogger()
     {
-        if(is_null($this->logger)) {
+        if (is_null($this->logger)) {
             if (!class_exists('Log')) {
                 include_once 'Log.php';
             }
-            $this->logger =& Log::singleton('null',
-                    null,
-                    'auth['.getmypid().']',
-                    array(),
-                    AUTH_LOG_DEBUG);
-            return(true);
+            $this->logger = &Log::singleton(
+                'null',
+                null,
+                'auth[' . getmypid() . ']',
+                [],
+                AUTH_LOG_DEBUG
+            );
+            return (true);
         }
-        return(false);
+        return (false);
     }
 
     // }}}
@@ -1308,12 +1334,12 @@ class Auth {
      * @param object Log_Observer A Log Observer instance
      * @return boolean
      */
-    function attachLogObserver(&$observer) {
+    function attachLogObserver(&$observer)
+    {
 
         $this->_loadLogger();
 
         return $this->logger->attach($observer);
-
     }
 
     // }}}
@@ -1328,38 +1354,38 @@ class Auth {
      * @param integer
      * @return boolean
      */
-    function _isAdvancedSecurityEnabled($feature = null) {
+    function _isAdvancedSecurityEnabled($feature = null)
+    {
 
         if (is_null($feature)) {
 
             if ($this->advancedsecurity === true)
                 return true;
 
-            if (   is_array($this->advancedsecurity)
-                && in_array(true, $this->advancedsecurity, true))
+            if (
+                is_array($this->advancedsecurity)
+                && in_array(true, $this->advancedsecurity, true)
+            )
                 return true;
 
             return false;
-
         } else {
 
             if (is_array($this->advancedsecurity)) {
 
-                if (   isset($this->advancedsecurity[$feature])
-                    && $this->advancedsecurity[$feature] == true)
+                if (
+                    isset($this->advancedsecurity[$feature])
+                    && $this->advancedsecurity[$feature] == true
+                )
                     return true;
 
                 return false;
-
             }
 
             return (bool)$this->advancedsecurity;
-
         }
-
     }
 
     // }}}
 
 }
-?>

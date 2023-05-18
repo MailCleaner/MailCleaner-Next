@@ -1,4 +1,5 @@
 <?php
+
 /** vim: set expandtab softtabstop=4 tabstop=4 shiftwidth=4: */
 // +----------------------------------------------------------------------+
 // | PHP Version 5 and 7                                                  |
@@ -75,7 +76,7 @@ class Net_SMTP
      * List of supported authentication methods, in preferential order.
      * @var array
      */
-    public $auth_methods = array();
+    public $auth_methods = [];
 
     /**
      * Use SMTP command pipelining (specified in RFC 2920) if the SMTP
@@ -136,7 +137,7 @@ class Net_SMTP
      * The most recent server response arguments.
      * @var array
      */
-    protected $arguments = array();
+    protected $arguments = [];
 
     /**
      * Stores the SMTP server's greeting string.
@@ -148,7 +149,7 @@ class Net_SMTP
      * Stores detected features of the SMTP server.
      * @var array
      */
-    protected $esmtp = array();
+    protected $esmtp = [];
 
     /**
      * GSSAPI principal.
@@ -184,9 +185,15 @@ class Net_SMTP
      *
      * @since 1.0
      */
-    public function __construct($host = null, $port = null, $localhost = null,
-        $pipelining = false, $timeout = 0, $socket_options = null,
-        $gssapi_principal = null, $gssapi_cname = null
+    public function __construct(
+        $host = null,
+        $port = null,
+        $localhost = null,
+        $pipelining = false,
+        $timeout = 0,
+        $socket_options = null,
+        $gssapi_principal = null,
+        $gssapi_cname = null
     ) {
         if (isset($host)) {
             $this->host = $host;
@@ -207,20 +214,20 @@ class Net_SMTP
 
         /* If PHP krb5 extension is loaded, we enable GSSAPI method. */
         if (extension_loaded('krb5')) {
-            $this->setAuthMethod('GSSAPI', array($this, 'authGSSAPI'));
+            $this->setAuthMethod('GSSAPI', [$this, 'authGSSAPI']);
         }
 
         /* Include the Auth_SASL package.  If the package is available, we
          * enable the authentication methods that depend upon it. */
         if (@include_once 'Auth/SASL.php') {
-            $this->setAuthMethod('CRAM-MD5', array($this, 'authCramMD5'));
-            $this->setAuthMethod('DIGEST-MD5', array($this, 'authDigestMD5'));
+            $this->setAuthMethod('CRAM-MD5', [$this, 'authCramMD5']);
+            $this->setAuthMethod('DIGEST-MD5', [$this, 'authDigestMD5']);
         }
 
         /* These standard authentication methods are always available. */
-        $this->setAuthMethod('LOGIN', array($this, 'authLogin'), false);
-        $this->setAuthMethod('PLAIN', array($this, 'authPlain'), false);
-        $this->setAuthMethod('XOAUTH2', array($this, 'authXOAuth2'), false);
+        $this->setAuthMethod('LOGIN', [$this, 'authLogin'], false);
+        $this->setAuthMethod('PLAIN', [$this, 'authPlain'], false);
+        $this->setAuthMethod('XOAUTH2', [$this, 'authXOAuth2'], false);
     }
 
     /**
@@ -262,7 +269,8 @@ class Net_SMTP
         if ($this->debug) {
             if ($this->debug_handler) {
                 call_user_func_array(
-                    $this->debug_handler, array(&$this, $message)
+                    $this->debug_handler,
+                    [&$this, $message]
                 );
             } else {
                 echo "DEBUG: $message\n";
@@ -343,7 +351,7 @@ class Net_SMTP
     protected function parseResponse($valid, $later = false)
     {
         $this->code      = -1;
-        $this->arguments = array();
+        $this->arguments = [];
 
         if ($later) {
             $this->pipelined_commands++;
@@ -426,7 +434,7 @@ class Net_SMTP
      */
     public function getResponse()
     {
-        return array($this->code, join("\n", $this->arguments));
+        return [$this->code, join("\n", $this->arguments)];
     }
 
     /**
@@ -459,7 +467,11 @@ class Net_SMTP
         $this->greeting = null;
 
         $result = $this->socket->connect(
-            $this->host, $this->port, $persistent, $timeout, $this->socket_options
+            $this->host,
+            $this->port,
+            $persistent,
+            $timeout,
+            $this->socket_options
         );
 
         if (PEAR::isError($result)) {
@@ -606,41 +618,42 @@ class Net_SMTP
          * extension, are connected to an SMTP server which supports the
          * STARTTLS extension, and aren't already connected over a secure
          * (SSL) socket connection. */
-        if (version_compare(PHP_VERSION, '5.1.0', '>=')
+        if (
+            version_compare(PHP_VERSION, '5.1.0', '>=')
             && extension_loaded('openssl') && isset($this->esmtp['STARTTLS'])
             && strncasecmp($this->host, 'ssl://', 6) !== 0
-            ) {
-                /* Start the TLS connection attempt. */
-                if (PEAR::isError($result = $this->put('STARTTLS'))) {
-                    return $result;
-                }
-                if (PEAR::isError($result = $this->parseResponse(220))) {
-                    return $result;
-                }
-                if (isset($this->socket_options['ssl']['crypto_method'])) {
-                    $crypto_method = $this->socket_options['ssl']['crypto_method'];
-                } else {
-                    /* STREAM_CRYPTO_METHOD_TLS_ANY_CLIENT constant does not exist
+        ) {
+            /* Start the TLS connection attempt. */
+            if (PEAR::isError($result = $this->put('STARTTLS'))) {
+                return $result;
+            }
+            if (PEAR::isError($result = $this->parseResponse(220))) {
+                return $result;
+            }
+            if (isset($this->socket_options['ssl']['crypto_method'])) {
+                $crypto_method = $this->socket_options['ssl']['crypto_method'];
+            } else {
+                /* STREAM_CRYPTO_METHOD_TLS_ANY_CLIENT constant does not exist
                      * and STREAM_CRYPTO_METHOD_SSLv23_CLIENT constant is
                      * inconsistent across PHP versions. */
-                    $crypto_method = STREAM_CRYPTO_METHOD_TLS_CLIENT
+                $crypto_method = STREAM_CRYPTO_METHOD_TLS_CLIENT
                     | @STREAM_CRYPTO_METHOD_TLSv1_1_CLIENT
                     | @STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT;
-                }
-                if (PEAR::isError($result = $this->socket->enableCrypto(true, $crypto_method))) {
-                    return $result;
-                } elseif ($result !== true) {
-                    return PEAR::raiseError('STARTTLS failed');
-                }
-
-                /* Send EHLO again to recieve the AUTH string from the
-                 * SMTP server. */
-                $this->negotiate();
-            } else {
-                return false;
+            }
+            if (PEAR::isError($result = $this->socket->enableCrypto(true, $crypto_method))) {
+                return $result;
+            } elseif ($result !== true) {
+                return PEAR::raiseError('STARTTLS failed');
             }
 
-            return true;
+            /* Send EHLO again to recieve the AUTH string from the
+                 * SMTP server. */
+            $this->negotiate();
+        } else {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -658,7 +671,7 @@ class Net_SMTP
      *               kind of failure, or true on success.
      * @since 1.0
      */
-    public function auth($uid, $pwd , $method = '', $tls = true, $authz = '')
+    public function auth($uid, $pwd, $method = '', $tls = true, $authz = '')
     {
         /* We can only attempt a TLS connection if one has been requested,
          * we're running PHP 5.1.0 or later, have access to the OpenSSL
@@ -746,7 +759,8 @@ class Net_SMTP
 
         if ($prepend) {
             $this->auth_methods = array_merge(
-                array($name => $callback), $this->auth_methods
+                [$name => $callback],
+                $this->auth_methods
             );
         } else {
             $this->auth_methods[$name] = $callback;
@@ -931,7 +945,7 @@ class Net_SMTP
         return true;
     }
 
-     /**
+    /**
      * Authenticates the user using the GSSAPI method.
      *
      * PHP krb5 extension is required,
@@ -978,8 +992,7 @@ class Net_SMTP
             $token   = '';
             $success = $gssapicontext->initSecContext($this->gssapi_principal, null, null, null, $token);
             $token   = base64_encode($token);
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return PEAR::raiseError('GSSAPI authentication failed: ' . $e->getMessage());
         }
 
@@ -998,8 +1011,7 @@ class Net_SMTP
             $challenge = base64_decode($response);
             $gssapicontext->unwrap($challenge, $challenge);
             $gssapicontext->wrap($challenge, $challenge, true);
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return PEAR::raiseError('GSSAPI authentication failed: ' . $e->getMessage());
         }
 
@@ -1172,7 +1184,7 @@ class Net_SMTP
         if (PEAR::isError($error = $this->put('RCPT', $args))) {
             return $error;
         }
-        if (PEAR::isError($error = $this->parseResponse(array(250, 251), $this->pipelining))) {
+        if (PEAR::isError($error = $this->parseResponse([250, 251], $this->pipelining))) {
             return $error;
         }
 
@@ -1284,7 +1296,7 @@ class Net_SMTP
                 }
             }
 
-             $last = $line;
+            $last = $line;
         } else {
             /*
              * Break up the data by sending one chunk (up to 512k) at a time.
@@ -1437,7 +1449,7 @@ class Net_SMTP
         if (PEAR::isError($error = $this->put('VRFY', $string))) {
             return $error;
         }
-        if (PEAR::isError($error = $this->parseResponse(array(250, 252)))) {
+        if (PEAR::isError($error = $this->parseResponse([250, 252]))) {
             return $error;
         }
 

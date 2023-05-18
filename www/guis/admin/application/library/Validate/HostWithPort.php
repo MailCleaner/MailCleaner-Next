@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -29,23 +30,24 @@ class Validate_HostWithPort extends Zend_Validate_Abstract
         $this->_setValue($value);
 
         $validator = new Zend_Validate_Hostname(
-                                    Zend_Validate_Hostname::ALLOW_DNS |
-                                    Zend_Validate_Hostname::ALLOW_IP |
-                                    Zend_Validate_Hostname::ALLOW_LOCAL);
+            Zend_Validate_Hostname::ALLOW_DNS |
+                Zend_Validate_Hostname::ALLOW_IP |
+                Zend_Validate_Hostname::ALLOW_LOCAL
+        );
 
 
         if (preg_match('/^([^:]+)\:(.+)$/', $value, $matches)) {
-        	if ($validator->isValid($matches[1])) {
-        		if (is_numeric($matches[2])) {
-            	    return true;	
-        		} else {
-        			$this->host = $matches[2];
-        			$this->_error(self::MSG_BADPORT);
-        			return false;
-        		}
-        	}
-        	$this->host = $matches[1];
-        	$this->_error(self::MSG_BADHOST);
+            if ($validator->isValid($matches[1])) {
+                if (is_numeric($matches[2])) {
+                    return true;
+                } else {
+                    $this->host = $matches[2];
+                    $this->_error(self::MSG_BADPORT);
+                    return false;
+                }
+            }
+            $this->host = $matches[1];
+            $this->_error(self::MSG_BADHOST);
         }
         $this->host = $value;
         $this->_error(self::MSG_BADHOST);

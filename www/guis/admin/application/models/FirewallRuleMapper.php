@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -10,7 +11,7 @@
 
 class Default_Model_FirewallRuleMapper
 {
-	
+
     protected $_dbTable;
 
     public function setDbTable($dbTable)
@@ -42,11 +43,12 @@ class Default_Model_FirewallRuleMapper
         $row = $result->current();
         $config->setId($id);
         foreach ($config->getParamArray() as $key => $value) {
-        	$config->setParam($key, $row[$key]);
+            $config->setParam($key, $row[$key]);
         }
     }
 
-    public function findByService($service, Default_Model_FirewallRule $config) {
+    public function findByService($service, Default_Model_FirewallRule $config)
+    {
         $query = $this->getDbTable()->select();
         $query->where('service = ?', $service);
         $row = $this->getDbTable()->fetchRow($query);
@@ -65,10 +67,11 @@ class Default_Model_FirewallRuleMapper
         return $entries;
     }
 
-    public function save(Default_Model_FirewallRule $config) {
-       $data = $config->getParamArray();
-       $res = '';
-       if (null === ($id = $config->getId())) {
+    public function save(Default_Model_FirewallRule $config)
+    {
+        $data = $config->getParamArray();
+        $res = '';
+        if (null === ($id = $config->getId())) {
             unset($data['id']);
             $res = $this->getDbTable()->insert($data);
         } else {

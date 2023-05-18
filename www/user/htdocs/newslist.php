@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -28,7 +29,8 @@ require_once('system/Soaper.php');
  * @param Spam object $spam_mail The mail concerned
  * @return string The from email address of the sender of the email
  */
-function get_sender_address_body($spam_mail) {
+function get_sender_address_body($spam_mail)
+{
     // Get the mail sender
     $headers = $spam_mail->getHeadersArray();
 
@@ -47,7 +49,8 @@ function get_sender_address_body($spam_mail) {
  * @param string $dest The email address of the recipient
  * @return string $soap_host The IP of the machine
  */
-function get_soap_host($exim_id, $dest) {
+function get_soap_host($exim_id, $dest)
+{
     $sysconf_ = SystemConfig::getInstance();
     $spam_mail = new Spam();
     $spam_mail->loadDatas($exim_id, $dest);
@@ -59,9 +62,10 @@ function get_soap_host($exim_id, $dest) {
  * Get the IP of the master machine for SOAP requests
  * @return string $soap_host The IP of the machine
  */
-function get_master_soap_host() {
+function get_master_soap_host()
+{
     $sysconf_ = SystemConfig::getInstance();
-    foreach ($sysconf_->getMastersName() as $master){
+    foreach ($sysconf_->getMastersName() as $master) {
         return $master;
     }
 }
@@ -74,7 +78,8 @@ function get_master_soap_host() {
  * @param array $allowed_response Authorized responses
  * @return bool Status of the request. If True, everything went well
  */
-function send_SOAP_request($host, $request, $params) {
+function send_SOAP_request($host, $request, $params)
+{
     $soaper = new Soaper();
     $ret = @$soaper->load($host);
     if ($ret == "OK") {
@@ -101,7 +106,7 @@ if (isset($_GET['l'])) {
 // Cheking if the necessary arguments are here
 $in_args = ['id', 'a'];
 foreach ($in_args as $arg) {
-    if (!isset($_GET[$arg])){
+    if (!isset($_GET[$arg])) {
         $bad_arg = $arg;
     }
 }
@@ -140,7 +145,6 @@ if (!isset($bad_arg)) {
             $is_sender_added_to_news = $lang_->print_txt($is_sender_added_to_news);
         }
     }
-
 } else {
     $is_sender_added_to_news = $lang_->print_txt_param('BADARGS', $bad_arg);
 }

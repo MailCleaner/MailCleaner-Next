@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -10,7 +11,7 @@
 
 class Default_Model_SlaveMapper
 {
-	
+
     protected $_dbTable;
 
     public function setDbTable($dbTable)

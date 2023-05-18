@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -14,22 +15,27 @@
  *
  * @package mailcleaner
  */
-class Controller {
+class Controller
+{
 
-  public function __construct() {}
-
-  static public function factory($class) {
-    if (@include_once('controllers/user/'.$class.".php")) {
-      return new $class();
+    public function __construct()
+    {
     }
-    return new Controller();
-  }
 
-  public function processInput() {
-  }
+    static public function factory($class)
+    {
+        if (@include_once('controllers/user/' . $class . ".php")) {
+            return new $class();
+        }
+        return new Controller();
+    }
 
-  public function addReplace($replace, $template) {
-  	return $replace;
-  }
+    public function processInput()
+    {
+    }
+
+    public function addReplace($replace, $template)
+    {
+        return $replace;
+    }
 }
-?>

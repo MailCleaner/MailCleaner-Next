@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -36,9 +37,9 @@ class Default_Model_EmailMapper
 
     public function find($address, Default_Model_Email $email)
     {
-    	if (!$address) {
-    		$address = '';
-    	}
+        if (!$address) {
+            $address = '';
+        }
         $query = $this->getDbTable()->select();
         $query->where('address = ?', $address);
         $result = $this->getDbTable()->fetchAll($query);
@@ -53,11 +54,12 @@ class Default_Model_EmailMapper
         $email->setParam('pref', $row->pref);
     }
 
-    public function fetchAllRegistered($params) {
+    public function fetchAllRegistered($params)
+    {
         $ret = [];
         $query = $this->getDbTable()->select();
         if ($params['user']) {
-           $query->where("user = ?", $params['user']);
+            $query->where("user = ?", $params['user']);
         }
         ## removed to display registered address not in same domain
         #if ($params['domain']) {
@@ -75,7 +77,7 @@ class Default_Model_EmailMapper
     public function fetchAllName($params)
     {
         $entries   = [];
-        if (!$params['domain']){
+        if (!$params['domain']) {
             return $entries;
         }
 
@@ -107,7 +109,7 @@ class Default_Model_EmailMapper
             }
 
             if (isset($params['address'])) {
-                $query->where('address LIKE ?', $str."%@".$params['domain']);
+                $query->where('address LIKE ?', $str . "%@" . $params['domain']);
             }
             $resultSet = $this->getDbTable()->fetchAll($query);
             foreach ($resultSet as $row) {
@@ -121,13 +123,14 @@ class Default_Model_EmailMapper
     }
 
 
-    public function save(Default_Model_Email $email) {
+    public function save(Default_Model_Email $email)
+    {
         $data = $email->getParamArray();
         $res = '';
         if (null === ($id = $email->getId())) {
             unset($data['id']);
             if ($email->find($email->getParam('address'))->getId()) {
-                throw new Exception('address already exists : '.$email->getParam('address'));
+                throw new Exception('address already exists : ' . $email->getParam('address'));
             }
             $res = $this->getDbTable()->insert($data);
             $this->_isNew = 1;
@@ -137,12 +140,14 @@ class Default_Model_EmailMapper
         return $res;
     }
 
-    public function delete(Default_Model_Email $email) {
+    public function delete(Default_Model_Email $email)
+    {
         $where = $this->getDbTable()->getAdapter()->quoteInto('id = ?', $email->getId());
         return $this->getDbTable()->delete($where);
     }
 
-    public function isNew() {
+    public function isNew()
+    {
         return $this->_isNew;
     }
 }

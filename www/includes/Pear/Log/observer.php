@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Header$
  * $Horde: horde/lib/Log/observer.php,v 1.5 2000/06/28 21:36:13 jon Exp $
@@ -49,7 +50,7 @@ class Log_observer
      */
     public function __construct($priority = PEAR_LOG_INFO)
     {
-        $this->_id = md5(microtime().rand());
+        $this->_id = md5(microtime() . rand());
         $this->_priority = $priority;
     }
 
@@ -67,7 +68,7 @@ class Log_observer
      * @return object               The newly created concrete Log_observer
      *                              instance, or null on an error.
      */
-    function &factory($type, $priority = PEAR_LOG_INFO, $conf = array())
+    function &factory($type, $priority = PEAR_LOG_INFO, $conf = [])
     {
         $type = strtolower($type);
         $class = 'Log_observer_' . $type;

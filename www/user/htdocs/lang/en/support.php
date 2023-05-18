@@ -97,26 +97,26 @@ $txt['DOCUMENTATION'] = "
                               Some settings can be configured on a per-address basis.
                               <ul>
                                  <li><h3>Apply to all button: </h3>
-																		  Use this to apply changes to all the addresses.
-																		</li>
-																		<li><h3>Spam delivery mode: </h3>
-																		  Choose what you want Mailcleaner to do with messages that are detected as spam.
-  																	 <ul>
-																			 <li><h4>Quarantine:</h4> Messages are stored in the quarantine and deleted periodically.</li>
-																			 <li><h4>Tag:</h4> Spam will not be blocked, but a mark will be appended to the subject-field.</li>
-																			 <li><h4>Drop:</h4> Spam will simply be dropped. Use this with caution as it can lead to message loss.</li>
-																		 </ul>
-																		</li>
-																		<li><h3>Quarantine bounces: </h3>
-																		  This option will cause Mailcleaner to quarantine bounce message and e-mail failure notifications. This may be usefull if you are the victim of massive bounce e-mails due to for example widespread viruses. This should only be activated for small laps of time, as it is very dangerous.
- 																		</li>
-																		<li><h3>Spam tag: </h3>
-																			Choose and customize the message that appears in the subject-field of tagged spam. This is irrelevent if you have chosen the quarantine delivery mode.
-																		</li>
-																		<li><h3>Reporting frequency: </h3>
-																		  Choose the frequency with which you receive quarantine summaries. At this interval, you will recieve an e-mail with a log of spam detected and stored in the quarantine.
-																		</li>
-																	</ul>
-																</li>
-															</ul>";
+                                   Use this to apply changes to all the addresses.
+                                 </li>
+                                 <li><h3>Spam delivery mode: </h3>
+                                   Choose what you want Mailcleaner to do with messages that are detected as spam.
+                                   <ul>
+                                     <li><h4>Quarantine:</h4> Messages are stored in the quarantine and deleted periodically.</li>
+                                     <li><h4>Tag:</h4> Spam will not be blocked, but a mark will be appended to the subject-field.</li>
+                                     <li><h4>Drop:</h4> Spam will simply be dropped. Use this with caution as it can lead to message loss.</li>
+                                   </ul>
+                                 </li>
+                                 <li><h3>Quarantine bounces: </h3>
+                                   This option will cause Mailcleaner to quarantine bounce message and e-mail failure notifications. This may be usefull if you are the victim of massive bounce e-mails due to for example widespread viruses. This should only be activated for small laps of time, as it is very dangerous.
+                                 </li>
+                                 <li><h3>Spam tag: </h3>
+                                   Choose and customize the message that appears in the subject-field of tagged spam. This is irrelevent if you have chosen the quarantine delivery mode.
+                                 </li>
+                                 <li><h3>Reporting frequency: </h3>
+                                   Choose the frequency with which you receive quarantine summaries. At this interval, you will recieve an e-mail with a log of spam detected and stored in the quarantine.
+                                 </li>
+                               </ul>
+                             </li>
+                           </ul>";
 $txt['WEBDOC'] = "<ul><li>More information and documentation to be found on our web site: <a href=\"https://wiki2.mailcleaner.net/doku.php/documentation:userfaq\" target=\"_blank\">Mailcleaner user documentation</a></li></ul>";

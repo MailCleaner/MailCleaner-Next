@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -8,9 +9,10 @@
 
 class MCSoap_Test
 {
-	static public function Test_getResponse($question) {
-		
-		return $question. " is answered!";
-	}
-	
+    static public function Test_getResponse($question)
+    {
+
+        return $question . " is answered!";
+    }
 }
+

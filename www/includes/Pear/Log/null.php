@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Header$
  *
@@ -27,10 +28,13 @@ class Log_null extends Log
      * @param int    $level    Log messages up to and including this level.
      * @access public
      */
-    public function __construct($name, $ident = '', $conf = array(),
-                                $level = PEAR_LOG_DEBUG)
-    {
-        $this->_id = md5(microtime().rand());
+    public function __construct(
+        $name,
+        $ident = '',
+        $conf = [],
+        $level = PEAR_LOG_DEBUG
+    ) {
+        $this->_id = md5(microtime() . rand());
         $this->_ident = $ident;
         $this->_mask = Log::UPTO($level);
     }
@@ -83,9 +87,8 @@ class Log_null extends Log
             return false;
         }
 
-        $this->_announce(array('priority' => $priority, 'message' => $message));
+        $this->_announce(['priority' => $priority, 'message' => $message]);
 
         return true;
     }
-
 }

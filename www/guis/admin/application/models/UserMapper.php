@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -34,20 +35,21 @@ class Default_Model_UserMapper
         return $this->_dbTable;
     }
 
-    public function findById($id, Default_Model_User $user) {
-      if (!$id) {
-      	return;
-      }	
-      $result = $this->getDbTable()->find($id);
-      if (0 == count($result)) {
-          return;
-      }
-      $row = $result->current();
+    public function findById($id, Default_Model_User $user)
+    {
+        if (!$id) {
+            return;
+        }
+        $result = $this->getDbTable()->find($id);
+        if (0 == count($result)) {
+            return;
+        }
+        $row = $result->current();
 
-      $user->setId($id);
-      foreach ($user->getAvailableParams() as $key) {
-      	$user->setParam($key, $row->$key);
-      }
+        $user->setId($id);
+        foreach ($user->getAvailableParams() as $key) {
+            $user->setParam($key, $row->$key);
+        }
     }
 
 
@@ -71,9 +73,10 @@ class Default_Model_UserMapper
         $user->setParam('pref', $row->pref);
     }
 
-    public function fetchAllName($params) {
+    public function fetchAllName($params)
+    {
         $entries   = [];
-        if (!$params['domain']){
+        if (!$params['domain']) {
             return $entries;
         }
 
@@ -100,7 +103,7 @@ class Default_Model_UserMapper
         }
 
         if (isset($params['username'])) {
-            $query->where('username LIKE ?', $str."%");
+            $query->where('username LIKE ?', $str . "%");
         }
         $query->where('domain = ?', $params['domain']);
         $resultSet = $this->getDbTable()->fetchAll($query);
@@ -116,9 +119,9 @@ class Default_Model_UserMapper
                 $entry = new Default_Model_User();
                 $entry->setId($row['id']);
                 #if ($domain->getPref('auth_type') == 'ldap') {
-                    #$entry->setParam('username', $row['username'] . ' (local)');
+                #$entry->setParam('username', $row['username'] . ' (local)');
                 #} else {
-                    $entry->setParam('username', $row['username']);
+                $entry->setParam('username', $row['username']);
                 #}
                 $entries[] = $entry;
             }
@@ -127,13 +130,14 @@ class Default_Model_UserMapper
     }
 
 
-    public function save(Default_Model_User $user) {
+    public function save(Default_Model_User $user)
+    {
         $data = $user->getParamArray();
         $res = '';
         if (null === ($id = $user->getId())) {
             unset($data['id']);
             if ($user->find($user->getParam('username'), $user->getDomainObject()->getParam('name'))->getId()) {
-                throw new Exception('user already exists : '.$user->getParam('username'));
+                throw new Exception('user already exists : ' . $user->getParam('username'));
             }
             $res = $this->getDbTable()->insert($data);
             $user->setId($res);
@@ -145,12 +149,14 @@ class Default_Model_UserMapper
         return $res;
     }
 
-    public function delete(Default_Model_User $user) {
+    public function delete(Default_Model_User $user)
+    {
         $where = $this->getDbTable()->getAdapter()->quoteInto('id = ?', $user->getId());
         return $this->getDbTable()->delete($where);
     }
 
-    public function isNew() {
+    public function isNew()
+    {
         return $this->_isNew;
     }
 }

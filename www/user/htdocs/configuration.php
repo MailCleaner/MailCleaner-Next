@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -25,10 +26,10 @@ $topics['int'] = ['INTERFACETOPIC', 'conf_interface.tmpl', 'ConfigUserInterface'
 $topics['addparam'] = ['ADDRESSPARAMTOPIC', 'conf_addressparam.tmpl', 'ConfigUserAddressParam'];
 $topics['quar'] = ['QUARPARAMTOPIC', 'conf_quarantine.tmpl', 'ConfigUserQuarantine'];
 if (!$user_->isStub()) {
-  // if ldap connector..
-  if ($user_->getDomain()->getPref('auth_type') != 'ldap' || file_exists('/var/mailcleaner/flags/www/user_auth/address_group_for_ldap') ) {
-    $topics['addlist'] = ['ADDRESSLISTTOPIC', 'conf_addresslist.tmpl', 'ConfigUserAddressList'];
-  }
+    // if ldap connector..
+    if ($user_->getDomain()->getPref('auth_type') != 'ldap' || file_exists('/var/mailcleaner/flags/www/user_auth/address_group_for_ldap')) {
+        $topics['addlist'] = ['ADDRESSLISTTOPIC', 'conf_addresslist.tmpl', 'ConfigUserAddressList'];
+    }
 }
 
 
@@ -38,7 +39,7 @@ $antispam_ = new AntiSpam();
 $antispam_->load();
 
 if ($antispam_->getPref('enable_warnlists') && $user_->getDomain()->getPref('enable_warnlists')) {
-  $topics['warn'] = ['WARNLISTTOPIC', 'conf_warnlist.tmpl', 'ConfigUserWWList'];
+    $topics['warn'] = ['WARNLISTTOPIC', 'conf_warnlist.tmpl', 'ConfigUserWWList'];
 }
 
 /*
@@ -52,10 +53,10 @@ $topics['wnews'] = ['NEWSLISTTOPIC', 'conf_newslist.tmpl', 'ConfigUserWWList'];
 
 $topic = 'int';
 if (isset($_GET['t']) && isset($topics[$_GET['t']])) {
-  $topic = $_GET['t'];
+    $topic = $_GET['t'];
 }
 if (!isset($topics[$topic])) {
-	$topic = key($topics);
+    $topic = key($topics);
 }
 
 // get specific controller
@@ -72,15 +73,16 @@ $replace = [
 
     "__MENULIST__" => getMenuList(),
     "__THISTOPIC__" => $topic,
-    "__TOPIC_TITLE__" => $lang_->print_txt($topics[$topic][0]."TITLE"),
+    "__TOPIC_TITLE__" => $lang_->print_txt($topics[$topic][0] . "TITLE"),
     '__SELECTOR_LANG__' => $lang_->html_select(),
 ];
 
-require_once ('helpers/DataManager.php');
-$file_conf = DataManager :: getFileConfig($sysconf_ :: $CONFIGFILE_);
+require_once('helpers/DataManager.php');
+$file_conf = DataManager::getFileConfig($sysconf_::$CONFIGFILE_);
 $is_enterprise = $file_conf['REGISTERED'] == '1';
-if (!$is_enterprise)
-	$template_->setCondition('ISCOMMUNITY', true);
+if (!$is_enterprise) {
+    $template_->setCondition('ISCOMMUNITY', true);
+}
 
 $replace = $controller->addReplace($replace, $template_);
 
@@ -88,18 +90,18 @@ $replace = $controller->addReplace($replace, $template_);
 $template_->output($replace);
 
 
-function getMenuList() {
-  global $template_;	
-  global $topics;
-  global $lang_;
+function getMenuList()
+{
+    global $template_;
+    global $topics;
+    global $lang_;
 
-  $ret = "";
-  foreach ($topics as $topicname => $topic) {
-    $t = $template_->getTemplate('MENUITEM');
-  	$t = str_replace('__TOPIC__', $topicname, $t);
-    $t = str_replace('__TOPIC_TEXT__', $lang_->print_txt($topic[0]), $t);
-    $ret .= $t;
-  }
-  return $ret;
+    $ret = "";
+    foreach ($topics as $topicname => $topic) {
+        $t = $template_->getTemplate('MENUITEM');
+        $t = str_replace('__TOPIC__', $topicname, $t);
+        $t = str_replace('__TOPIC_TEXT__', $lang_->print_txt($topic[0]), $t);
+        $ret .= $t;
+    }
+    return $ret;
 }
-?>

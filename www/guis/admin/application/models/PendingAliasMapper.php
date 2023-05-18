@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -69,13 +70,14 @@ class Default_Model_PendingAliasMapper
     }
 
 
-    public function save(Default_Model_PendingAlias $alias) {
+    public function save(Default_Model_PendingAlias $alias)
+    {
         $data = $alias->getParamArray();
         $res = '';
         if (null === ($id = $alias->getId())) {
             unset($data['id']);
             if ($alias->find($alias->getParam('alias'))->getId()) {
-                throw new Exception('alias already exists : '.$alias->getParam('alias'));
+                throw new Exception('alias already exists : ' . $alias->getParam('alias'));
             }
             $res = $this->getDbTable()->insert($data);
         } else {
@@ -84,7 +86,8 @@ class Default_Model_PendingAliasMapper
         return $res;
     }
 
-    public function delete(Default_Model_PendingAlias $alias) {
+    public function delete(Default_Model_PendingAlias $alias)
+    {
         $where = $this->getDbTable()->getAdapter()->quoteInto('id = ?', $alias->getId());
         return $this->getDbTable()->delete($where);
     }

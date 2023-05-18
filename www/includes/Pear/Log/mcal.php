@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Header$
  * $Horde: horde/lib/Log/mcal.php,v 1.2 2000/06/28 21:36:13 jon Exp $
@@ -70,10 +71,13 @@ class Log_mcal extends Log
      * @param int    $level    Log messages up to and including this level.
      * @access public
      */
-    public function __construct($name, $ident = '', $conf = array(),
-                                $level = PEAR_LOG_DEBUG)
-    {
-        $this->_id = md5(microtime().rand());
+    public function __construct(
+        $name,
+        $ident = '',
+        $conf = [],
+        $level = PEAR_LOG_DEBUG
+    ) {
+        $this->_id = md5(microtime() . rand());
         $this->_name = $name;
         $this->_ident = $ident;
         $this->_mask = Log::UPTO($level);
@@ -91,8 +95,12 @@ class Log_mcal extends Log
     function open()
     {
         if (!$this->_opened) {
-            $this->_stream = mcal_open($this->_calendar, $this->_username,
-                $this->_password, $this->_options);
+            $this->_stream = mcal_open(
+                $this->_calendar,
+                $this->_username,
+                $this->_password,
+                $this->_options
+            );
             $this->_opened = true;
         }
 
@@ -155,15 +163,28 @@ class Log_mcal extends Log
         mcal_event_set_category($this->_stream, $this->_name);
         mcal_event_set_description($this->_stream, $message);
         mcal_event_add_attribute($this->_stream, 'priority', $priority);
-        mcal_event_set_start($this->_stream, $dates[0], $dates[1], $dates[2],
-            $dates[3], $dates[4], $dates[5]);
-        mcal_event_set_end($this->_stream, $dates[0], $dates[1], $dates[2],
-            $dates[3], $dates[4], $dates[5]);
+        mcal_event_set_start(
+            $this->_stream,
+            $dates[0],
+            $dates[1],
+            $dates[2],
+            $dates[3],
+            $dates[4],
+            $dates[5]
+        );
+        mcal_event_set_end(
+            $this->_stream,
+            $dates[0],
+            $dates[1],
+            $dates[2],
+            $dates[3],
+            $dates[4],
+            $dates[5]
+        );
         mcal_append_event($this->_stream);
 
-        $this->_announce(array('priority' => $priority, 'message' => $message));
+        $this->_announce(['priority' => $priority, 'message' => $message]);
 
         return true;
     }
-
 }

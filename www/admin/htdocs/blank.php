@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -18,8 +19,7 @@ require_once('view/Template.php');
 $template_ = new Template('blank.tmpl');
 
 // prepare replacements
-$replace = [ '__LANG__' => $lang_->getLanguage() ];
+$replace = ['__LANG__' => $lang_->getLanguage()];
 
 // output page
 $template_->output($replace);
-?>

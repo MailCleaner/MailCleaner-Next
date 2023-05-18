@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -22,9 +23,8 @@ $template = new Template('help.tmpl');
 
 // prepare replacements
 $replace = [
-        '__DOC_TEXT__' => $template->processText($doc->getHelpText($_GET['s']), [])
+    '__DOC_TEXT__' => $template->processText($doc->getHelpText($_GET['s']), [])
 ];
 
 // output page
 $template->output($replace);
-?>

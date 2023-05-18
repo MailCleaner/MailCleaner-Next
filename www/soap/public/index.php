@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -27,47 +28,49 @@ ini_set('display_errors', 'off');
 
 $url = 'http://';
 if (isset($_SERVER['HTTPS'])) {
-	$url = 'https://';
+    $url = 'https://';
 }
 #$url .= $_SERVER['SERVER_NAME'].":".$_SERVER['SERVER_PORT'].$_SERVER['REQUEST_URI']."?wsdl";
-$url .= 'localhost'.":".$_SERVER['SERVER_PORT'].$_SERVER['REQUEST_URI']."?wsdl";
+$url .= 'localhost' . ":" . $_SERVER['SERVER_PORT'] . $_SERVER['REQUEST_URI'] . "?wsdl";
 
-$options = array (
-  'soap_version' => SOAP_1_2,
-  'uri' => $url
-);
+$options = [
+    'soap_version' => SOAP_1_2,
+    'uri' => $url
+];
 
 require_once('SoapInterface.php');
 
-if(isset($_GET['wsdl'])) {
-  handleWSDL();
+if (isset($_GET['wsdl'])) {
+    handleWSDL();
 } else {
-  handleSOAP();
+    handleSOAP();
 }
 
 
-function handleSOAP() {
-  global $options;
-  global $url;
+function handleSOAP()
+{
+    global $options;
+    global $url;
 
-  require_once('Zend/Soap/Server.php');
-  $server = new Zend_Soap_Server($url);
+    require_once('Zend/Soap/Server.php');
+    $server = new Zend_Soap_Server($url);
 
-#  $server->setClass('MCSoap_Test');
-#  $server->setObject(new MCSoap_Test());
-  $server->setClass('SoapInterface');
-  $server->setObject(new SoapInterface());
+    #  $server->setClass('MCSoap_Test');
+    #  $server->setObject(new MCSoap_Test());
+    $server->setClass('SoapInterface');
+    $server->setObject(new SoapInterface());
 
-  $server->handle();
+    $server->handle();
 }
 
-function handleWSDL() {
-  global $options;
-  global $url;
+function handleWSDL()
+{
+    global $options;
+    global $url;
 
-  require_once('Zend/Soap/AutoDiscover.php');
-  $autodiscover = new Zend_Soap_AutoDiscover();
-#  $autodiscover->setClass('MCSoap_Test');
-  $autodiscover->setClass('SoapInterface');
-  $autodiscover->handle();
+    require_once('Zend/Soap/AutoDiscover.php');
+    $autodiscover = new Zend_Soap_AutoDiscover();
+    #  $autodiscover->setClass('MCSoap_Test');
+    $autodiscover->setClass('SoapInterface');
+    $autodiscover->handle();
 }

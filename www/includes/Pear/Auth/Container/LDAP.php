@@ -1,4 +1,5 @@
 <?php
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 foldmethod=marker: */
 
 /**
@@ -114,16 +115,17 @@ require_once "PEAR.php";
  * <?php
  * ...
  *
- * $a1 = new Auth("LDAP", array(
+ * $a1 = new Auth("LDAP", [
  *       'host' => 'localhost',
  *       'port' => '389',
  *       'version' => 3,
  *       'basedn' => 'o=netsols,c=de',
  *       'userattr' => 'uid'
  *       'binddn' => 'cn=admin,o=netsols,c=de',
- *       'bindpw' => 'password'));
+ *       'bindpw' => 'password'
+ *       ]);
  *
- * $a2 = new Auth('LDAP', array(
+ * $a2 = new Auth('LDAP', [
  *       'url' => 'ldaps://ldap.netsols.de',
  *       'basedn' => 'o=netsols,c=de',
  *       'userscope' => 'one',
@@ -133,9 +135,9 @@ require_once "PEAR.php";
  *       'memberattr' => 'memberUid',
  *       'memberisdn' => false,
  *       'group' => 'admin'
- *       ));
+ *       ]);
  *
- * $a3 = new Auth('LDAP', array(
+ * $a3 = new Auth('LDAP', [
  *       'host' => 'ldap.netsols.de',
  *       'port' => 389,
  *       'version' => 3,
@@ -145,15 +147,16 @@ require_once "PEAR.php";
  *       'bindpw' => 'password',
  *       'userattr' => 'samAccountName',
  *       'userfilter' => '(objectClass=user)',
- *       'attributes' => array(''),
+ *       'attributes' => [''],
  *       'group' => 'testing',
- *       'groupattr' => 'samAccountName',
  *       'groupfilter' => '(objectClass=group)',
+ *       'groupattr' => 'samAccountName',
  *       'memberattr' => 'member',
  *       'memberisdn' => true,
  *       'groupdn' => 'cn=Users',
  *       'groupscope' => 'one',
- *       'debug' => true);
+ *       'debug' => True
+ *       ]);
  *
  * The parameter values have to correspond
  * to the ones for your LDAP server of course.
@@ -209,7 +212,7 @@ class Auth_Container_LDAP extends Auth_Container
      * Options for the class
      * @var array
      */
-    var $options = array();
+    var $options = [];
 
     /**
      * Connection ID of LDAP Link
@@ -230,8 +233,11 @@ class Auth_Container_LDAP extends Auth_Container
     function Auth_Container_LDAP($params)
     {
         if (false === extension_loaded('ldap')) {
-            return PEAR::raiseError('Auth_Container_LDAP: LDAP Extension not loaded',
-                    41, PEAR_ERROR_DIE);
+            return PEAR::raiseError(
+                'Auth_Container_LDAP: LDAP Extension not loaded',
+                41,
+                PEAR_ERROR_DIE
+            );
         }
 
         $this->_setDefaults();
@@ -279,15 +285,15 @@ class Auth_Container_LDAP extends Auth_Container
         // connect
         if (isset($this->options['url']) && $this->options['url'] != '') {
             $this->log('Connecting with URL', AUTH_LOG_DEBUG);
-            $conn_params = array($this->options['url']);
+            $conn_params = [$this->options['url']];
         } else {
             $this->log('Connecting with host:port', AUTH_LOG_DEBUG);
-            $conn_params = array($this->options['host'], $this->options['port']);
+            $conn_params = [$this->options['host'], $this->options['port']];
         }
 
         if (($this->conn_id = @call_user_func_array('ldap_connect', $conn_params)) === false) {
             $this->log('Connection to server failed.', AUTH_LOG_DEBUG);
-            $this->log('LDAP ERROR: '.ldap_errno($this->conn_id).': '.ldap_error($this->conn_id), AUTH_LOG_DEBUG);
+            $this->log('LDAP ERROR: ' . ldap_errno($this->conn_id) . ': ' . ldap_error($this->conn_id), AUTH_LOG_DEBUG);
             return PEAR::raiseError('Auth_Container_LDAP: Could not connect to server.', 41);
         }
         $this->log('Successfully connected to server', AUTH_LOG_DEBUG);
@@ -302,7 +308,7 @@ class Auth_Container_LDAP extends Auth_Container
                 $this->log("Starting TLS session", AUTH_LOG_DEBUG);
                 if (@ldap_start_tls($this->conn_id) === false) {
                     $this->log('Could not start TLS session', AUTH_LOG_DEBUG);
-                    $this->log('LDAP ERROR: '.ldap_errno($this->conn_id).': '.ldap_error($this->conn_id), AUTH_LOG_DEBUG);
+                    $this->log('LDAP ERROR: ' . ldap_errno($this->conn_id) . ': ' . ldap_error($this->conn_id), AUTH_LOG_DEBUG);
                     return PEAR::raiseError('Auth_Container_LDAP: Could not start tls.', 41);
                 }
             }
@@ -313,23 +319,23 @@ class Auth_Container_LDAP extends Auth_Container
             $this->log("Switching LDAP referrals to " . (($this->options['referrals']) ? 'true' : 'false'), AUTH_LOG_DEBUG);
             if (@ldap_set_option($this->conn_id, LDAP_OPT_REFERRALS, $this->options['referrals']) === false) {
                 $this->log('Could not change LDAP referrals options', AUTH_LOG_DEBUG);
-                $this->log('LDAP ERROR: '.ldap_errno($this->conn_id).': '.ldap_error($this->conn_id), AUTH_LOG_DEBUG);
+                $this->log('LDAP ERROR: ' . ldap_errno($this->conn_id) . ': ' . ldap_error($this->conn_id), AUTH_LOG_DEBUG);
             }
         }
 
         // bind with credentials or anonymously
         if (strlen($this->options['binddn']) && strlen($this->options['bindpw'])) {
             $this->log('Binding with credentials', AUTH_LOG_DEBUG);
-            $bind_params = array($this->conn_id, $this->options['binddn'], $this->options['bindpw']);
+            $bind_params = [$this->conn_id, $this->options['binddn'], $this->options['bindpw']];
         } else {
             $this->log('Binding anonymously', AUTH_LOG_DEBUG);
-            $bind_params = array($this->conn_id);
+            $bind_params = [$this->conn_id];
         }
 
         // bind for searching
         if ((@call_user_func_array('ldap_bind', $bind_params)) === false) {
             $this->log('Bind failed', AUTH_LOG_DEBUG);
-            $this->log('LDAP ERROR: '.ldap_errno($this->conn_id).': '.ldap_error($this->conn_id), AUTH_LOG_DEBUG);
+            $this->log('LDAP ERROR: ' . ldap_errno($this->conn_id) . ': ' . ldap_error($this->conn_id), AUTH_LOG_DEBUG);
             $this->_disconnect();
             return PEAR::raiseError("Auth_Container_LDAP: Could not bind to LDAP server.", 41);
         }
@@ -374,7 +380,7 @@ class Auth_Container_LDAP extends Auth_Container
         if ($this->options['basedn'] == "" && $this->_isValidLink()) {
             $this->log("basedn not set, searching via namingContexts.", AUTH_LOG_DEBUG);
 
-            $result_id = @ldap_read($this->conn_id, "", "(objectclass=*)", array("namingContexts"));
+            $result_id = @ldap_read($this->conn_id, "", "(objectclass=*)", ["namingContexts"]);
 
             if (@ldap_count_entries($this->conn_id, $result_id) == 1) {
 
@@ -440,7 +446,7 @@ class Auth_Container_LDAP extends Auth_Container
         $this->options['userscope']   = 'sub';
         $this->options['userattr']    = 'uid';
         $this->options['userfilter']  = '(objectClass=posixAccount)';
-        $this->options['attributes']  = array(''); // no attributes
+        $this->options['attributes']  = ['']; // no attributes
         $this->options['attrformat']  = 'AUTH'; // returns attribute like other Auth containers
         $this->options['group']       = '';
         $this->options['groupdn']     = '';
@@ -496,9 +502,9 @@ class Auth_Container_LDAP extends Auth_Container
     function _setV12OptionsToV13($array)
     {
         if (isset($array['useroc']))
-            $array['userfilter'] = "(objectClass=".$array['useroc'].")";
+            $array['userfilter'] = "(objectClass=" . $array['useroc'] . ")";
         if (isset($array['groupoc']))
-            $array['groupfilter'] = "(objectClass=".$array['groupoc'].")";
+            $array['groupfilter'] = "(objectClass=" . $array['groupoc'] . ")";
         if (isset($array['scope']))
             $array['userscope'] = $array['scope'];
 
@@ -516,16 +522,16 @@ class Auth_Container_LDAP extends Auth_Container
      */
     function _scope2function($scope)
     {
-        switch($scope) {
-        case 'one':
-            $function = 'ldap_list';
-            break;
-        case 'base':
-            $function = 'ldap_read';
-            break;
-        default:
-            $function = 'ldap_search';
-            break;
+        switch ($scope) {
+            case 'one':
+                $function = 'ldap_list';
+                break;
+            case 'base':
+                $function = 'ldap_read';
+                break;
+            default:
+                $function = 'ldap_search';
+                break;
         }
         return $function;
     }
@@ -564,10 +570,12 @@ class Auth_Container_LDAP extends Auth_Container
         }
 
         // make search filter
-        $filter = sprintf('(&(%s=%s)%s)',
-                          $this->options['userattr'],
-                          $this->_quoteFilterString($username),
-                          $this->options['userfilter']);
+        $filter = sprintf(
+            '(&(%s=%s)%s)',
+            $this->options['userattr'],
+            $this->_quoteFilterString($username),
+            $this->options['userfilter']
+        );
 
         // make search base dn
         $search_basedn = $this->options['userdn'];
@@ -580,7 +588,7 @@ class Auth_Container_LDAP extends Auth_Container
         $searchAttributes = $this->options['attributes'];
 
         // make functions params array
-        $func_params = array($this->conn_id, $search_basedn, $filter, $searchAttributes);
+        $func_params = [$this->conn_id, $search_basedn, $filter, $searchAttributes];
 
         // search function to use
         $func_name = $this->_scope2function($this->options['userscope']);
@@ -619,8 +627,10 @@ class Auth_Container_LDAP extends Auth_Container
                 // fetch attributes
                 if ($attributes = @ldap_get_attributes($this->conn_id, $entry_id)) {
 
-                    if (is_array($attributes) && isset($attributes['count']) &&
-                         $attributes['count'] > 0) {
+                    if (
+                        is_array($attributes) && isset($attributes['count']) &&
+                        $attributes['count'] > 0
+                    ) {
 
                         // ldap_get_attributes() returns a specific multi dimensional array
                         // format containing all the attributes and where each array starts
@@ -635,21 +645,19 @@ class Auth_Container_LDAP extends Auth_Container
                         // 'AUTH' in the 'options' array.
                         // eg. $this->options['attrformat'] = 'AUTH'
 
-                        if ( strtoupper($this->options['attrformat']) == 'AUTH' ) {
+                        if (strtoupper($this->options['attrformat']) == 'AUTH') {
                             $this->log('Saving attributes to Auth data in AUTH format', AUTH_LOG_DEBUG);
-                            unset ($attributes['count']);
-                            foreach ($attributes as $attributeName => $attributeValue ) {
+                            unset($attributes['count']);
+                            foreach ($attributes as $attributeName => $attributeValue) {
                                 if (is_int($attributeName)) continue;
                                 if (is_array($attributeValue) && isset($attributeValue['count'])) {
-                                    unset ($attributeValue['count']);
+                                    unset($attributeValue['count']);
                                 }
-                                if (count($attributeValue)<=1) $attributeValue = $attributeValue[0];
-                                $this->log('Storing additional field: '.$attributeName, AUTH_LOG_DEBUG);
+                                if (count($attributeValue) <= 1) $attributeValue = $attributeValue[0];
+                                $this->log('Storing additional field: ' . $attributeName, AUTH_LOG_DEBUG);
                                 $this->_auth_obj->setAuthData($attributeName, $attributeValue);
                             }
-                        }
-                        else
-                        {
+                        } else {
                             $this->log('Saving attributes to Auth data in LDAP format', AUTH_LOG_DEBUG);
                             $this->_auth_obj->setAuthData('attributes', $attributes);
                         }
@@ -710,12 +718,14 @@ class Auth_Container_LDAP extends Auth_Container
         }
 
         // make filter
-        $filter = sprintf('(&(%s=%s)(%s=%s)%s)',
-                          $this->options['groupattr'],
-                          $this->options['group'],
-                          $this->options['memberattr'],
-                          $this->_quoteFilterString($user),
-                          $this->options['groupfilter']);
+        $filter = sprintf(
+            '(&(%s=%s)(%s=%s)%s)',
+            $this->options['groupattr'],
+            $this->options['group'],
+            $this->options['memberattr'],
+            $this->_quoteFilterString($user),
+            $this->options['groupfilter']
+        );
 
         // make search base dn
         $search_basedn = $this->options['groupdn'];
@@ -724,8 +734,10 @@ class Auth_Container_LDAP extends Auth_Container
         }
         $search_basedn .= $this->options['basedn'];
 
-        $func_params = array($this->conn_id, $search_basedn, $filter,
-                             array($this->options['memberattr']));
+        $func_params = [
+            $this->conn_id, $search_basedn, $filter,
+            [$this->options['memberattr']]
+        ];
         $func_name = $this->_scope2function($this->options['groupscope']);
 
         $this->log("Searching with $func_name and filter $filter in $search_basedn", AUTH_LOG_DEBUG);
@@ -754,13 +766,11 @@ class Auth_Container_LDAP extends Auth_Container
      */
     function _quoteFilterString($filter_str)
     {
-        $metas        = array(  '\\',  '*',  '(',  ')',   "\x00");
-        $quoted_metas = array('\\\\', '\*', '\(', '\)', "\\\x00");
+        $metas        = ['\\',  '*',  '(',  ')',   "\x00"];
+        $quoted_metas = ['\\\\', '\*', '\(', '\)', "\\\x00"];
         return str_replace($metas, $quoted_metas, $filter_str);
     }
 
     // }}}
 
 }
-
-?>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -15,7 +16,7 @@ class Default_Model_AntivirusConfig
         'silent' => 'yes',
         'scanner_timeout' => 300,
         'file_timeout' => 20,
-        'expand_tnef' => 	'yes',
+        'expand_tnef' =>     'yes',
         'deliver_bad_tnef' => 'no',
         'tnef_timeout' => 20,
         'usetnefcontent' => 'no',
@@ -27,40 +28,46 @@ class Default_Model_AntivirusConfig
         'notices_to' => '',
         'scanners' => ''
     ];
-	
-	protected $_mapper;
-	
-	public function setId($id) {
-	   $this->_id = $id;	
-	}
-	public function getId() {
-		return $this->_id;
-	}
-	
-	public function setParam($param, $value) {
-		if (array_key_exists($param, $this->_values)) {
-			$this->_values[$param] = $value;
-		}
-	}
-	
-	public function getParam($param) {
-		if (array_key_exists($param, $this->_values)) {
-			return $this->_values[$param];
-		}
-		return null;
-	}
-	
-	public function getAvailableParams() {
-		$ret = [];
-		foreach ($this->_values as $key => $value) {
-			$ret[]=$key;
-		}
-		return $ret;
-	}
-	
-	public function getParamArray() {
-		return $this->_values;
-	}
+
+    protected $_mapper;
+
+    public function setId($id)
+    {
+        $this->_id = $id;
+    }
+    public function getId()
+    {
+        return $this->_id;
+    }
+
+    public function setParam($param, $value)
+    {
+        if (array_key_exists($param, $this->_values)) {
+            $this->_values[$param] = $value;
+        }
+    }
+
+    public function getParam($param)
+    {
+        if (array_key_exists($param, $this->_values)) {
+            return $this->_values[$param];
+        }
+        return null;
+    }
+
+    public function getAvailableParams()
+    {
+        $ret = [];
+        foreach ($this->_values as $key => $value) {
+            $ret[] = $key;
+        }
+        return $ret;
+    }
+
+    public function getParamArray()
+    {
+        return $this->_values;
+    }
 
     public function setMapper($mapper)
     {
@@ -87,15 +94,16 @@ class Default_Model_AntivirusConfig
         return $this->getMapper()->save($this);
     }
 
-    public function getActiveScanners() {
-    	$scanners = [];
-    	foreach (preg_split('/\s+/', $this->getParam('scanners')) as $sname) {
-    		$scanner = new Default_Model_AntivirusScanner();
-    		$scanner->findByName($sname);
-    		if ($scanner->getID() > 0) {
-    			$scanners[] = $scanner;
-    		}
-    	}
-    	return $scanners;
+    public function getActiveScanners()
+    {
+        $scanners = [];
+        foreach (preg_split('/\s+/', $this->getParam('scanners')) as $sname) {
+            $scanner = new Default_Model_AntivirusScanner();
+            $scanner->findByName($sname);
+            if ($scanner->getID() > 0) {
+                $scanners[] = $scanner;
+            }
+        }
+        return $scanners;
     }
 }

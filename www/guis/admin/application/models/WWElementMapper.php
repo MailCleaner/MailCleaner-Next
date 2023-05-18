@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -10,7 +11,7 @@
 
 class Default_Model_WWElementMapper
 {
-	
+
     protected $_dbTable;
 
     public function setDbTable($dbTable)
@@ -43,7 +44,7 @@ class Default_Model_WWElementMapper
 
         $element->setId($id);
         foreach ($element->getAvailableParams() as $key) {
-        	$element->setParam($key, $row->$key);
+            $element->setParam($key, $row->$key);
         }
     }
 
@@ -57,7 +58,7 @@ class Default_Model_WWElementMapper
             $entries[] = $entry;
         }
         return $entries;
-     }
+    }
 
     public function fetchAllField($destination, $type, $field)
     {
@@ -66,54 +67,57 @@ class Default_Model_WWElementMapper
             $returnString .= $row->$field . "\n";
         }
         return $returnString;
-     }
+    }
 
-     public function setBulkSender($domain, $senders, $type) {
-	$senders_array = explode("\r\n", $senders);
+    public function setBulkSender($domain, $senders, $type)
+    {
+        $senders_array = explode("\r\n", $senders);
 
-	// To ensure, we remove dropped entries, we drop all and recreate all
-	$this->getDbTable()->delete("recipient='$domain' and type='$type'");
+        // To ensure, we remove dropped entries, we drop all and recreate all
+        $this->getDbTable()->delete("recipient='$domain' and type='$type'");
 
-	if ($senders != '') {
-		foreach ($senders_array as $sender) {
-			$this->getDbTable()->insert([
-				'sender'	=> $sender,
-				'recipient'	=> $domain,
-				'type'		=> $type,
-				'expiracy'	=> '',
-				'status'	=> 1,
-			]);
-		}
-	}
-     }
+        if ($senders != '') {
+            foreach ($senders_array as $sender) {
+                $this->getDbTable()->insert([
+                    'sender'    => $sender,
+                    'recipient'    => $domain,
+                    'type'        => $type,
+                    'expiracy'    => '',
+                    'status'    => 1,
+                ]);
+            }
+        }
+    }
 
-     public function setSpamcOvercharge($domain, $comments, $type) {
-	$comments_array = explode("\r\n", $comments);
+    public function setSpamcOvercharge($domain, $comments, $type)
+    {
+        $comments_array = explode("\r\n", $comments);
 
-	// To ensure, we remove dropped entries, we drop all and recreate all
-	$this->getDbTable()->delete("recipient='$domain' and type='$type'");
+        // To ensure, we remove dropped entries, we drop all and recreate all
+        $this->getDbTable()->delete("recipient='$domain' and type='$type'");
 
-	if ($comments != '') {
-		foreach ($comments_array as $comment) {
-			$this->getDbTable()->insert([
-				'sender'	=> '',
-				'recipient'	=> $domain,
-				'type'		=> $type,
-				'expiracy'	=> '',
-				'status'	=> 1,
-				'comments'	=> $comment,
-			]);
-		}
-	}
-     }
+        if ($comments != '') {
+            foreach ($comments_array as $comment) {
+                $this->getDbTable()->insert([
+                    'sender'    => '',
+                    'recipient'    => $domain,
+                    'type'        => $type,
+                    'expiracy'    => '',
+                    'status'    => 1,
+                    'comments'    => $comment,
+                ]);
+            }
+        }
+    }
 
-    public function save(Default_Model_WWElement $element) {
-       $data = $element->getParamArray();
-       if (is_null($data['expiracy']) || $data['expiracy'] == '') {
+    public function save(Default_Model_WWElement $element)
+    {
+        $data = $element->getParamArray();
+        if (is_null($data['expiracy']) || $data['expiracy'] == '') {
             $data['expiracy'] = '0000-00-00';
-       }
-       $res = '';
-       if (null === ($id = $element->getId())) {
+        }
+        $res = '';
+        if (null === ($id = $element->getId())) {
             unset($data['id']);
             $res = $this->getDbTable()->insert($data);
             $element->setId($res);
@@ -123,8 +127,9 @@ class Default_Model_WWElementMapper
         return $res;
     }
 
-    public function delete(Default_Model_WWElement $element) {
-    	$where = $this->getDbTable()->getAdapter()->quoteInto('id = ?', $element->getId());
-    	return $this->getDbTable()->delete($where);   	
+    public function delete(Default_Model_WWElement $element)
+    {
+        $where = $this->getDbTable()->getAdapter()->quoteInto('id = ?', $element->getId());
+        return $this->getDbTable()->delete($where);
     }
 }

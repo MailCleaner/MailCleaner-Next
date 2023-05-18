@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Header$
  *
@@ -99,7 +100,7 @@ class Log_mail extends Log
      * @var array
      * @access private
      */
-    var $_mailParams = array();
+    var $_mailParams = [];
 
     /**
      * Constructs a new Log_mail object.
@@ -116,10 +117,13 @@ class Log_mail extends Log
      * @param int    $level     Log messages up to and including this level.
      * @access public
      */
-    public function __construct($name, $ident = '', $conf = array(),
-                                $level = PEAR_LOG_DEBUG)
-    {
-        $this->_id = md5(microtime().rand());
+    public function __construct(
+        $name,
+        $ident = '',
+        $conf = [],
+        $level = PEAR_LOG_DEBUG
+    ) {
+        $this->_id = md5(microtime() . rand());
         $this->_recipients = $name;
         $this->_ident = $ident;
         $this->_mask = Log::UPTO($level);
@@ -139,9 +143,11 @@ class Log_mail extends Log
         }
 
         if (!empty($conf['lineFormat'])) {
-            $this->_lineFormat = str_replace(array_keys($this->_formatMap),
-                                             array_values($this->_formatMap),
-                                             $conf['lineFormat']);
+            $this->_lineFormat = str_replace(
+                array_keys($this->_formatMap),
+                array_values($this->_formatMap),
+                $conf['lineFormat']
+            );
         }
 
         if (!empty($conf['timeFormat'])) {
@@ -157,7 +163,7 @@ class Log_mail extends Log
         }
 
         /* register the destructor */
-        register_shutdown_function(array(&$this, '_Log_mail'));
+        register_shutdown_function([&$this, '_Log_mail']);
     }
 
     /**
@@ -202,20 +208,31 @@ class Log_mail extends Log
                 if ($this->_mailBackend === '') {  // use mail()
                     $headers = "From: $this->_from\r\n";
                     $headers .= 'User-Agent: PEAR Log Package';
-                    if (mail($this->_recipients, $this->_subject,
-                             $this->_message, $headers) == false) {
+                    if (mail(
+                        $this->_recipients,
+                        $this->_subject,
+                        $this->_message,
+                        $headers
+                    ) == false) {
                         return false;
                     }
                 } else {  // use PEAR::Mail
                     include_once 'Mail.php';
-                    $headers = array('From' => $this->_from,
-                                     'To' => $this->_recipients,
-                                     'User-Agent' => 'PEAR Log Package',
-                                     'Subject' => $this->_subject);
-                    $mailer = &Mail::factory($this->_mailBackend,
-                                             $this->_mailParams);
-                    $res = $mailer->send($this->_recipients, $headers,
-                                         $this->_message);
+                    $headers = [
+                        'From' => $this->_from,
+                        'To' => $this->_recipients,
+                        'User-Agent' => 'PEAR Log Package',
+                        'Subject' => $this->_subject
+                    ];
+                    $mailer = &Mail::factory(
+                        $this->_mailBackend,
+                        $this->_mailParams
+                    );
+                    $res = $mailer->send(
+                        $this->_recipients,
+                        $headers,
+                        $this->_message
+                    );
                     if (PEAR::isError($res)) {
                         return false;
                     }
@@ -281,13 +298,16 @@ class Log_mail extends Log
         $message = $this->_extractMessage($message);
 
         /* Append the string containing the complete log line. */
-        $this->_message .= $this->_format($this->_lineFormat,
-                                          strftime($this->_timeFormat),
-                                          $priority, $message) . "\r\n";
+        $this->_message .= $this->_format(
+            $this->_lineFormat,
+            strftime($this->_timeFormat),
+            $priority,
+            $message
+        ) . "\r\n";
         $this->_shouldSend = true;
 
         /* Notify observers about this log message. */
-        $this->_announce(array('priority' => $priority, 'message' => $message));
+        $this->_announce(['priority' => $priority, 'message' => $message]);
 
         return true;
     }

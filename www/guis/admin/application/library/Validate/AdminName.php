@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -21,8 +22,8 @@ class Validate_AdminName extends Zend_Validate_Abstract
         $this->_setValue($value);
 
         if (preg_match('/[^-_@%&.+a-zA-Z0-9]/', $value)) {
-        	$this->_error(self::MSG_ADMINNAME);
-        	return false;
+            $this->_error(self::MSG_ADMINNAME);
+            return false;
         }
         return true;
     }

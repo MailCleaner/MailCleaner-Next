@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -9,7 +10,7 @@
  */
 
 if ($_SERVER["REQUEST_METHOD"] == "HEAD") {
-  return 200;
+    return 200;
 }
 
 require_once('variables.php');
@@ -22,7 +23,7 @@ $sysconf = SystemConfig::getInstance();
 // get the reason set object
 $rs_ = new ReasonSet();
 if (!isset($_GET['id']) || !isset($_GET['a']) || !isset($_GET['s'])) {
-  die ("BADPARAMS");
+    die("BADPARAMS");
 }
 $rs_->getReasons($_GET['id'], $_GET['a'], $sysconf->getSlaveName($_GET['s']));
 
@@ -37,9 +38,9 @@ $heightlimit = $template_->getDefaultValue('heightlimit');
 
 // prepare replacements
 $replace = [
-  '__HEIGHT__' => get_window_height($heightfactor, $heightlimit, $rs_->getNbReasons()),
-  '__TOTAL_SCORE__' => round($rs_->getTotalScore(),2) ,
-  '__REASONS_LIST__' => $rs_->getHtmlList($template_->getTemplate('REASON'))
+    '__HEIGHT__' => get_window_height($heightfactor, $heightlimit, $rs_->getNbReasons()),
+    '__TOTAL_SCORE__' => round($rs_->getTotalScore(), 2),
+    '__REASONS_LIST__' => $rs_->getHtmlList($template_->getTemplate('REASON'))
 ];
 //display page
 $template_->output($replace);
@@ -51,11 +52,11 @@ $template_->output($replace);
  * @param $n       numeric  number of lines
  * @return         numeric  height of window
  */
-function get_window_height($factor, $limit, $n) {
-  $ret = $limit;
-  if ($n < ($limit/$factor)) {
-    $ret = $n*$factor;
-  }
-  return $ret;
+function get_window_height($factor, $limit, $n)
+{
+    $ret = $limit;
+    if ($n < ($limit / $factor)) {
+        $ret = $n * $factor;
+    }
+    return $ret;
 }
-?>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -21,7 +22,7 @@ class Validate_MessageID extends Zend_Validate_Abstract
         $this->_setValue($value);
 
         if (preg_match('/^[0-9A-Z]{6}-[0-9A-Z]{6}-[0-9A-Z]{2}$/i', $value)) {
-        	return true;
+            return true;
         }
     }
 }

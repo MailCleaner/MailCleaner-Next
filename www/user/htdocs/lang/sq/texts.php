@@ -1,4 +1,5 @@
 <?php
+
 $txt['NEWSLETTERSSHORTHELP'] = "Ketu mund ti menaxhoni newsletters.";
 $txt['NEWSLETTERSALLOW'] = "dergoni";
 $txt['NEWSLETTERACCEPT'] = "Pranoni kete newsletter";

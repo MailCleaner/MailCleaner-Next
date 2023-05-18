@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -9,7 +10,7 @@
  */
 
 if ($_SERVER["REQUEST_METHOD"] == "HEAD") {
-  return 200;
+    return 200;
 }
 
 /**
@@ -28,7 +29,8 @@ require_once('system/Soaper.php');
  * @param Spam object $spam_mail The mail concerned
  * @return string The from email address of the sender of the email
  */
-function get_sender_address_body($spam_mail) {
+function get_sender_address_body($spam_mail)
+{
     // Get the mail sender
     $headers = $spam_mail->getHeadersArray();
 
@@ -46,7 +48,8 @@ function get_sender_address_body($spam_mail) {
  * @param Spam object $spam_mail The mail concerned
  * @return string The email address of the sender of the email
  */
-function get_sender_address($spam_mail) {
+function get_sender_address($spam_mail)
+{
     return $spam_mail->getData("sender");
 }
 
@@ -56,7 +59,8 @@ function get_sender_address($spam_mail) {
  * @param string $dest The email address of the recipient
  * @return string $soap_host The IP of the machine
  */
-function get_soap_host($exim_id, $dest) {
+function get_soap_host($exim_id, $dest)
+{
     $sysconf_ = SystemConfig::getInstance();
     $spam_mail = new Spam();
     $spam_mail->loadDatas($exim_id, $dest);
@@ -68,9 +72,10 @@ function get_soap_host($exim_id, $dest) {
  * Get the IP of the master machine for SOAP requests
  * @return string $soap_host The IP of the machine
  */
-function get_master_soap_host() {
+function get_master_soap_host()
+{
     $sysconf_ = SystemConfig::getInstance();
-    foreach ($sysconf_->getMastersName() as $master){
+    foreach ($sysconf_->getMastersName() as $master) {
         return $master;
     }
 }
@@ -83,14 +88,15 @@ function get_master_soap_host() {
  * @param array $allowed_response Authorized responses
  * @return bool Status of the request. If True, everything went well
  */
-function send_SOAP_request($host, $request, $params, $allowed_response) {
+function send_SOAP_request($host, $request, $params, $allowed_response)
+{
     $soaper = new Soaper();
     $ret = @$soaper->load($host);
     if ($ret != "OK") {
         return False;
     } else {
         $res = $soaper->queryParam($request, $params);
-        if (! in_array($res, $allowed_response)) {
+        if (!in_array($res, $allowed_response)) {
             return False;
         }
         return True;
@@ -104,19 +110,19 @@ $bad_arg = False;
 
 // set the language from what is passed in url
 if (isset($_GET['lang'])) {
-  $lang_->setLanguage($_GET['lang']);
-  $lang_->reload();
+    $lang_->setLanguage($_GET['lang']);
+    $lang_->reload();
 }
 if (isset($_GET['l'])) {
-  $lang_->setLanguage($_GET['l']);
-  $lang_->reload();
+    $lang_->setLanguage($_GET['l']);
+    $lang_->reload();
 }
 
 
 // Checking if the necessary arguments are here
 $in_args = [$_GET['id'], $_GET['a']];
 foreach ($in_args as $arg) {
-    if (! isset($arg)){
+    if (!isset($arg)) {
         $bad_arg = True;
     }
 }
@@ -161,7 +167,6 @@ if (!$bad_arg) {
         [$dest, $sender],
         ["OK", "DUPLICATEENTRY"]
     );
-
 } else {
     $is_released = False;
     $is_sender_added_to_wl = False;

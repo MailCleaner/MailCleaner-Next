@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Header$
  * $Horde: horde/lib/Log/sql.php,v 1.12 2000/08/16 20:27:34 chuck Exp $
@@ -62,7 +63,7 @@ class Log_sql extends Log
      * @var array
      * @access private
      */
-    var $_options = array('persistent' => true);
+    var $_options = ['persistent' => true];
 
     /**
      * Object holding the database handle.
@@ -116,10 +117,13 @@ class Log_sql extends Log
      * @param int $level           Log messages up to and including this level.
      * @access public
      */
-    public function __construct($name, $ident = '', $conf = array(),
-                                $level = PEAR_LOG_DEBUG)
-    {
-        $this->_id = md5(microtime().rand());
+    public function __construct(
+        $name,
+        $ident = '',
+        $conf = [],
+        $level = PEAR_LOG_DEBUG
+    ) {
+        $this->_id = md5(microtime() . rand());
         $this->_table = $name;
         $this->_mask = Log::UPTO($level);
 
@@ -128,8 +132,8 @@ class Log_sql extends Log
             $this->_sql = $conf['sql'];
         } else {
             $this->_sql = 'INSERT INTO ' . $this->_table .
-                          ' (id, logtime, ident, priority, message)' .
-                          ' VALUES(?, CURRENT_TIMESTAMP, ?, ?, ?)';
+                ' (id, logtime, ident, priority, message)' .
+                ' VALUES(?, CURRENT_TIMESTAMP, ?, ?, ?)';
         }
 
         /* If an options array was provided, use it. */
@@ -262,15 +266,15 @@ class Log_sql extends Log
 
         /* Build our set of values for this log entry. */
         $id = $this->_db->nextId($this->_sequence);
-        $values = array($id, $this->_ident, $priority, $message);
+        $values = [$id, $this->_ident, $priority, $message];
 
         /* Execute the SQL query for this log entry insertion. */
-        $result =& $this->_db->execute($this->_statement, $values);
+        $result = &$this->_db->execute($this->_statement, $values);
         if (DB::isError($result)) {
             return false;
         }
 
-        $this->_announce(array('priority' => $priority, 'message' => $message));
+        $this->_announce(['priority' => $priority, 'message' => $message]);
 
         return true;
     }

@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -9,7 +10,7 @@
  */
 
 if ($_SERVER["REQUEST_METHOD"] == "HEAD") {
-  return 200;
+    return 200;
 }
 
 /**
@@ -25,20 +26,19 @@ $user_->save();
 // then create the request
 $request = new AliasRequest();
 if (isset($_POST['address']) && is_string($_POST['address'])) {
-  // do the request
-  $message = $request->requestForm($_POST['address']);
+    // do the request
+    $message = $request->requestForm($_POST['address']);
 }
 
 // create view
 $template_ = new Template('add_address.tmpl');
 // prepare replacements
 $replace = [
-        '__MESSAGE__' => $message,
-        '__BEGIN_FORM__' => "<form name=\"add_alias\" method=\"post\" action=\"".$_SERVER['PHP_SELF']."\">",
-        '__ADDRESS_FIELD__' => "<input type=\"text\" size=\"30\" name=\"address\" value=\"\" />",
-        '__INPUT_BUTTON__' => "<input type=\"submit\" value=\"".$lang_->print_txt('ADD')."\" />",
-        '__CLOSE_FORM__' => "</form>"
+    '__MESSAGE__' => $message,
+    '__BEGIN_FORM__' => "<form name=\"add_alias\" method=\"post\" action=\"" . $_SERVER['PHP_SELF'] . "\">",
+    '__ADDRESS_FIELD__' => "<input type=\"text\" size=\"30\" name=\"address\" value=\"\" />",
+    '__INPUT_BUTTON__' => "<input type=\"submit\" value=\"" . $lang_->print_txt('ADD') . "\" />",
+    '__CLOSE_FORM__' => "</form>"
 ];
 // display page
 $template_->output($replace);
-?>

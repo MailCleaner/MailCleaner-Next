@@ -1,4 +1,5 @@
 <?php
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 foldmethod=marker: */
 
 /**
@@ -68,7 +69,8 @@ require_once "PEAR.php";
  * @since      File available since Release 1.4.0
  */
 
-class Auth_Container_Array extends Auth_Container {
+class Auth_Container_Array extends Auth_Container
+{
 
     // {{{ properties
 
@@ -103,7 +105,7 @@ class Auth_Container_Array extends Auth_Container {
         if (isset($data['users']) && is_array($data['users'])) {
             $this->users = $data['users'];
         } else {
-            $this->users = array();
+            $this->users = [];
             PEAR::raiseError('Auth_Container_Array: no user data found in options array');
         }
         if (isset($data['cryptType'])) {
@@ -129,8 +131,10 @@ class Auth_Container_Array extends Auth_Container {
     function fetchData($user, $pass)
     {
         $this->log('Auth_Container_Array::fetchData() called.', AUTH_LOG_DEBUG);
-        if (   isset($this->users[$user])
-            && $this->verifyPassword($pass, $this->users[$user], $this->cryptType)) {
+        if (
+            isset($this->users[$user])
+            && $this->verifyPassword($pass, $this->users[$user], $this->cryptType)
+        ) {
             return true;
         }
         return false;
@@ -147,7 +151,7 @@ class Auth_Container_Array extends Auth_Container {
     function listUsers()
     {
         $this->log('Auth_Container_Array::listUsers() called.', AUTH_LOG_DEBUG);
-        $ret = array();
+        $ret = [];
         foreach ($this->users as $username => $password) {
             $ret[]['username'] = $username;
         }
@@ -157,5 +161,3 @@ class Auth_Container_Array extends Auth_Container {
     // }}}
 
 }
-
-?>

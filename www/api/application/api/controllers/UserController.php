@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -11,19 +12,19 @@
 class UserController extends Zend_Controller_Action
 {
 
-	public function init()
-	{
-		$this->_helper->layout->disableLayout();
-		$this->_helper->viewRenderer->setNoRender(true);
-	}
+    public function init()
+    {
+        $this->_helper->layout->disableLayout();
+        $this->_helper->viewRenderer->setNoRender(true);
+    }
 
-	public function addAction()
-	{
-		$request = $this->getRequest();
-		$api = new Api_Model_UserAPI();
-		$api->add($request->getParams());
-	}
-	
+    public function addAction()
+    {
+        $request = $this->getRequest();
+        $api = new Api_Model_UserAPI();
+        $api->add($request->getParams());
+    }
+
     public function editAction()
     {
         $request = $this->getRequest();
@@ -54,15 +55,16 @@ class UserController extends Zend_Controller_Action
 
     public function listAction()
     {
-    	$request = $this->getRequest();
+        $request = $this->getRequest();
         $api = new Api_Model_UserAPI();
-    	$api->userList($request->getParams());
+        $api->userList($request->getParams());
     }
 
     public function listAddresses()
     {
-    	$request = $this->getRequest();
+        $request = $this->getRequest();
         $api = new Api_Model_UserAPI();
-    	$api->listAddresses($request->getParams());
+        $api->listAddresses($request->getParams());
     }
 }
+

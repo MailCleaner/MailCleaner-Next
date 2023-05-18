@@ -1,4 +1,5 @@
 <?php
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 foldmethod=marker: */
 
 /**
@@ -72,7 +73,7 @@ class Auth_Container_File extends Auth_Container
      *
      * @var array
      */
-    var $options = array();
+    var $options = [];
 
     // }}}
     // {{{ Auth_Container_File() [constructor]
@@ -83,11 +84,12 @@ class Auth_Container_File extends Auth_Container
      * @param  string $filename             path to passwd file
      * @return object Auth_Container_File   new Auth_Container_File object
      */
-    function Auth_Container_File($filename) {
+    function Auth_Container_File($filename)
+    {
         $this->_setDefaults();
 
         // Only file is a valid option here
-        if(is_array($filename)) {
+        if (is_array($filename)) {
             $this->pwfile = $filename['file'];
             $this->_parseOptions($filename);
         } else {
@@ -125,21 +127,23 @@ class Auth_Container_File extends Auth_Container
 
         $pw_obj = &$this->_load();
         if (PEAR::isError($pw_obj)) {
-            return array();
+            return [];
         }
 
         $users  = $pw_obj->listUser();
         if (!is_array($users)) {
-            return array();
+            return [];
         }
 
         foreach ($users as $key => $value) {
-            $retVal[] = array("username" => $key,
-                              "password" => $value['passwd'],
-                              "cvsuser"  => $value['system']);
+            $retVal[] = [
+                "username" => $key,
+                "password" => $value['passwd'],
+                "cvsuser"  => $value['system']
+            ];
         }
 
-        $this->log('Found '.count($retVal).' users.', AUTH_LOG_DEBUG);
+        $this->log('Found ' . count($retVal) . ' users.', AUTH_LOG_DEBUG);
 
         return $retVal;
     }
@@ -156,10 +160,10 @@ class Auth_Container_File extends Auth_Container
      *
      * @return boolean
      */
-    function addUser($user, $pass, $additional='')
+    function addUser($user, $pass, $additional = '')
     {
         $this->log('Auth_Container_File::addUser() called.', AUTH_LOG_DEBUG);
-        $params = array($user, $pass);
+        $params = [$user, $pass];
         if (is_array($additional)) {
             foreach ($additional as $item) {
                 $params[] = $item;
@@ -173,7 +177,7 @@ class Auth_Container_File extends Auth_Container
             return false;
         }
 
-        $res = call_user_func_array(array(&$pw_obj, 'addUser'), $params);
+        $res = call_user_func_array([&$pw_obj, 'addUser'], $params);
         if (PEAR::isError($res)) {
             return false;
         }
@@ -259,7 +263,7 @@ class Auth_Container_File extends Auth_Container
         static $pw_obj;
 
         if (!isset($pw_obj)) {
-            $this->log('Instanciating File_Password object of type '.$this->options['type'], AUTH_LOG_DEBUG);
+            $this->log('Instanciating File_Password object of type ' . $this->options['type'], AUTH_LOG_DEBUG);
             $pw_obj = File_Passwd::factory($this->options['type']);
             if (PEAR::isError($pw_obj)) {
                 return $pw_obj;
@@ -311,4 +315,3 @@ class Auth_Container_File extends Auth_Container
     // }}}
 
 }
-?>

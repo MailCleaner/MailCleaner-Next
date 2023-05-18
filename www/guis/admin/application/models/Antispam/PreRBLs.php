@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -18,40 +19,46 @@ class Default_Model_Antispam_PreRBLs
         'avoidgoodspf' => 0,
         'avoidhosts' => ''
     ];
-	
-	protected $_mapper;
-	
-	public function setId($id) {
-	   $this->_id = $id;	
-	}
-	public function getId() {
-		return $this->_id;
-	}
-	
-	public function setParam($param, $value) {
-		if (array_key_exists($param, $this->_values)) {
-			$this->_values[$param] = $value;
-		}
-	}
-	
-	public function getParam($param) {
-		if (array_key_exists($param, $this->_values)) {
-			return $this->_values[$param];
-		}
-		return null;
-	}
-	
-	public function getAvailableParams() {
-		$ret = [];
-		foreach ($this->_values as $key => $value) {
-			$ret[]=$key;
-		}
-		return $ret;
-	}
-	
-	public function getParamArray() {
-		return $this->_values;
-	}
+
+    protected $_mapper;
+
+    public function setId($id)
+    {
+        $this->_id = $id;
+    }
+    public function getId()
+    {
+        return $this->_id;
+    }
+
+    public function setParam($param, $value)
+    {
+        if (array_key_exists($param, $this->_values)) {
+            $this->_values[$param] = $value;
+        }
+    }
+
+    public function getParam($param)
+    {
+        if (array_key_exists($param, $this->_values)) {
+            return $this->_values[$param];
+        }
+        return null;
+    }
+
+    public function getAvailableParams()
+    {
+        $ret = [];
+        foreach ($this->_values as $key => $value) {
+            $ret[] = $key;
+        }
+        return $ret;
+    }
+
+    public function getParamArray()
+    {
+        return $this->_values;
+    }
 
     public function setMapper($mapper)
     {
@@ -75,8 +82,8 @@ class Default_Model_Antispam_PreRBLs
 
     public function findByName($name)
     {
-    	$this->getMapper()->findByName($name, $this);
-    	return $this;
+        $this->getMapper()->findByName($name, $this);
+        return $this;
     }
 
     public function save()
@@ -84,7 +91,8 @@ class Default_Model_Antispam_PreRBLs
         return $this->getMapper()->save($this);
     }
 
-    public function useRBL($rbl) {
-    	return preg_match('/\b'.$rbl.'\b/', $this->getParam('lists'));
+    public function useRBL($rbl)
+    {
+        return preg_match('/\b' . $rbl . '\b/', $this->getParam('lists'));
     }
 }

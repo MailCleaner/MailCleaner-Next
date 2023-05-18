@@ -22,8 +22,10 @@ class NewslettersController extends Zend_Controller_Action
         $status = 0;
 
         $eximId = $this->getRequest()->getParam('id');
-	
-	    if (strlen($eximId) == 0) { die(); }
+
+        if (strlen($eximId) == 0) {
+            die();
+        }
 
         $spam = new Default_Model_DbTable_Spam();
 
@@ -32,9 +34,9 @@ class NewslettersController extends Zend_Controller_Action
         if (!empty($row)) {
             $status = 1;
 
-            $recipient = $row->to_user.'@'.$row->to_domain;
+            $recipient = $row->to_user . '@' . $row->to_domain;
 
-	        $storage = $row->store_slave;
+            $storage = $row->store_slave;
 
             $sender = $this->getFromHeader($eximId, $recipient);
 
@@ -51,17 +53,18 @@ class NewslettersController extends Zend_Controller_Action
                     'expiracy'  => '0000-00-00',
                     'status'    => '1',
                     'comments'  => '[Newsletter]'
-		        ];
+                ];
 
                 try {
                     $rule = new Default_Model_DbTable_NewsletterRule();
                     $rule->insert($data);
-                } catch (Zend_Db_Exception $e) {}
+                } catch (Zend_Db_Exception $e) {
+                }
 
                 $status = 4;
 
-                if (! $this->getRequest()->isXmlHttpRequest()) {
-                  $this->release($eximId, $recipient, $storage);
+                if (!$this->getRequest()->isXmlHttpRequest()) {
+                    $this->release($eximId, $recipient, $storage);
                 } else {
                     return $this->_helper->json(['id' => $eximId, 'username' => $recipient, 'storage' => $storage, 'status' => $status]);
                 }
@@ -91,7 +94,7 @@ class NewslettersController extends Zend_Controller_Action
     private function release($eximId, $recipient, $storage, $news)
     {
         $url  = $this->getRequest()->getScheme() . '://' . $this->getRequest()->getHttpHost();
-        $url .= '/fm.php?id='.$eximId.'&a='.$recipient.'&s='.$storage.'&n='.$news;
+        $url .= '/fm.php?id=' . $eximId . '&a=' . $recipient . '&s=' . $storage . '&n=' . $news;
 
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);

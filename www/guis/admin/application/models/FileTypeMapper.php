@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -10,7 +11,7 @@
 
 class Default_Model_FileTypeMapper
 {
-	
+
     protected $_dbTable;
 
     public function setDbTable($dbTable)
@@ -42,7 +43,7 @@ class Default_Model_FileTypeMapper
         $row = $result->current();
         $f->setId($id);
         foreach ($f->getParamArray() as $key => $value) {
-        	$f->setParam($key, $row[$key]);
+            $f->setParam($key, $row[$key]);
         }
     }
 
@@ -56,13 +57,14 @@ class Default_Model_FileTypeMapper
             $entries[] = $entry;
         }
         return $entries;
-     }
+    }
 
 
-    public function save(Default_Model_FileType $f) {
-       $data = $f->getParamArray();
-       $res = '';
-       if (null === ($id = $f->getId())) {
+    public function save(Default_Model_FileType $f)
+    {
+        $data = $f->getParamArray();
+        $res = '';
+        if (null === ($id = $f->getId())) {
             unset($data['id']);
             $res = $this->getDbTable()->insert($data);
         } else {
@@ -71,8 +73,9 @@ class Default_Model_FileTypeMapper
         return $res;
     }
 
-    public function delete(Default_Model_FileType $f) {
-    	$where = $this->getDbTable()->getAdapter()->quoteInto('id = ?', $f->getId());
-    	return $this->getDbTable()->delete($where);   	
+    public function delete(Default_Model_FileType $f)
+    {
+        $where = $this->getDbTable()->getAdapter()->quoteInto('id = ?', $f->getId());
+        return $this->getDbTable()->delete($where);
     }
 }

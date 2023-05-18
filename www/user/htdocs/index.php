@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -22,7 +23,7 @@ global $lang_;
  * out if we are not on a master host
  */
 if ($sysconf_->ismaster_ < 1) {
-  exit;
+    exit;
 }
 
 // create view
@@ -34,14 +35,13 @@ $firstpage = 'quarantine.php';
 #}
 
 $replace = [
-        "__LANG__" => $lang_->getLanguage(),
-        "__NAVIGATION_PAGE__" => 'navigation.php?m=q',
-        "__QUARANTINE_PAGE__" => 'quarantine.php',
-        "__PARAMETERS_PAGE__" => 'parameters.php',
-        "__SUPPORT_PAGE__" => 'support.php',
-        "__FIRST_PAGE__" => $firstpage
+    "__LANG__" => $lang_->getLanguage(),
+    "__NAVIGATION_PAGE__" => 'navigation.php?m=q',
+    "__QUARANTINE_PAGE__" => 'quarantine.php',
+    "__PARAMETERS_PAGE__" => 'parameters.php',
+    "__SUPPORT_PAGE__" => 'support.php',
+    "__FIRST_PAGE__" => $firstpage
 ];
 
 // display page
 $template_->output($replace);
-?>

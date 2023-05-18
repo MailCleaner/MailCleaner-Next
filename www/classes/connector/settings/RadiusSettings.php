@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -11,36 +12,37 @@
  * This class takes care of storing Radius settings
  * @package mailcleaner
  */
- class RadiusSettings extends ConnectorSettings {
+class RadiusSettings extends ConnectorSettings
+{
 
-   /**
-    * template tag
-    * @var string
-    */
-   protected $template_tag_ = 'RADIUSAUTH';
+    /**
+     * template tag
+     * @var string
+     */
+    protected $template_tag_ = 'RADIUSAUTH';
 
-   /**
-   * Specialized settings array with default values
-   * @var array
-   */
-   protected $spec_settings_ = [
-                              'secret' => '',
-                              'authtype'   => 'PAP'
-   ];
+    /**
+     * Specialized settings array with default values
+     * @var array
+     */
+    protected $spec_settings_ = [
+        'secret' => '',
+        'authtype'   => 'PAP'
+    ];
 
-   /**
-    * fields type
-    * @var array
-    */
-   protected $spec_settings_type_ = [
-                              'secret' => ['text', 20],
-                              'authtype' => ['select', ['PAP' => 'PAP', 'CHAP_MD5' => 'CHAP_MD5', 'MSCHAPv1' => 'MSCHAPv1', 'MSCHAPv2' => 'MSCHAPv2']]
-   ];
+    /**
+     * fields type
+     * @var array
+     */
+    protected $spec_settings_type_ = [
+        'secret' => ['text', 20],
+        'authtype' => ['select', ['PAP' => 'PAP', 'CHAP_MD5' => 'CHAP_MD5', 'MSCHAPv1' => 'MSCHAPv1', 'MSCHAPv2' => 'MSCHAPv2']]
+    ];
 
-   public function __construct($type) {
-      parent::__construct($type);
-      $this->setSetting('server', 'localhost');
-      $this->setSetting('port', '1645');
-   }
- }
-?>
+    public function __construct($type)
+    {
+        parent::__construct($type);
+        $this->setSetting('server', 'localhost');
+        $this->setSetting('port', '1645');
+    }
+}

@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -25,12 +26,12 @@ $lang_ = Language::getInstance('admin');
 
 // log files available
 $logfiles = [
-            'mta1' => 'exim_stage1/mainlog',
-            'mta2' => 'exim_stage2/mainlog',
-            'mta4' => 'exim_stage4/mainlog',
-            'engine' => 'mailscanner/infolog',
-            'httpd' => 'apache/access.log'
-           ];
+    'mta1' => 'exim_stage1/mainlog',
+    'mta2' => 'exim_stage2/mainlog',
+    'mta4' => 'exim_stage4/mainlog',
+    'engine' => 'mailscanner/infolog',
+    'httpd' => 'apache/access.log'
+];
 
 $error = "";
 $message = "";
@@ -42,46 +43,46 @@ $posted = $vform->getResult();
 
 // check parameters posted
 if (isset($posted['l']) && $posted['l'] != "") {
-  $log = $posted['l'];
+    $log = $posted['l'];
 } else {
-  if ( !isset($_REQUEST['l']) || !isset($logfiles[$_REQUEST['l']])) {
-    die ('BADLOGFILE');
-  }
-  $log = $_REQUEST['l'];
+    if (!isset($_REQUEST['l']) || !isset($logfiles[$_REQUEST['l']])) {
+        die('BADLOGFILE');
+    }
+    $log = $_REQUEST['l'];
 }
 if ($posted['d'] && $posted['d'] != "") {
-  $date = $posted['d'];
+    $date = $posted['d'];
 } else {
-  if (!isset($_REQUEST['d']) || ( $_REQUEST['d'] != 'T' && !is_numeric($_REQUEST['d']) )) {
-    die ('BADDATE');
-  }
-  $date = $_REQUEST['d'];
+    if (!isset($_REQUEST['d']) || ($_REQUEST['d'] != 'T' && !is_numeric($_REQUEST['d']))) {
+        die('BADDATE');
+    }
+    $date = $_REQUEST['d'];
 }
 
 // check session
 if ($posted['sid'] && $posted['sid'] != "") {
-  $sid = $posted['sid'];
+    $sid = $posted['sid'];
 } else {
-  if (!isset($_REQUEST['sid']) || !preg_match('/^[a-z0-9]+$/', $_REQUEST['sid'])) {
-    $error = "BADSESSIONID (".$_REQUEST['sid'].")";
-    die($error);
-  }
-  $sid = $_REQUEST['sid'];
+    if (!isset($_REQUEST['sid']) || !preg_match('/^[a-z0-9]+$/', $_REQUEST['sid'])) {
+        $error = "BADSESSIONID (" . $_REQUEST['sid'] . ")";
+        die($error);
+    }
+    $sid = $_REQUEST['sid'];
 }
 // connect to local soap service
 $soaper = new Soaper();
 if (!$soaper->load('127.0.0.1')) {
-  die("CANNOTCONTACTSOAP");
+    die("CANNOTCONTACTSOAP");
 }
 // check session
 $admin_name = $soaper->getSessionUser($sid);
 if ($admin_name == "") {
-  die('BADSESSION');
+    die('BADSESSION');
 }
 // and create the session user
 $admin_ = new Administrator();
 if (!$admin_->load($admin_name)) {
-  die("BADSESSIONUSER");
+    die("BADSESSIONUSER");
 }
 $_SESSION['admin'] = serialize($admin_);
 
@@ -106,7 +107,7 @@ $replace = [
     '__ERROR__' => $lang_->print_txt($error),
     '__MESSAGE__' => $lang_->print_txt($message),
     '__HOSTNAME__' => $sysconf_->getSlaveName($sysconf_->getPref('hostid')),
-    '__BEGIN_VIEW_FORM__' => $vform->open().$vform->hidden('sid', $sid).$vform->hidden('d', $date).$vform->hidden('l', $log),
+    '__BEGIN_VIEW_FORM__' => $vform->open() . $vform->hidden('sid', $sid) . $vform->hidden('d', $date) . $vform->hidden('l', $log),
     '__CLOSE_VIEW_FORM__' => $vform->close(),
     '__REFRESH__' => $vform->submit('submit', $lang_->print_txt('REFRESH'), ''),
     '__SEARCH__' => $vform->input('search', 30, $posted['search']),
@@ -124,38 +125,41 @@ $template_->output($replace);
  * @param $posted array   posted value (for search)
  * @return        string  log contents
  */
-function viewLog($log, $date, $posted) {
-  global $logfiles;
-  $sysconf_ = SystemConfig::getInstance();
-  $lang_ = Language::getInstance('admin');
+function viewLog($log, $date, $posted)
+{
+    global $logfiles;
+    $sysconf_ = SystemConfig::getInstance();
+    $lang_ = Language::getInstance('admin');
 
-  // check search parameters
-  if (isset($posted['loglines']) && ( is_numeric($posted['loglines']) || $posted['loglines'] == 'all')) {
-    $loglines = $posted['loglines'];
-  } else {
-    $posted['loglines'] = 10;
-  }
-  if (isset($posted['search']) and $posted['search'] != "") {
-    $search = $posted['search'];
-  }
+    // check search parameters
+    if (isset($posted['loglines']) && (is_numeric($posted['loglines']) || $posted['loglines'] == 'all')) {
+        $loglines = $posted['loglines'];
+    } else {
+        $posted['loglines'] = 10;
+    }
+    if (isset($posted['search']) and $posted['search'] != "") {
+        $search = $posted['search'];
+    }
 
-  $ext = "";
-  $cmd = "cat";
-  if (is_numeric($date)) { $date = $date - 1;  $ext = ".".$date; }
-  if (is_numeric($date) && $date > 0) {
-   $ext .= ".gz";
-   $cmd = "zcat";
-  }
+    $ext = "";
+    $cmd = "cat";
+    if (is_numeric($date)) {
+        $date = $date - 1;
+        $ext = "." . $date;
+    }
+    if (is_numeric($date) && $date > 0) {
+        $ext .= ".gz";
+        $cmd = "zcat";
+    }
 
-  if ($posted['loglines'] != 'all') {
-    $cmd = $cmd." ".$sysconf_->VARDIR_."/log/".$logfiles[$log].$ext." | tail -n".$posted['loglines'];
-  } else {
-    $cmd = $cmd." ".$sysconf_->VARDIR_."/log/".$logfiles[$log].$ext;
-  }
-  if (isset($search) && $search != "") {
-    $cmd = $cmd." | grep ".escapeshellcmd($search);
-  }
-  $ret = `$cmd`;
-  return $ret;
+    if ($posted['loglines'] != 'all') {
+        $cmd = $cmd . " " . $sysconf_->VARDIR_ . "/log/" . $logfiles[$log] . $ext . " | tail -n" . $posted['loglines'];
+    } else {
+        $cmd = $cmd . " " . $sysconf_->VARDIR_ . "/log/" . $logfiles[$log] . $ext;
+    }
+    if (isset($search) && $search != "") {
+        $cmd = $cmd . " | grep " . escapeshellcmd($search);
+    }
+    $ret = `$cmd`;
+    return $ret;
 }
-?>

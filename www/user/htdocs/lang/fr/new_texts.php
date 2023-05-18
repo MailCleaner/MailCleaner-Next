@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -291,4 +292,3 @@ $txt['RECORDALREADYEXISTS']     = "Cette entr&eacute;e existe d&eacute;j&agrave;
  */
 $txt['BEENLOGGEDOUT']           = "Vous avez bien &eacute;t&eacute; d&eacute;connect&eacute;.<br /> Merci de votre utilisation de MailCleaner.<br />
                                   Vous pouvez vous reconnecter &agrave; l'adresse suivante: <a href=\"__PARAM__\" >__PARAM__</a>";
-?>

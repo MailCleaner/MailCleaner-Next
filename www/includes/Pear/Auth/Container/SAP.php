@@ -1,4 +1,5 @@
 <?php
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 foldmethod=marker: */
 
 /**
@@ -51,18 +52,19 @@ require_once 'PEAR.php';
  * @version    Release: @package_version@  File: $Revision: 302205 $
  * @since      Class available since Release 1.4.0
  */
-class Auth_Container_SAP extends Auth_Container {
+class Auth_Container_SAP extends Auth_Container
+{
 
     // {{{ properties
 
     /**
      * @var array Default options
      */
-    var $options = array(
+    var $options = [
         'CLIENT'    => '000',
         'LANG'      => 'EN',
         'GETSSO2'   => true,
-    );
+    ];
 
     // }}}
     // {{{ Auth_Container_SAP()
@@ -73,7 +75,7 @@ class Auth_Container_SAP extends Auth_Container {
      *
      * Options that can be passed and their defaults:
      * <pre>
-     * array(
+     * [
      *   'ASHOST' => "",
      *   'SYSNR'  => "",
      *   'CLIENT' => "000",
@@ -85,7 +87,7 @@ class Auth_Container_SAP extends Auth_Container {
      *   'LANG'   =>"EN",
      *   'TRACE'  =>"",
      *   'GETSSO2'=> true
-     * )
+     * ]
      * </pre>
      *
      * @param array array of options.
@@ -96,7 +98,7 @@ class Auth_Container_SAP extends Auth_Container {
         $saprfc_loaded = PEAR::loadExtension('saprfc');
         if (!$saprfc_loaded) {
             return PEAR::raiseError('Cannot use SAP authentication, '
-                    .'SAPRFC extension not loaded!');
+                . 'SAPRFC extension not loaded!');
         }
         if (empty($options['R3NAME']) && empty($options['ASHOST'])) {
             return PEAR::raiseError('R3NAME or ASHOST required for authentication');
@@ -143,7 +145,6 @@ class Auth_Container_SAP extends Auth_Container {
             @saprfc_close($rfc);
             return true;
         }
-
     }
 
     // }}}
@@ -158,13 +159,13 @@ class Auth_Container_SAP extends Auth_Container {
     function getError()
     {
 
-        $error = array();
+        $error = [];
         $sap_error = saprfc_error();
         if (empty($err)) {
             return $error;
         }
         $err = explode("n", $sap_error);
-        foreach ($err AS $line) {
+        foreach ($err as $line) {
             $item = explode(':', $line);
             $error[strtolower(trim($item[0]))] = trim($item[1]);
         }
@@ -175,5 +176,3 @@ class Auth_Container_SAP extends Auth_Container {
     // }}}
 
 }
-
-?>

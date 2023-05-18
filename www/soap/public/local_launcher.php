@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -26,11 +27,10 @@ ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 'on');
 
 if (!$argv[1]) {
-  echo 'NOK no service given';
-  exit;
+    echo 'NOK no service given';
+    exit;
 }
 
 include('MCSoap/Services.php');
 $res = MCSoap_Services::$argv[1]();
 echo $res;
-?>

@@ -1,4 +1,5 @@
 <?php
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 foldmethod=marker: */
 
 /**
@@ -49,10 +50,10 @@ require_once "PEAR.php";
  *
  * <?php
  * ...
- * $params = array(
+ * $params = [
  * 'host'       => 'mail.example.com',
  * 'port'       => 143,
- * );
+ * ];
  * $myAuth = new Auth('IMAP', $params);
  * ...
  *
@@ -90,7 +91,7 @@ class Auth_Container_IMAP extends Auth_Container
      * Options for the class
      * @var array
      */
-    var $options = array();
+    var $options = [];
 
     // }}}
     // {{{ Auth_Container_IMAP() [constructor]
@@ -107,7 +108,7 @@ class Auth_Container_IMAP extends Auth_Container
     {
         if (!extension_loaded('imap')) {
             return PEAR::raiseError('Cannot use IMAP authentication, '
-                    .'IMAP extension not loaded!', 41, PEAR_ERROR_DIE);
+                . 'IMAP extension not loaded!', 41, PEAR_ERROR_DIE);
         }
         $this->_setDefaults();
 
@@ -147,10 +148,16 @@ class Auth_Container_IMAP extends Auth_Container
      *
      * @access private
      */
-    function _checkServer() {
+    function _checkServer()
+    {
         $this->log('Auth_Container_IMAP::_checkServer() called.', AUTH_LOG_DEBUG);
-        $fp = @fsockopen ($this->options['host'], $this->options['port'],
-                          $errno, $errstr, $this->options['timeout']);
+        $fp = @fsockopen(
+            $this->options['host'],
+            $this->options['port'],
+            $errno,
+            $errstr,
+            $this->options['timeout']
+        );
         if (is_resource($fp)) {
             @fclose($fp);
         } else {
@@ -190,8 +197,8 @@ class Auth_Container_IMAP extends Auth_Container
     function fetchData($username, $password)
     {
         $this->log('Auth_Container_IMAP::fetchData() called.', AUTH_LOG_DEBUG);
-        $dsn = '{'.$this->options['host'].':'.$this->options['port'].$this->options['baseDSN'].'}';
-        $conn = @imap_open ($dsn, $username, $password, OP_HALFOPEN);
+        $dsn = '{' . $this->options['host'] . ':' . $this->options['port'] . $this->options['baseDSN'] . '}';
+        $conn = @imap_open($dsn, $username, $password, OP_HALFOPEN);
         if (is_resource($conn)) {
             $this->log('Successfully connected to IMAP server.', AUTH_LOG_DEBUG);
             $this->activeUser = $username;
@@ -207,4 +214,3 @@ class Auth_Container_IMAP extends Auth_Container
     // }}}
 
 }
-?>

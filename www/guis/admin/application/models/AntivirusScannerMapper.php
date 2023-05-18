@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -10,7 +11,7 @@
 
 class Default_Model_AntivirusScannerMapper
 {
-	
+
     protected $_dbTable;
 
     public function setDbTable($dbTable)
@@ -33,7 +34,8 @@ class Default_Model_AntivirusScannerMapper
         return $this->_dbTable;
     }
 
-    public function findByName($name, Default_Model_AntivirusScanner $scanner) {
+    public function findByName($name, Default_Model_AntivirusScanner $scanner)
+    {
         $query = $this->getDbTable()->select();
         $query->where('name = ?', $name);
         $row = $this->getDbTable()->fetchRow($query);
@@ -49,28 +51,29 @@ class Default_Model_AntivirusScannerMapper
         $row = $result->current();
         $s->setId($id);
         foreach ($s->getParamArray() as $key => $value) {
-        	$s->setParam($key, $row[$key]);
+            $s->setParam($key, $row[$key]);
         }
     }
 
     public function fetchAllActive()
     {
-    	$query = $this->getDbTable()->select();
-    	$query->where('active = 1');
-    	$resultSet = $this->getDbTable()->fetchAll($query);
+        $query = $this->getDbTable()->select();
+        $query->where('active = 1');
+        $resultSet = $this->getDbTable()->fetchAll($query);
         $entries   = [];
         foreach ($resultSet as $row) {
-           $entry = new Default_Model_AntivirusScanner();
-           $entry->find($row['id']);
-           $entries[] = $entry;
+            $entry = new Default_Model_AntivirusScanner();
+            $entry->find($row['id']);
+            $entries[] = $entry;
         }
         return $entries;
     }
 
-    public function save(Default_Model_AntivirusScanner $s) {
-       $data = $s->getParamArray();
-       $res = '';
-       if (null === ($id = $s->getId())) {
+    public function save(Default_Model_AntivirusScanner $s)
+    {
+        $data = $s->getParamArray();
+        $res = '';
+        if (null === ($id = $s->getId())) {
             unset($data['id']);
             $res = $this->getDbTable()->insert($data);
         } else {

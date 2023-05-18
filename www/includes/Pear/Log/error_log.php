@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Header$
  *
@@ -65,10 +66,13 @@ class Log_error_log extends Log
      * @param int    $level    Log messages up to and including this level.
      * @access public
      */
-    public function __construct($name, $ident = '', $conf = array(),
-                                $level = PEAR_LOG_DEBUG)
-    {
-        $this->_id = md5(microtime().rand());
+    public function __construct(
+        $name,
+        $ident = '',
+        $conf = [],
+        $level = PEAR_LOG_DEBUG
+    ) {
+        $this->_id = md5(microtime() . rand());
         $this->_type = $name;
         $this->_ident = $ident;
         $this->_mask = Log::UPTO($level);
@@ -82,9 +86,11 @@ class Log_error_log extends Log
         }
 
         if (!empty($conf['lineFormat'])) {
-            $this->_lineFormat = str_replace(array_keys($this->_formatMap),
-                                             array_values($this->_formatMap),
-                                             $conf['lineFormat']);
+            $this->_lineFormat = str_replace(
+                array_keys($this->_formatMap),
+                array_values($this->_formatMap),
+                $conf['lineFormat']
+            );
         }
 
         if (!empty($conf['timeFormat'])) {
@@ -144,17 +150,23 @@ class Log_error_log extends Log
         $message = $this->_extractMessage($message);
 
         /* Build the string containing the complete log line. */
-        $line = $this->_format($this->_lineFormat,
-                               strftime($this->_timeFormat),
-                               $priority, $message);
+        $line = $this->_format(
+            $this->_lineFormat,
+            strftime($this->_timeFormat),
+            $priority,
+            $message
+        );
 
         /* Pass the log line and parameters to the error_log() function. */
-        $success = error_log($line, $this->_type, $this->_destination,
-                             $this->_extra_headers);
+        $success = error_log(
+            $line,
+            $this->_type,
+            $this->_destination,
+            $this->_extra_headers
+        );
 
-        $this->_announce(array('priority' => $priority, 'message' => $message));
+        $this->_announce(['priority' => $priority, 'message' => $message]);
 
         return $success;
     }
-
 }

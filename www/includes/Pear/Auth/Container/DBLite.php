@@ -1,4 +1,5 @@
 <?php
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 foldmethod=marker: */
 
 /**
@@ -58,7 +59,7 @@ class Auth_Container_DBLite extends Auth_Container
      * Additional options for the storage container
      * @var array
      */
-    var $options = array();
+    var $options = [];
 
     /**
      * DB object
@@ -92,7 +93,7 @@ class Auth_Container_DBLite extends Auth_Container
         $this->options['dsn']         = '';
         $this->options['db_fields']   = '';
         $this->options['cryptType']   = 'md5';
-        $this->options['db_options']  = array();
+        $this->options['db_options']  = [];
         $this->options['db_where']    = '';
         $this->options['auto_quote']  = true;
 
@@ -120,9 +121,9 @@ class Auth_Container_DBLite extends Auth_Container
     {
         $this->log('Auth_Container_DBLite::_connect() called.', AUTH_LOG_DEBUG);
         if (is_string($dsn) || is_array($dsn)) {
-            $this->db =& DB::connect($dsn, $this->options['db_options']);
+            $this->db = &DB::connect($dsn, $this->options['db_options']);
         } elseif (is_subclass_of($dsn, "db_common")) {
-            $this->db =& $dsn;
+            $this->db = &$dsn;
         } else {
             return PEAR::raiseError("Invalid dsn or db object given");
         }
@@ -206,7 +207,7 @@ class Auth_Container_DBLite extends Auth_Container
         if (isset($this->options['db_fields'])) {
             if (is_array($this->options['db_fields'])) {
                 if ($this->options['auto_quote']) {
-                    $fields = array();
+                    $fields = [];
                     foreach ($this->options['db_fields'] as $field) {
                         $fields[] = $this->db->quoteIdentifier($field);
                     }
@@ -254,29 +255,31 @@ class Auth_Container_DBLite extends Auth_Container
         }
 
         // Find if db_fields contains a *, if so assume all col are selected
-        if (is_string($this->options['db_fields'])
-            && strstr($this->options['db_fields'], '*')) {
+        if (
+            is_string($this->options['db_fields'])
+            && strstr($this->options['db_fields'], '*')
+        ) {
             $sql_from = "*";
         } else {
-            $sql_from = $this->options['final_usernamecol'].
-                ", ".$this->options['final_passwordcol'];
+            $sql_from = $this->options['final_usernamecol'] .
+                ", " . $this->options['final_passwordcol'];
 
             if (strlen($fields = $this->_quoteDBFields()) > 0) {
-                $sql_from .= ', '.$fields;
+                $sql_from .= ', ' . $fields;
             }
         }
 
-        $query = "SELECT ".$sql_from.
-                " FROM ".$this->options['final_table'].
-                " WHERE ".$this->options['final_usernamecol']." = ".$this->db->quoteSmart($username);
+        $query = "SELECT " . $sql_from .
+            " FROM " . $this->options['final_table'] .
+            " WHERE " . $this->options['final_usernamecol'] . " = " . $this->db->quoteSmart($username);
 
         // check if there is an optional parameter db_where
         if ($this->options['db_where'] != '') {
             // there is one, so add it to the query
-            $query .= " AND ".$this->options['db_where'];
+            $query .= " AND " . $this->options['db_where'];
         }
 
-        $this->log('Running SQL against DB: '.$query, AUTH_LOG_DEBUG);
+        $this->log('Running SQL against DB: ' . $query, AUTH_LOG_DEBUG);
 
         $res = $this->db->getRow($query, null, DB_FETCHMODE_ASSOC);
 
@@ -287,17 +290,21 @@ class Auth_Container_DBLite extends Auth_Container
             $this->activeUser = '';
             return false;
         }
-        if ($this->verifyPassword(trim($password, "\r\n"),
-                                  trim($res[$this->options['passwordcol']], "\r\n"),
-                                  $this->options['cryptType'])) {
+        if ($this->verifyPassword(
+            trim($password, "\r\n"),
+            trim($res[$this->options['passwordcol']], "\r\n"),
+            $this->options['cryptType']
+        )) {
             // Store additional field values in the session
             foreach ($res as $key => $value) {
-                if ($key == $this->options['passwordcol'] ||
-                    $key == $this->options['usernamecol']) {
+                if (
+                    $key == $this->options['passwordcol'] ||
+                    $key == $this->options['usernamecol']
+                ) {
                     continue;
                 }
 
-                $this->log('Storing additional field: '.$key, AUTH_LOG_DEBUG);
+                $this->log('Storing additional field: ' . $key, AUTH_LOG_DEBUG);
 
                 // Use reference to the auth object if exists
                 // This is because the auth session variable can change so a static call to setAuthData does not make sence
@@ -317,4 +324,3 @@ class Auth_Container_DBLite extends Auth_Container
     // }}}
 
 }
-?>

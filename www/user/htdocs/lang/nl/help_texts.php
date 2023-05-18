@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -311,4 +312,3 @@ of in de __LINKHELP_faq__frequently asked questions__LINK__.</p>
 <h2>Voor commerciële vragen</h2>
 <p>__SALES_EMAIL__</p>
 ';
-?>

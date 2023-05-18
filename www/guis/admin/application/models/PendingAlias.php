@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -10,44 +11,49 @@
 
 class Default_Model_PendingAlias
 {
-	protected $_id;
+    protected $_id;
 
-	protected $_values = [
-      'date_in' => '',
-	  'alias' => '',
-	  'user' => 0,
-	];
+    protected $_values = [
+        'date_in' => '',
+        'alias' => '',
+        'user' => 0,
+    ];
 
-	protected $_mapper;
-	
-	public function setParam($param, $value) {
-		if (array_key_exists($param, $this->_values)) {
-			$this->_values[$param] = $value;
-		}
-	}
-	
-	public function getParam($param) {
-		$ret = null;
-		if (array_key_exists($param, $this->_values)) {
-			$ret = $this->_values[$param];
-		}
-	    if ($ret == 'false') {
-			return 0;
-		}
-		return $ret;
-	}
-	
-	public function getParamArray() {
-		return $this->_values;
-	}
-		
-	public function setId($id) {
-	   $this->_id = $id;	
-	}
-	public function getId() {
-		return $this->_id;
-	}
-		
+    protected $_mapper;
+
+    public function setParam($param, $value)
+    {
+        if (array_key_exists($param, $this->_values)) {
+            $this->_values[$param] = $value;
+        }
+    }
+
+    public function getParam($param)
+    {
+        $ret = null;
+        if (array_key_exists($param, $this->_values)) {
+            $ret = $this->_values[$param];
+        }
+        if ($ret == 'false') {
+            return 0;
+        }
+        return $ret;
+    }
+
+    public function getParamArray()
+    {
+        return $this->_values;
+    }
+
+    public function setId($id)
+    {
+        $this->_id = $id;
+    }
+    public function getId()
+    {
+        return $this->_id;
+    }
+
     public function setMapper($mapper)
     {
         $this->_mapper = $mapper;
@@ -68,18 +74,18 @@ class Default_Model_PendingAlias
         return $this;
     }
 
-    public function fetchAll($params = NULL) {
-    	return $this->getMapper()->fetchAll($params);
+    public function fetchAll($params = NULL)
+    {
+        return $this->getMapper()->fetchAll($params);
     }
 
     public function save()
-    {	
+    {
         return $this->getMapper()->save($this);
     }
 
     public function delete()
     {
-    	return $this->getMapper()->delete($this);
+        return $this->getMapper()->delete($this);
     }
-
 }

@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -9,7 +10,7 @@
  */
 
 if ($_SERVER["REQUEST_METHOD"] == "HEAD") {
-  return 200;
+    return 200;
 }
 
 /**
@@ -31,33 +32,33 @@ $http->load();
 $http_sheme = 'http';
 $port = '';
 if ($http->getPref('use_ssl')) {
-	$http_sheme = 'https';
-	if ($http->getPref('https_port') != 443) {
-		$port = ':' . $http->getPref('https_port');
-	}
+    $http_sheme = 'https';
+    if ($http->getPref('https_port') != 443) {
+        $port = ':' . $http->getPref('https_port');
+    }
 } else {
-	if ($http->getPref('http_port') != 80) {
-		$port = ':' . $http->getPref('http_port');
-	}
+    if ($http->getPref('http_port') != 80) {
+        $port = ':' . $http->getPref('http_port');
+    }
 }
 
 // Check if this is a registered version
-require_once ('helpers/DataManager.php');
-$file_conf = DataManager :: getFileConfig($sysconf_ :: $CONFIGFILE_);
+require_once('helpers/DataManager.php');
+$file_conf = DataManager::getFileConfig($sysconf_::$CONFIGFILE_);
 
 $is_enterprise = $file_conf['REGISTERED'] == '1';
 if ($is_enterprise) {
-        $mclink="https://www.mailcleaner.net";
-	$mclinklabel="www.mailcleaner.net";
+    $mclink = "https://www.mailcleaner.net";
+    $mclinklabel = "www.mailcleaner.net";
 } else {
-        $mclink="https://www.mailcleaner.org";
-	$mclinklabel="www.mailcleaner.org";
+    $mclink = "https://www.mailcleaner.org";
+    $mclinklabel = "www.mailcleaner.org";
 }
 
 // prepare replacements
 $replace = [
     "__BASE_URL__" => $_SERVER['SERVER_NAME'],
-    "__BEENLOGGEDOUT__" => $lang_->print_txt_param('BEENLOGGEDOUT', $http_sheme."://".$_SERVER['SERVER_NAME'].$port),
+    "__BEENLOGGEDOUT__" => $lang_->print_txt_param('BEENLOGGEDOUT', $http_sheme . "://" . $_SERVER['SERVER_NAME'] . $port),
     "__MCLINK__" => $mclink,
     "__MCLINKLABEL__" => $mclinklabel,
 ];
@@ -66,4 +67,3 @@ $template_->output($replace);
 
 // and do the job !
 unregisterAll();
-?>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -32,11 +33,11 @@ class Validate_EmailList extends Zend_Validate_Abstract
 
         $addresses = preg_split('/[,:\s]+/', $value);
         foreach ($addresses as $address) {
-          if (! $validator->isValid($address)) {
-          	  $this->email = $address;
-          	  $this->_error(self::MSG_BADEMAIL);
-              return false;
-          }
+            if (!$validator->isValid($address)) {
+                $this->email = $address;
+                $this->_error(self::MSG_BADEMAIL);
+                return false;
+            }
         }
         return true;
     }

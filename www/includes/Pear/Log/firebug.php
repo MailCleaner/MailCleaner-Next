@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Header$
  *
@@ -32,7 +33,7 @@ class Log_firebug extends Log
      * @var string
      * @access private
      */
-    var $_buffer = array();
+    var $_buffer = [];
 
     /**
      * String containing the format of a log line.
@@ -58,16 +59,16 @@ class Log_firebug extends Log
      * @var array
      * @access private
      */
-    var $_methods = array(
-                        PEAR_LOG_EMERG   => 'error',
-                        PEAR_LOG_ALERT   => 'error',
-                        PEAR_LOG_CRIT    => 'error',
-                        PEAR_LOG_ERR     => 'error',
-                        PEAR_LOG_WARNING => 'warn',
-                        PEAR_LOG_NOTICE  => 'info',
-                        PEAR_LOG_INFO    => 'info',
-                        PEAR_LOG_DEBUG   => 'debug'
-                    );
+    var $_methods = [
+        PEAR_LOG_EMERG   => 'error',
+        PEAR_LOG_ALERT   => 'error',
+        PEAR_LOG_CRIT    => 'error',
+        PEAR_LOG_ERR     => 'error',
+        PEAR_LOG_WARNING => 'warn',
+        PEAR_LOG_NOTICE  => 'info',
+        PEAR_LOG_INFO    => 'info',
+        PEAR_LOG_DEBUG   => 'debug'
+    ];
 
     /**
      * Constructs a new Log_firebug object.
@@ -78,10 +79,13 @@ class Log_firebug extends Log
      * @param int    $level    Log messages up to and including this level.
      * @access public
      */
-    public function __construct($name = '', $ident = 'PHP', $conf = array(),
-                                $level = PEAR_LOG_DEBUG)
-    {
-        $this->_id = md5(microtime().rand());
+    public function __construct(
+        $name = '',
+        $ident = 'PHP',
+        $conf = [],
+        $level = PEAR_LOG_DEBUG
+    ) {
+        $this->_id = md5(microtime() . rand());
         $this->_ident = $ident;
         $this->_mask = Log::UPTO($level);
         if (isset($conf['buffering'])) {
@@ -89,13 +93,15 @@ class Log_firebug extends Log
         }
 
         if ($this->_buffering) {
-            register_shutdown_function(array(&$this, '_Log_firebug'));
+            register_shutdown_function([&$this, '_Log_firebug']);
         }
 
         if (!empty($conf['lineFormat'])) {
-            $this->_lineFormat = str_replace(array_keys($this->_formatMap),
-                                             array_values($this->_formatMap),
-                                             $conf['lineFormat']);
+            $this->_lineFormat = str_replace(
+                array_keys($this->_formatMap),
+                array_values($this->_formatMap),
+                $conf['lineFormat']
+            );
         }
 
         if (!empty($conf['timeFormat'])) {
@@ -139,7 +145,8 @@ class Log_firebug extends Log
      *
      * @access public
      */
-    function flush() {
+    function flush()
+    {
         if (count($this->_buffer)) {
             print '<script type="text/javascript">';
             print "\nif ('console' in window) {\n";
@@ -149,7 +156,7 @@ class Log_firebug extends Log
             print "}\n";
             print "</script>\n";
         };
-        $this->_buffer = array();
+        $this->_buffer = [];
     }
 
     /**
@@ -184,10 +191,12 @@ class Log_firebug extends Log
         $message = preg_replace("/\r?\n/", "\\n", addslashes($message));
 
         /* Build the string containing the complete log line. */
-        $line = $this->_format($this->_lineFormat,
-                               strftime($this->_timeFormat),
-                               $priority,
-                               $message);
+        $line = $this->_format(
+            $this->_lineFormat,
+            strftime($this->_timeFormat),
+            $priority,
+            $message
+        );
 
         if ($this->_buffering) {
             $this->_buffer[] = sprintf('console.%s("%s");', $method, $line);
@@ -200,7 +209,7 @@ class Log_firebug extends Log
             print "</script>\n";
         }
         /* Notify observers about this log message. */
-        $this->_announce(array('priority' => $priority, 'message' => $message));
+        $this->_announce(['priority' => $priority, 'message' => $message]);
 
         return true;
     }

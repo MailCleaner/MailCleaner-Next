@@ -1,4 +1,5 @@
 <?php
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 foldmethod=marker: */
 
 /**
@@ -114,35 +115,35 @@ class Auth_Container_SOAP5 extends Auth_Container
      * @var array
      * @access private
      */
-    var $_requiredOptions = array(
-            'location',
-            'uri',
-            'method',
-            'usernamefield',
-            'passwordfield',
-            'wsdl',
-            );
+    var $_requiredOptions = [
+        'location',
+        'uri',
+        'method',
+        'usernamefield',
+        'passwordfield',
+        'wsdl',
+    ];
 
     /**
      * Options for the class
      * @var array
      * @access private
      */
-    var $_options = array();
+    var $_options = [];
 
     /**
      * Optional SOAP features
      * @var array
      * @access private
      */
-    var $_features = array();
+    var $_features = [];
 
     /**
      * The SOAP response
      * @var array
      * @access public
      */
-    var $soapResponse = array();
+    var $soapResponse = [];
 
     // }}}
     // {{{ Auth_Container_SOAP5()
@@ -184,13 +185,14 @@ class Auth_Container_SOAP5 extends Auth_Container
     {
         $this->log('Auth_Container_SOAP5::fetchData() called.', AUTH_LOG_DEBUG);
         $result = $this->_validateOptions();
-        if (PEAR::isError($result))
+        if (PEAR::isError($result)) {
             return $result;
+        }
 
         // create a SOAP client
         $soapClient = new SoapClient($this->_options["wsdl"], $this->_options);
 
-        $params = array();
+        $params = [];
         // first, assign the optional features
         foreach ($this->_features as $fieldName => $fieldValue) {
             $params[$fieldName] = $fieldValue;
@@ -213,7 +215,7 @@ class Auth_Container_SOAP5 extends Auth_Container
                 return true;
             }
         } catch (SoapFault $e) {
-            return PEAR::raiseError("Error retrieving authentication data. Received SOAP Fault: ".$e->faultstring, $e->faultcode);
+            return PEAR::raiseError("Error retrieving authentication data. Received SOAP Fault: " . $e->faultstring, $e->faultcode);
         }
     }
 
@@ -228,12 +230,13 @@ class Auth_Container_SOAP5 extends Auth_Container
      */
     function _validateOptions()
     {
-        if (   (   is_null($this->_options['wsdl'])
+        if ((is_null($this->_options['wsdl'])
                 && is_null($this->_options['location'])
                 && is_null($this->_options['uri']))
-            || (   is_null($this->_options['wsdl'])
-                && (   is_null($this->_options['location'])
-                    || is_null($this->_options['uri'])))) {
+            || (is_null($this->_options['wsdl'])
+                && (is_null($this->_options['location'])
+                    || is_null($this->_options['uri'])))
+        ) {
             return PEAR::raiseError('Either a WSDL file or a location/uri pair must be specified.');
         }
         if (is_null($this->_options['method'])) {
@@ -265,4 +268,3 @@ class Auth_Container_SOAP5 extends Auth_Container
     // }}}
 
 }
-?>

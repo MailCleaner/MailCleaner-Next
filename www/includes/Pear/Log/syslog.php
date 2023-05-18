@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Header$
  * $Horde: horde/lib/Log/syslog.php,v 1.6 2000/06/28 21:36:13 jon Exp $
@@ -78,9 +79,12 @@ class Log_syslog extends Log
      * @param int    $level    Log messages up to and including this level.
      * @access public
      */
-    public function __construct($name, $ident = '', $conf = array(),
-                                $level = PEAR_LOG_DEBUG)
-    {
+    public function __construct(
+        $name,
+        $ident = '',
+        $conf = [],
+        $level = PEAR_LOG_DEBUG
+    ) {
         /* Ensure we have a valid integer value for $name. */
         if (empty($name) || !is_int($name)) {
             $name = LOG_SYSLOG;
@@ -97,15 +101,17 @@ class Log_syslog extends Log
             $this->_maxLength = $conf['maxLength'];
         }
         if (!empty($conf['lineFormat'])) {
-            $this->_lineFormat = str_replace(array_keys($this->_formatMap),
-                                             array_values($this->_formatMap),
-                                             $conf['lineFormat']);
+            $this->_lineFormat = str_replace(
+                array_keys($this->_formatMap),
+                array_values($this->_formatMap),
+                $conf['lineFormat']
+            );
         }
         if (!empty($conf['timeFormat'])) {
             $this->_timeFormat = $conf['timeFormat'];
         }
 
-        $this->_id = md5(microtime().rand());
+        $this->_id = md5(microtime() . rand());
         $this->_name = $name;
         $this->_ident = $ident;
         $this->_mask = Log::UPTO($level);
@@ -179,9 +185,12 @@ class Log_syslog extends Log
         }
 
         /* Apply the configured line format to the message string. */
-        $message = $this->_format($this->_lineFormat,
-                                  strftime($this->_timeFormat),
-                                  $priority, $message);
+        $message = $this->_format(
+            $this->_lineFormat,
+            strftime($this->_timeFormat),
+            $priority,
+            $message
+        );
 
         /* Split the string into parts based on our maximum length setting. */
         $parts = str_split($message, $this->_maxLength);
@@ -195,7 +204,7 @@ class Log_syslog extends Log
             }
         }
 
-        $this->_announce(array('priority' => $priority, 'message' => $message));
+        $this->_announce(['priority' => $priority, 'message' => $message]);
 
         return true;
     }
@@ -216,7 +225,7 @@ class Log_syslog extends Log
      */
     function _toSyslog($priority)
     {
-        static $priorities = array(
+        static $priorities = [
             PEAR_LOG_EMERG   => LOG_EMERG,
             PEAR_LOG_ALERT   => LOG_ALERT,
             PEAR_LOG_CRIT    => LOG_CRIT,
@@ -225,7 +234,7 @@ class Log_syslog extends Log
             PEAR_LOG_NOTICE  => LOG_NOTICE,
             PEAR_LOG_INFO    => LOG_INFO,
             PEAR_LOG_DEBUG   => LOG_DEBUG
-        );
+        ];
 
         /* If we're passed an unknown priority, default to LOG_INFO. */
         if (!is_int($priority) || !in_array($priority, $priorities)) {
@@ -234,5 +243,4 @@ class Log_syslog extends Log
 
         return $priorities[$priority];
     }
-
 }

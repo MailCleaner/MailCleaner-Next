@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -9,7 +10,7 @@
  */
 
 if ($_SERVER["REQUEST_METHOD"] == "HEAD") {
-  return 200;
+    return 200;
 }
 
 require_once('variables.php');
@@ -32,12 +33,12 @@ $username = str_replace('\'', '\\\'', $username); // avoid problems with ' in us
 // if we can find domain in login name given (such as login@domain)
 $ret = [];
 if (preg_match('/(.+)[@%](\S+)$/', $username, $ret)) {
-  $domain = $ret[2];
+    $domain = $ret[2];
 }
 
 // if the domain is explicitly set in the REQUEST
 if (isset($_REQUEST['domain']) && in_array($_REQUEST['domain'], $sysconf_->getFilteredDomains())) {
-  $domain = $_REQUEST['domain'];
+    $domain = $_REQUEST['domain'];
 }
 
 // create domain object
@@ -58,16 +59,15 @@ if ($user->isLocalUser()) {
 
 $lang_ = Language::getInstance('user');
 if (isset($_REQUEST['lang'])) {
-  $lang_->setLanguage($_REQUEST['lang']);
-  $lang_->reload();
+    $lang_->setLanguage($_REQUEST['lang']);
+    $lang_->reload();
 }
 
 // get the view objects
 $template_model = 'reset_password.tmpl';
 $template_ = new Template($template_model);
 $replace = [
-  '__MESSAGE__' => $lang_->print_txt($message)
+    '__MESSAGE__' => $lang_->print_txt($message)
 ];
 // output result page
 $template_->output($replace);
-?>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Header$
  *
@@ -35,8 +36,10 @@ class Log_sqlite extends Log
      * @var array
      * @access private
      */
-    var $_options = array('mode'       => 0666,
-                          'persistent' => false);
+    var $_options = [
+        'mode'       => 0666,
+        'persistent' => false
+    ];
 
     /**
      * Object holding the database handle.
@@ -72,7 +75,7 @@ class Log_sqlite extends Log
      */
     public function __construct($name, $ident = '', &$conf, $level = PEAR_LOG_DEBUG)
     {
-        $this->_id = md5(microtime().rand());
+        $this->_id = md5(microtime() . rand());
         $this->_table = $name;
         $this->_ident = $ident;
         $this->_mask = Log::UPTO($level);
@@ -83,7 +86,7 @@ class Log_sqlite extends Log
             }
         } else {
             // If an existing database connection was provided, use it.
-            $this->_db =& $conf;
+            $this->_db = &$conf;
             $this->_existingConnection = true;
         }
     }
@@ -109,9 +112,11 @@ class Log_sqlite extends Log
             }
 
             /* Attempt to connect to the database. */
-            if ($this->_db = $connectFunction($this->_options['filename'],
-                                              (int)$this->_options['mode'],
-                                              $error)) {
+            if ($this->_db = $connectFunction(
+                $this->_options['filename'],
+                (int)$this->_options['mode'],
+                $error
+            )) {
                 $this->_opened = true;
                 return $this->_createTable();
             }
@@ -177,17 +182,19 @@ class Log_sqlite extends Log
         $message = $this->_extractMessage($message);
 
         // Build the SQL query for this log entry insertion.
-        $q = sprintf('INSERT INTO [%s] (logtime, ident, priority, message) ' .
-                     "VALUES ('%s', '%s', %d, '%s')",
-                     $this->_table,
-                     strftime('%Y-%m-%d %H:%M:%S', time()),
-                     sqlite_escape_string($this->_ident),
-                     $priority,
-                     sqlite_escape_string($message));
+        $q = sprintf(
+            'INSERT INTO [%s] (logtime, ident, priority, message) ' .
+                "VALUES ('%s', '%s', %d, '%s')",
+            $this->_table,
+            strftime('%Y-%m-%d %H:%M:%S', time()),
+            sqlite_escape_string($this->_ident),
+            $priority,
+            sqlite_escape_string($message)
+        );
         if (!($res = @sqlite_unbuffered_query($this->_db, $q))) {
             return false;
         }
-        $this->_announce(array('priority' => $priority, 'message' => $message));
+        $this->_announce(['priority' => $priority, 'message' => $message]);
 
         return true;
     }
@@ -201,17 +208,17 @@ class Log_sqlite extends Log
     function _createTable()
     {
         $q = "SELECT name FROM sqlite_master WHERE name='" . $this->_table .
-             "' AND type='table'";
+            "' AND type='table'";
 
         $res = sqlite_query($this->_db, $q);
 
         if (sqlite_num_rows($res) == 0) {
             $q = 'CREATE TABLE [' . $this->_table . '] (' .
-                 'id INTEGER PRIMARY KEY NOT NULL, ' .
-                 'logtime NOT NULL, ' .
-                 'ident CHAR(16) NOT NULL, ' .
-                 'priority INT NOT NULL, ' .
-                 'message)';
+                'id INTEGER PRIMARY KEY NOT NULL, ' .
+                'logtime NOT NULL, ' .
+                'ident CHAR(16) NOT NULL, ' .
+                'priority INT NOT NULL, ' .
+                'message)';
 
             if (!($res = sqlite_unbuffered_query($this->_db, $q))) {
                 return false;
@@ -220,5 +227,4 @@ class Log_sqlite extends Log
 
         return true;
     }
-
 }

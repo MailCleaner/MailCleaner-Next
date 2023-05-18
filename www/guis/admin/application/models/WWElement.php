@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -22,42 +23,48 @@ class Default_Model_WWElement
 
     protected $_mapper;
 
-	
-	public function setId($id) {
-	   $this->_id = $id;	
-	}
-	public function getId() {
-		return $this->_id;
-	}
-	
-	public function setParam($param, $value) {
-		if (array_key_exists($param, $this->_values)) {
-			$this->_values[$param] = $value;
-		}
-	}
-	
-	public function getParam($param) {
-		$ret = null;
-		if (array_key_exists($param, $this->_values)) {
-			$ret = $this->_values[$param];
-		}
-	    if ($ret == 'false') {
-			return 0;
-		}
-		return $ret;
-	}
-	
-	public function getAvailableParams() {
-		$ret = [];
-		foreach ($this->_values as $key => $value) {
-			$ret[]=$key;
-		}
-		return $ret;
-	}
-	
-	public function getParamArray() {
-		return $this->_values;
-	}
+
+    public function setId($id)
+    {
+        $this->_id = $id;
+    }
+    public function getId()
+    {
+        return $this->_id;
+    }
+
+    public function setParam($param, $value)
+    {
+        if (array_key_exists($param, $this->_values)) {
+            $this->_values[$param] = $value;
+        }
+    }
+
+    public function getParam($param)
+    {
+        $ret = null;
+        if (array_key_exists($param, $this->_values)) {
+            $ret = $this->_values[$param];
+        }
+        if ($ret == 'false') {
+            return 0;
+        }
+        return $ret;
+    }
+
+    public function getAvailableParams()
+    {
+        $ret = [];
+        foreach ($this->_values as $key => $value) {
+            $ret[] = $key;
+        }
+        return $ret;
+    }
+
+    public function getParamArray()
+    {
+        return $this->_values;
+    }
 
     public function setMapper($mapper)
     {
@@ -79,21 +86,25 @@ class Default_Model_WWElement
         return $this;
     }
 
-    public function fetchAll($destination, $type) {
-    	return $this->getMapper()->fetchAll($destination, $type);
+    public function fetchAll($destination, $type)
+    {
+        return $this->getMapper()->fetchAll($destination, $type);
     }
 
-    public function fetchAllField($destination, $type, $field) {
-    	return $this->getMapper()->fetchAllField($destination, $type, $field);
+    public function fetchAllField($destination, $type, $field)
+    {
+        return $this->getMapper()->fetchAllField($destination, $type, $field);
     }
 
 
-    public function setBulkSender($domain, $senders, $type) {
-    	return $this->getMapper()->setBulkSender($domain, $senders, $type);
+    public function setBulkSender($domain, $senders, $type)
+    {
+        return $this->getMapper()->setBulkSender($domain, $senders, $type);
     }
 
-    public function setSpamcOvercharge($domain, $comment, $type) {
-    	return $this->getMapper()->setSpamcOvercharge($domain, $comment, $type);
+    public function setSpamcOvercharge($domain, $comment, $type)
+    {
+        return $this->getMapper()->setSpamcOvercharge($domain, $comment, $type);
     }
 
     public function save()
@@ -103,40 +114,46 @@ class Default_Model_WWElement
 
     public function delete()
     {
-    	return $this->getMapper()->delete($this);
+        return $this->getMapper()->delete($this);
     }
 
-   public function getStatus() {
-    	if ($this->getParam('status')) {
-    		return 1;
-    	}
-    	return 0;
+    public function getStatus()
+    {
+        if ($this->getParam('status')) {
+            return 1;
+        }
+        return 0;
     }
 
-    public function setValue($value) {
-    	$this->setParam('sender', $value);
+    public function setValue($value)
+    {
+        $this->setParam('sender', $value);
     }
 
-    public function setComment($comment) {
-    	if ($comment == '') {
-    		$comment = "-";
-    	}
-    	$this->setParam('comments', $comment);
+    public function setComment($comment)
+    {
+        if ($comment == '') {
+            $comment = "-";
+        }
+        $this->setParam('comments', $comment);
     }
 
-    public function getComment() {
-    	if ($this->getParam('comments') != '-') {
-          return $this->getParam('comments');
-    	}
-    	return '';
+    public function getComment()
+    {
+        if ($this->getParam('comments') != '-') {
+            return $this->getParam('comments');
+        }
+        return '';
     }
 
-    public function disable() {
-    	$this->setParam('status', 0);
-    	$this->save();
+    public function disable()
+    {
+        $this->setParam('status', 0);
+        $this->save();
     }
-    public function enable() {
-    	$this->setParam('status', 1);
-    	$this->save();
+    public function enable()
+    {
+        $this->setParam('status', 1);
+        $this->save();
     }
 }

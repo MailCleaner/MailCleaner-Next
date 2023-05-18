@@ -1,4 +1,5 @@
-<?
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -27,15 +28,15 @@ $integrator = new Integrator();
 
 // prepare replacements
 $replace = [
-        "__LANG__" => $lang_->getLanguage(),
-        "__DATE__" => strftime("%d.%m.%Y %H:%M.%S"),
-        "__HOSTID__" => $sysconf_->getPref('hostid'),
-        "__MASTER__" => isMaster(),
-        "__INT_WEBSITE__" => $integrator->getInfo('SiteInternet'),
-        "__INT_COMPANY__" => $integrator->getInfo('Company'),
-        "__INT_TECHNAME__" => $integrator->getInfo('Surname_T')." ".$integrator->getInfo('Name_T'),
-        "__INT_TECHMAIL__" => $integrator->getInfo('Mail_T'),
-        "__INT_TECHPHONE__" => $integrator->getInfo('Phone_T')
+    "__LANG__" => $lang_->getLanguage(),
+    "__DATE__" => strftime("%d.%m.%Y %H:%M.%S"),
+    "__HOSTID__" => $sysconf_->getPref('hostid'),
+    "__MASTER__" => isMaster(),
+    "__INT_WEBSITE__" => $integrator->getInfo('SiteInternet'),
+    "__INT_COMPANY__" => $integrator->getInfo('Company'),
+    "__INT_TECHNAME__" => $integrator->getInfo('Surname_T') . " " . $integrator->getInfo('Name_T'),
+    "__INT_TECHMAIL__" => $integrator->getInfo('Mail_T'),
+    "__INT_TECHPHONE__" => $integrator->getInfo('Phone_T')
 ];
 
 // output page
@@ -45,13 +46,13 @@ $template_->output($replace);
  * return master/slave status of the host
  * @return  string  status
  */
-function isMaster() {
-  global $lang_;
-  global $sysconf_;
+function isMaster()
+{
+    global $lang_;
+    global $sysconf_;
 
-  if ($sysconf_->ismaster_ < 1) {
-    return $lang_->print_txt('ISNOTAMASTER');
-  }
-  return $lang_->print_txt("ISAMASTER");
+    if ($sysconf_->ismaster_ < 1) {
+        return $lang_->print_txt('ISNOTAMASTER');
+    }
+    return $lang_->print_txt("ISAMASTER");
 }
-?>

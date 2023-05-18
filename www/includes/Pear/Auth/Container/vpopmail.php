@@ -1,4 +1,5 @@
 <?php
+
 /* vim: set expandtab tabstop=4 shiftwidth=4 softtabstop=4 foldmethod=marker: */
 
 /**
@@ -45,7 +46,8 @@ require_once "PEAR.php";
  * @link       http://pear.php.net/package/Auth
  * @since      Class available since Release 1.2.0
  */
-class Auth_Container_vpopmail extends Auth_Container {
+class Auth_Container_vpopmail extends Auth_Container
+{
 
     // {{{ Constructor
 
@@ -58,7 +60,7 @@ class Auth_Container_vpopmail extends Auth_Container {
     {
         if (!extension_loaded('vpopmail')) {
             return PEAR::raiseError('Cannot use VPOPMail authentication, '
-                    .'VPOPMail extension not loaded!', 41, PEAR_ERROR_DIE);
+                . 'VPOPMail extension not loaded!', 41, PEAR_ERROR_DIE);
         }
     }
 
@@ -75,7 +77,7 @@ class Auth_Container_vpopmail extends Auth_Container {
     function fetchData($username, $password)
     {
         $this->log('Auth_Container_vpopmail::fetchData() called.', AUTH_LOG_DEBUG);
-        $userdata = array();
+        $userdata = [];
         $userdata = preg_split("/@/", $username, 2);
         $result = @vpopmail_auth_user($userdata[0], $userdata[1], $password);
 
@@ -85,4 +87,3 @@ class Auth_Container_vpopmail extends Auth_Container {
     // }}}
 
 }
-?>

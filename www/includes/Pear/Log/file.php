@@ -1,4 +1,5 @@
 <?php
+
 /**
  * $Header$
  *
@@ -95,10 +96,13 @@ class Log_file extends Log
      * @param int    $level    Log messages up to and including this level.
      * @access public
      */
-    public function __construct($name, $ident = '', $conf = array(),
-                                $level = PEAR_LOG_DEBUG)
-    {
-        $this->_id = md5(microtime().rand());
+    public function __construct(
+        $name,
+        $ident = '',
+        $conf = [],
+        $level = PEAR_LOG_DEBUG
+    ) {
+        $this->_id = md5(microtime() . rand());
         $this->_filename = $name;
         $this->_ident = $ident;
         $this->_mask = Log::UPTO($level);
@@ -128,9 +132,11 @@ class Log_file extends Log
         }
 
         if (!empty($conf['lineFormat'])) {
-            $this->_lineFormat = str_replace(array_keys($this->_formatMap),
-                                             array_values($this->_formatMap),
-                                             $conf['lineFormat']);
+            $this->_lineFormat = str_replace(
+                array_keys($this->_formatMap),
+                array_values($this->_formatMap),
+                $conf['lineFormat']
+            );
         }
 
         if (!empty($conf['timeFormat'])) {
@@ -143,7 +149,7 @@ class Log_file extends Log
             $this->_eol = (strstr(PHP_OS, 'WIN')) ? "\r\n" : "\n";
         }
 
-        register_shutdown_function(array(&$this, '_Log_file'));
+        register_shutdown_function([&$this, '_Log_file']);
     }
 
     /**
@@ -290,9 +296,12 @@ class Log_file extends Log
         $message = $this->_extractMessage($message);
 
         /* Build the string containing the complete log line. */
-        $line = $this->_format($this->_lineFormat,
-                               strftime($this->_timeFormat),
-                               $priority, $message) . $this->_eol;
+        $line = $this->_format(
+            $this->_lineFormat,
+            strftime($this->_timeFormat),
+            $priority,
+            $message
+        ) . $this->_eol;
 
         /* If locking is enabled, acquire an exclusive lock on the file. */
         if ($this->_locking) {
@@ -308,9 +317,8 @@ class Log_file extends Log
         }
 
         /* Notify observers about this log message. */
-        $this->_announce(array('priority' => $priority, 'message' => $message));
+        $this->_announce(['priority' => $priority, 'message' => $message]);
 
         return $success;
     }
-
 }
