@@ -1,4 +1,5 @@
 <?php
+
 $txt['SFALSENEGTITLE'] = "Negatif salah";
 $txt['SFALSENEGSUBTITLE'] = "Apakah Anda sudah menerima pesan yang Anda anggap sebagai spam?";
 $txt['SMCLOGTITLE'] = "Di bagian header, Anda akan melihat baris-baris berikut yang menyebutkan Mailcleaner:";

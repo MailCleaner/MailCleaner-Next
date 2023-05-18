@@ -1,4 +1,5 @@
 <?php
+
 $txt['WEBDOC'] = "<ul><li>Maggiori informazioni e documentazione si trovano sul nostro sito web: <a href=\"https://wiki2.mailcleaner.net/doku.php/documentation:userfaq\" target=\"_blank\">Documentazione utente di Mailcleaner </a></li></ul>";
 $txt['DOCUMENTATION'] = "
                          <ul>

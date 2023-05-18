@@ -1,4 +1,5 @@
 <?php
+
 $txt['SFALSENEGTITLE'] = "遺漏";
 $txt['SFALSENEGSUBTITLE'] = "您是否收到了您認為是垃圾的電子郵件？";
 $txt['SVERIFYPASS'] = "通過查看電子郵件標頭，檢查郵件是否已由 Mailcleaner 篩選處理。";

@@ -1,4 +1,5 @@
 <?php
+
 $txt['SFALSENEGTITLE'] = "错误的消极";
 $txt['SFALSENEGSUBTITLE'] = "您是否收到了您认为是垃圾邮件的信息？";
 $txt['SVERIFYPASS'] = "通过查看电子邮件标题, 检查 Mailcleaner 筛选器是否已处理邮件。";

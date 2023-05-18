@@ -1,4 +1,5 @@
 <?php
+
 $txt['SFALSENEGTITLE'] = "FALSK NEGATIV";
 $txt['SFALSENEGSUBTITLE'] = "Har du modtaget en besked, som du anser for at være spam?";
 $txt['SVERIFYPASS'] = "Kontroller, at meddelelsen er blevet behandlet af Mailcleaner-filteret ved at se på e-mail-headerne.";

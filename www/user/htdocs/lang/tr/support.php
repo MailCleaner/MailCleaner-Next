@@ -1,4 +1,5 @@
 <?php
+
 $txt['DOCUMENTATION'] = "
                          <ul>
                            <li> <h2>Karantina görünümü/eylemleri</h2>
