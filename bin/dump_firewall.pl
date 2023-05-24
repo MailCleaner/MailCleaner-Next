@@ -115,25 +115,22 @@ sub get_masters_slaves()
 
 sub get_default_rules($rules)
 {
-    my %rules = %{$rules};
-
     foreach my $host (keys %masters_slaves) {
         next if ($host =~ /127\.0\.0\.1/ || $host =~ /^\:\:1$/);
 
-        $rules{"$host mysql TCP"} = [ $services{'mysql'}[0], $services{'mysql'}[1], $host];
-        $rules{"$host snmp UDP"} = [ $services{'snmp'}[0], $services{'snmp'}[1], $host];
-        $rules{"$host ssh TCP"} = [ $services{'ssh'}[0], $services{'ssh'}[1], $host];
-        $rules{"$host soap TCP"} = [ $services{'soap'}[0], $services{'soap'}[1], $host];
+        $rules->{"$host mysql TCP"} = [ $services{'mysql'}[0], $services{'mysql'}[1], $host];
+        $rules->{"$host snmp UDP"} = [ $services{'snmp'}[0], $services{'snmp'}[1], $host];
+        $rules->{"$host ssh TCP"} = [ $services{'ssh'}[0], $services{'ssh'}[1], $host];
+        $rules->{"$host soap TCP"} = [ $services{'soap'}[0], $services{'soap'}[1], $host];
     }
     my @subs = getSubnets();
     foreach my $sub (@subs) {
-        $rules{"$sub ssh TCP"} = [ $services{'ssh'}[0], $services{'ssh'}[1], $sub ];
+        $rules->{"$sub ssh TCP"} = [ $services{'ssh'}[0], $services{'ssh'}[1], $sub ];
     }
 }
 
 sub get_external_rules($rules)
 {
-    my %rules = %{$rules};
     my $sth = $dbh->prepare("SELECT service, port, protocol, allowed_ip FROM external_access");
     confess("CANNOTEXECUTEQUERY $dbh->errstr") unless $sth->execute();
 
@@ -144,7 +141,7 @@ sub get_external_rules($rules)
          foreach my $ip (expand_host_string($ref->{'allowed_ip'},('dumper'=>'snmp/allowedip'))) {
              # IPs already validated and converted to CIDR in expand_host_string, just remove non-CIDR entries
              if ($ip =~ m#/\d+$#) {
-                 $rules{$ip." ".$ref->{'service'}." ".$ref->{'protocol'}} = [ $ref->{'port'}, $ref->{'protocol'}, $ip];
+                 $rules->{$ip." ".$ref->{'service'}." ".$ref->{'protocol'}} = [ $ref->{'port'}, $ref->{'protocol'}, $ip];
              }
          }
     }
@@ -152,14 +149,14 @@ sub get_external_rules($rules)
     ## check snmp UDP
     foreach my $rulename (keys %rules) {
         if ($rulename =~ m/([^,]+) snmp/) {
-            $rules{$1." snmp UDP"} = [ 161, 'UDP', $rules{$rulename}[2]];
+            $rules->{$1." snmp UDP"} = [ 161, 'UDP', $rules->{$rulename}[2]];
         }
     }
 
     ## enable submission port
     foreach my $rulename (keys %rules) {
         if ($rulename =~ m/([^,]+) mail/) {
-            $rules{$1." submission TCP"} = [ 587, 'TCP', $rules{$rulename}[2]];
+            $rules->{$1." submission TCP"} = [ 587, 'TCP', $rules->{$rulename}[2]];
         }
     }
     ## do we need obsolete SMTP SSL port ?
@@ -169,7 +166,7 @@ sub get_external_rules($rules)
         if ($ref->{'tls_use_ssmtp_port'} > 0) {
             foreach my $rulename (keys %rules) {
                 if ($rulename =~ m/([^,]+) mail/) {
-                    $rules{$1." smtps TCP"} = [ 465, 'TCP', $rules{$rulename}[2] ];
+                    $rules->{$1." smtps TCP"} = [ 465, 'TCP', $rules->{$rulename}[2] ];
                 }
             }
         }
@@ -223,27 +220,52 @@ sub do_start_script($rules)
         print $START $ip6tables." -A INPUT -p ipv6-icmp -j ACCEPT\n";
     }
 
+    my $globals = {
+        '4' => {},
+        '6' => {}
+    };
     foreach my $description (sort keys %rules) {
+        print "Start $description\n";
         my @ports = split '\|', $rules{$description}[0];
         my @protocols = split '\|', $rules{$description}[1];
         foreach my $port (@ports) {
             foreach my $protocol (@protocols) {
                 my $host = $rules{$description}[2];
-                if ($host =~ m/\:/) {
-                    if ($has_ipv6) {
-                        print $START "\n# $description\n";
-                        print $START $ip6tables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
-                    }
-                } else {
-
+                # globals
+                if ($host eq '0.0.0.0/0' || $host eq '::/0') {
+                    print "Global $host $port\n";
+                    next if ($globals->{'4'}->{$port});
                     print $START "\n# $description\n";
-                    my $reply = $dnsres->query($host, "AAAA");
-                    if ($reply) {
-                        print $START $ip6tables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
-                    }
-                    print $START $iptables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
-                    if ($host eq '0.0.0.0/0' && $has_ipv6) {
+                    print $START $iptables." -A INPUT -p ".$protocol." --dport ".$port." -j ACCEPT\n";
+                    $globals->{'4'}->{$port} = 1;
+                    if ($has_ipv6) {
                         print $START $ip6tables." -A INPUT -p ".$protocol." --dport ".$port." -j ACCEPT\n";
+                        $globals->{'6'}->{$port} = 1;
+                    }
+                # IPv6
+                } elsif ($host =~ m/\:/) {
+                    print "IPv6 $host $port\n";
+                    next unless ($has_ipv6);
+                    next if ($globals->{'6'}->{$port});
+                    print $START "\n# $description\n";
+                    print $START $ip6tables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
+                # IPv4
+                } elsif ($host =~ m/(\d+\.){3}\d+(\/\d+)?$/) {
+                    print "IPv4 $host $port\n";
+                    next if ($globals->{'4'}->{$port});
+                    print $START "\n# $description\n";
+                    print $START $iptables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
+                # Hostname
+                } else {
+                    print "Host $host $port\n";
+                    next if ($globals->{'4'}->{$port});
+                    print $START "\n# $description\n";
+                    print $START $iptables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
+                    if ($has_ipv6) {
+                        my $reply = $dnsres->query($host, "AAAA");
+                        if ($reply) {
+                            print $START $ip6tables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
+                        }
                     }
                 }
             }
