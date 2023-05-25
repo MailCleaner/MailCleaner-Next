@@ -234,31 +234,31 @@ sub do_start_script($rules)
                 # globals
                 if ($host eq '0.0.0.0/0' || $host eq '::/0') {
                     print "Global $host $port\n";
-                    next if ($globals->{'4'}->{$port});
+                    next if ($globals->{'4'}->{$port}->{$protocol});
                     print $START "\n# $description\n";
                     print $START $iptables." -A INPUT -p ".$protocol." --dport ".$port." -j ACCEPT\n";
-                    $globals->{'4'}->{$port} = 1;
+                    $globals->{'4'}->{$port}->{$protocol} = 1;
                     if ($has_ipv6) {
                         print $START $ip6tables." -A INPUT -p ".$protocol." --dport ".$port." -j ACCEPT\n";
-                        $globals->{'6'}->{$port} = 1;
+                        $globals->{'6'}->{$port}->{$protocol} = 1;
                     }
                 # IPv6
                 } elsif ($host =~ m/\:/) {
                     print "IPv6 $host $port\n";
                     next unless ($has_ipv6);
-                    next if ($globals->{'6'}->{$port});
+                    next if ($globals->{'6'}->{$port}->{$protocol});
                     print $START "\n# $description\n";
                     print $START $ip6tables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
                 # IPv4
                 } elsif ($host =~ m/(\d+\.){3}\d+(\/\d+)?$/) {
                     print "IPv4 $host $port\n";
-                    next if ($globals->{'4'}->{$port});
+                    next if ($globals->{'4'}->{$port}->{$protocol});
                     print $START "\n# $description\n";
                     print $START $iptables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
                 # Hostname
                 } else {
                     print "Host $host $port\n";
-                    next if ($globals->{'4'}->{$port});
+                    next if ($globals->{'4'}->{$port}->{$protocol});
                     print $START "\n# $description\n";
                     print $START $iptables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
                     if ($has_ipv6) {
