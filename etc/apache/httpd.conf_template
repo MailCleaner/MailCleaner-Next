@@ -152,7 +152,8 @@ php_value arg_separator.input "&;"
 php_value short_open_tag On
 php_value memory_limit 500M
 php_value soap.wsdl_cache_enabled 0
-php_admin_value session.save_handler sqlite
+php_admin_value session.save_handler files
+php_admin_value session.save_path /var/lib/php/sessions/
 php_admin_value session.gc_maxlifetime 86400
 
 RewriteEngine On
