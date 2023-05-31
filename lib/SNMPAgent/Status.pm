@@ -108,7 +108,7 @@ sub getEdition
     my $file = $conf->getOption('SRCDIR')."/etc/edition.def";
     my $f;
 
-    if (open($f, $file)) {
+    if (open($f, '<', $file)) {
         while (<$f>) {
             $edition = $_;
         }
@@ -124,7 +124,7 @@ sub getVersion
     my $file = $conf->getOption('SRCDIR')."/etc/mailcleaner/version.def";
     my $f;
 
-    if (open($f, $file)) {
+    if (open($f, '<', $file)) {
         while (<$f>) {
             $version = $_;
         }
@@ -142,7 +142,7 @@ sub getPatchLevel
     my $patchfile = $conf->getOption('SRCDIR').'/etc/mailcleaner/patchlevel.def';
     if (-f $patchfile) {
         my $pfile;
-        if (open($pfile, $patchfile)) {
+        if (open($pfile, '<', $patchfile)) {
             while(<$pfile>) {
                 if (/^(\d+)$/) {
                     $patch = $1;

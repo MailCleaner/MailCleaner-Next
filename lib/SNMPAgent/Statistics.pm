@@ -186,7 +186,7 @@ sub populateDomains
 	my $file = $conf->getOption('VARDIR')."/spool/tmp/mailcleaner/snmpdomains.list";
 	
 	my $f;
-    if (open($f, $file)) {
+    if (open($f, '<', $file)) {
         while (<$f>) {
             if (/^(\d+):(\S+)/) {
             	setDomain($1, $2);

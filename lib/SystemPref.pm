@@ -94,7 +94,7 @@ sub loadPrefs($self)
     }
 
     my $PREFFILE;
-    if ( !open($PREFFILE, $self->{preffile}) ) {
+    if ( !open($PREFFILE, '<', $self->{preffile}) ) {
         return 0;
     }
     while (<$PREFFILE>) {
@@ -121,7 +121,7 @@ sub dumpPrefs($self)
     chown $uid, $gid, $self->{prefdir};
 
     my $PREFFILE;
-    if ( !open($PREFFILE, ">".$self->{preffile}) ) {
+    if ( !open($PREFFILE, '>', $self->{preffile}) ) {
         print "CANNOTWRITESYSTEMPREF\n";
         return 0;
     }
