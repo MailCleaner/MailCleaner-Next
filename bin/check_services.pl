@@ -79,7 +79,7 @@ if (! -f $updates_config_file ) {
     print STDERR "** ERROR ** No updates configuration found. Aborting.\n";
     exit 1;
 }
-my $updates_config = new Config::Simple($updates_config_file);
+my $updates_config = Config::Simple->new($updates_config_file);
 
 my %services = (
     'http' => { 'call' => \&checkHTTP, 'params' => {'service' => 'http'}},
@@ -147,7 +147,7 @@ sub checkDNS
 {
     my %return = ('status' => 0, 'message' => 'no check done');
 
-    my $random = new String::Random;
+    my $random = String::Random->new();
     my $query = $conf->getOption('CLIENTID').'-'.$conf->getOption('HOSTID').'-'.$random->randpattern("cccccccccc").'.'.$updates_config->param('service-check.dnsDomain');
     my $dnsResult = gethostbyname( $query );
     if ($dnsResult) {

@@ -204,7 +204,7 @@ sub getRealProcessCount($procIndex)
     }
     my $str = $processes_tmpl{$procIndex}->{'pstring'};
 
-    my $t = new Proc::ProcessTable;
+    my $t = Proc::ProcessTable->new();
     foreach my $p ( @{ $t->table } ) {
         if ($p->cmndline =~ /$str/) {
             $count++;

@@ -79,7 +79,7 @@ sub initialise
     } else {
         MailScanner::Log::WarnLog("$MODULE configuration file ($configfile) could not be found !");
     }
-    $Commtouch::lwp = new LWP::UserAgent;
+    $Commtouch::lwp = LWP::UserAgent->new();
 
     if ($Commtouch::conf{'pos_decisive'} && ($Commtouch::conf{'decisive_field'} eq 'pos_decisive' || $Commtouch::conf{'decisive_field'} eq 'both')) {
         $Commtouch::conf{'pos_text'} = 'position : '.$Commtouch::conf{'position'}.', spam decisive';

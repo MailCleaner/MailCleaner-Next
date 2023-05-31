@@ -236,7 +236,7 @@ sub mainLoopHook($self)
 
 sub statusHook($self)
 {
-    my $client = new SockClient( { 'socketpath' => $self->{socketpath} } );
+    my $client = SockClient->new( { 'socketpath' => $self->{socketpath} } );
     return $client->query('STATUS');
 }
 

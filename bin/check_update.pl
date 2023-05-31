@@ -55,7 +55,7 @@ EOF
 my $minsleeptime=0;
 my $maxsleeptime=120;
 
-my $t = new Proc::ProcessTable;
+my $t = Proc::ProcessTable->new();
 foreach my $p ( @{ $t->table } ) {
     if (defined($p->cmndline) && defined($p->pid) && $p->cmndline =~ m/check_update\.pl/ && $p->pid != $$ ) {
         `echo "Already running" >> $config{'VARDIR'}/log/mailcleaner/update.log`;

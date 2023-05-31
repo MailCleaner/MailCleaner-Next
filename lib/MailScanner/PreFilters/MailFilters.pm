@@ -71,7 +71,7 @@ sub initialise
         MailScanner::Log::WarnLog("$MODULE configuration file ($configfile) could not be found !");
     }
 
-    $MFInterface = new MailFilters::SpamCureClientInterface();
+    $MFInterface = MailFilters::SpamCureClientInterface->new();
     $MFInterface->Initialize($MailFilters::conf{'serial'}, $MailFilters::conf{'server_host'}, $MailFilters::conf{'server_port'});
 
     if ($MailFilters::conf{'pos_decisive'} && ($MailFilters::conf{'decisive_field'} eq 'pos_decisive' || $MailFilters::conf{'decisive_field'} eq 'both')) {

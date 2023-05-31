@@ -66,7 +66,7 @@ sub query($self,$query)
     my $tries = 1;
     while ($tries < 2 && ! $sent) {
         $tries++;
-        my $write_set = new IO::Select;
+        my $write_set = IO::Select->new();
         $write_set->add($self->{socket});
         my ($r_ready, $w_ready, $error) =  IO::Select->select(undef, $write_set, undef, $self->{timeout});
         foreach my $sock (@$w_ready) {
@@ -85,7 +85,7 @@ sub query($self,$query)
 
     my $msg;
 
-    my $read_set = new IO::Select;
+    my $read_set = IO::Select->new();
     $read_set->add($self->{socket});
 
     my ($r_ready, $w_ready, $error) =  IO::Select->select($read_set, undef, undef, $self->{timeout});

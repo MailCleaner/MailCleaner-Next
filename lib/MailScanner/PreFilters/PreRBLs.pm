@@ -80,7 +80,7 @@ sub initialise
         MailScanner::Log::WarnLog("$MODULE configuration file ($configfile) could not be found !");
     }
 
-    $PreRBLs::dnslists = new MCDnsLists(\&MailScanner::Log::WarnLog, $PreRBLs::conf{debug});
+    $PreRBLs::dnslists = MCDnsLists->new(\&MailScanner::Log::WarnLog, $PreRBLs::conf{debug});
     $PreRBLs::dnslists->loadRBLs(
         $PreRBLs::conf{rblsDefsPath}, $PreRBLs::conf{rbls}, 'IPRBL DNSRBL BSRBL',
         $PreRBLs::conf{whitelistDomainsFile}, $PreRBLs::conf{TLDsFiles},

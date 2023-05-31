@@ -174,7 +174,7 @@ sub statusHook($self)
 
     $res .= $self->SUPER::statusHook();
     require StatsClient;
-    my $client = new StatsClient();
+    my $client = StatsClient->new();
     $res .= $client->query('GETINTERNALSTATS');
     #$res .= $self->logStats();
 

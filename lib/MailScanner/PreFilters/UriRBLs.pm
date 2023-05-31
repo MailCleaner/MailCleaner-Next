@@ -82,7 +82,7 @@ sub initialise
     }
 
     $UriRBLs::dnslists =
-      new MCDnsLists( \&MailScanner::Log::WarnLog, $UriRBLs::conf{debug} );
+        MCDnsLists->new( \&MailScanner::Log::WarnLog, $UriRBLs::conf{debug} );
     $UriRBLs::dnslists->loadRBLs(
         $UriRBLs::conf{rblsDefsPath}, $UriRBLs::conf{rbls},
         'URIRBL',                     $UriRBLs::conf{whitelistDomainsFile},
@@ -170,7 +170,7 @@ sub Checks($self,$message)
     push( @WholeMessage, "\n" );
     $message->{store}->ReadBody( \@WholeMessage, 0 );
 
-    my $parser = new MIME::Parser;
+    my $parser = MIME::Parser->new();
     $parser->extract_uuencode(1);
     $parser->ignore_errors(1);
     $parser->output_under( $UriRBLs::conf{'temporarydir'} );

@@ -629,7 +629,7 @@ sub statusHook($self)
 
     $res .= $self->SUPER::statusHook();
     require PrefClient;
-    my $client = new PrefClient();
+    my $client = PrefClient->new();
     $res .= $client->query('GETINTERNALSTATS');
 
     $res .= '-------------------' ."\n";

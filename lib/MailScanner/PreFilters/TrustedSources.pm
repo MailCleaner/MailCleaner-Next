@@ -153,7 +153,7 @@ sub initialise
     }
 
     $TrustedSources::conf{whiterbls} .= ' '.$TrustedSources::conf{spflists};
-    $TrustedSources::dnslists = new MCDnsLists(\&MailScanner::Log::WarnLog, $TrustedSources::conf{debug});
+    $TrustedSources::dnslists = MCDnsLists->new(\&MailScanner::Log::WarnLog, $TrustedSources::conf{debug});
     $TrustedSources::dnslists->loadRBLs(
         $TrustedSources::conf{rblsDefsPath}, $TrustedSources::conf{whiterbls}, 'IPRWL SPFLIST',
         '', '', '', $MODULE

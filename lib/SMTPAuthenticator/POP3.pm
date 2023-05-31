@@ -56,7 +56,7 @@ sub create($server,$port,$params)
 
 sub authenticate($self,$username,$password)
 {
-    my $pop = new Mail::POP3Client(
+    my $pop = Mail::POP3Client->new(
         HOST     => $self->{server},
         PORT     => $self->{port},
         USESSL   => $self->{use_ssl},

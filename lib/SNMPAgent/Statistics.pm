@@ -50,7 +50,7 @@ my %mib_global = (
     '2' => \%mib_global_refused,
     '3' => \%mib_global_delayed,
     '4' => \%mib_global_relayed,
-    '5' => \%mib_global_accepte
+    '5' => \%mib_global_accepted
 );
 my %mib_domains = ();
 my %mib_domains_table = ('1' => \%mib_domains);

@@ -129,7 +129,7 @@ sub mainLoopHook($self)
 
     if ( $self->{reportspamtodnslists} > 0 ) {
         require MCDnsLists;
-        $self->{dnslists} = new MCDnsLists(
+        $self->{dnslists} = MCDnsLists->new(
             sub { my $msg = shift; $self->doLog($msg, 'spamhandler'); },
             $self->{debug}
         );

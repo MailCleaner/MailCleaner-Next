@@ -58,10 +58,10 @@ sub authenticate($self,$username,$password)
     my $imap;
     if ($self->{use_ssl}) {
         require Net::IMAP::Simple::SSL;
-        $imap = new Net::IMAP::Simple::SSL($self->{server}.":".$self->{port});
+        $imap = Net::IMAP::Simple::SSL->new($self->{server}.":".$self->{port});
     } else {
         require Net::IMAP::Simple;
-        $imap = new Net::IMAP::Simple($self->{server}.":".$self->{port});
+        $imap = Net::IMAP::Simple->new($self->{server}.":".$self->{port});
     }
 
     if ($imap && $imap->login( $username, $password )) {

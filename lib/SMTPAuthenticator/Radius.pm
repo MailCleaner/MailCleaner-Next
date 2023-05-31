@@ -58,7 +58,7 @@ sub create($server,$port,$params)
 
 sub authenticate($self,$username,$password)
 {
-    my $r = new Authen::Radius(Host => $self->{server}.":".$self->{port}, Secret => $self->{secret});
+    my $r = Authen::Radius->new(Host => $self->{server}.":".$self->{port}, Secret => $self->{secret});
 
     if ($r) {
         if ( $r->check_pwd($username, $password) ) {

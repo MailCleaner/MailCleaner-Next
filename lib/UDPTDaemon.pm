@@ -79,7 +79,7 @@ sub mainLoopHook($self)
 
     $self->logMessage("In UDPTDaemon main loop");
 
-    my $read_set = new IO::Select;
+    my $read_set = IO::Select->new();
     $read_set->add($self->{server});
 
     my $t = threads->self;
