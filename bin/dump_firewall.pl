@@ -60,8 +60,9 @@ my %services = (
     'mail' => ['25', 'TCP'],
     'soap' => ['5132', 'TCP']
 );
-our $iptables = "/sbin/iptables";
-our $ip6tables = "/sbin/ip6tables";
+our $iptables = "/usr/sbin/iptables";
+our $ip6tables = "/usr/sbin/ip6tables";
+our $ipset = "/usr/sbin/ipset";
 
 my $has_ipv6 = 0;
 
@@ -225,7 +226,6 @@ sub do_start_script($rules)
         '6' => {}
     };
     foreach my $description (sort keys %rules) {
-        print "Start $description\n";
         my @ports = split '\|', $rules{$description}[0];
         my @protocols = split '\|', $rules{$description}[1];
         foreach my $port (@ports) {
@@ -233,7 +233,6 @@ sub do_start_script($rules)
                 my $host = $rules{$description}[2];
                 # globals
                 if ($host eq '0.0.0.0/0' || $host eq '::/0') {
-                    print "Global $host $port\n";
                     next if ($globals->{'4'}->{$port}->{$protocol});
                     print $START "\n# $description\n";
                     print $START $iptables." -A INPUT -p ".$protocol." --dport ".$port." -j ACCEPT\n";
@@ -244,20 +243,17 @@ sub do_start_script($rules)
                     }
                 # IPv6
                 } elsif ($host =~ m/\:/) {
-                    print "IPv6 $host $port\n";
                     next unless ($has_ipv6);
                     next if ($globals->{'6'}->{$port}->{$protocol});
                     print $START "\n# $description\n";
                     print $START $ip6tables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
                 # IPv4
                 } elsif ($host =~ m/(\d+\.){3}\d+(\/\d+)?$/) {
-                    print "IPv4 $host $port\n";
                     next if ($globals->{'4'}->{$port}->{$protocol});
                     print $START "\n# $description\n";
                     print $START $iptables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
                 # Hostname
                 } else {
-                    print "Host $host $port\n";
                     next if ($globals->{'4'}->{$port}->{$protocol});
                     print $START "\n# $description\n";
                     print $START $iptables." -A INPUT -p ".$protocol." --dport ".$port." -s ".$host." -j ACCEPT\n";
@@ -276,30 +272,30 @@ sub do_start_script($rules)
     my $blacklist = 0;
     my $blacklist_script = '/usr/mailcleaner/etc/firewall/blacklist';
     unlink $blacklist_script;
+    my $BLACKLIST;
     foreach my $blacklist_file (@blacklist_files) {
-        my ($BLACK_IP, $BLACKLIST);
+        my $BLACK_IP;
         if ( -e $blacklist_file ) {
-            confess ("Failed to open $blacklist_file: $!\n") unless ($BLACK_IP = ${open_as($blacklist_file, "<")});
-            confess ("Failed to open $blacklist_script: $!\n") unless ($BLACKLIST = ${open_as($blacklist_script, ">>", 0755)});
             if ( $blacklist == 0 ) {
-                print $BLACKLIST "#! /bin/sh\n\n";
-                print $BLACKLIST "$iptables -N BLACKLIST\n";
-                print $BLACKLIST "$iptables -A BLACKLIST -j RETURN\n";
-                print $BLACKLIST "$iptables -I INPUT 1 -j BLACKLIST\n\n";
+                confess ("Failed to open $blacklist_script: $!\n") unless ($BLACKLIST = ${open_as($blacklist_script, ">>", 0755)});
+                print $BLACKLIST "#!/bin/sh\n\n";
+                print $BLACKLIST "$ipset -N blacklist nethash\n\n";
                 $blacklist = 1;
             }
+            confess ("Failed to open $blacklist_file: $!\n") unless ($BLACK_IP = ${open_as($blacklist_file, "<")});
             foreach my $IP (<$BLACK_IP>) {
                 chomp($IP);
-                print $BLACKLIST "$iptables -I BLACKLIST 1 -s $IP -j DROP\n";
+                print $BLACKLIST "$ipset add blacklist $IP\n"
             }
-            close $BLACKLIST;
             close $BLACK_IP;
         }
     }
     if ( $blacklist == 1 ) {
+        print $BLACKLIST "\n$iptables -I INPUT -m set --match-set blacklist src -j REJECT\n";
         print $START "\n$blacklist_script\n";
     }
 
+    close $BLACKLIST;
     close $START;
 }
 
