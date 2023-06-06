@@ -52,8 +52,5 @@ class Plugin_TemplatePath extends Zend_Controller_Plugin_Abstract
     {
         $layout = Zend_Layout::getMvcInstance();
         $view = $layout->getView();
-
-        $view->headLink()->appendStylesheet($view->css_path . '/ie7.css', 'screen', 'lt IE 8');
-        $view->headLink()->appendStylesheet($view->css_path . '/ie8.css', 'screen', 'gt IE 7');
     }
 }

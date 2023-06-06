@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -7,28 +8,30 @@
  */
 ?>
 
-<?php echo $this->InputRow($this->form->getElement('use_alltrusted'));?>
-<?php foreach (['domainsToSPF', 'authservers'] as $f) {?>
-    <?php echo $this->InputRow($this->form->getElement($f),['label_addclass'=>'flabeltextarea']);?>
-<?php }?>
-<?php echo $this->InputRow($this->form->getElement('authstring'));?>   
- 
+<?php echo $this->InputRow($this->form->getElement('use_alltrusted')); ?>
+<?php foreach (['domainsToSPF', 'authservers'] as $f) { ?>
+    <?php echo $this->InputRow($this->form->getElement($f), ['label_addclass' => 'flabeltextarea']); ?>
+<?php } ?>
+<?php echo $this->InputRow($this->form->getElement('authstring')); ?>
+
 <tr>
-  <td colspan="2"><hr /></td>
+    <td colspan="2">
+        <hr />
+    </td>
 </tr>
 
 <tr>
-    <td class="flabel flabeltextarea flabelchecklist"><?php echo $this->t->_('Use these DNS lists')?> : </td>
+    <td class="flabel flabeltextarea flabelchecklist"><?php echo $this->t->_('Use these DNS lists') ?> : </td>
     <td class="fvalue fvaluechecklist">
-    <?php foreach ($this->form->_rwl_checks as $check) {?>
-    <?php echo $this->InputRow(
-        $check, 
-	[
-	    'field_only'=>true,
-	    'nobox'=>'true',
-	    'post_field_text'=>$check->getLabel()
-	]
-    )?><br />
-    <?php }?>
+        <?php foreach ($this->form->_rwl_checks as $check) { ?>
+            <?php echo $this->InputRow(
+                $check,
+                [
+                    'field_only' => true,
+                    'nobox' => 'true',
+                    'post_field_text' => $check->getLabel()
+                ]
+            ) ?><br />
+        <?php } ?>
     </td>
 </tr>

@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -6,5 +7,4 @@
  * @copyright 2009, Olivier Diserens; 2023, John Mertz
  */
 ?>
-<?php echo $this->partial('forms/domain'.strtolower($this->panel).'Form.phtml', ['form' => $this->form,'t' => $this->t, 'message' => $this->message, 'domain' => $this->domain]); ?>
- 
+<?php echo $this->partial('forms/domain' . strtolower($this->panel) . 'Form.phtml', ['form' => $this->form, 't' => $this->t, 'message' => $this->message, 'domain' => $this->domain]); ?>

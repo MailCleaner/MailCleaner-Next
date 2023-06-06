@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -8,30 +9,34 @@
 ?>&nbsp;
 <?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t]); ?>
 <fieldset>
-       <?php echo $this->InputRow($this->form->getElement('panel'),['field_only'=>true,'nobox'=>true]);?>
-       <?php echo $this->InputRow($this->form->getElement('name'),['field_only'=>true,'nobox'=>true]);?>
-       <table class="ftable">
-       
-          <?php foreach (['language', 'gui_group_quarantines'] as $f) {?>
-           <?php echo $this->InputRow($this->form->getElement($f));?>
-          <?php }?>
-          
-          <tr>
-            <td colspan="2"><hr /></td>
-          </tr>
-          
-           <?php foreach (['summaryfrequency', 'summary_type', 'summary_to'] as $f) {?>
-           <?php echo $this->InputRow($this->form->getElement($f));?>
-          <?php }?>
-          
-          <tr>
-            <td colspan="2"><hr /></td>
-          </tr>
-          
-           <?php foreach (['delivery_type', 'spam_tag', 'content_subject', 'file_subject', 'virus_subject'] as $f) {?>
-           <?php echo $this->InputRow($this->form->getElement($f));?>
-          <?php }?>
-          
-          <?php echo $this->SubmitRow($this->form->getElement('submit'));?>
-       </table>
+    <?php echo $this->InputRow($this->form->getElement('panel'), ['field_only' => true, 'nobox' => true]); ?>
+    <?php echo $this->InputRow($this->form->getElement('name'), ['field_only' => true, 'nobox' => true]); ?>
+    <table class="ftable">
+
+        <?php foreach (['language', 'gui_group_quarantines'] as $f) { ?>
+            <?php echo $this->InputRow($this->form->getElement($f)); ?>
+        <?php } ?>
+
+        <tr>
+            <td colspan="2">
+                <hr />
+            </td>
+        </tr>
+
+        <?php foreach (['summaryfrequency', 'summary_type', 'summary_to'] as $f) { ?>
+            <?php echo $this->InputRow($this->form->getElement($f)); ?>
+        <?php } ?>
+
+        <tr>
+            <td colspan="2">
+                <hr />
+            </td>
+        </tr>
+
+        <?php foreach (['delivery_type', 'spam_tag', 'content_subject', 'file_subject', 'virus_subject'] as $f) { ?>
+            <?php echo $this->InputRow($this->form->getElement($f)); ?>
+        <?php } ?>
+
+        <?php echo $this->SubmitRow($this->form->getElement('submit')); ?>
+    </table>
 </fieldset>

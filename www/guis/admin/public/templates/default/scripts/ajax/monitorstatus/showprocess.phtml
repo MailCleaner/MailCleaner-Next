@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -7,12 +8,12 @@
  */
 ?>
 <?php echo $this->partial(
-	'ajax/monitorstatus/restartservice.phtml',
-	[
-        	'status' => $this->status,
-        	'process' => $this->process,
-        	'slaveid' => $this->slaveid,
-        	't' => $this->t,
-        	'images_path' => $this->images_path
-	]
+    'ajax/monitorstatus/restartservice.phtml',
+    [
+        'status' => $this->status,
+        'process' => $this->process,
+        'slaveid' => $this->slaveid,
+        't' => $this->t,
+        'images_path' => $this->images_path
+    ]
 ); ?>

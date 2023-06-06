@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
@@ -8,17 +9,21 @@
 ?>&nbsp;
 <?php echo $this->partial('layouts/message.phtml', ['message' => $this->message, 't' => $this->t]); ?>
 <fieldset>
-       <?php echo $this->InputRow($this->form->getElement('panel'),['field_only'=>true,'nobox'=>true]);?>
-       <?php echo $this->InputRow($this->form->getElement('name'),['field_only'=>true,'nobox'=>true]);?>
-       <table class="ftable">
-       
-         <?php if ($this->form->canArchive()) {
-           echo $this->InputRow($this->form->getElement('archive_mail'));?>
-           <tr><td colspan="2"><hr /></td></tr>
-         <?php  }?>
-       
-          <?php echo $this->InputRow($this->form->getElement('copyto_mail'));?>
+    <?php echo $this->InputRow($this->form->getElement('panel'), ['field_only' => true, 'nobox' => true]); ?>
+    <?php echo $this->InputRow($this->form->getElement('name'), ['field_only' => true, 'nobox' => true]); ?>
+    <table class="ftable">
 
-          <?php echo $this->SubmitRow($this->form->getElement('submit'));?>
-       </table>
+        <?php if ($this->form->canArchive()) {
+            echo $this->InputRow($this->form->getElement('archive_mail')); ?>
+            <tr>
+                <td colspan="2">
+                    <hr />
+                </td>
+            </tr>
+        <?php  } ?>
+
+        <?php echo $this->InputRow($this->form->getElement('copyto_mail')); ?>
+
+        <?php echo $this->SubmitRow($this->form->getElement('submit')); ?>
+    </table>
 </fieldset>

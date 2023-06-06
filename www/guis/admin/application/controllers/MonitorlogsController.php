@@ -166,8 +166,6 @@ class MonitorlogsController extends Zend_Controller_Action
         $view->thisurl = Zend_Controller_Action_HelperBroker::getStaticHelper('url')->simple('view', 'monitorlogs', NULL, []);
         $view->headLink()->appendStylesheet($view->css_path . '/viewlog.css');
         $view->headScript()->appendFile($view->scripts_path . '/logview.js', 'text/javascript');
-        $view->headLink()->appendStylesheet($view->css_path . '/ie7.css', 'screen', 'lt IE 8');
-        $view->headLink()->appendStylesheet($view->css_path . '/ie8.css', 'screen', 'gt IE 7');
 
         $request = $this->getRequest();
         $file = '';
