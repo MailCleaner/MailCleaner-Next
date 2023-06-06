@@ -171,35 +171,35 @@ if ($mode eq "a") {
     print "total content: $total_content ($percentcontent%)\n";
     print "total clean:   $total_clean ($percentclean%)\n";
 } elsif ($mode eq "A") {
-    print("$total_bytes|$total_msg|$total_spam|$percentspam|$total_virus|$percentvirus|$total_content|$percentcontent|$user_count|$total_clean|$percentclean|$domain_count");
+    print(join('|',$total_bytes||0,$total_msg||0,$total_spam||0,$percentspam||0,$total_virus||0,$percentvirus||0,$total_content||0,$percentcontent||0,$user_count||0,$total_clean||0,$percentclean||0,$domain_count||0));
 } elsif ($mode eq "B") {
-    print("$total_bytes|$total_msg|$total_spam|$percentspam|$total_virus|$percentvirus|$total_content|$percentcontent|$total_clean|$percentclean");
+    print(join('|',$total_bytes||0,$total_msg||0,$total_spam||0,$percentspam||0,$total_virus||0,$percentvirus||0,$total_content||0,$percentcontent||0,$total_clean||0,$percentclean||0));
 } elsif ($mode eq "b") {
-    print($total_bytes);
+    print($total_bytes || 0);
 } elsif ($mode eq "m") {
-    print($total_msg);
+    print($total_msg || 0);
 } elsif ($mode eq "s") {
-    print($total_spam);
+    print($total_spam || 0);
 } elsif ($mode eq "S") {
-    print($percentspam);
+    print($percentspam || 0);
 } elsif ($mode eq "v") {
-    print($total_virus);
+    print($total_virus || 0);
 } elsif ($mode eq "V") {
-    print($percentvirus);
+    print($percentvirus || 0);
 } elsif ($mode eq "c") {
-    print($total_content);
+    print($total_content || 0);
 } elsif ($mode eq "C") {
-    print($percentcontent);
+    print($percentcontent || 0);
 } elsif ($mode eq "p") {
-    print($percentspam);
+    print($percentspam || 0);
 } elsif ($mode eq "u") {
-    print($user_count);
+    print($user_count || 0);
 } elsif ($mode eq "l") {
-    print($total_clean);
+    print($total_clean || 0);
 } elsif ($mode eq "L") {
-    print($percentclean);
+    print($percentclean || 0);
 } elsif ($mode eq "d") {
-    print($domain_count);
+    print($domain_count || 0);
 }
 
 sub usage
