@@ -35,11 +35,15 @@ img {
     color: #000000;
     background-color: #F5F5F5;
     text-align: left;
+    border: solid 2px black;
+    border-radius: 20px;
 }
 
 #mclogo {
     vertical-align: top;
     background-color: #5C6D99; /*__MAINHEADERBG__*/
+    border-top-left-radius: 19px;
+    border-top-right-radius: 19px;
 }
 
 /* footer */
@@ -77,6 +81,8 @@ img {
     width: 342px;
     line-height: 20px;
     vertical-align: top;
+    border: solid 1px black;
+    border-radius: 10px;
 }
 
 .element {
@@ -97,7 +103,10 @@ img {
     margin-bottom: 5px;
     width: 65px;
     font-size: 11px;
+    line-height: 20px;
     vertical-align: bottom;
+    border: solid 1px black;
+    border-radius: 10px;
 }
 
 /* interactive texts */
