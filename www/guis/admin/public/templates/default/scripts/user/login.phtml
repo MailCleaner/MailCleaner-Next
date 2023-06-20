@@ -9,7 +9,7 @@
 ?>
 <div id="loginpanel">
 
-    <img id="mclogo" src="<?php echo $this->images_path; ?>/login_header.png" alt="" />
+    <img id="mclogo" src="<?php echo $this->images_path; ?>/logo_name.png" alt="" />
     <p id="badlogin">
         <?php echo $this->error; ?>
     </p>
@@ -25,14 +25,16 @@
     $file_conf = DataManager::getFileConfig($sysconf_::$CONFIGFILE_);
 
     if (isset($file_conf['REGISTERED']) && $file_conf['REGISTERED'] == '1') {
-        $mclink = "www.mailcleaner.net";
+        $mclink = "https://www.mailcleaner.net";
+        $mclinklabel = 'MailCleaner, an <img src="/templates/default/images/alinto.png"> Company';
     } else {
-        $mclink = "www.mailcleaner.org";
+        $mclink = "https://www.mailcleaner.org";
+        $mclinklabel = 'MailCleaner, the Open Source email filter from <img src="/templates/default/images/alinto.png">';
     }
 
     ?>
 
     <div id="loginfooter">
-        <div class="copyright">&copy; <a href="https://<?php echo $mclink; ?>"><?php echo $mclink; ?></a></div>
+        <div class="copyright">&copy; <a href="<?php echo $mclink; ?>"><?php echo $mclinklabel; ?></a></div>
     </div>
 </div>

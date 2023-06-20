@@ -245,23 +245,19 @@ if [ "$batch" = 0 ]; then
 	echo "done"
 fi
 
-rm -f $SRCDIR/www/guis/admin/public/templates/default/images/login_header.png
-ln -s $SRCDIR/www/guis/admin/public/templates/default/images/login_header_ce.png $SRCDIR/www/guis/admin/public/templates/default/images/login_header.png
 rm -f $SRCDIR/www/guis/admin/public/templates/default/images/logo_name.png
 ln -s $SRCDIR/www/guis/admin/public/templates/default/images/logo_name_ce.png $SRCDIR/www/guis/admin/public/templates/default/images/logo_name.png
 rm -f $SRCDIR/www/guis/admin/public/templates/default/images/status_panel.png
 ln -s $SRCDIR/www/guis/admin/public/templates/default/images/status_panel_ce.png $SRCDIR/www/guis/admin/public/templates/default/images/status_panel.png
-rm -f $SRCDIR/www/user/htdocs/templates/default/images/login_header.png
-ln -s $SRCDIR/www/user/htdocs/templates/default/images/login_header_ce.png $SRCDIR/www/user/htdocs/templates/default/images/login_header.png
 rm -f $SRCDIR/www/user/htdocs/templates/default/images/logo_name.png
 ln -s $SRCDIR/www/user/htdocs/templates/default/images/logo_name_ce.png $SRCDIR/www/user/htdocs/templates/default/images/logo_name.png
 rm -f $SRCDIR/templates/summary/default/en/summary_parts/banner.jpg
 ln -s $SRCDIR/templates/summary/default/en/summary_parts/banner_ce.jpg $SRCDIR/templates/summary/default/en/summary_parts/banner.jpg
 
-sed -ri 's/^(\s+).*__MAINHEADERBG__.*$/\1background-color: #5C6D99; \/\*__MAINHEADERBG__\*\//g' $SRCDIR/www/guis/admin/public/templates/default/css/main.css
-sed -ri 's/^(\s+).*__MAINHEADERBG__.*$/\1background-color: #5C6D99; \/\*__MAINHEADERBG__\*\//g' $SRCDIR/www/guis/admin/public/templates/default/css/login.css
-sed -ri 's/^(\s+).*__MAINHEADERBG__.*$/\1background-color: #5C6D99; \/\*__MAINHEADERBG__\*\//g' $SRCDIR/www/user/htdocs/templates/default/css/navigation.css
-sed -ri 's/^(\s+).*__MAINHEADERBG__.*$/\1background-color: #5C6D99; \/\*__MAINHEADERBG__\*\//g' $SRCDIR/www/user/htdocs/templates/default/css/login.css
+sed -ri 's/^(\s+).*__MAINHEADERBG__.*$/\1background-color: #e8e8e8; \/\*__MAINHEADERBG__\*\//g' $SRCDIR/www/guis/admin/public/templates/default/css/main.css
+sed -ri 's/^(\s+).*__MAINHEADERBG__.*$/\1background-color: #e8e8e8; \/\*__MAINHEADERBG__\*\//g' $SRCDIR/www/guis/admin/public/templates/default/css/login.css
+sed -ri 's/^(\s+).*__MAINHEADERBG__.*$/\1background-color: #e8e8e8; \/\*__MAINHEADERBG__\*\//g' $SRCDIR/www/user/htdocs/templates/default/css/navigation.css
+sed -ri 's/^(\s+).*__MAINHEADERBG__.*$/\1background-color: #e8e8e8; \/\*__MAINHEADERBG__\*\//g' $SRCDIR/www/user/htdocs/templates/default/css/login.css
 
 echo "delete from administrator where username='mailcleaner-support';" | $SRCDIR/bin/mc_mysql -m mc_config &>/dev/null
 echo "delete from external_access where service='ssh' AND port='22' AND protocol='TCP' AND (allowed_ip='193.246.63.0/24' OR allowed_ip='195.176.194.0/24');" | $SRCDIR/bin/mc_mysql -m mc_config &>/dev/null

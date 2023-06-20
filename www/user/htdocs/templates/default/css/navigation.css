@@ -9,7 +9,7 @@
     height: 75px;
     margin: 0px;
     background-image:none;
-    background-color: #5C6D99; /*__MAINHEADERBG__*/
+    background-color: #e8e8e8; /*__MAINHEADERBG__*/
     background-repeat: repeat-x;
     color: white; 
     text-align: left;
@@ -71,7 +71,7 @@
     display: inline;
     float: left;
     background-image: none !important;
-    background-color: #E93A00 !important;
+    background-color: #ED7B00 !important;
     width: 100px;
     line-height: 33px;
     text-align: center;
@@ -106,5 +106,5 @@
 }
 
 #logoutbutton:hover {
-    background-color: #E93A00;
+    background-color: #ED7B00;
 }

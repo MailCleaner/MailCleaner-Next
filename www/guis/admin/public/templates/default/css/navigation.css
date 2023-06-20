@@ -59,7 +59,7 @@
     display: inline;
     float: left;
     background-image: none;
-    background-color: #E93A00;
+    background-color: #ED7B00;
     width: 100px;
     line-height: 33px;
     height: 37px;
@@ -112,7 +112,7 @@
     height: 100%;
     line-height: 20px;
     background-image: none;
-    background-color: #E0E0E0;
+    background-color: #E8E8E8;
 }
 
 #subnavigation ul {
@@ -141,11 +141,11 @@
     text-decoration: none;
 }
 .submenuel a:hover {
-    color: #F80000;
+    color: #022971;
     text-decoration: none;
 }
 
 .submenuelselected a {
-    color: #E93A00;
+    color: #ED7B00;
     font-weight: bold;
 }

@@ -149,7 +149,7 @@ input {
     overflow: hidden;
     white-space: nowrap;
     font-weight: bold;
-    color: #E93A00;
+    color: #ED7B00;
     font-size: 13px;
 }
 
@@ -266,25 +266,25 @@ input {
 #quarantinebutton:hover{
     color: #FFFFFF !important;
     background-image: none !important;
-    background-color: #E93A00 !important;
+    background-color: #ED7B00 !important;
 }
 
 #configbutton:hover{
     color: #FFFFFF !important;
     background-image: none !important;
-    background-color: #E93A00 !important;
+    background-color: #ED7B00 !important;
 }
 
 #helpbutton:hover{
     color: #FFFFFF !important;
     background-image: none !important;
-    background-color: #E93A00 !important;
+    background-color: #ED7B00 !important;
 }
 
 #statsbutton:hover{
     color: #FFFFFF !important;
     background-image: none !important;
-    background-color: #E93A00 !important;
+    background-color: #ED7B00 !important;
 }
 
 /*** ---- ***/

@@ -30,7 +30,7 @@
     height: 76px;
     margin: 0px;
     background-image:none;
-    background-color: #5C6D99; /*__MAINHEADERBG__*/
+    background-color: #e8e8e8; /*__MAINHEADERBG__*/
     background-repeat: repeat-x;
     color: white;
     text-align: left;
@@ -60,7 +60,7 @@
     margin-top: 7px;
     padding: 0px;
     list-style-type: none;
-    color: #C970AC;
+    color: #ED7B00;
 }
 
 #statuslist a {
@@ -173,7 +173,7 @@
     overflow: hidden;
     white-space: nowrap;
     font-weight: bold;
-    color: #E93A00;
+    color: #ED7B00;
     font-size: 13px;
     text-shadow:0px 1px #FFF;
 }
@@ -781,7 +781,6 @@ input#date {
     font-style: italic;
 }
 
-
 .configlist {
     float: left;
     width: 260px;
@@ -978,18 +977,16 @@ input#date {
     position: absolute;
     display: none;
     top: 0px;
-    padding: 0px;
-    padding-bottom: 0px;
+    padding: 5px;
+    border: solid 2px #000000;
     border-top: 0px;
     left: 299px;
-    background-color: #EEEEEE;
+    background-color: #E89797;
     width: 620px;
     max-width: 620px;
     z-index: 10;
-    border-bottom-left-radius: 5px 5px;
-    border-bottom-right-radius: 5px 5px;
-    -moz-border-bottom-left-radius: 5px 5px;
-    -moz-border-bottom-right-radius: 5px 5px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 #informational ul {
