@@ -984,13 +984,12 @@ input#date {
     position: absolute;
     display: none;
     top: 0px;
-    padding: 5px;
     border: solid 2px #000000;
     border-top: 0px;
-    left: 299px;
     background-color: #E89797;
-    width: 620px;
-    max-width: 620px;
+    width: 50%;
+    left: 25%;
+    right: 25%;
     z-index: 10;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
