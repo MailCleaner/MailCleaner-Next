@@ -249,6 +249,8 @@ rm -f $SRCDIR/www/guis/admin/public/templates/default/images/logo_name.png
 ln -s $SRCDIR/www/guis/admin/public/templates/default/images/logo_name_ce.png $SRCDIR/www/guis/admin/public/templates/default/images/logo_name.png
 rm -f $SRCDIR/www/guis/admin/public/templates/default/images/status_panel.png
 ln -s $SRCDIR/www/guis/admin/public/templates/default/images/status_panel_ce.png $SRCDIR/www/guis/admin/public/templates/default/images/status_panel.png
+rm -f $SRCDIR/www/guis/users/public/images/logo_name.png
+ln -s $SRCDIR/www/guis/users/public/images/logo_name_ce.png $SRCDIR/www/guis/users/public/images/logo_name.png
 rm -f $SRCDIR/www/user/htdocs/templates/default/images/logo_name.png
 ln -s $SRCDIR/www/user/htdocs/templates/default/images/logo_name_ce.png $SRCDIR/www/user/htdocs/templates/default/images/logo_name.png
 rm -f $SRCDIR/templates/summary/default/en/summary_parts/banner.jpg
