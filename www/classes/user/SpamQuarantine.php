@@ -371,7 +371,7 @@ class SpamQuarantine extends Quarantine
 
                 if (empty($result)) {
                     $hrefNews = "/fm.php?id=" . $id . "&a=" . urlencode($recipient) . '&s=' . $slave . "&n=1&pop=up";
-                    $link =  '<span style="float: right;"><a style="border: thin solid grey; padding: 2px; background-color: lightgrey; box-shadow: 2px 1px 0px lightgrey; text-decoration: none;" data-id="%s" data-a="%s" href="#" onClick="MyWindow=window.open(\'%s\',\'MyWindow\',\'width=600,height=500\'); return false;" class="allow">%s</a></span>';
+                    $link =  '<span style="float: right;"><a style="border: thin solid grey; padding: 2px; background-color: lightgrey; text-decoration: none;" data-id="%s" data-a="%s" href="#" onClick="MyWindow=window.open(\'%s\',\'MyWindow\',\'width=600,height=500\'); return false;" class="allow">%s</a></span>';
                     $rule = 'allow';
                     $label = $lang_->print_txt('NEWSLETTERACCEPT');
 

@@ -21,7 +21,6 @@
 #pagehead {
     overflow: auto;
     height: 100%;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
 
 #mainheader {
@@ -149,7 +148,6 @@
     border: 1px solid #D4D3D2;
     background: #FFFFFF;
     overflow: hidden;
-    text-shadow:0px 1px #FFF;
 }
 
 .contentheadicon {
@@ -186,7 +184,6 @@
     font-weight: bold;
     color: #ED7B00;
     font-size: 13px;
-    text-shadow:0px 1px #FFF;
 }
 
 #generalconfigmenu {
@@ -210,7 +207,6 @@
     border-bottom:none;
     line-height: 24px;
     padding-left: 13px;
-    text-shadow:0px 1px #FFF;
 }
 
 #generalconfigmenu li a {
@@ -1016,7 +1012,6 @@ input#date {
     background-color: #333333;
     color: #EEEEEE;
     text-align: center;
-    text-shadow:0px 1px #666666;
 }
 
 #informational .close {
