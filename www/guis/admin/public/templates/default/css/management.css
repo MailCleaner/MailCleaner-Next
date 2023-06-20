@@ -50,7 +50,6 @@
 /* pagination */
 #pagindomainlist {
     background-image:url(../images/domainpagebg_large.png);
-    width: 295px;
 }
 
 #resultpanel {
@@ -78,7 +77,6 @@
 #domainnavlist {
     width: 295px;
     overflow: hidden;
-    height: 1000px;
 }
 
 #domainnavlist li {

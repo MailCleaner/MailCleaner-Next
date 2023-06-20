@@ -202,14 +202,13 @@
 
 /* pagination */
 #pagindomainlist {
-    position: absolute;
-    bottom: 50px;
-    background-image:none;
-    width: 185px;
+    position: relative;
+    width: 100%;
     text-align: center;
     line-height: 16px;
-    font-size: 9px;
+    font-size: 1em;
     padding-top: 10px;
+    display: inline-block;
 }
 
 #pagindomainlist img {
@@ -507,8 +506,8 @@
 #domainnavlist {
     background-image:none;
     overflow: hidden;
-    height: 1000px;
 }
+
 .adminformcontent {
     border: 1px solid #CAB4BE;
 }
