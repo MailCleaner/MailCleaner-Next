@@ -55,7 +55,7 @@
 #statuslist {
     margin: 0px;
     margin-left: 108px;
-    margin-top: 11px;
+    font-size: 0.9em;
     padding: 0px;
     list-style-type: none;
     color: #ED7B00;
@@ -83,10 +83,10 @@
 }
 
 #pagecontent {
-    padding-bottom: 30px;
+    padding-bottom: 40px;
     overflow: auto;
     border-top: 1px solid #D4D3D2;
-    top:200px;
+    top: 200px;
 }
 
 #pagefoot {
