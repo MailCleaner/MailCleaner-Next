@@ -16,7 +16,7 @@ img {
 
 .pagelink {
     text-decoration: underline;
-    color: #552056;
+    color: #022971;
 }
 
 
@@ -161,7 +161,7 @@ img {
 /* yeah raf ! thanks for this one ! */
 #quarantineheader a {
     text-decoration: none!important;
-    color: #552056!important;
+    color: #022971!important;
 }
 
 #quarantinebanner a {
@@ -268,7 +268,7 @@ img {
     float: left;
     padding: 0px;
     margin: 0px;
-    color: #552056;
+    color: #022971;
     margin-right: 36px;
     margin-left: 0px;
     line-height: 23px;

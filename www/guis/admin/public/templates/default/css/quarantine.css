@@ -22,7 +22,7 @@ img {
 
 .pagelink {
     text-decoration: underline;
-    color: #552056;
+    color: #022971;
 }
 
 /* address selector */
@@ -226,7 +226,7 @@ img {
 }
 
 #quarantineheader td {
-    color: #552056;
+    color: #022971;
     background-color: #F5F5F5;
 }
 
@@ -242,7 +242,7 @@ img {
 /* yeah raf ! thanks for this one ! */
 #quarantineheader a {
     text-decoration: none!important;
-    color: #552056!important;
+    color: #022971!important;
 }
 
 #quarantinebanner a {
