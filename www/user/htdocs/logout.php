@@ -52,10 +52,10 @@ if (isset($file_conf['REGISTERED']) && $file_conf['REGISTERED'] == '1') {
 }
 if ($is_enterprise) {
     $mclink = "https://www.mailcleaner.net";
-    $mclinklabel = "www.mailcleaner.net";
+    $mclinklabel = 'MailCleaner, an <img src="/templates/default/images/alinto.png"> Company';
 } else {
     $mclink = "https://www.mailcleaner.org";
-    $mclinklabel = "www.mailcleaner.org";
+    $mclinklabel = 'MailCleaner, the Open Source email filter from <img src="/templates/default/images/alinto.png">';
 }
 
 // prepare replacements
