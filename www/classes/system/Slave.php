@@ -398,6 +398,7 @@ class Slave extends PrefHandler
             'AVG10MIN' => $status->avg10,
             'AVG15MIN' => $status->avg15
         ];
+        $ret = '';
         foreach ($loads as $tag => $soapvalue) {
             $tmpl = str_replace('__VALUE__', $soapvalue, $t);
             $ret .= str_replace('__NAME__', $lang_->print_txt($tag), $tmpl);
@@ -438,6 +439,7 @@ class Slave extends PrefHandler
             'SYSTEMPART' => $status->root,
             'DATASPART' => $status->var
         ];
+        $ret = '';
         foreach ($disks as $tag => $soapvalue) {
             $tmpl = str_replace('__VALUE__', $soapvalue, $t);
             $ret .= str_replace('__NAME__', $lang_->print_txt($tag), $tmpl);
@@ -481,6 +483,7 @@ class Slave extends PrefHandler
             'TOTALSWAP' => $status->swaptotal,
             'FREESWAP' => $status->swapfree
         ];
+        $ret = '';
         foreach ($mems as $tag => $soapvalue) {
             $tmpl = str_replace('__VALUE__', $this->format_size($soapvalue), $t);
             $ret .= str_replace('__NAME__', $lang_->print_txt($tag), $tmpl);
@@ -557,6 +560,7 @@ class Slave extends PrefHandler
             'VIRUSES' => $status->virus,
             'CONTENT' => $status->content
         ];
+        $ret = '';
         foreach ($types as $tag => $soapvalue) {
             $tmpl =   str_replace('__VALUE__', "<font color=\"" . $colors[$tag] . "\">" . $soapvalue . "</font>", $t);
             $ret .=   str_replace('__NAME__', "<font color=\"" . $colors[$tag] . "\">" . $lang_->print_txt($tag) . "</font>", $tmpl);

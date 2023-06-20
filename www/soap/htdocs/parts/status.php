@@ -124,10 +124,9 @@ function getLastPatch($sid)
 /**
  * get the spam/message/virus/content/bytes/user/clean counts for today
  * @param  $sid  string  soap session id
- * @param  $spec string  specified statistic (domain, user)
  * @return       array   today's counts as array (key is counted value, value is actual count)
  */
-function getTodaysCounts($sid, $spec)
+function getTodaysCounts($sid)
 {
     $admin_ = getAdmin($sid);
     if (!$admin_ || $admin_->getPref('username') == "") {
@@ -141,7 +140,7 @@ function getTodaysCounts($sid, $spec)
     }
     $sysconf_ = SystemConfig::getInstance();
 
-    $cmd = $sysconf_->SRCDIR_ . "/bin/get_today_stats.pl -A  $spec";
+    $cmd = $sysconf_->SRCDIR_ . "/bin/get_today_stats.pl -A";
     $res_a = [];
     exec($cmd, $res_a);
 
@@ -150,6 +149,7 @@ function getTodaysCounts($sid, $spec)
         return "ERRORFETCHINGTODAYSCOUNTS " . $res[0];
     }
     list($bytes, $msg, $spam, $pspam, $virus, $pvirus, $content, $pcontent, $user, $clean, $pclean) = preg_split('/\|/', $res_a[0]);
+    //return new SoapStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     return new SoapStats($bytes, $msg, $spam, $pspam, $virus, $pvirus, $content, $pcontent, $user, $clean, $pclean);
 }
 

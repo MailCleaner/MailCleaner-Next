@@ -35,7 +35,6 @@ require ReadConfig;
 require StatsClient;
 
 my $mode_given = shift;
-my $spec = shift;
 my $mode = "B";
 
 if (!$mode_given || $mode_given =~ /^\-a$/) {
@@ -72,8 +71,6 @@ if (!$mode_given || $mode_given =~ /^\-a$/) {
     $mode = 'L';
 } elsif ($mode_given =~ /^\-d$/) {
     $mode = 'd';
-} elsif ($mode_given =~ /^[azAZ09\-\_\.\@]+$/) {
-    $spec = $mode_given;
 } else {
     print("Invalid selection: $mode_given\n");
     usage();
