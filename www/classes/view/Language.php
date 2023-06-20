@@ -100,7 +100,10 @@ class Language
         // read available languages for EE
         require_once('helpers/DataManager.php');
         $baseconf = DataManager::getFileConfig(SystemConfig::$CONFIGFILE_);
-        $ISENTERPRISE = $baseconf['REGISTERED'] == '1';
+        $ISENTERPRISE = 0;
+        if (isset($baseconf['REGISTERED']) && $baseconf['REGISTERED'] == '1') {
+            $ISENTERPRISE = 1;
+        }
         $ee_languages = [];
         if ($ISENTERPRISE) {
             if (($handle = fopen($this->sysconf_->SRCDIR_ . "/www/classes/view/EELanguages.txt", "r")) !== FALSE) {

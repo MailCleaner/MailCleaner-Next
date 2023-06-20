@@ -46,7 +46,10 @@ if ($http->getPref('use_ssl')) {
 require_once('helpers/DataManager.php');
 $file_conf = DataManager::getFileConfig($sysconf_::$CONFIGFILE_);
 
-$is_enterprise = $file_conf['REGISTERED'] == '1';
+$is_enterprise = 0;
+if (isset($file_conf['REGISTERED']) && $file_conf['REGISTERED'] == '1') {
+    $is_enterprise = 1;
+}
 if ($is_enterprise) {
     $mclink = "https://www.mailcleaner.net";
     $mclinklabel = "www.mailcleaner.net";

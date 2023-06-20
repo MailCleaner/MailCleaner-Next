@@ -108,7 +108,10 @@ if (!isset($address)) {
 require_once('helpers/DataManager.php');
 $file_conf = DataManager::getFileConfig($sysconf_::$CONFIGFILE_);
 
-$is_enterprise = $file_conf['REGISTERED'] == '1';
+$is_enterprise = 0;
+if (isset($file_conf['REGISTERED']) && $file_conf['REGISTERED'] == '1') {
+    $is_enterprise = 1;
+}
 $content = '';
 $user_pref_lang = $lang_->getLanguage();
 $default_filename = 'mc-info-box-user-en.php';
