@@ -130,14 +130,11 @@ sub getValueForOID($oid)
     if (ref($el) eq 'CODE') {
         return $el;
     }
-    return undef;
 }
 
 sub getOIDElement($oid)
 {
-    if (!defined($oid)) {
-        return undef;
-    }
+    return if (!defined($oid));
     doLog("Getting element for oid : $oid", 'oid', 'debug');
     my @oid = $oid->to_array();
     my $regoid = NetSNMP::OID->new($rootOID);
@@ -151,10 +148,10 @@ sub getOIDElement($oid)
             if (defined($branch->{$b})) {
                 $branch = $branch->{$b};
             } else {
-                return undef;
+                return;
             }
         } else {
-            return undef;
+            return;
         }
     }
     return $branch;
@@ -162,9 +159,7 @@ sub getOIDElement($oid)
 
 sub getNextForOID($oid,$nextbranch)
 {
-    if (NetSNMP::OID->new($oid) < NetSNMP::OID->new($rootOID)) {
-        return undef;
-    }
+    return if (NetSNMP::OID->new($oid) < NetSNMP::OID->new($rootOID));
     my $el = getOIDElement(NetSNMP::OID->new($oid));
     if (defined($el) && ref($el) eq 'HASH' && (!defined($nextbranch) || !$nextbranch)) {
         # searching inside
@@ -190,7 +185,7 @@ sub getNextForOID($oid,$nextbranch)
                     if (defined($tpos)) {
                         return $oid.".".$selpos.".".$tpos;
                     }
-                    return undef;
+                    return;
                 }
             }
         }
@@ -199,14 +194,14 @@ sub getNextForOID($oid,$nextbranch)
             doLog('got to jump higher of '.$oid, 'oid', 'debug');
             return getNextForOID($oid, 1);
         }
-        return undef;
+        return;
     }
 }
 
 sub getNextElementInBranch($branch)
 {
     if ( ref($branch) ne 'HASH') {
-        return undef;
+        return;
     }
  #     foreach my $e (sort(keys %{$branch})) {
     foreach my $e ( sort { $a <=> $b} keys %{$branch} ) {
@@ -217,7 +212,7 @@ sub getNextElementInBranch($branch)
             return $e.".".getNextElementInBranch($branch->{$e});
         }
     }
-    return undef;
+    return;
 }
 ##### Log management
 
@@ -254,9 +249,7 @@ sub doEffectiveLog($message)
 sub writeLogToFile($message)
 {
     chomp($message);
-    if ( $logfile eq '' ) {
-        return;
-    }
+    return if ( $logfile eq '' );
 
     my $LOCK_SH = 1;
     my $LOCK_EX = 2;
@@ -264,10 +257,11 @@ sub writeLogToFile($message)
     my $LOCK_UN = 8;
     $| = 1;
 
-    if ( !defined( fileno($LOGGERLOG) ) || !-f $logfile ) {
-        open $LOGGERLOG, ">>" . $logfile;
+    if ( !defined($LOGGERLOG) || !fileno($LOGGERLOG) ) {
+        openLog();
+        open($LOGGERLOG, ">>", $logfile);
         if ( !defined( fileno($LOGGERLOG) ) ) {
-            open $LOGGERLOG, ">>/tmp/" . $logfile;
+            open($LOGGERLOG, ">>", "/tmp/" . $logfile);
             $| = 1;
         }
         doLog( 'Log file has been opened, hello !', 'daemon' );
@@ -281,7 +275,38 @@ sub writeLogToFile($message)
     flock( $LOGGERLOG, $LOCK_UN );
 }
 
-sub closeLog($self)
+sub openLog()
+{
+    if (!defined($logfile) || $logfile eq '') {
+        print STDERR "SNMP does not have a configured log file\n";
+        $LOGGERLOG = &STDERR();
+    } else {
+        unless (open($LOGGERLOG, '>>', $logfile)) {
+            print STDERR "Unable to open $logfile for writing.\n";
+            my @path = split(/\//, $logfile);
+            shift(@path);
+            my $file = pop(@path);
+            my $d = '/tmp';
+            foreach my $dir (@path) {
+                $d .= "/$dir";
+                unless (-d $d) {
+                    unless (mkdir($d)) {
+                        print STDERR "Cannot create $d: $!\n";
+                        $d = '/tmp';
+                        last;
+                    }
+                }
+            }
+            $logfile = $d.'/'.$file;
+            open $LOGGERLOG, '>>', $logfile;
+            print STDERR "Logging to $logfile\n";
+        }
+        $| = 1;
+    }
+    print $LOGGERLOG "Log file has been opened, hello !\n";
+}
+
+sub closeLog()
 {
     doLog( 'Closing log file now.', 'daemon' );
     close $LOGGERLOG;
