@@ -146,7 +146,8 @@ img {
 }
 
 #quarantineheader td {
-    color: #F5F5F5;
+    color: #022971;
+    font-weight: bold;
 }
 
 #quarantineheader img {
