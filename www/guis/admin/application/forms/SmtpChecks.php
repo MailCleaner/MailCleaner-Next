@@ -240,6 +240,7 @@ class Default_Form_SmtpChecks extends ZendX_JQuery_Form
             'required'   => true,
             'filters'    => ['StringTrim']
         ]);
+        $long_lines->addValidator(new Zend_Validate_Alnum());
         $long_lines->addMultiOption('ignore', $t->_("Ignore errors; relay invalid SMTP"));
         $long_lines->addMultiOption('fix', $t->_("Fold long lines; makes SMTP valid, but could break DKIM signing"));
         $long_lines->addMultiOption('reject', $t->_("Reject invalid long lines"));
@@ -304,13 +305,14 @@ class Default_Form_SmtpChecks extends ZendX_JQuery_Form
         $rblstr = preg_replace('/^\s*/', '', $rblstr);
         $mta->setparam('rbls', $rblstr);
         if ($request->getParam('long_lines') == 'ignore') {
-            $mta->setparam('allow_long', true);
-            $mta->setparam('folding', false);
+            $mta->setparam('allow_long', 1);
+            $mta->setparam('folding', 0);
         } elseif ($request->getParam('long_lines') == 'fix') {
-            $mta->setparam('allow_long', true);
-            $mta->setparam('folding', true);
+            $mta->setparam('allow_long', 1);
+            $mta->setparam('folding', 1);
         } elseif ($request->getParam('long_lines') == 'reject') {
-            $mta->setparam('allow_long', false);
+            $mta->setparam('allow_long', 0);
+            $mta->setparam('folding', 1);
         }
     }
 }
