@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 #
 #   Mailcleaner - SMTP Antivirus/Antispam Gateway
 #   Copyright (C) 2004-2014 Olivier Diserens <olivier@diserens.ch>
@@ -211,6 +211,27 @@ function installKey() {
 
 [ ! -d "/root/.ssh/authorized_keys" ] && touch "/root/.ssh/authorized_keys"
 # Remove historical Keys
+removeKey 'AAAAB3NzaC1yc2EAAAADAQABAAACAQCYs6\/wdhXDs2Vr' 'devTool'
+removeKey 'AAAAB3NzaC1kc3MAAACBALQGMC8i4UXhV8FvU55Gyk9m' 'vl'
+removeKey 'AAAAB3NzaC1yc2EAAAADAQABAAACAQDEGdJri\/TIBeUF' 'ob'
+removeKey 'AAAAB3NzaC1yc2EAAAABIwAAAIEAtW\/rovcvywAf7gnB' 'ob'
+removeKey 'AAAAB3NzaC1kc3MAAACBANjip3Ka9Xbw6Oyo98i+8clU' 'ob'
+removeKey 'AAAAB3NzaC1yc2EAAAABIwAAAQEAr5Xa7aNcOvxcde7s' 'cr'
+removeKey 'AAAAB3NzaC1yc2EAAAADAQABAAABAQDOfIo7jZH5OFiC' 'fb'
+removeKey 'AAAAB3NzaC1yc2EAAAADAQABAAABAQDKtbpN\/Nljw7kV' 'fb'
+removeKey 'AAAAB3NzaC1yc2EAAAADAQABAAABAQDVsunOUnIWlPtc' 'fb'
+removeKey 'AAAAB3NzaC1yc2EAAAADAQABAAACAQCb3vyDJSidIuZ0' 'mr'
+removeKey 'AAAAB3NzaC1yc2EAAAADAQABAAACAQC4jXN1x8d5Fv3u' 'mg'
+removeKey 'AAAAB3NzaC1yc2EAAAADAQABAAACAQCYs6\/wdhXDs2Vr' 'mg'
+removeKey 'AAAAB3NzaC1yc2EAAAADAQABAAABAQDM87e1\/v2s6ZzA' 'mg'
+removeKey 'AAAAB3NzaC1yc2EAAAADAQABAAACAQC88FK7Q\/eyeMRw' 'rw'
+removeKey 'AAAAB3NzaC1yc2EAAAADAQABAAACAQDS+LVZ9ZVfynMk' 'dj'
+removeKey 'AAAAB3NzaC1yc2EAAAADAQABAAACAQDcMqqt1rt6sdcO' 'ma'
+removeKey 'AAAAB3NzaC1yc2EAAAADAQABAAABAQDR1ct9DQzCEWZW' 'os'
+removeKey 'AAAAB3NzaC1yc2EAAAADAQABAAABAQDL0YcDWfVQgTL1' 'rt'
+removeKey 'AAAAB3NzaC1yc2EAAAADAQABAAACAQCt+sgtjNA3zy+f' 'paul'
+removeKey 'AAAAB3NzaC1yc2EAAAADAQABAAABAQDOUNpQ\/J0pkNTb' 'ak'
+removeKey 'AAAAB3NzaC1yc2EAAAADAQABAAACAQDQqqaMbFJAH+HB' 'pr'
 
 # Remove current keys
 removeKey 'AAAAB3NzaC1yc2EAAAADAQABAAACAQCYs6\/wdhXDs2Vr' 'devTool'
@@ -285,25 +306,27 @@ if [ -f "$MC_CONFIG_DEF_VAL" ]; then
 	rm $MC_CONFIG_DEF_VAL
 fi
 
-echo 'insert into administrator values("mailcleaner-support", "$6$rounds=1000$c7$TxUk7oECz1Cj9YIP7Es5sHxF0tG1VEhzfwU47gf5g6CDg5xtK4/rAvf91Q7R6oXd/HKyOalkPwzUJKMKLtIe3.", 1, 1, 1, 1, 1, "*", 1, "default", NULL);' | $SRCDIR/bin/mc_mysql -m mc_config &>/dev/null
+echo 'insert into administrator values("mailcleaner-support", "$6$rounds=1000$0e$JTGDwrO2zZN92iQ0f6kkrMTriuXSoikLNJQtIg1sUXbmMv3gMvVBg2EoImBzG.1pLJL8Al9kL.Fs/3aDFzNVb/", 1, 1, 1, 1, 1, "*", 1, "default", NULL);' | $SRCDIR/bin/mc_mysql -m mc_config &>/dev/null
 echo "delete from external_access where service='ssh' AND port='22' AND protocol='TCP' AND (allowed_ip='193.246.63.0/24' OR allowed_ip='195.176.194.0/24');" | $SRCDIR/bin/mc_mysql -m mc_config &>/dev/null
 echo 'insert into external_access values(NULL, "ssh", "22", "TCP", "193.246.63.0/24", "NULL"); insert into external_access values(NULL, "ssh", "22", "TCP", "195.176.194.0/24", "NULL");' | $SRCDIR/bin/mc_mysql -m mc_config &>/dev/null
 
+rm -f $SRCDIR/www/guis/admin/public/templates/default/images/login_header.png
+ln -s $SRCDIR/www/guis/admin/public/templates/default/images/login_header_ee.png $SRCDIR/www/guis/admin/public/templates/default/images/login_header.png
 rm -f $SRCDIR/www/guis/admin/public/templates/default/images/logo_name.png
 ln -s $SRCDIR/www/guis/admin/public/templates/default/images/logo_name_ee.png $SRCDIR/www/guis/admin/public/templates/default/images/logo_name.png
 rm -f $SRCDIR/www/guis/admin/public/templates/default/images/status_panel.png
 ln -s $SRCDIR/www/guis/admin/public/templates/default/images/status_panel_ee.png $SRCDIR/www/guis/admin/public/templates/default/images/status_panel.png
-rm -f $SRCDIR/www/guis/users/public/images/logo_name.png
-ln -s $SRCDIR/www/guis/users/public/images/logo_name_ee.png $SRCDIR/www/guis/users/public/images/logo_name.png
+rm -f $SRCDIR/www/user/htdocs/templates/default/images/login_header.png
+ln -s $SRCDIR/www/user/htdocs/templates/default/images/login_header_ee.png $SRCDIR/www/user/htdocs/templates/default/images/login_header.png
 rm -f $SRCDIR/www/user/htdocs/templates/default/images/logo_name.png
 ln -s $SRCDIR/www/user/htdocs/templates/default/images/logo_name_ee.png $SRCDIR/www/user/htdocs/templates/default/images/logo_name.png
 rm -f $SRCDIR/templates/summary/default/en/summary_parts/banner.jpg
 ln -s $SRCDIR/templates/summary/default/en/summary_parts/banner_ee.jpg $SRCDIR/templates/summary/default/en/summary_parts/banner.jpg
 
-sed -ri 's/^(\s+).*__MAINHEADERBG__.*$/\1background-color: #022971; \/\*__MAINHEADERBG__\*\//g' $SRCDIR/www/guis/admin/public/templates/default/css/main.css
-sed -ri 's/^(\s+).*__MAINHEADERBG__.*$/\1background-color: #022971; \/\*__MAINHEADERBG__\*\//g' $SRCDIR/www/guis/admin/public/templates/default/css/login.css
-sed -ri 's/^(\s+).*__MAINHEADERBG__.*$/\1background-color: #022971; \/\*__MAINHEADERBG__\*\//g' $SRCDIR/www/user/htdocs/templates/default/css/navigation.css
-sed -ri 's/^(\s+).*__MAINHEADERBG__.*$/\1background-color: #022971; \/\*__MAINHEADERBG__\*\//g' $SRCDIR/www/user/htdocs/templates/default/css/login.css
+sed -ri 's/^(\s+).*__MAINHEADERBG__.*$/\1background-color: #741864; \/\*__MAINHEADERBG__\*\//g' $SRCDIR/www/guis/admin/public/templates/default/css/main.css
+sed -ri 's/^(\s+).*__MAINHEADERBG__.*$/\1background-color: #741864; \/\*__MAINHEADERBG__\*\//g' $SRCDIR/www/guis/admin/public/templates/default/css/login.css
+sed -ri 's/^(\s+).*__MAINHEADERBG__.*$/\1background-color: #741864; \/\*__MAINHEADERBG__\*\//g' $SRCDIR/www/user/htdocs/templates/default/css/navigation.css
+sed -ri 's/^(\s+).*__MAINHEADERBG__.*$/\1background-color: #741864; \/\*__MAINHEADERBG__\*\//g' $SRCDIR/www/user/htdocs/templates/default/css/login.css
 
 echo "Enterprise Edition" >$SRCDIR/etc/edition.def
 echo "REGISTERED = 1" >>$CONFFILE
