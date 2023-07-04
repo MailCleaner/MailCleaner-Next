@@ -667,7 +667,6 @@ while (scalar(@remaining)) {
 unless ($skip) {
     remove_lockfile($lockfile,undef);
 }
-system($config{'SRCDIR'}."/scripts/cron/service_checks.pl");
 
 ####################################################################################
 
