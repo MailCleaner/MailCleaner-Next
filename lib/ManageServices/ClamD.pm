@@ -26,24 +26,24 @@ use utf8;
 
 our @ISA = "ManageServices";
 
-sub init($module,$class)
+sub init($module,$super)
 {
-    my $self = $class->SUPER::createModule( config($class) );
+    my $self = $super->createModule( config($super) );
     bless $self, 'ManageServices::ClamD';
 
     return $self;
 }
 
-sub config($class)
+sub config($super)
 {
     my $config = {
         'name'              => 'clamd',
         'cmndline'          => 'clamav/clamd.conf',
         'cmd'               => '/opt/clamav/sbin/clamd',
-        'conffile'          => $class->{'conf'}->getOption('SRCDIR').'/etc/clamav/clamd.conf',
-        'pidfile'           => $class->{'conf'}->getOption('VARDIR').'/run/clamav/clamd.pid',
-        'logfile'           => $class->{'conf'}->getOption('VARDIR').'/log/clamav/clamd.log',
-        'localsocket'       => $class->{'conf'}->getOption('VARDIR').'/run/clamav/clamd.sock',
+        'conffile'          => $super->{'conf'}->getOption('SRCDIR').'/etc/clamav/clamd.conf',
+        'pidfile'           => $super->{'conf'}->getOption('VARDIR').'/run/clamav/clamd.pid',
+        'logfile'           => $super->{'conf'}->getOption('VARDIR').'/log/clamav/clamd.log',
+        'localsocket'       => $super->{'conf'}->getOption('VARDIR').'/run/clamav/clamd.sock',
         'children'          => 1,
         'user'              => 'clamav',
         'group'             => 'clamav',
@@ -64,9 +64,9 @@ sub config($class)
 
 sub setup($self,$class)
 {
-    $self->doLog('Dumping ClamD config...', 'daemon');
+    $class->SUPER::doLog('Dumping ClamD config...', 'daemon');
     if (system($self->{'SRCDIR'}.'/bin/dump_clamav_config.pl 2>&1 >/dev/null')) {
-        $self->doLog('dump_clamav_config.pl failed', 'daemon');
+        $class->SUPER::doLog('dump_clamav_config.pl failed', 'daemon');
     }
 
     return 1;
@@ -82,7 +82,7 @@ sub mainLoop($self,$class)
     my $cmd = $self->{'cmd'};
     $cmd .= ' --config-file=' . $self->{'conffile'};
     system("echo  '$cmd' > /tmp/clamspamd.log");
-    $self->doLog("Running $cmd", 'daemon');
+    $class->SUPER::doLog("Running $cmd", 'daemon');
     system($cmd);
 
     return 1;

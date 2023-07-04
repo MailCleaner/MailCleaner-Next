@@ -24,6 +24,7 @@ use strict;
 use warnings;
 use utf8;
 no warnings 'uninitialized';
+use Carp qw(croak);
 
 use lib '/usr/mailcleaner/lib/ManageServices';
 use threads ();
@@ -52,51 +53,44 @@ our %defaultActions = (
     #TODO
     'start' => {
         'desc'  => 'start service or report if already running',
-        'cmd'   => sub {
-            my $self = shift;
+        'cmd'   => sub($self) {
             return $self->start();
         },
     },
     'stop' => {
         'desc'  => 'stop serivce, if running',
-        'cmd'   => sub {
-            my $self = shift;
+        'cmd'   => sub($self) {
             return $self->stop();
         },
     },
     #TODO
     'restart' => {
         'desc'  => 'stop serivce, if running, then start fresh',
-        'cmd'   => sub {
-            my $self = shift;
+        'cmd'   => sub($self) {
             return $self->restart();
         },
     },
     'status' => {
         'desc'  => 'get current status',
-        'cmd'   => sub {
-            my $self = shift;
+        'cmd'   => sub($self) {
             return $self->status(0);
         },
     },
     'enable' => {
         'desc'  => 'enable service and start automatically',
-        'cmd'   => sub {
-            my $self = shift;
+        'cmd'   => sub($self) {
             return $self->enable();
         },
     },
     'disable' => {
         'desc'  => 'stop and prevent from starting until enabled',
-        'cmd'   => sub {
-            my $self = shift;
+        'cmd'   => sub($self) {
             return $self->disable();
         },
     },
     'pids' => {
         'desc'  => 'get process id(s) for service',
-        'cmd'   => sub {
-            my $self = shift;
+        'cmd'   => sub($self) {
             if ($self->status(0) == 7) {
                 return $self->clearFlags(7);
             }
@@ -110,8 +104,7 @@ our %defaultActions = (
     },
     'dump_config' => {
         'desc'  => 'list module configuration',
-        'cmd'   => sub {
-            my $self = shift || die "Failed to load object";
+        'cmd'   => sub ($self) {
             foreach my $key (keys(%{$self->{'module'}})) {
                 print "$key = $self->{'module'}->{$key}\n";
             }
@@ -297,13 +290,15 @@ sub loadModule($self,$service)
     $self->{'service'} = $service;
 
     my $module = $self->{'services'}->{$self->{'service'}}->{'module'} ||
-        die "$self->{'service'} has no declared 'module'\n";
+        croak "$self->{'service'} has no declared 'module'\n";
 
     require "ManageServices/${module}.pm";
     $module = "ManageServices::".$module;
     $self->{'module'} = $module->init($self);
-    $self->getConfig() || return 0;
-    $self->getActions() || return 0;
+    $self->doLog('DEBUG: '. Data::Dump::dump($self->{'module'}), 'daemon');
+    $self->getConfig() || die "Module has no defined config\n";
+    $self->doLog('DEBUG: '. Data::Dump::dump($self->{'module'}), 'daemon');
+    $self->getActions() || die "Module has no defined actions\n";
 
     foreach my $file (('pidfile', 'logfile', 'socketpath')) {
         if (defined($self->{'module'}->{$file}) && -f $self->{'module'}->{$file}) {
@@ -322,11 +317,10 @@ sub loadModule($self,$service)
         openlog($self->{'service'}, 'ndelay,pid,nofatal', $self->{'module'}->{'syslog_facility'});
     }
 
-    $self->{'module'}->{'state'} = $self->status();
+    $self->{'module'}->{'state'} = $self->status($self->{'service'});
     unless (defined($self->{'module'}->{'state'})) {
         $self->{'module'}->{'state'} = 0;
     }
-
     return $self;
 }
 
@@ -345,7 +339,7 @@ sub getConfig($self)
     my $conffile = $self->{'module'}->{'conffile'};
     if ( -f $conffile.'_template' ) {
         my $template = ConfigTemplate::create( $conffile."_template", $conffile );
-        my $ret = $template->dump();
+        #my $ret = $template->dump();
     }
     if ( open(my $CONFFILE, '<', $self->{'module'}->{'conffile'}) ) {
         while (<$CONFFILE>) {
@@ -403,13 +397,12 @@ sub findProcess($self)
     return 0;
 }
 
-sub pids($self,$service='')
+sub pids($self,$service=$self->{'service'})
 {
-    if ($service != '' && defined($self->{'module'}));
-        $service = $self->{'module'};
-        $self->loadModule($service);
+    if ($service eq '' && defined($self->{'module'})) {
+        $service = $self->{'module'}->{'name'};
     }
-    die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service == '');
+    croak "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service eq '');
 
     unless ($self->findProcess()) {
         $self->clearFlags(0);
@@ -449,13 +442,16 @@ sub createModule($self,$defs)
 {
     my $file = $defs->{'conffile'} || $self->{'conf'}->getOption('SRCDIR').'/etc/mailcleaner/'.$self->{'service'}.".cf";
     my $module = {};
+    $self->doLog("DEFS: ".Data::Dump::dump($defs),'daemon');
     foreach my $key (keys %defaultConfigs) {
+        $self->doLog("Default $key => $defaultConfigs{$key}", 'daemon');
         $module->{$key} = $defaultConfigs{$key}
     }
     foreach my $key (keys %$defs) {
+        $self->doLog("Update $key => $defs->{$key}", 'daemon');
         $module->{$key} = $defs->{$key}
     }
-    bless $module, 'ManageServices';
+    #bless $module, 'ManageServices';
 
     my $tfile = $file . "_template";
     if ( -f $tfile ) {
@@ -476,14 +472,14 @@ sub createModule($self,$defs)
     return $module;
 }
 
-sub status($self,$service='',$autoStart='')
+sub status($self,$service=$self->{'service'},$autoStart='')
 {
-    if ($service != '' && defined($self->{'module'})) {
-        $service = $self->{'module'};
-        $self->loadModule($service);
+    if ($service ne '' && defined($self->{'module'})) {
+        $service = $self->{'module'}->{'name'};
     }
-    die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service == '');
-    if ($autoStart != '' && defined($self->{'autoStart'})) {
+    croak "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service eq '');
+    
+    if ($autoStart ne '' && defined($self->{'autoStart'})) {
         $autoStart = $self->{'autoStart'};
     }
 
@@ -539,19 +535,18 @@ sub status($self,$service='',$autoStart='')
       }
 }
 
-sub start($self,$service='')
+sub start($self,$service=$self->{'service'})
 {
-    if ($service != '' && defined($self->{'module'})) {
-        $service = $self->{'module'};
-        $self->loadModule($service);
+    if ($service eq '' && defined($self->{'module'})) {
+        $service = $self->{'module'}->{'name'};
     }
-    die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service == '');
+    croak "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service eq '');
 
     if ($self->status(0) == 7) {
         return $self->clearFlags(7);
     }
 
-    $self->doLog( 'starting ' . $self->{'service'} . '...', 'daemon' );
+    $self->doLog( 'Starting ' . $self->{'service'} . '...', 'daemon' );
 
     if ($self->{'module'}->{'state'} =~ m/^[0235]$/) {
         $self->clearFlags(5);
@@ -567,15 +562,17 @@ sub start($self,$service='')
 
     $self->setup();
 
-    $self->doLog('Initializing Daemon', 'daemon');
-
     $SIG{ALRM} = sub { $self->doLog( "Got alarm signal.. nothing to do", 'daemon' ); };
     $SIG{PIPE} = sub { $self->doLog( "Got PIPE signal.. nothing to do", 'daemon' ); };
 
+    #DEBUG
+    $self->doLog("Should daemonize? '$self->{'module'}->{'daemonize'}'", 'daemon');
+    $self->{'module'}->{'daemonize'} = 0;
     if ($self->{'module'}->{'daemonize'}) {
+        $self->doLog('Initializing Daemon', 'daemon');
         my $pid = fork;
-            if ($pid) {
-            $self->doLog( 'Deamonized with PID ' . $pid, 'daemon' );
+        if ($pid) {
+            $self->doLog( 'Daemonized with PID ' . $pid, 'daemon' );
             sleep(1);
             my @pids = $self->pids();
             my @remaining = ();
@@ -603,35 +600,24 @@ sub start($self,$service='')
                 $self->doLog( 'Deamon doesn\'t exist after start. Failed', 'daemon' );
                 return 0;
             }
-            } elsif ($pid == -1) {
+        } elsif ($pid == -1) {
             $self->doLog( 'Failed to fork', 'daemon' );
             $self->clearFlags(0);
             return $self->{'module'}->{'state'};
         } else {
             if ( $self->{'module'}->{'gid'} ) {
                 $) = $self->{'module'}->{'gid'} ||
-                    die "failed to set gid\n";
-                unless ( grep( $), split( ' ', $self->{'module'}->{'gid'} ) ) ) {
-                    print STDERR "Can't set GID " .
-                        $self->{'module'}->{'gid'} .
-                        " (" . $( . " " . $) . ")\n";
-                    return 0;
-                }
+                    $self->doLog("failed to set gid: $?", 'error');
+                return 0 unless ($> == $self->{'module'}->{'uid'});
             }
-            $self->doLog('Set GID to ' . $self->{'module'}->{'group'} .
-                " (" . $( . ")", 'daemon');
+            $self->doLog("Set GID to $self->{'module'}->{'group'} ($)) as $(", 'daemon');
 
             if ( $self->{'module'}->{'uid'} ) {
-                $> = $self->{'module'}->{'uid'};
-                unless ($> == $self->{'module'}->{'uid'}) {
-                    print STDERR "Can't set UID " .
-                        $self->{'module'}->{'uid'} .
-                        " (" . $< . " " . $> . ")\n";
-                    return 0;
-                }
+                $> = $self->{'module'}->{'uid'} ||
+                    $self->doLog("failed to set uid: $?", 'error');
+                return 0 unless ($> == $self->{'module'}->{'uid'});
             }
-            $self->doLog('Set UID to ' . $self->{'module'}->{'user'} .
-                " (" . $< . ")", 'daemon');
+            $self->doLog("Set UID to $self->{'module'}->{'user'} ($>) as $<", 'daemon');
 
             open STDIN, '<', '/dev/null';
             open STDOUT, '>>', '/dev/null';
@@ -640,6 +626,7 @@ sub start($self,$service='')
             umask 0;
         }
     } else {
+        $self->doLog("Running in foreground as $$.", 'daemon');
         $self->writePidFile( ($$) );
     }
 
@@ -656,13 +643,12 @@ sub start($self,$service='')
     return $self->{'module'}->{'state'};
 }
 
-sub stop($self,$service='')
+sub stop($self,$service=$self->{'service'})
 {
-    if ($service != '' && defined($self->{'module'})) {
-        $service = $self->{'module'};
-        $self->loadModule($service);
+    if ($service eq '' && defined($self->{'module'})) {
+        $service = $self->{'module'}->{'name'};
     }
-    die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service == '');
+    croak "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service eq '');
 
     my $running = $self->findProcess();
     if ( $self->{'module'}->{'state'} =~ m/^[1356]$/ ) {
@@ -722,13 +708,12 @@ sub stop($self,$service='')
     }
 }
 
-sub restart($self,$service='')
+sub restart($self,$service=$self->{'service'})
 {
-    if ($service != '' && defined($self->{'module'})) {
-        $service = $self->{'module'};
-        $self->loadModule($service);
+    if ($service eq '' && defined($self->{'module'})) {
+        $service = $self->{'module'}->{'name'};
     }
-    die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service == '');
+    croak "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service eq '');
 
     if ( $self->{'module'}->{'state'} =~ m/^[0123]$/ ) {
         $self->clearFlags(6);
@@ -749,7 +734,7 @@ sub restart($self,$service='')
         return $self->clearFlags(7);
     }
 
-    if ($self->findProcess($self->{'services'}->{$self->{'service'}}->{cmndline})) {
+    if ($self->findProcess()) {
         if ($self->stop()) {
             return 3;
         } else {
@@ -761,25 +746,23 @@ sub restart($self,$service='')
     return $self->start();
 }
 
-sub enable($self,$service='')
+sub enable($self,$service=$self->{'service'})
 {
-    if ($service != '' && defined($self->{'module'})) {
-        $service = $self->{'module'};
-        $self->loadModule($service);
+    if ($service eq '' && defined($self->{'module'})) {
+        $service = $self->{'module'}->{'name'};
     }
-    die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service == '');
+    croak "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service eq '');
 
     $self->clearFlags(1);
     return $self->restart();
 }
 
-sub disable($self,$service='')
+sub disable($self,$service=$self->{'service'})
 {
-    if ($service != '' && defined($self->{'module'})) {
-        $service = $self->{'module'};
-        $self->loadModule($service);
+    if ($service eq '' && defined($self->{'module'})) {
+        $service = $self->{'module'}->{'name'};
     }
-    die "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service == '');
+    croak "Either run \$self->loadModule('service_name') first\nor run with service name: \$self->pids('service_name')" if ($service eq '');
 
     if ($self->stop() == 1) {
         return 1;
@@ -931,10 +914,8 @@ sub readPidFile($self)
     return @pids;
 }
 
-sub writePidFile($self)
+sub writePidFile($self, @pids)
 {
-    my @pids = @_;
-
     unless (scalar(@pids)) {
         unlink($self->{'module'}->{'pidfile'});
         return 1;
@@ -1027,7 +1008,8 @@ sub usage($self)
 sub doLog($self,$message,$given_set,$priority='info')
 {
     unless ( defined($self->{'module'}) ) {
-        $self->{'module'} = $self;
+        print("LATE LOAD OF $self->{'name'}.\n");
+        $self->loadModule($self->{'name'});
     }
 
     foreach my $set ( split( /,/, $self->{'module'}->{'log_sets'} ) ) {
@@ -1062,10 +1044,14 @@ sub writeLog($self,$message)
     my $LOCK_UN = 8;
     $| = 1;
 
+    my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) = localtime(time);
+    $mon++;
+    $year += 1900;
+    my $date = sprintf( "%d-%.2d-%.2d %.2d:%.2d:%.2d", $year, $mon, $mday, $hour, $min, $sec );
     if ( !defined($LOGGERLOG) || !fileno($LOGGERLOG) ) {
-    	  if ( !defined( $self->{'module'}->{'logfile'}) || $self->{'module'}->{'logfile'} eq '' ) {
-	          print STDERR "Module does not have a log file\n";
-	          open($LOGGERLOG, '>>', &STDERR);
+    	if ( !defined( $self->{'module'}->{'logfile'}) || $self->{'module'}->{'logfile'} eq '' ) {
+	        print STDERR "Module does not have a log file\n";
+            $self->{'module'}->{'logfile'} = *STDERR;
         } else {
             unless (open($LOGGERLOG, '>>', $self->{'module'}->{'logfile'})) {
 		            # Use temporary log
@@ -1081,12 +1067,8 @@ sub writeLog($self,$message)
             }
             $| = 1;
         }
-        print $LOGGERLOG 'Log file has been opened, hello !', 'daemon';
+        print $LOGGERLOG "$date (" . $self->getThreadID() . ") Log file has been opened, hello !\n";
     }
-    my ( $sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst ) = localtime(time);
-    $mon++;
-    $year += 1900;
-    my $date = sprintf( "%d-%.2d-%.2d %.2d:%.2d:%.2d", $year, $mon, $mday, $hour, $min, $sec );
     flock( $LOGGERLOG, $LOCK_EX );
     print $LOGGERLOG "$date (" . $self->getThreadID() . ") " . $message . "\n";
     flock( $LOGGERLOG, $LOCK_UN );

@@ -26,24 +26,24 @@ use utf8;
 
 our @ISA = "ManageServices";
 
-sub init($module,$class)
+sub init($module,$super)
 {
-    my $self = $class->SUPER::createModule( config($class) );
+    my $self = $super->createModule( config($super) );
     bless $self, 'ManageServices::ClamSpamD';
 
     return $self;
 }
 
-sub config($class)
+sub config($super)
 {
     my $config = {
         'name'              => 'clamspamd',
         'cmndline'          => 'clamav/clamspamd.conf',
         'cmd'               => '/opt/clamav/sbin/clamd',
-        'conffile'          => $class->{'conf'}->getOption('SRCDIR').'/etc/clamav/clamspamd.conf',
-        'pidfile'           => $class->{'conf'}->getOption('VARDIR').'/run/clamav/clamspamd.pid',
-        'logfile'           => $class->{'conf'}->getOption('VARDIR').'/log/clamav/clamspamd.log',
-        'localsocket'       => $class->{'conf'}->getOption('VARDIR').'/run/clamav/clamspamd.sock',
+        'conffile'          => $super->{'conf'}->getOption('SRCDIR').'/etc/clamav/clamspamd.conf',
+        'pidfile'           => $super->{'conf'}->getOption('VARDIR').'/run/clamav/clamspamd.pid',
+        'logfile'           => $super->{'conf'}->getOption('VARDIR').'/log/clamav/clamspamd.log',
+        'localsocket'       => $super->{'conf'}->getOption('VARDIR').'/run/clamav/clamspamd.sock',
         'children'          => 1,
         'user'              => 'clamav',
         'group'             => 'clamav',
@@ -76,7 +76,7 @@ sub mainLoop($self,$class)
 {
     my $cmd = $self->{'cmd'};
     $cmd .= ' --config-file=' . $self->{'conffile'};
-    $self->doLog("Running $cmd", 'daemon');
+    $class->SUPER::doLog("Running $cmd", 'daemon');
     system($cmd);
 
     return 1;

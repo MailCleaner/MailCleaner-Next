@@ -26,29 +26,31 @@ use utf8;
 
 our @ISA = "ManageServices";
 
-sub init($module,$class)
+sub init($module,$super)
 {
-    my $self = $class->SUPER::createModule( config($class) );
+    my $self = $super->createModule( config($super) );
+    use Data::Dump;
+    print "DEBUG: " . Data::Dump::dump($self->{'module'}->{'daemonize'})."\n";
     bless $self, 'ManageServices::SpamD';
 
     return $self;
 }
 
-sub config($class)
+sub config($super)
 {
     my $config = {
         'name'              => 'spamd',
         'cmndline'          => 'spamd.pid',
         'cmd'               => '/usr/sbin/spamd',
-        'conffile'          => $class->{'conf'}->getOption('SRCDIR').'/etc/mailscanner/spamd.conf',
-        'pidfile'           => $class->{'conf'}->getOption('VARDIR').'/run/spamassassin.pid',
-        'logfile'           => $class->{'conf'}->getOption('VARDIR').'/log/mailscanner/spamd.log',
-        'socket'            => $class->{'conf'}->getOption('VARDIR').'/run/spamassassin.sock',
+        'conffile'          => $super->{'conf'}->getOption('SRCDIR').'/etc/mailscanner/spamd.conf',
+        'pidfile'           => $super->{'conf'}->getOption('VARDIR').'/run/spamassassin.pid',
+        'logfile'           => $super->{'conf'}->getOption('VARDIR').'/log/mailscanner/spamd.log',
+        'socket'            => $super->{'conf'}->getOption('VARDIR').'/run/spamassassin.sock',
         'children'          => 21,
         'user'              => 'mailcleaner',
         'group'             => 'mailcleaner',
-        'siteconfig'        => $class->{'conf'}->getOption('SRCDIR').'/share/spamassassin',
-        'daemonize'         => 'yes',
+        'siteconfig'        => $super->{'conf'}->getOption('SRCDIR').'/share/spamassassin',
+        'daemonize'         => 0,
         'forks'             => 0,
         'nouserconfig'      => 'yes',
         'syslog_facility'   => '',
@@ -65,18 +67,18 @@ sub config($class)
 
 sub setup($self,$class)
 {
-    $self->doLog('Dumping MailScanner config...', 'daemon');
+    $class->SUPER::doLog('Dumping SpamD config...', 'daemon');
     if (system($self->{'SRCDIR'}.'/bin/dump_custom_spamc_rules.pl 2>&1 >/dev/null')) {
-        $self->doLog('dump_custom_spamc_rules.pl failed', 'daemon');
+        $class->SUPER::doLog('dump_custom_spamc_rules.pl failed', 'daemon');
     }
     if (system($self->{'SRCDIR'}.'/bin/dump_spamc_double_items.pl 2>&1 >/dev/null')) {
-        $self->doLog('dump_spamc_double_items.pl failed', 'daemon');
+        $class->SUPER::doLog('dump_spamc_double_items.pl failed', 'daemon');
     }
     if (system($self->{'SRCDIR'}.'/bin/dump_mailscanner_config.pl 2>&1 >/dev/null')) {
-        $self->doLog('dump_mailscanner_config.pl failed', 'daemon');
+        $class->SUPER::doLog('dump_mailscanner_config.pl failed', 'daemon');
     }
     if (system('/usr/bin/pyzor discover 2>/dev/null >/dev/null')) {
-        $self->doLog('/usr/bin/pyzor discover failed', 'daemon');
+        $class->SUPER::doLog('/usr/bin/pyzor discover failed', 'daemon');
     }
 
     return 1;
@@ -90,6 +92,7 @@ sub preFork($self,$class)
 sub mainLoop($self,$class)
 {
     my $cmd = $self->{'cmd'};
+    $class->SUPER::doLog("CMD: $cmd\n", 'daemon');
     open(my $CONF, '<', $self->{'conffile'})
         || die "Cannot open config file $self->{'conffile'}";
     while (my $line = <$CONF>) {
@@ -106,12 +109,12 @@ sub mainLoop($self,$class)
                 $cmd .= ' --' . $op . '=' . $val;
             }
         } else {
-            $self->doLog("Invalid configuration line: $line", 'daemon');
+            $self->SUPER::doLog("Invalid configuration line: $line", 'daemon');
         }
     }
     close($CONF);
 
-    $self->doLog("Running $cmd", 'daemon');
+    $class->SUPER::doLog("Running $cmd", 'daemon');
     system($cmd);
 
     return 1;

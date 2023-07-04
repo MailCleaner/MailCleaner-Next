@@ -26,15 +26,15 @@ use utf8;
 
 our @ISA = "ManageServices";
 
-sub init($module,$class)
+sub init($module,$super)
 {
-    my $self = $class->SUPER::createModule( config($class) );
+    my $self = $super->createModule( config($super) );
     bless $self, 'ManageServices::NTPD';
 
     return $self;
 }
 
-sub config($class)
+sub config($super)
 {
     my $config = {
         'name'              => 'ntpd',
@@ -58,8 +58,6 @@ sub config($class)
 
 sub setup($self,$class)
 {
-    $self->{'cmd'} .= " -p $self->{'pidfile'} -g -u $self->{'uid'}:$self->{'gid'}";
-
     return 1;
 }
 
@@ -71,7 +69,8 @@ sub preFork($self,$class)
 sub mainLoop($self,$class)
 {
     my $cmd = $self->{'cmd'};
-    $self->doLog("Running $cmd", 'daemon');
+    $cmd .= " -p $self->{'pidfile'} -g -u $self->{'uid'}:$self->{'gid'}";
+    $class->SUPER::doLog("Running $cmd", 'daemon');
     system("$cmd");
 
     return 1;

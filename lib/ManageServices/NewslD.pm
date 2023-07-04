@@ -26,26 +26,26 @@ use utf8;
 
 our @ISA = "ManageServices";
 
-sub init($module,$class)
+sub init($module,$super)
 {
-    my $self = $class->SUPER::createModule( config($class) );
+    my $self = $super->createModule( config($super) );
     bless $self, 'ManageServices::NewslD';
 
     return $self;
 }
 
-sub config($class)
+sub config($super)
 {
     my $config = {
         'name'              => 'newsld',
         'cmndline'          => 'newsld.pid',
         'cmd'               => '/usr/local/bin/newsld',
-        'conffile'          => $class->{'conf'}->getOption('SRCDIR').'/etc/mailscanner/newsld.conf',
-        'pidfile'           => $class->{'conf'}->getOption('VARDIR').'/run/newsld.pid',
-        'logfile'           => $class->{'conf'}->getOption('VARDIR').'/log/mailscanner/newsld.log',
-        'socket'            => $class->{'conf'}->getOption('VARDIR').'/run/newsld.sock',
+        'conffile'          => $super->{'conf'}->getOption('SRCDIR').'/etc/mailscanner/newsld.conf',
+        'pidfile'           => $super->{'conf'}->getOption('VARDIR').'/run/newsld.pid',
+        'logfile'           => $super->{'conf'}->getOption('VARDIR').'/log/mailscanner/newsld.log',
+        'socket'            => $super->{'conf'}->getOption('VARDIR').'/run/newsld.sock',
         'children'          => 11,
-        'siteconfig'        => $class->{'conf'}->getOption('SRCDIR').'/share/newsld/siteconfig',
+        'siteconfig'        => $super->{'conf'}->getOption('SRCDIR').'/share/newsld/siteconfig',
         'user'              => 'mailcleaner',
         'group'             => 'mailcleaner',
         'daemonize'         => 'yes',
@@ -65,9 +65,9 @@ sub config($class)
 
 sub setup($self,$class)
 {
-    $self->doLog('Dumping MailScanner config...', 'daemon');
+    $class->SUPER::doLog('Dumping MailScanner config...', 'daemon');
     if (system($self->{'SRCDIR'}.'/bin/dump_mailscanner_config.pl 2>&1 >/dev/null')) {
-         $self->doLog('dump_mailscanner_config.pl failed', 'daemon');
+         $class->SUPER::doLog('dump_mailscanner_config.pl failed', 'daemon');
     }
 
     return 1;
@@ -97,13 +97,13 @@ sub mainLoop($self,$class)
                 $cmd .= ' --' . $op . '=' . $val;
             }
         } else {
-            $self->doLog("Invalid configuration line: $line", 'daemon');
+            $class->SUPER::doLog("Invalid configuration line: $line", 'daemon');
         }
     }
     close($CONF);
 
     system("echo  '$cmd' > /tmp/newsld.log");
-    $self->doLog("Running $cmd", 'daemon');
+    $class->SUPER::doLog("Running $cmd", 'daemon');
     system($cmd);
 
     return 1;
