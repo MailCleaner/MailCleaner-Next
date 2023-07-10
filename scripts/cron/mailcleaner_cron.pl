@@ -28,7 +28,7 @@ use utf8;
 use DBI;
 use LWP::UserAgent;
 use Getopt::Std;
-require '/usr/mailcleaner/lib/lib_utils.pl';
+require lib_utils;
 
 my $cron_occurence=15;  # in minutes..
 my $itsmidnight=0;
