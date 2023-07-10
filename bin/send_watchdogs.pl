@@ -34,7 +34,7 @@ require ReadConfig;
 require DB;
 require Email;
 require MailTemplate;
-require lib_utils.pl;
+require lib_utils;
 use LWP::UserAgent;
 
 my $conf = ReadConfig::getInstance();

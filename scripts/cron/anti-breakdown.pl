@@ -29,7 +29,7 @@ use Net::DNS;
 use Net::Ping;
 use File::Touch;
 use DBI;
-require 'lib_utils.pl';
+require lib_utils;
 
 my $max_host_failed = 2;
 my $nb_tests = 3;
