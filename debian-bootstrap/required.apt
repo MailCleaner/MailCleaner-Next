@@ -31,6 +31,7 @@ php8.2-mysql
 php8.2-snmp
 php8.2-zip
 libdata-validate-ip-perl
+libdatetime-perl
 libdate-calc-perl
 libdbd-mariadb-perl
 libdevel-size-perl
