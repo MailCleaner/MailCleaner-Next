@@ -33,13 +33,18 @@ img {
     background-repeat: repeat-x;
     font-size: 12px;
     color: #000000;
-    background-color: #e8e8e8; /*__MAINHEADERBG__*/
+    background-color: #e8e8e8;
     text-align: left;
     border: solid 2px black;
     border-radius: 20px;
 }
 
+#loginpanel td {
+    padding: 2px;
+    height: 24px;
+}
 #mclogo {
+    background-color: #e8e8e8; /*__MAINHEADERBG__*/
     vertical-align: top;
     border-top-left-radius: 19px;
     border-top-right-radius: 19px;
@@ -86,7 +91,6 @@ img {
 /* form */
 #username, #password {
     font-size: 11px;
-    border: 1px solid #999999;
     padding: 0px;
     padding-left: 3px;
     height: 20px;
