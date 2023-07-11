@@ -12,6 +12,7 @@ img {
     border: 0px;
     padding: 0px;
     margin: 0px;
+    text-align: left;
 }
 
 /* main panel */
@@ -25,17 +26,21 @@ img {
     border: 1px solid #D4D3D2;
     white-space: nowrap;
     background-image:none;
-    background-color: #F5F5F5;
+    background-color: #e8e8e8;
     background-position: 0px 75px;
     background-repeat: repeat-x;
     font-size: 12px;
     color: #000000;
     text-align: left;
+    border: solid 2px black;
+    border-radius: 20px;
 }
 
 #mclogo {
-    vertical-align: top;
     background-color: #e8e8e8; /*__MAINHEADERBG__*/
+    vertical-align: top;
+    border-top-left-radius: 19px;
+    border-top-right-radius: 19px;
 }
 
 /* formular table */
@@ -53,9 +58,7 @@ img {
 }
 
 #loginpanel td {
-    border: 0px;
-    padding: 15px 0px 0px 0px;
-    margin: 0px;
+    padding: 2px;
     height: 24px;
 }
 
@@ -75,7 +78,7 @@ img {
 .fieldinput {
     font-size: 11px;
     border: 1px solid #999999;
-    padding: 0px;
+    margin: 5px;
     padding-left: 3px;
     height: 20px;
     line-height: 20px;
@@ -83,19 +86,30 @@ img {
 }
 
 #usernamefield {
-    width: 342px;
+    width: 200px;
 }
 
 #domainchooser {
-    font-size: 11px;
-    line-height: 20px;
-    width: 131px;
-    height: 20px;
-    border: 1px solid #999999;
+    width: 100px;
 }
 
 #passwordfield {
-    width: 342px;
+    width: 315px;
+}
+
+#language {
+    width: 326px;
+}
+
+#usernamefield, #passwordfield, #domainchooser, #language {
+    font-size: 11px;
+    margin: 0px;
+    padding: 0px 5px;
+    height: 20px;
+    line-height: 20px;
+    vertical-align: top;
+    border: 1px solid black;
+    border-radius: 10px;
 }
 
 #submitbutton {
@@ -109,41 +123,46 @@ img {
 }
 
 /* footer */
+#loginfooter img {
+    padding-top: 10px;
+    height: 20px;
+}
+
+#loginfooter a {
+    color: #ffffff;
+}
+
 #loginfooter {
     margin: 0px;
     margin-top: 5px;
     padding: 0px;
     padding-top: 1px;
     background-image: none; 
-    background-color: #F5F5F5;
     background-repeat: repeat-x;
-    color: #022971;
-    height: 22px;
+    background-color: #022971;
+    border-bottom-left-radius: 19px;
+    border-bottom-right-radius: 19px;
+    height: 50px;
 }
 
-.languageselector {
-    float: right;
-    padding: 0px;
-    margin: 0px;
-    margin-right: 7px;
+select#language, select#domainchooser {
     display: inline;
-    line-height: 22px;
+    height: 20px;
+    line-height: 20px;
 }
-.languageselector img {
-    margin: 0px;
-    margin-left: 2px;
-    margin-top: 5px;
-    border: 0px;
-    vertical-align: baseline;
+
+select#domainchooser {
+    margin-left: 4px;
 }
 
 .copyright {
-    float: left;
-    margin-left: 7px;
-    color: #4a4a4a;
-    font-size: 11px;
-    display: inline;
-    line-height: 22px;
+    text-align: right;
+    position: relative;
+    margin-right: 15px;
+    margin-top: 5px;
+    font-weight: bold;
+    color: #ffffff;
+    font-size: 12px;
 }
 
 .copyright a {
