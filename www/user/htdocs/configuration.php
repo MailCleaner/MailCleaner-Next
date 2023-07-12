@@ -67,14 +67,24 @@ $controller->processInput();
 // create view
 $template_ = new Template($topics[$topic][1]);
 
-$replace = [
-    "__PRINT_USERNAME__" => $user_->getName(),
-    "__LINK_LOGOUT__" => '/logout.php',
+// Registered?
+require_once('helpers/DataManager.php');
+$file_conf = DataManager::getFileConfig($sysconf_::$CONFIGFILE_);
+$is_enterprise = 0;
+if (isset($file_conf['REGISTERED']) && $file_conf['REGISTERED'] == '1') {
+    $is_enterprise = 1;
+}
 
-    "__MENULIST__" => getMenuList(),
-    "__THISTOPIC__" => $topic,
-    "__TOPIC_TITLE__" => $lang_->print_txt($topics[$topic][0] . "TITLE"),
+$replace = [
+    '__PRINT_USERNAME__' => $user_->getName(),
+    '__LINK_LOGOUT__' => '/logout.php',
+
+    '__MENULIST__' => getMenuList(),
+    '__THISTOPIC__' => $topic,
+    '__TOPIC_TITLE__' => $lang_->print_txt($topics[$topic][0] . "TITLE"),
     '__SELECTOR_LANG__' => $lang_->html_select(),
+    '__COPYRIGHTLINK__' => $is_enterprise ? "www.mailcleaner.net" : "www.mailcleaner.org",
+    '__COPYRIGHTTEXT__' => $is_enterprise ? $lang_->print_txt('COPYRIGHTEE') : $lang_->print_txt('COPYRIGHTCE'),
 ];
 
 require_once('helpers/DataManager.php');

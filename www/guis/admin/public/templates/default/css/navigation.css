@@ -20,13 +20,10 @@
     min-height: 37px;
     margin: 0;
     padding: 0;
-    line-height: 37px;
     background-image:none;
     background-color: #000000;
     background-repeat: repeat-x;
-    color: #FFFFFF;
     text-indent: 0.5em;
-    text-align: center;
     white-space: nowrap;
     overflow: hidden;
 }
@@ -44,27 +41,21 @@
 }
 
 #buttonmenu li .menubutton {
-    display: inline;
     float: left;
     background-image: none;
     width: 150px;
     line-height: 33px;
     height: 32px;
-    text-align: center;
-    display: inline;
     font-size: 1.3em;
     padding: 3px;
 }
 #buttonmenu li .menuselected {
-    display: inline;
     float: left;
     background-image: none;
     background-color: #ED7B00;
     width: 150px;
     line-height: 33px;
     height: 37px;
-    text-align: center;
-    display: inline;
     font-size: 1.3em;
     padding: 3px;
 }
@@ -84,7 +75,6 @@
 
 /* username informational field */
 #logged_username {
-    display: inline;
     margin: 0px;
     margin-right: 20px;
     padding: 0px;

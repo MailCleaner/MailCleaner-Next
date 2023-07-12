@@ -177,6 +177,14 @@ if (!isset($bad_arg)) {
 $template_ = new Template('add_rule.tmpl');
 $replace = [];
 
+// Registered?
+require_once('helpers/DataManager.php');
+$file_conf = DataManager::getFileConfig($sysconf_::$CONFIGFILE_);
+$is_enterprise = 0;
+if (isset($file_conf['REGISTERED']) && $file_conf['REGISTERED'] == '1') {
+    $is_enterprise = 1;
+}
+
 // Setting the page text
 if ($is_sender_added_to_wl == 'OK' && $is_sender_added_to_wl == 'OK') {
     $replace['__HEAD__'] = $lang_->print_txt('NEWSWHITELISTHEAD');
@@ -195,6 +203,8 @@ if ($is_sender_added_to_wl == 'OK' && $is_sender_added_to_wl == 'OK') {
         $replace['__MESSAGE__'] = $lang_->print_txt('NOTNEWSWHITEBODY') . ' ' . $lang_->print_txt('NEWSLISTTOPIC') . ': ' . $is_sender_added_to_news . ' ' . $lang_->print_txt('WHITELISTTOPIC') . ': ' . $is_sender_added_to_wl;
     }
 }
+$replace['__COPYRIGHTLINK__'] = $is_enterprise ? "www.mailcleaner.net" : "www.mailcleaner.org";
+$replace['__COPYRIGHTTEXT__'] = $is_enterprise ? $lang_->print_txt('COPYRIGHTEE') : $lang_->print_txt('COPYRIGHTCE');
 
 // display page
 $template_->output($replace);

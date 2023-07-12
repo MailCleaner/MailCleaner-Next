@@ -65,10 +65,7 @@ $global_stat = new Statistics();
 foreach ($wanted_addresses_ as $a) {
     $a = strtolower($a);
     $wanted_stats_[$a] = new Statistics();
-    if (!$user_->hasAddress($a)) {
-        next;
-    }
-    if (!$wanted_stats_[$a]->load($a, $startdate, $stopdate)) {
+    if (!$user_->hasAddress($a) || !$wanted_stats_[$a]->load($a, $startdate, $stopdate)) {
         continue;
     }
     $wanted_stats_[$a]->generateGraphs($template_);
@@ -114,9 +111,18 @@ $stopd = Statistics::getAnyDateAsArray($stopdate);
 if (!isset($posted['datetype'])) {
     $posted['datetype'] = '';
 }
+
+// Registered?
+require_once('helpers/DataManager.php');
+$file_conf = DataManager::getFileConfig($sysconf_::$CONFIGFILE_);
+$is_enterprise = 0;
+if (isset($file_conf['REGISTERED']) && $file_conf['REGISTERED'] == '1') {
+    $is_enterprise = 1;
+}
+
 $replace = [
-    "__PRINT_USERNAME__" => $user_->getName(),
-    "__LINK_LOGOUT__" => '/logout.php',
+    '__PRINT_USERNAME__' => $user_->getName(),
+    '__LINK_LOGOUT__' => '/logout.php',
     '__BEGIN_FILTER_FORM__' => $form->open(),
     '__END_FILTER_FORM__' => $form->close(),
     '__ADDRESS_SELECTOR__' => $form->select('a', $addresses, $select_wanted, ""),
@@ -134,7 +140,9 @@ $replace = [
     '__INPUT_STOPYEAR__' => $form->select('stopyear', $years, $stopd['year'], ';'),
     '__REFRESH_BUTTON__' => $form->submit('submit', $lang_->print_txt('REFRESH'), ''),
     '__DISPLAY_STATSLIST__' => displayStatsList(),
-    '__DISPLAY_GLOBALSTAT__' => displayGlobalStats()
+    '__DISPLAY_GLOBALSTAT__' => displayGlobalStats(),
+    '__COPYRIGHTLINK__' => $is_enterprise ? "www.mailcleaner.net" : "www.mailcleaner.org",
+    '__COPYRIGHTTEXT__' => $is_enterprise ? $lang_->print_txt('COPYRIGHTEE') : $lang_->print_txt('COPYRIGHTCE'),
 ];
 
 // display page

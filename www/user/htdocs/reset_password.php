@@ -63,11 +63,21 @@ if (isset($_REQUEST['lang'])) {
     $lang_->reload();
 }
 
+// Registered?
+require_once('helpers/DataManager.php');
+$file_conf = DataManager::getFileConfig($sysconf_::$CONFIGFILE_);
+$is_enterprise = 0;
+if (isset($file_conf['REGISTERED']) && $file_conf['REGISTERED'] == '1') {
+    $is_enterprise = 1;
+}
+
 // get the view objects
 $template_model = 'reset_password.tmpl';
 $template_ = new Template($template_model);
 $replace = [
-    '__MESSAGE__' => $lang_->print_txt($message)
+    '__MESSAGE__' => $lang_->print_txt($message),
+    '__COPYRIGHTLINK__' => $is_enterprise ? "www.mailcleaner.net" : "www.mailcleaner.org",
+    '__COPYRIGHTTEXT__' => $is_enterprise ? $lang_->print_txt('COPYRIGHTEE') : $lang_->print_txt('COPYRIGHTCE'),
 ];
 // output result page
 $template_->output($replace);

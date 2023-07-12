@@ -491,3 +491,8 @@ $txt['NOTBLACKLISTBODY'] = "There was a problem adding the blacklist.";
 //
 $txt['ADDITIONALACTION'] = "Additional actions:";
 $txt['ADDRULE'] = "Adding WWList rule";
+/*
+ * Copyright (footer)
+ */
+$txt['COPYRIGHTEE'] = "&copy; MailCleaner, an <img src=\"/templates/default/images/alinto.png\"> company";
+$txt['COPYRIGHTCE'] = "&copy; MailCleaner, the Open Source email filter from <img src=\"/templates/default/images/alinto.png\">";

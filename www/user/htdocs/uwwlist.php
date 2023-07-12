@@ -149,30 +149,40 @@ if (is_numeric($per_page) && $per_page > 0) {
     $wwlist->setNbElementsPerPage($per_page);
 }
 
+// Registered?
+require_once('helpers/DataManager.php');
+$file_conf = DataManager::getFileConfig($sysconf_::$CONFIGFILE_);
+$is_enterprise = 0;
+if (isset($file_conf['REGISTERED']) && $file_conf['REGISTERED'] == '1') {
+    $is_enterprise = 1;
+}
+
 $active_inactive = [$lang_->print_txt('ACTIVE') => '1', $lang_->print_txt('INNACTIVE') => '0'];
 $replace = [
-    "__WWENTRYLISTDRAW__" => $wwlist->getList($template, null),
-    "__DELETE_STATUS__" => $deleted_msg,
-    "__ADD_STATUS__" => $addstatus,
-    "__SAVE_STATUS__" => $savestatus,
-    "__NBENTRIES__" => $wwlist->getNbElements(),
-    "__TOTAL_PAGES__" => $wwlist->getNumberOfPages(),
-    "__ACTUAL_PAGE__" => $wwlist->getPage(),
-    "__PAGE_SEP__" => $wwlist->getPageSeparator($sep),
-    "__PREVIOUS_PAGE__" => $wwlist->getPreviousPageLink(),
-    "__NEXT_PAGE__" => $wwlist->getNextPageLink(),
-    "__PAGE_JS__" => $wwlist->getJavaScript(),
-    "__WWLIST_FOR__" => getWWListHeader(),
-    "__FORM_BEGIN_WWENTRYADD__" => $aform->open() . $aform->hidden('a', $address) . $aform->hidden('type', $type_get),
-    "__FORM_CLOSE_WWENTRYADD__" => $aform->close(),
-    "__FORM_INPUTSENDER__" => $aform->input("sender", 30, ''),
-    "__FORM_INPUTSTATUS__" => $aform->select('status', $active_inactive, '1', ';'),
-    "__FORM_INPUTCOMMENT__" => $aform->input("comments", 35, ''),
-    "__FORM_INPUTSUBMIT__" => "window.document.forms['" . $aform->getName() . "'].submit()",
-    "__REMOVE_FULLLINK__" => $_SERVER['PHP_SELF'] . "?a=" . $address . "&t=" . $type_get . "&d=",
-    "__EDIT_BASELINK__" => $_SERVER['PHP_SELF'] . "?a=" . $address . "&t=" . $type_get,
-    "__FORM_BEGIN_SEARCH__" => $sform->open() . $sform->hidden('page', $wwlist->getPage()) . $sform->hidden('t', $type) . $sform->hidden('a', $address),
-    "__FORM_CLOSE_SEARCH__" => $sform->close(),
+    '__WWENTRYLISTDRAW__' => $wwlist->getList($template, null),
+    '__DELETE_STATUS__' => $deleted_msg,
+    '__ADD_STATUS__' => $addstatus,
+    '__SAVE_STATUS__' => $savestatus,
+    '__NBENTRIES__' => $wwlist->getNbElements(),
+    '__TOTAL_PAGES__' => $wwlist->getNumberOfPages(),
+    '__ACTUAL_PAGE__' => $wwlist->getPage(),
+    '__PAGE_SEP__' => $wwlist->getPageSeparator($sep),
+    '__PREVIOUS_PAGE__' => $wwlist->getPreviousPageLink(),
+    '__NEXT_PAGE__' => $wwlist->getNextPageLink(),
+    '__PAGE_JS__' => $wwlist->getJavaScript(),
+    '__WWLIST_FOR__' => getWWListHeader(),
+    '__FORM_BEGIN_WWENTRYADD__' => $aform->open() . $aform->hidden('a', $address) . $aform->hidden('type', $type_get),
+    '__FORM_CLOSE_WWENTRYADD__' => $aform->close(),
+    '__FORM_INPUTSENDER__' => $aform->input('sender', 30, ''),
+    '__FORM_INPUTSTATUS__' => $aform->select('status', $active_inactive, '1', ';'),
+    '__FORM_INPUTCOMMENT__' => $aform->input('comments', 35, ''),
+    '__FORM_INPUTSUBMIT__' => "window.document.forms['" . $aform->getName() . "'].submit()",
+    '__REMOVE_FULLLINK__' => $_SERVER['PHP_SELF'] . "?a=" . $address . "&t=" . $type_get . "&d=",
+    '__EDIT_BASELINK__' => $_SERVER['PHP_SELF'] . "?a=" . $address . "&t=" . $type_get,
+    '__FORM_BEGIN_SEARCH__' => $sform->open() . $sform->hidden('page', $wwlist->getPage()) . $sform->hidden('t', $type) . $sform->hidden('a', $address),
+    '__FORM_CLOSE_SEARCH__' => $sform->close(),
+    '__COPYRIGHTLINK__' => $is_enterprise ? "www.mailcleaner.net" : "www.mailcleaner.org",
+    '__COPYRIGHTTEXT__' => $is_enterprise ? $lang_->print_txt('COPYRIGHTEE') : $lang_->print_txt('COPYRIGHTCE'),
 ];
 
 $template_->output($replace);

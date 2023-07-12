@@ -136,6 +136,14 @@ if (!isset($bad_arg)) {
     $is_sender_added_to_bl = $lang_->print_txt_param('BADARGS', $bad_arg);
 }
 
+// Registered?
+require_once('helpers/DataManager.php');
+$file_conf = DataManager::getFileConfig($sysconf_::$CONFIGFILE_);
+$is_enterprise = 0;
+if (isset($file_conf['REGISTERED']) && $file_conf['REGISTERED'] == '1') {
+    $is_enterprise = 1;
+}
+
 // Parse the template
 $template_ = new Template('add_rule.tmpl');
 $replace = [];
@@ -149,5 +157,7 @@ if ($is_sender_added_to_bl == 'OK') {
     $replace['__MESSAGE__'] = $lang_->print_txt('NOTBLACKLISTBODY') . ' ' . $is_sender_added_to_bl;
 }
 
+$replace['__COPYRIGHTLINK__'] = $is_enterprise ? "www.mailcleaner.net" : "www.mailcleaner.org";
+$replace['__COPYRIGHTTEXT__'] = $is_enterprise ? $lang_->print_txt('COPYRIGHTEE') : $lang_->print_txt('COPYRIGHTCE');
 // display page
 $template_->output($replace);

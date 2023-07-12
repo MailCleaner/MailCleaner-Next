@@ -50,14 +50,25 @@ $templatehelpfile = $sysconf_->SRCDIR_ . "/www/user/htdocs/templates/" . $templa
 if (file_exists($templatehelpfile)) {
     include($templatehelpfile);
 }
-$replace = [
-    "__PRINT_USERNAME__" => $user_->getName(),
-    "__LINK_LOGOUT__" => '/logout.php',
 
-    "__MENULIST__" => getMenuList(),
-    "__THISTOPIC__" => $topic,
-    "__HELP_TOPIC__" => $lang_->print_txt(strtoupper($topic) . "TOPICTITLE"),
-    "__HELP_CONTENT__" => getHelpContent([strtoupper($topic)])
+// Registered?
+require_once('helpers/DataManager.php');
+$file_conf = DataManager::getFileConfig($sysconf_::$CONFIGFILE_);
+$is_enterprise = 0;
+if (isset($file_conf['REGISTERED']) && $file_conf['REGISTERED'] == '1') {
+    $is_enterprise = 1;
+}
+
+$replace = [
+    '__PRINT_USERNAME__' => $user_->getName(),
+    '__LINK_LOGOUT__' => '/logout.php',
+
+    '__MENULIST__' => getMenuList(),
+    '__THISTOPIC__' => $topic,
+    '__HELP_TOPIC__' => $lang_->print_txt(strtoupper($topic) . "TOPICTITLE"),
+    '__HELP_CONTENT__' => getHelpContent([strtoupper($topic)]),
+    '__COPYRIGHTLINK__' => $is_enterprise ? "www.mailcleaner.net" : "www.mailcleaner.org",
+    '__COPYRIGHTTEXT__' => $is_enterprise ? $lang_->print_txt('COPYRIGHTEE') : $lang_->print_txt('COPYRIGHTCE'),
 ];
 
 // display page

@@ -70,6 +70,15 @@ if ($antispam_->getPref('enable_warnlists') && ($sel_add->getPref('has_warnlist'
 if ($antispam_->getPref('enable_blacklists') && ($sel_add->getPref('has_blacklist') || $domain->getPref('enable_blacklists'))) {
     $template_->setCondition('SEEBLACKLISTEDIT', true);
 }
+
+// Registered?
+require_once('helpers/DataManager.php');
+$file_conf = DataManager::getFileConfig($sysconf_::$CONFIGFILE_);
+$is_enterprise = 0;
+if (isset($file_conf['REGISTERED']) && $file_conf['REGISTERED'] == '1') {
+    $is_enterprise = 1;
+}
+
 // prepare replacements
 $replace = [
     '__INCLUDE_JS__' =>
@@ -106,9 +115,11 @@ $replace = [
     '__SUMFREQ_RADIOS__' => $sel_add->html_SumFreqRadio(),
     '__SUMMARYTYPE__' => $sel_add->html_SumTypeSelect(),
     '__QUARBOUNCES_CHECKBOX__' => $sel_add->html_QuarBouncesCheckbox(),
-    "__LINK_EDITWHITELIST__" => "uwwlist.php?t=1&a=" . $sel_add->getPref('address'),
-    "__LINK_EDITWARNLIST__" => "uwwlist.php?t=2&a=" . $sel_add->getPref('address'),
-    "__LINK_EDITBLACKLIST__" => "uwwlist.php?t=3&a=" . $sel_add->getPref('address')
+    '__LINK_EDITWHITELIST__' => "uwwlist.php?t=1&a=" . $sel_add->getPref('address'),
+    '__LINK_EDITWARNLIST__' => "uwwlist.php?t=2&a=" . $sel_add->getPref('address'),
+    '__LINK_EDITBLACKLIST__' => "uwwlist.php?t=3&a=" . $sel_add->getPref('address'),
+    '__COPYRIGHTLINK__' => $is_enterprise ? "www.mailcleaner.net" : "www.mailcleaner.org",
+    '__COPYRIGHTTEXT__' => $is_enterprise ? $lang_->print_txt('COPYRIGHTEE') : $lang_->print_txt('COPYRIGHTCE'),
 ];
 
 //display page

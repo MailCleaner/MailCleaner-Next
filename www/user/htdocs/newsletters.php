@@ -182,11 +182,21 @@ if ($is_released && $is_sender_body_added_to_wl && $is_sender_added_to_wl) {
     $message = "NLNOTRELEASEDBODY";
 }
 
+// Registered?
+require_once('helpers/DataManager.php');
+$file_conf = DataManager::getFileConfig($sysconf_::$CONFIGFILE_);
+$is_enterprise = 0;
+if (isset($file_conf['REGISTERED']) && $file_conf['REGISTERED'] == '1') {
+    $is_enterprise = 1;
+}
+
 // Parse the template
 $template_ = new Template('newsletters.tmpl');
 $replace = [
     '__LANG_FORCEMESSAGE__' => $lang_->print_txt($message_head),
     '__MESSAGE__' => $lang_->print_txt($message),
+    '__COPYRIGHTLINK__' => $is_enterprise ? "www.mailcleaner.net" : "www.mailcleaner.org",
+    '__COPYRIGHTTEXT__' => $is_enterprise ? $lang_->print_txt('COPYRIGHTEE') : $lang_->print_txt('COPYRIGHTCE'),
 ];
 
 // display page

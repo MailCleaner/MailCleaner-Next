@@ -60,29 +60,22 @@ $is_enterprise = 0;
 if (isset($file_conf['REGISTERED']) && $file_conf['REGISTERED'] == '1') {
     $is_enterprise = 1;
 }
-if ($is_enterprise) {
-    $mclink = "https://www.mailcleaner.net";
-    $mclinklabel = 'MailCleaner, an <img src="/templates/default/images/alinto.png"> Company';
-} else {
-    $mclink = "https://www.mailcleaner.org";
-    $mclinklabel = 'MailCleaner, the Open Source email filter from <img src="/templates/default/images/alinto.png">';
-}
 
 $template_->setCondition('DOMAINCHOOSER', $login_->hasDomainChooser());
 $replace = [
-    "__PRINT_STATUS__" => $lang_->print_txt($login_status),
-    "__PRINT_LOGININFO__" => $lang_->print_txt($login_reminder),
-    "__BEGIN_LOGIN_FORM__" => "<form method=\"post\" id=\"login\" action=\"" . htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'utf-8') . "\"><div><input type=\"hidden\" name=\"lang\" value=\"" . $lang_->getLanguage() . "\" /></div>\n",
-    "__END_LOGIN_FORM__" => "</form>\n",
-    "__LOGIN_FIELD__" => "<input class=\"fieldinput\" type=\"text\" name=\"username\" id=\"usernamefield\" size=\"20\" value=\"" . $username . "\" />",
-    "__OU_FIELD__" => "<input class=\"fieldinput\" type=\"text\" name=\"ou\" size=\"20\" />",
-    "__PASSWORD_FIELD__" => "<input class=\"fieldinput\" type=\"password\" name=\"password\" id=\"passwordfield\" size=\"20\" />",
-    "__DOMAIN_CHOOSER__" => $login_->printDomainChooser(),
-    "__LANGUAGE_CHOOSER__" => $login_->printLanguageChooser($lang_->getLanguage()),
-    "__SUBMIT_BUTTON__" => "<input type=\"submit\" name=\"" . $lang_->print_txt('SUBMIT') . "\" id=\"submitbutton\" value=\"" . $lang_->print_txt('SUBMIT') . "\" />",
-    "__MCLINK__" => $mclink,
-    "__MCLINKLABEL__" => $mclinklabel,
-    "__USERNAME__" => $username
+    '__PRINT_STATUS__' => $lang_->print_txt($login_status),
+    '__PRINT_LOGININFO__' => $lang_->print_txt($login_reminder),
+    '__BEGIN_LOGIN_FORM__' => "<form method=\"post\" id=\"login\" action=\"" . htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, 'utf-8') . "\"><div><input type=\"hidden\" name=\"lang\" value=\"" . $lang_->getLanguage() . "\" /></div>\n",
+    '__END_LOGIN_FORM__' => "</form>\n",
+    '__LOGIN_FIELD__' => "<input class=\"fieldinput\" type=\"text\" name=\"username\" id=\"usernamefield\" size=\"20\" value=\"" . $username . "\" />",
+    '__OU_FIELD__' => "<input class=\"fieldinput\" type=\"text\" name=\"ou\" size=\"20\" />",
+    '__PASSWORD_FIELD__' => "<input class=\"fieldinput\" type=\"password\" name=\"password\" id=\"passwordfield\" size=\"20\" />",
+    '__DOMAIN_CHOOSER__' => $login_->printDomainChooser(),
+    '__LANGUAGE_CHOOSER__' => $login_->printLanguageChooser($lang_->getLanguage()),
+    '__SUBMIT_BUTTON__' => "<input type=\"submit\" name=\"" . $lang_->print_txt('SUBMIT') . "\" id=\"submitbutton\" value=\"" . $lang_->print_txt('SUBMIT') . "\" />",
+    '__USERNAME__' => $username,
+    '__COPYRIGHTLINK__' => $is_enterprise ? "www.mailcleaner.net" : "www.mailcleaner.org",
+    '__COPYRIGHTTEXT__' => $is_enterprise ? $lang_->print_txt('COPYRIGHTEE') : $lang_->print_txt('COPYRIGHTCE'),
 ];
 
 // display page

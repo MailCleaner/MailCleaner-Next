@@ -35,6 +35,14 @@ includeSupport($lang_->getLanguage());
 
 $template_ = new Template('support.tmpl');
 
+// Registered?
+require_once('helpers/DataManager.php');
+$file_conf = DataManager::getFileConfig($sysconf_::$CONFIGFILE_);
+$is_enterprise = 0;
+if (isset($file_conf['REGISTERED']) && $file_conf['REGISTERED'] == '1') {
+    $is_enterprise = 1;
+}
+
 $replace = [
     '__INCLUDE_JS__' => '',
     '__BEGIN_SUPPORT_FORM__' => "<form action=\"" . $_SERVER['PHP_SELF'] . "\" method=\"post\">",
@@ -47,7 +55,9 @@ $replace = [
     '__WAHTCANWEDO__' => "<textarea name=\"whatcanwedo\" cols=\"32\" rows=\"4\" id=\"whatcanwedo\"></textarea>",
     '__SUBMIT_BUTTON__' => "<input type=\"submit\" name=\"Submit\" value=\"" . $lang_->print_txt('SEND') . "\">",
     '__RESET_BUTTON__' => "<input type=\"reset\" name=\"reset\" value=\"" . $lang_->print_txt('CLEAR') . "\">",
-    '__MESSAGE__' => $res
+    '__MESSAGE__' => $res,
+    '__COPYRIGHTLINK__' => $is_enterprise ? "www.mailcleaner.net" : "www.mailcleaner.org",
+    '__COPYRIGHTTEXT__' => $is_enterprise ? $lang_->print_txt('COPYRIGHTEE') : $lang_->print_txt('COPYRIGHTCE'),
 ];
 
 $template_->output($replace);
