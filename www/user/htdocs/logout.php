@@ -46,24 +46,20 @@ if ($http->getPref('use_ssl')) {
 require_once('helpers/DataManager.php');
 $file_conf = DataManager::getFileConfig($sysconf_::$CONFIGFILE_);
 
+// Registered?
+require_once('helpers/DataManager.php');
+$file_conf = DataManager::getFileConfig($sysconf_::$CONFIGFILE_);
 $is_enterprise = 0;
 if (isset($file_conf['REGISTERED']) && $file_conf['REGISTERED'] == '1') {
     $is_enterprise = 1;
 }
-if ($is_enterprise) {
-    $mclink = "https://www.mailcleaner.net";
-    $mclinklabel = 'MailCleaner, an <img src="/templates/default/images/alinto.png"> Company';
-} else {
-    $mclink = "https://www.mailcleaner.org";
-    $mclinklabel = 'MailCleaner, the Open Source email filter from <img src="/templates/default/images/alinto.png">';
-}
 
 // prepare replacements
 $replace = [
-    "__BASE_URL__" => $_SERVER['SERVER_NAME'],
-    "__BEENLOGGEDOUT__" => $lang_->print_txt_param('BEENLOGGEDOUT', $http_sheme . "://" . $_SERVER['SERVER_NAME'] . $port),
-    "__MCLINK__" => $mclink,
-    "__MCLINKLABEL__" => $mclinklabel,
+    '__BASE_URL__' => $_SERVER['SERVER_NAME'],
+    '__BEENLOGGEDOUT__' => $lang_->print_txt_param('BEENLOGGEDOUT', $http_sheme . "://" . $_SERVER['SERVER_NAME'] . $port),
+    '__COPYRIGHTLINK__' => $is_enterprise ? "www.mailcleaner.net" : "www.mailcleaner.org",
+    '__COPYRIGHTTEXT__' => $is_enterprise ? $lang_->print_txt('COPYRIGHTEE') : $lang_->print_txt('COPYRIGHTCE'),
 ];
 //display page
 $template_->output($replace);

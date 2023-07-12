@@ -6,7 +6,7 @@ html, body {
     border: 0;
     font-family:  Arial;
     font-weight: normal;
-    font-size: 11px;
+    font-size: 1em;
     background-color: #FCFCFC;
     color: #363636;
 }
@@ -43,7 +43,6 @@ input {
     position:relative;
     margin:0 auto;
     height:auto !important;
-    height: 100%;
     min-height: 100%;
     width: 100%;
     min-width: 955px;
@@ -61,42 +60,51 @@ input {
 #pagefoot {
     position: fixed;
     bottom: 0px;
-    height: 24px;
     width: 100%;
     overflow: hidden;
-    background-color: #F5F5F5;
+    background-color: #022971;
 }
 
+#pagefoot a {
+    font-weight: bold;
+    text-decoration: none;
+}
 
 /* legal panel */
 #legalpanel {
-    border-top: 1px solid #CBC1C8;
-    color: #022971;
     width: 100%;
     line-height: 22px;
 }
 #legalpanel p {
+    padding: 5px;
     margin: 0px;
-    padding: 0px;
-    padding-left: 15px;
-    padding-right: 15px;
     line-height: 22px;
 }
 
 #copyright {
     float: left;
-    color: #4A4A4A;
-    font-size: 11px;
-    display: inline;
-    line-height: 23px;
 }
 
 #company {
-    display: inline;
     float:right;
-    font-size: 9px;
-    color: #AA2056;
-    line-height: 23px;
+    margin-right: 5px;
+}
+
+#company, #copyright {
+    display: inline;
+}
+
+#company a, #copyright a {
+    color: #FFFFFF;
+    line-height: 30px;
+    vertical-align: bottom;
+    font-size: 14px;
+}
+
+#copyright img {
+    height: 20px;
+    padding-bottom: 5px;
+    vertical-align: bottom;
 }
 
 #company img {
@@ -125,7 +133,7 @@ input {
     line-height: 48px;
     width: 184px;
     background-image: none;
-    background-color: #F5F5F5;
+    background-color: #022971;
     border-bottom: 1px solid #D4D3D2;
     border-right: 1px solid #D4D3D2;
     overflow: hidden;
@@ -144,7 +152,7 @@ input {
     height: 48px;
     line-height: 52px;
     background-image:none;
-    background-color: #F5F5F5;
+    background-color: #022971;
     border-bottom: 1px solid #D4D3D2;
     overflow: hidden;
     white-space: nowrap;
@@ -181,7 +189,7 @@ input {
 #generalconfigmenu li:hover {
     cursor: pointer;
     background-image:none;
-    background-color: #F5F5F5;
+    background-color: #022971;
 }
 
 #generalconfigcontent {
@@ -255,7 +263,7 @@ input {
     padding-right: 6px;
     padding-top: 3px;
     padding-bottom: 3px;
-    background-color: #F5F5F5;
+    background-color: #022971;
     border:1px solid #D4D3D2;
     z-index: 10;
 }

@@ -34,8 +34,19 @@ $quarantine->setSettings($posted);
 
 // create view
 $template_ = new Template('summary.tmpl');
+
+// Registered?
+require_once('helpers/DataManager.php');
+$file_conf = DataManager::getFileConfig($sysconf_::$CONFIGFILE_);
+$is_enterprise = 0;
+if (isset($file_conf['REGISTERED']) && $file_conf['REGISTERED'] == '1') {
+    $is_enterprise = 1;
+}
+
 $replace = [
-    '__MESSAGE__' => $quarantine->doSendSummary()
+    '__MESSAGE__' => $quarantine->doSendSummary(),
+    '__COPYRIGHTLINK__' => $is_enterprise ? "www.mailcleaner.net" : "www.mailcleaner.org",
+    '__COPYRIGHTTEXT__' => $is_enterprise ? $lang_->print_txt('COPYRIGHTEE') : $lang_->print_txt('COPYRIGHTCE'),
 ];
 
 // display page

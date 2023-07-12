@@ -40,26 +40,36 @@ if (isset($_GET['m'])) {
 // create view
 $template_ = new Template('navigation.tmpl');
 
+// Registered?
+require_once('helpers/DataManager.php');
+$file_conf = DataManager::getFileConfig($sysconf_::$CONFIGFILE_);
+$is_enterprise = 0;
+if (isset($file_conf['REGISTERED']) && $file_conf['REGISTERED'] == '1') {
+    $is_enterprise = 1;
+}
+
 $replace = [
-    "__LANG__" => $lang_->getLanguage(),
-    "__C_LINK__" => '</a>',
-    "__O_LINK_PARAMETERS__" => '<a href="parameters.php" target="main_frame" onClick="doButton(\'p\');">',
-    "__LINK_PARAMETERS__" => 'parameters.php',
-    "__O_LINK_QUARANTINE__" => '<a href="quarantine.php" target="main_frame" onClick="doButton(\'q\');">',
-    "__LINK_QUARANTINE__" => 'quarantine.php',
-    "__O_LINK_SUPPORT__" => '<a href="support.php" target="main_frame" onClick="doButton(\'s\');">',
-    "__LINK_SUPPORT__" => 'support.php',
-    "__O_LINK_LOGOUT__" => '<a href="logout.php" target="_parent">',
-    "__LINK_LOGOUT__" => 'logout.php',
-    "__P_IMG__" => $p_img,
-    "__Q_IMG__" => $q_img,
-    "__S_IMG__" => $s_img,
-    "__INCLUDE_JS__" => "<script type=\"text/javascript\" language=\"javascript\">\n
+    '__LANG__' => $lang_->getLanguage(),
+    '__C_LINK__' => '</a>',
+    '__O_LINK_PARAMETERS__' => '<a href="parameters.php" target="main_frame" onClick="doButton(\'p\');">',
+    '__LINK_PARAMETERS__' => 'parameters.php',
+    '__O_LINK_QUARANTINE__' => '<a href="quarantine.php" target="main_frame" onClick="doButton(\'q\');">',
+    '__LINK_QUARANTINE__' => 'quarantine.php',
+    '__O_LINK_SUPPORT__' => '<a href="support.php" target="main_frame" onClick="doButton(\'s\');">',
+    '__LINK_SUPPORT__' => 'support.php',
+    '__O_LINK_LOGOUT__' => '<a href="logout.php" target="_parent">',
+    '__LINK_LOGOUT__' => 'logout.php',
+    '__P_IMG__' => $p_img,
+    '__Q_IMG__' => $q_img,
+    '__S_IMG__' => $s_img,
+    '__INCLUDE_JS__' => "<script type=\"text/javascript\" language=\"javascript\">\n
                                    function doButton(button) {
                                      window.location.href='navigation.php?m='+button;
                                    }
                                  </script>",
-    "__PRINT_USERNAME__" => $user_->getName()
+    '__PRINT_USERNAME__' => $user_->getName(),
+    '__COPYRIGHTLINK__' => $is_enterprise ? "www.mailcleaner.net" : "www.mailcleaner.org",
+    '__COPYRIGHTTEXT__' => $is_enterprise ? $lang_->print_txt('COPYRIGHTEE') : $lang_->print_txt('COPYRIGHTCE'),
 ];
 
 // display page
