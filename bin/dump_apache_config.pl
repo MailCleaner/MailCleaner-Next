@@ -66,7 +66,7 @@ my %sys_conf = get_system_config() or fatal_error("NOSYSTEMCONFIGURATIONFOUND", 
 my %apache_conf;
 %apache_conf = get_apache_config() or fatal_error("NOAPACHECONFIGURATIONFOUND", "no apache configuration found");
 
-dump_apache_file("/etc/apache/httpd.conf_template", "/etc/apache/httpd.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
+dump_apache_file("/etc/apache/apache2.conf_template", "/etc/apache/apache2.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
 
 if (-e "${SRCDIR}/etc/apache/sites/mailcleaner.conf.disabled") {
     unlink("${SRCDIR}/etc/apache/sites/mailcleaner.conf");
