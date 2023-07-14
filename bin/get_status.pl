@@ -35,7 +35,8 @@ my %codes = (
     '3' => 'needs restart',
     '4' => 'currently stopping',
     '5' => 'currently starting',
-    '6' => 'currently restarting (currently procesing stop/start script)'
+    '6' => 'currently restarting (currently procesing stop/start script)',
+    '255' => 'invalid service',
 );
 
 if ($0 =~ m/(\S*)\/\S+.pl$/) {
@@ -68,7 +69,7 @@ my @order = (
     { 'id' => 'exim_stage1', 'proc' => 'exim/exim_stage1.conf', 'human' => 'Incoming MTA' },
     { 'id' => 'exim_stage2', 'proc' => 'exim/exim_stage2.conf', 'human' => 'Filtering MTA' },
     { 'id' => 'exim_stage4', 'proc' => 'exim/exim_stage4.conf', 'human' => 'Outgoing MTA' },
-    { 'id' => 'apache', 'proc' => 'apache/httpd.conf', 'human' => 'Web Server' },
+    { 'id' => 'apache', 'service' => 'apache2', 'human' => 'Web Server' },
     { 'id' => 'mailscanner', 'proc' => 'MailScanner', 'human' => 'Filtering Engine' },
     { 'id' => 'mysql_master', 'proc' => 'mysql/my_master.cnf', 'human' => 'Master Database' },
     { 'id' => 'mysql_slave', 'proc' => 'mysql/my_slave.cnf', 'human' => 'Slave Database' },
@@ -95,11 +96,22 @@ if ($mode_given =~ /s/) {
     $cmd = "ps -efww";
     $res = `$cmd`;
     foreach my $service (@order) {
-    last if ($service->{'id'} eq 'firewall');
-    my $key = $service->{'id'};
+        my $key = $service->{'id'};
+        last if ($key eq 'firewall');
         my $st = 0;
-        if ($res =~ /$service->{'proc'}/ ) {
-            $st = 1;
+        if (defined($service->{'service'})) {
+            $st = system("systemctl is-active --quiet $service->{'service'}");
+            # Old error codes are inverted
+            if ($st == 0) {
+                $st = 1;
+            } else {
+                $st = 0;
+            }
+        } elsif (defined($service->{'proc'})) {
+            $st = 1 if ($res =~ /$service->{'proc'}/);
+        } else {
+            $order[$i++]{'status'} = 255;
+            next;
         }
         if ($st == 0 && -f $restartdir."/".$key.".stopped") {
             $st = 2;
