@@ -81,7 +81,7 @@ sub query($self,$query)
     my $data = '';
     my $rv;
 
-    my $read_set = IO::Select::new();
+    my $read_set = IO::Select->new();
     $read_set->add($sock);
     my ($r_ready, $w_ready, $error) =  IO::Select->select($read_set, undef, undef, $self->{timeout});
 
