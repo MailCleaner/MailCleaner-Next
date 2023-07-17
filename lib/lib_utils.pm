@@ -164,10 +164,13 @@ sub open_as($file, $method=">", $chmod=0664, $chown='mailcleaner:mailcleaner')
     confess "Failed to set mode for ${path}/${filename} to $uid:$gid\n" unless chmod($chmod, $path.'/'.$filename);
     confess "Failed to give ownership of $path/$filename to $uid:$gid\n" unless chown($uid, $gid, $path.'/'.$filename);
 
+    my $mlong = 'read/write';
+    $mlong = 'read' if ($method eq '<');
+    $mlong = 'write' if ($method eq '>');
     if (open (my $fh, $method, "${path}/${filename}")) {
         return \$fh;
     } else {
-        confess("Failed to open $path/$filename for writing: $!\n");
+        confess("Failed to open $path/$filename for $mlong: $!\n");
     }
 }
 
