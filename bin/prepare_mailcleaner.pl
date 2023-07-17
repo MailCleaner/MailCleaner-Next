@@ -27,11 +27,24 @@ use warnings;
 use utf8;
 use File::Touch qw( touch );
 
+our ($conf, $SRCDIR, $VARDIR, $MYMAILCLEANERPWD);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR');
+    $VARDIR = $conf->getOption('VARDIR');
+    unshift(@INC, $SRCDIR."/lib");
+}
+
 # Enable sudoers.d in main sudoers file
 my $enabled = 0;
 if (open(my $fh, '<', '/etc/sudoers')) {
     while (<$fh>) {
-        if ($_ =~ m#includedir\s+/etc/sudoers.d/#) {
+        if ($_ =~ m#^\@includedir\s+/etc/sudoers.d#) {
             $enabled = 1;
             last;
         }
@@ -40,7 +53,7 @@ if (open(my $fh, '<', '/etc/sudoers')) {
 }
 unless ($enabled) {
     if (open(my $fh, '>>', '/etc/sudoers')) {
-        print $fh 'includedir /etc/sudoers.d';
+        print $fh "\@includedir /etc/sudoers.d\n";
         close($fh);
     }
 }
@@ -89,6 +102,7 @@ my @files = (
     '/etc/network/run/ifstate',
     '/etc/resolv.conf',
 );
+my $gid = getgrnam('mailcleaner');
 chown(0, $gid, @files);
 chmod(0664, @files);
 
