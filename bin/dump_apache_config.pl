@@ -32,6 +32,7 @@ use strict;
 use warnings;
 use utf8;
 use Carp qw( confess );
+use File::Touch qw( touch );
 
 our ($conf, $SRCDIR, $VARDIR, $MYMAILCLEANERPWD);
 BEGIN {
@@ -52,11 +53,63 @@ use lib_utils qw( open_as );
 use DBI();
 
 our $DEBUG = 1;
+our $uid = getpwnam('www-data');
+our $gid = getgrnam('mailcleaner');
 
 my $HOSTID=$conf->getOption('HOSTID');
 
 my $lasterror = "";
 
+# Delete old session files
+mkdir('/tmp/php_sessions') unless (-d '/tmp/php_sessions');
+unlink($_) foreach (glob('/tmp/php_sessions/*'));
+unlink('/tmp/php_sessions.sqlite') if (-e '/tmp/php_sessions.sqlite');
+unlink($_) foreach (glob("$VARDIR/www/stats/*.png"));
+
+# Create necessary dirs/files if they don't exist
+touch('/tmp/php_sessions.sqlite') || print("Failed to create /tmp/php_sessions.sqlite\n");
+mkdir('/var/mailcleaner/log/apache') unless (-d '/var/mailcleaner/log/apache');
+mkdir('/var/mailcleaner/run/configurator') unless (-d '/var/mailcleaner/run/configurator');
+
+# Set proper permissions
+chown($uid, $gid,
+    '/tmp/php_sessions/',
+    '/tmp/php_sessions.sqlite',
+    '/var/mailcleaner/log/apache',
+    '/var/mailcleaner/run/configurator',
+    glob($VARDIR.'/log/apache/*'),
+    glob($VARDIR.'/run/configurator/*'),
+    glob($SRCDIR.'/etc/apache/sites/*'),
+    glob($SRCDIR.'/www/guis/admin/public/tmp/*'),
+);
+
+# Fix symlinks if broken
+my %links = (
+    "/etc/apache/php.ini" => "$SRCDIR/etc/apache/php.ini",
+);
+foreach my $link (keys(%links)) {
+    if (-e $link) {
+        if (-l $link) {
+            next if ($links{$link} eq readlink($link));
+        }
+        unlink($link);
+    }
+    symlink($links{$link}, $link);
+}
+
+# Configure sudoer permissions if they are not already
+mkdir '/etc/sudoers.d' unless (-d '/etc/sudoers.d');
+if (open(my $fh, '>', '/etc/sudoers.d/apache')) {
+    print $fh "
+User_Alias  APACHE = www-data
+Runas_Alias ROOT = root
+Cmnd_Alias  SETPINDB = $SRCDIR/scripts/configuration/set_password_in_db.sh
+
+APACHE      * = (ROOT) NOPASSWD: SETPINDB
+";
+}
+
+# Dump configuration
 my $dbh;
 $dbh = DBI->connect("DBI:MariaDB:database=mc_config;host=localhost;mariadb_socket=${VARDIR}/run/mysql_slave/mysqld.sock",
     "mailcleaner", $conf->getOption('MYMAILCLEANERPWD'), {RaiseError => 0, PrintError => 0}) or fatal_error("CANNOTCONNECTDB", "Failed to connect");
@@ -140,6 +193,7 @@ sub dump_apache_file($filetmpl, $filedst)
 
     close $TEMPLATE;
     close $TARGET;
+    chown($uid, $gid, $target_file);
 
     return 1;
 }
@@ -171,6 +225,7 @@ sub dump_soap_wsdl()
 
     close $TEMPLATE;
     close $TARGET;
+    chown($uid, $gid, $target_file);
 
     return 1;
 }
@@ -278,4 +333,5 @@ sub dump_certificate($srcdir,$cert,$key,$chain)
             close $FILE;
         }
     }
+    chown($uid, $gid, $path, $backup, $chainpath);
 }
