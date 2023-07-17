@@ -167,6 +167,7 @@ sub open_as($file, $method=">", $chmod=0664, $chown='mailcleaner:mailcleaner')
     my $mlong = 'read/write';
     $mlong = 'read' if ($method eq '<');
     $mlong = 'write' if ($method eq '>');
+    $mlong = 'append' if ($method eq '>>');
     if (open (my $fh, $method, "${path}/${filename}")) {
         return \$fh;
     } else {
