@@ -50,6 +50,7 @@ case "$1" in
 start)
 	echo "Starting $NAME: "
 
+	$SRCDIR/bin/prepare_mailcleaner.pl
 	EDITION=$(cat $SRCDIR/etc/edition.def)
 	VERSION=$(cat $SRCDIR/etc/mailcleaner/version.def)
 	echo "MailCleaner $EDITION $VERSION (kernel \\\r on \\\m, \\\l)\n" >/etc/issue

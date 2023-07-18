@@ -22,7 +22,7 @@
 #   This script will dump the domains configuration
 #
 #   Usage:
-#           dump_domains.pl
+#           dump_archiving.pl
 
 use v5.36;
 use strict;

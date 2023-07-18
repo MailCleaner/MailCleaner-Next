@@ -50,7 +50,7 @@ sub create($name)
     return $self;
 }
 
-sub getPref($self,$pref,$default)
+sub getPref($self,$pref,$default=undef)
 {
     if (!defined($self->{prefs}) || !defined($self->{prefs}{$pref})) {
 
