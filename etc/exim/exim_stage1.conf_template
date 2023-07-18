@@ -22,10 +22,10 @@ __INCLUDE__ stage1/ldap
 av_scanner = clamd:127.0.0.1 3310
 
 __IF__ USESSMTPPORT
-daemon_smtp_ports = 25:587:465
-tls_on_connect_ports = 465
+daemon_smtp_ports = 2500:5870:4650
+tls_on_connect_ports = 4650
 __ELSE__ USESSMTPPORT
-daemon_smtp_ports = 25:587
+daemon_smtp_ports = 2500:5870
 __FI__
 local_interfaces = <; ::0 ; 0.0.0.0
 __IF__ DISABLE_IPV6
@@ -44,7 +44,7 @@ tls_advertise_hosts =
 __FI__
 
 __IF__ BLOCK25AUTH
-auth_advertise_hosts = ${if eq{$interface_port}{587}{*}{}}
+auth_advertise_hosts = ${if eq{$interface_port}{5870}{*}{}}
 __FI__
 
 chunking_advertise_hosts =
@@ -61,7 +61,7 @@ __FI__
 __INCLUDE__ stage1/log_selector
 
 message_logs = true
-exim_user = mailcleaner
+exim_user = Debian-exim
 exim_group = mailcleaner
 log_file_path = __IF_USE_SYSLOGENABLED__ VARDIR/log/exim_stage1/%slog
 pid_file_path = VARDIR/run/exim_stage1.pid
@@ -119,7 +119,7 @@ allow_mx_to_ip = __ALLOW_MX_TO_IP__
 received_headers_max = __MAX_RECEIVED__
 received_header_text = "Received: \
 __IF__ MASKRELAY
-        ${if eq{$interface_port}{587}\
+        ${if eq{$interface_port}{5870}\
           {from maskedhost [127.0.0.1]}\
           { ${if def:sender_rcvhost {from ${sender_rcvhost}\n\t}\
             {${if def:sender_ident {from ${sender_ident} }}\
@@ -165,7 +165,7 @@ RELAYDEST = VARDIR/spool/tmp/mailcleaner/relay_accepteddest.list
 addresslist full_whitelisted_senders = VARDIR/spool/mailcleaner/full_whitelisted_senders.list
 
 smtp_accept_reserve = __SMTP_RESERVE__
-smtp_reserve_hosts = ${if eq{$interface_port}{587}{*}{+relay_from_hosts}}
+smtp_reserve_hosts = ${if eq{$interface_port}{5870}{*}{+relay_from_hosts}}
 
 #__IF__ DMARCREPORTING
 #dmarc_history_file = VARDIR/spool/tmp/exim/dmarc.history
@@ -220,7 +220,7 @@ __IF__ __LISTS_PER_DOMAIN__
           !condition    = ${if eq{$acl_m0}{true}{yes}{no}}
 __FI__
           dnslists      = __RBLS__
-          condition     = ${if eq {$received_port}{587} {0}{1}}
+          condition     = ${if eq {$received_port}{5870} {0}{1}}
           message = Blacklisted in ${perl{hideToken}{$dnslist_domain}}: $dnslist_text
           log_message = "listed in ${perl{hideToken}{$dnslist_domain}}: $dnslist_text"
           delay = __RBLTIMEOUT__s
@@ -465,7 +465,7 @@ __IF__ __LISTS_PER_DOMAIN__
           !condition    = ${if eq{$acl_m0}{true}{yes}{no}}
 __FI__
           condition     = ${if and{{def:sender_host_address}{!def:sender_host_name}}{yes}{no}}
-          condition     = ${if eq {$received_port}{587} {0}{1}}
+          condition     = ${if eq {$received_port}{5870} {0}{1}}
           !authenticated = *
           message       = Reverse DNS lookup failed for $sender_host_address
           set acl_c8    = smtp:refused:badrdns
@@ -556,7 +556,7 @@ __IF__ __LISTS_PER_DOMAIN__
           !condition    = ${if eq{$acl_m0}{true}{yes}{no}}
 __FI__
           dnslists = __RBLS__
-          condition     = ${if eq {$received_port}{587} {0}{1}}
+          condition     = ${if eq {$received_port}{5870} {0}{1}}
           message = Blacklisted in ${perl{hideToken}{$dnslist_domain}}: $dnslist_text
           log_message   = "listed in ${perl{hideToken}{$dnslist_domain}} : $dnslist_text"
           delay = __RBLTIMEOUT__s
@@ -585,7 +585,7 @@ __IF__ __LISTS_PER_DOMAIN__
 __FI__
           !spf          = pass
           dnslists      = __BSRBLS__
-          condition     = ${if eq {$received_port}{587} {0}{1}}
+          condition     = ${if eq {$received_port}{5870} {0}{1}}
           message       =  backscatterer blacklisted: $dnslist_text
           log_message   = "backscatterer listed: $dnslist_text"
           delay         = __RBLTIMEOUT__s
@@ -611,7 +611,7 @@ __IF__ __LISTS_PER_DOMAIN__
           !condition    = ${if eq{$acl_m0}{true}{yes}{no}}
 __FI__
           spf           = fail
-          condition     = ${if eq {$received_port}{587} {0}{1}}
+          condition     = ${if eq {$received_port}{5870} {0}{1}}
           message       = $sender_host_address is not allowed to send mail from ${if eq {$sender_address_domain}{} {(helo)$sender_helo_name}{$sender_address_domain}} (SPF failure)
           set acl_c8    = smtp:refused:badspf
           set acl_c9    = STATSADD
@@ -639,7 +639,7 @@ __FI__
           domains       = +domains_to_greylist
           !senders      = :
           condition     = ${if !def:acl_c1}
-          condition     = ${if eq {$received_port}{587} {0}{1}}
+          condition     = ${if eq {$received_port}{5870} {0}{1}}
           !hosts        = <; +trusted_hosts ; \
                             ${if exists {__SRCDIR__/etc/greylistd/whitelist-hosts}\
                                {__SRCDIR__/etc/greylistd/whitelist-hosts}{}} ; \
@@ -668,7 +668,7 @@ __FI__
 
   deny    !authenticated = *
           !hosts        = +relay_from_hosts
-          condition     = ${if eq {$received_port}{587} {1}{0}}
+          condition     = ${if eq {$received_port}{5870} {1}{0}}
           message       = unauthenticated session on submission port
           log_message   = refusing unauthenticated session on submission port
           set acl_c8    = smtp:refused
@@ -723,7 +723,7 @@ __INCLUDE__ stage1/recipient_verification
 __IF__ __LISTS_PER_DOMAIN__
           condition    = ${if eq{$acl_m0}{true}{yes}{no}}
 __FI__
-          control       = dmarc_disable_verify
+          #control       = dmarc_disable_verify
  __IF__ DEBUG
           logwrite      = DMARC DEBUG: disabling dmarc from $sender_host_address, sender $sender_address
  __FI__
@@ -789,7 +789,7 @@ __IF__ PREVENTRELAYFROMUNKNOWNDOMAIN
           sender_domains= : +relay_to_domains
 __FI__
 __IF__ BLOCK25AUTH
-          !condition    = ${if eq {$received_port}{25} {1}{0}}
+          !condition    = ${if eq {$received_port}{2500} {1}{0}}
 __FI__
           set   acl_c0  = relayed
           set acl_c8    = smtp:relayed:authenticated

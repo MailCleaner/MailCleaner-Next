@@ -196,42 +196,32 @@ if ( -f "/etc/init.d/rsyslog" ) {
     #`/etc/init.d/sysklogd restart`;
 }
 
-stage1() if ($stage == 1);
-stage2() if ($stage == 2);
-stage4() if ($stage == 4);
 ownership($stage);
 
 sub dump_exim_file($stage, $include_file=undef)
 {
 
-    my $template;
+    my ($template, $source, $destination);
     if (defined($include_file)) {
         my $dest_file = $include_file;
         $dest_file =~ s/_template$//;
         if (-e "${SRCDIR}/etc/exim/${include_file}") {
-            $template = ConfigTemplate::create(
-                $include_file,
-                $dest_file
-            );
+            $source = $include_file;
+            $destination = $dest_file;
         } else {
-            $template = ConfigTemplate::create(
-                $include_file,
-                $dest_file
-            );
+            $source = $include_file;
+            $destination = $dest_file;
         }
     } else {
         if (-e "${SRCDIR}/etc/exim/exim_stage${stage}.conf_template") {
-            $template = ConfigTemplate::create(
-                "${SRCDIR}/etc/exim/exim_stage${stage}.conf_template",
-                "${SRCDIR}/etc/exim/exim_stage${stage}.conf"
-            );
+            $source = "${SRCDIR}/etc/exim/exim_stage${stage}.conf_template";
+            $destination = "${SRCDIR}/etc/exim/exim_stage${stage}.conf";
         } else {
-            $template = ConfigTemplate::create(
-                "${SRCDIR}/etc/exim/exim_stage${stage}.conf_template",
-                "${SRCDIR}/etc/exim/exim_stage${stage}.conf"
-            );
+            $source = "${SRCDIR}/etc/exim/exim_stage${stage}.conf_template";
+            $destination = "${SRCDIR}/etc/exim/exim_stage${stage}.conf";
         }
     }
+    $template = ConfigTemplate::create($source, $destination);
 
     my $if_syslog = "#no syslog_facility";
     $exim_conf{'__IF_USE_SYSLOGENABLED__'} = "";
@@ -380,7 +370,7 @@ sub dump_exim_file($stage, $include_file=undef)
 
     $template->setCondition('__LISTS_PER_DOMAIN__', $exim_conf_lpd);
 
-    my @net_interfaces = get_interfaces();
+    my @net_interfaces = get_interfaces6();
     $template->setCondition('DISABLE_IPV6', 1);
     foreach my $interface (@net_interfaces){
         if ($interface =~ /eth\d*/ && ! is_ipv6_disabled($interface)) {
@@ -391,7 +381,7 @@ sub dump_exim_file($stage, $include_file=undef)
     $template->setReplacements(\%sys_conf);
     $template->setReplacements(\%exim_conf);
 
-    my $ret = $template->dump() || die "Failed to dump: $!\n";
+    my $ret = $template->dump() || die "Failed to dump $source to $destination: $!\n";
 
     # Below is not needed when we are generating the files included in exim configuration
     return $ret if ( $include_file );
@@ -1134,16 +1124,21 @@ sub print_usage()
 }
 
 #############################
-sub get_interfaces()
+sub get_interfaces6()
 {
     my $interface_file = "/etc/network/interfaces";
     my @interfaces;
 
     open (my $fh, '<', $interface_file) or die "could not open interface file";
+    my $name;
     while (my $row = <$fh>){
         chomp $row;
+        if (defined($name)) {
+            push @interfaces, $1 if ($row =~ m/\d+\:\d+/);
+            $name = undef;
+        }
         if($row =~ /^iface\s+(\w+).+$/){
-            push @interfaces, $1;
+            $name = $1;
         }
     }
     return @interfaces;
@@ -1170,20 +1165,27 @@ sub log_dns($str)
     #print "$str\n";
 }
 
-sub stage1()
-{
-    use dump_domains qw( dump_domains );
-    dump_domains('-a');
-
-}
-
 sub ownership($stage)
 {
     use File::Touch qw( touch );
+
+    mkdir('/etc/sudoers.d') unless (-d '/etc/sudoers.d/');
+    if (open(my $fh, '>', '/etc/sudoers.d/exim')) {
+        print $fh "
+User_Alias  EXIMUSER = Debian-exim
+Runas_Alias ROOT = root
+Cmnd_Alias  EXIMBIN = /usr/sbin/exim4
+
+EXIMUSER    * = (ROOT) NOPASSWD: EXIMBIN
+";
+    }
+
     my @dirs = (
         "${VARDIR}/log/exim_stage${stage}",
 		"${VARDIR}/spool/tmp/exim_stage${stage}",
 		"${VARDIR}/spool/tmp/exim_stage${stage}/auth_cache",
+		"${VARDIR}/spool/exim_stage${stage}",
+		glob("${VARDIR}/spool/exim_stage${stage}/*"),
     );
     push(@dirs,
 		"${SRCDIR}/etc/exim/certs",
@@ -1207,6 +1209,9 @@ sub ownership($stage)
 		"${VARDIR}/spool/tmp/exim/dmarc.history",
 		"${VARDIR}/spool/tmp/exim/blacklists/hosts",
 		"${VARDIR}/spool/tmp/exim/blacklists/senders",
+		"${VARDIR}/spool/mailcleaner/full_whitelisted_hosts.list",
+		"${VARDIR}/spool/mailcleaner/full_whitelisted_senders.list",
+		glob("${VARDIR}/spool/exim_stage1/db/*"),
 	    glob("${VARDIR}/spool/tmp/mailcleaner/*.list"),
 	    glob("${SRCDIR}/etc/exim/certs/*"),
     ) if ($stage == 1);
