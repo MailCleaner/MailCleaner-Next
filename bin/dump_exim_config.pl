@@ -70,8 +70,8 @@ our $SPMC = "$VARDIR/spool/mailcleaner";
 our $db = DB::connect('slave', 'mc_config');
 our $include_debug = 0;
 
-my $uid = getpwnam( 'mailcleaner' );
-my $gid = getgrnam( 'mailcleaner' );
+our $uid = getpwnam( 'Debian-exim' );
+our $gid = getgrnam( 'mailcleaner' );
 
 my $lasterror = "";
 my $eximid = shift;
@@ -129,35 +129,33 @@ foreach my $stage (@eximids) {
         ## dump the blacklists files
         dump_blacklists();
     }
-    %exim_conf = get_exim_config($stage) or fatal_error("NOEXIMCONFIGURATIONFOUND", "no exim configuration found for stage $stage");
+    %exim_conf = get_exim_config($stage) or fatal_error("NOEXIMCONFIGURATIONFOUND", "no exim configuration found for stage ${stage}");
 
     # Generate the included files and the associated customized files
     my $custom = 0;
     while ( $custom != 2) {
         my $dir;
-        my $dest_dir;
+        my $dest_dir = "${VARDIR}/spool/tmp/exim_stage${stage}";
         if ($custom) {
-            $dir = "/usr/mailcleaner/etc/exim/custom/stage$stage";
-            $dest_dir = "custom/stage$stage";
+            $dir = "/usr/mailcleaner/etc/exim/custom/stage${stage}";
         } else {
-            $dir = "/usr/mailcleaner/etc/exim/stage$stage";
-            $dest_dir = "stage$stage";
+            $dir = "/usr/mailcleaner/etc/exim/stage${stage}";
         }
         if ( -d "$dir") {
             my @conf_files = glob("$dir/*_template");
             foreach my $current_file (@conf_files) {
                 $current_file =~ s/.*\///;
-                dump_exim_file($stage, "$dest_dir/$current_file") or fatal_error("CANNOTDUMPEXIMFILE", $lasterror);
+                dump_exim_file($stage, "$dir/$current_file") or fatal_error("CANNOTDUMPEXIMFILE1", $lasterror);
             }
         }
         $custom ++;
     }
 
 
-    dump_exim_file($stage) or fatal_error("CANNOTDUMPEXIMFILE", $lasterror);
+    dump_exim_file($stage) or fatal_error("CANNOTDUMPEXIMFILE2", $lasterror);
 }
 my $stage = 1;
-my %stage1_conf = get_exim_config($stage) or fatal_error("NOEXIMCONFIGURATIONFOUND", "no exim configuration found for stage $stage");
+my %stage1_conf = get_exim_config($stage) or fatal_error("NOEXIMCONFIGURATIONFOUND", "no exim configuration found for stage ${stage}");
 
 ## dump the rbl ignore hosts file
 if (!$stage1_conf{'rbls_ignore_hosts'}) {
@@ -198,35 +196,39 @@ if ( -f "/etc/init.d/rsyslog" ) {
     #`/etc/init.d/sysklogd restart`;
 }
 
-sub dump_exim_file($stage, $include_file=0)
+stage1() if ($stage == 1);
+stage2() if ($stage == 2);
+stage4() if ($stage == 4);
+ownership($stage);
+
+sub dump_exim_file($stage, $include_file=undef)
 {
 
-    my $srcdir = ${SRCDIR};
     my $template;
-    if ( ! $include_file ) {
-        if (-e "$srcdir/etc/exim/exim_stage$stage.conf_template") {
+    if (defined($include_file)) {
+        my $dest_file = $include_file;
+        $dest_file =~ s/_template$//;
+        if (-e "${SRCDIR}/etc/exim/${include_file}") {
             $template = ConfigTemplate::create(
-                "$srcdir/etc/exim/exim_stage$stage.conf_template",
-                "$srcdir/etc/exim/exim_stage$stage.conf"
+                $include_file,
+                $dest_file
             );
         } else {
             $template = ConfigTemplate::create(
-                "$srcdir/etc/exim/exim_stage$stage.conf_template",
-                "$srcdir/etc/exim/exim_stage$stage.conf"
+                $include_file,
+                $dest_file
             );
         }
     } else {
-        my $dest_file = $include_file;
-        $dest_file =~ s/_template$//;
-        if (-e "$srcdir/etc/exim/${include_file}") {
+        if (-e "${SRCDIR}/etc/exim/exim_stage${stage}.conf_template") {
             $template = ConfigTemplate::create(
-                          "$srcdir/etc/exim/${include_file}",
-                          "$srcdir/etc/exim/$dest_file"
+                "${SRCDIR}/etc/exim/exim_stage${stage}.conf_template",
+                "${SRCDIR}/etc/exim/exim_stage${stage}.conf"
             );
         } else {
             $template = ConfigTemplate::create(
-                          "$srcdir/etc/exim/$include_file",
-                          "$srcdir/etc/exim/$dest_file"
+                "${SRCDIR}/etc/exim/exim_stage${stage}.conf_template",
+                "${SRCDIR}/etc/exim/exim_stage${stage}.conf"
             );
         }
     }
@@ -389,14 +391,15 @@ sub dump_exim_file($stage, $include_file=0)
     $template->setReplacements(\%sys_conf);
     $template->setReplacements(\%exim_conf);
 
-    my $ret = $template->dump();
+    my $ret = $template->dump() || die "Failed to dump: $!\n";
 
     # Below is not needed when we are generating the files included in exim configuration
     return $ret if ( $include_file );
 
-    my $tmptarget_file = ${SRCDIR}."/etc/exim/exim_stage$stage.conf";
-    my $target_file = ${VARDIR}."/spool/tmp/exim/exim_stage$stage.conf";
+    my $tmptarget_file = ${SRCDIR}."/etc/exim/exim_stage${stage}.conf";
+    my $target_file = ${VARDIR}."/spool/tmp/exim/exim_stage${stage}.conf";
     move($tmptarget_file, $target_file);
+    chown $uid, $gid, $target_file;
 
     return $ret;
 }
@@ -442,7 +445,7 @@ sub dump_proxy_file($file, $smtp_proxy)
     $str =~ s/\s*\:\s*$//;
 
     my $TARGET;
-    confess "Cannot open $file: $!" unless ($TARGET = ${open_as($file)});
+    confess "Cannot open $file: $!" unless ($TARGET = ${open_as($file, '>', 0664, 'Debian-exim:mailcleaner')});
     print $TARGET $str;
     close $TARGET;
 }
@@ -559,7 +562,7 @@ sub dump_master_file($file, $m_h)
     my %master = %$m_h;
 
     my $MASTERFILE;
-    confess "Cannot open $file: $!" unless ($MASTERFILE = ${open_as($file)});
+    confess "Cannot open $file: $!" unless ($MASTERFILE = ${open_as($file, '>', 0664, 'Debian-exim:mailcleaner')});
 
     print $MASTERFILE "HOST ".$master{'host'}."\n";
     print $MASTERFILE "PORT ".$master{'port'}."\n";
@@ -703,7 +706,7 @@ local0.err      ".${VARDIR}."/log/mailscanner/errorlog\n\" > $file";
 sub get_exim_config($stage)
 {
     my %config = ();
-    my %row = $db->getHashRow("SELECT * FROM mta_config WHERE stage=$stage");
+    my %row = $db->getHashRow("SELECT * FROM mta_config WHERE stage=${stage}");
     return unless %row;
 
     $config{'__SMTP_ACCEPT_MAX_PER_HOST__'} = $row{'smtp_accept_max_per_host'};
@@ -924,7 +927,7 @@ sub dump_ignore_list($ignorehosts,$filename)
 
     my @list = expand_host_string($ignorehosts,('dumper'=>'exim/dump_ignore_list/'.$filename));
     my $RBLFILE;
-    confess "Cannot open $file: $!" unless ($RBLFILE = ${open_as($file)});
+    confess "Cannot open $file: $!" unless ($RBLFILE = ${open_as($file, '>', 0664, 'Debian-exim:mailcleaner')});
     foreach my $host (@list) {
         print $RBLFILE $host."\n";
     }
@@ -949,7 +952,7 @@ sub dump_blacklists()
         my $filepath = $tmpdir."/".$files{$file};
 
         my $FILE;
-        confess "Cannot open $file: $!" unless ($FILE = ${open_as($filepath,'>',0644)});
+        confess "Cannot open $file: $!" unless ($FILE = ${open_as($filepath, '>', 0664, 'Debian-exim:mailcleaner')});
         if ($incoming_config{$file}) {
             if ($file =~ /host_reject/) {
                 foreach my $host (expand_host_string($incoming_config{$file},('dumper'=>'exim/dump_blacklists/'.$file))) {
@@ -1020,11 +1023,11 @@ sub print_ip_domain_rule($sender_list, $domain, $type)
     my $path = "${VARDIR}/spool/tmp/exim_stage1";
     my $FH_IP_DOM;
     if ( ($type eq 'black-ip-dom') || ($type eq 'spam-ip-dom') )  {
-        confess "Cannot open $path/blacklists/ip-domain: $!" unless ($FH_IP_DOM = ${open_as("$path/blacklists/ip-domain",'>>')});
+        confess "Cannot open $path/blacklists/ip-domain: $!" unless ($FH_IP_DOM = ${open_as("$path/blacklists/ip-domain",'>>',0664,'Debian-exim:mailcleaner')});
     } elsif ($type eq 'white-ip-dom') {
-        confess "Cannot open $path/rblwhitelists/$domain: $!" unless ($FH_IP_DOM = ${open_as("$path/rblwhitelists/$domain",'>>')});
+        confess "Cannot open $path/rblwhitelists/$domain: $!" unless ($FH_IP_DOM = ${open_as("$path/rblwhitelists/$domain",'>>',0664,'Debian-exim:mailcleaner')});
     } elsif ($type eq 'wh-spamc-ip-dom') {
-        confess "Cannot open $path/spamcwhitelists/$domain: $!" unless ($FH_IP_DOM = ${open_as("$path/spamcwhitelists/$domain",'>>')});
+        confess "Cannot open $path/spamcwhitelists/$domain: $!" unless ($FH_IP_DOM = ${open_as("$path/spamcwhitelists/$domain",'>>',0664,'Debian-exim:mailcleaner')});
     }
 
     $sender_list = join(' ; ', expand_host_string($sender_list,('dumper'=>'exim/sender_list')));
@@ -1069,7 +1072,7 @@ sub dump_certificate($cert,$key)
     } else {
         $cert =~ s/\r\n/\n/g;
         my $FILE;
-        confess "Cannot open $certfile: $!" unless ($FILE = ${open_as($certfile)});
+        confess "Cannot open $certfile: $!" unless ($FILE = ${open_as($certfile,'>',0664,'Debian-exim:mailcleaner')});
         print $FILE $cert."\n";
         close $FILE;
     }
@@ -1081,7 +1084,7 @@ sub dump_certificate($cert,$key)
     } else {
         $key =~ s/\r\n/\n/g;
         my $FILE;
-        confess "Cannot open $keyfile: $!" unless ($FILE = ${open_as($keyfile)});
+        confess "Cannot open $keyfile: $!" unless ($FILE = ${open_as($keyfile,'>',0664,'Debian-exim:mailcleaner')});
         print $FILE $key."\n";
         close $FILE;
     }
@@ -1095,7 +1098,7 @@ sub dump_default_dkim($stage1_conf)
     }
     my $keyfile = $keypath."/default.pkey";
     my ($FILE, $DEFAULT);
-    confess "Cannot open $keyfile: $!" unless ($FILE = ${open_as($keyfile)});
+    confess "Cannot open $keyfile: $!" unless ($FILE = ${open_as($keyfile, '>', 0664, 'Debian-exim:mailcleaner')});
     if (defined($stage1_conf{'dkim_default_pkey'})) {
         if ( -e $keypath."/".$stage1_conf{'dkim_default_domain'}.".pkey" ) {
             open($DEFAULT, '<', $keypath."/".$stage1_conf{'dkim_default_domain'}.".pkey");
@@ -1113,11 +1116,11 @@ sub dump_default_dkim($stage1_conf)
 #############################
 sub dump_tls_force_files()
 {
-    foreach my $f ( ('domains_require_tls_from', 'domains_require_tls_to')) {
+    foreach my $f ( ('domains_require_tls_from', 'domains_require_tls_to') ) {
         my $o = '__'.uc($f).'__';
         my $file = ${VARDIR}."/spool/tmp/mailcleaner/".$f.".list";
         my $FILE;
-        confess "Cannot open $file: $!" unless ($FILE = ${open_as($file)});
+        confess "Cannot open $file: $!" unless ($FILE = ${open_as($file,'>',0664,'Debian-exim:mailcleaner')});
         print $FILE $exim_conf{$o};
         close $FILE;
     }
@@ -1165,4 +1168,73 @@ sub expand_host_string($string,%args)
 sub log_dns($str)
 {
     #print "$str\n";
+}
+
+sub stage1()
+{
+    use dump_domains qw( dump_domains );
+    dump_domains('-a');
+
+}
+
+sub ownership($stage)
+{
+    use File::Touch qw( touch );
+    my @dirs = (
+        "${VARDIR}/log/exim_stage${stage}",
+		"${VARDIR}/spool/tmp/exim_stage${stage}",
+		"${VARDIR}/spool/tmp/exim_stage${stage}/auth_cache",
+    );
+    push(@dirs,
+		"${SRCDIR}/etc/exim/certs",
+		"${VARDIR}/spool/tmp/exim",
+		"${VARDIR}/spool/tmp/exim/blacklists",
+		"${VARDIR}/spool/tmp/exim/certs",
+    ) if ($stage == 1);
+    foreach my $dir (@dirs) {
+	    mkdir ($dir) unless (-d $dir);
+		chown($uid, $gid, $dir);
+    }
+
+    my @files = (
+        "${VARDIR}/log/exim_stage${stage}/mainlog",
+        "${VARDIR}/log/exim_stage${stage}/rejectlog",
+    );
+    push (@files,
+		"${SRCDIR}/etc/exim/stage1_scripts.pl",
+		"${SRCDIR}/etc/exim/out_scripts.pl",
+	    "${VARDIR}/spool/tmp/exim/frozen_senders",
+		"${VARDIR}/spool/tmp/exim/dmarc.history",
+		"${VARDIR}/spool/tmp/exim/blacklists/hosts",
+		"${VARDIR}/spool/tmp/exim/blacklists/senders",
+	    glob("${VARDIR}/spool/tmp/mailcleaner/*.list"),
+	    glob("${SRCDIR}/etc/exim/certs/*"),
+    ) if ($stage == 1);
+    foreach my $file (@files) {
+	    touch($file) unless (-e $file);
+        chown($uid, $gid, $file);
+    }
+
+    if ($stage == 1) {
+        unlink("${VARDIR}/spool/exim_stage1/db/callout") if (-e "${VARDIR}/spool/exim_stage1/db/callout");
+	    foreach (glob("${VARDIR}/spool/tmp/exim/certs/*")) {
+            unlink($_) unless (-l $_);
+        }
+	    foreach (glob("${SRCDIR}/etc/exim/certs/*")) {
+            my ($file) = $_ =~ m#.*/([^/]+)$#;
+            $file = "${VARDIR}/spool/tmp/exim/certs/${file}";
+            symlink($_, $file) unless (-e $file && readlink($file) eq $_);
+        }
+    }
+
+    my $dir = "${SRCDIR}/etc/exim/stage${stage}";
+    if (-d $dir) {
+        chown($uid, $gid, $dir);
+        chown($uid, $gid, $_) foreach (glob("$dir/*"));
+    }
+}
+
+sub fatal_error($msg,$full)
+{
+    print $msg . ($DEBUG ? "\nFull information: $full \n" : "\n");
 }
