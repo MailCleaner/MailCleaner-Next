@@ -38,14 +38,14 @@ if (!defined($command)) {
 if ($command eq "start") {
     if ( my $pid_restart = fork) {
     } elsif (defined $pid_restart) {
-        my $daemon = SpamLogger->new('SpamLogger', 'etc/exim/spamlogger.conf');
+        my $daemon = SpamLogger->new('SpamLogger', 'etc/spamlogger/spamlogger.conf');
         print "done\n";
         $daemon->startDaemon();
         exit;
     }
 #  $daemon->getPref('HELO', 'starter');
 } elsif ($command eq "stop") {
-    my $daemon = SpamLogger->new('SpamLogger', 'etc/exim/spamlogger.conf');
+    my $daemon = SpamLogger->new('SpamLogger', 'etc/spamlogger/spamlogger.conf');
     my $res = $daemon->exec('EXIT');
     my $pids = `pgrep -f SpamLogger`;
     exit if (!defined($pids) || $pids eq "");
