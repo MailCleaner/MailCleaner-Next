@@ -8,7 +8,7 @@ smtp_active_hostname = __HELO_NAME__
 qualify_recipient = __QUALIFY_RECIPIENT__
 
 message_logs = false
-exim_user = mailcleaner
+exim_user = Debian-exim
 exim_group = mailcleaner
 log_file_path = VARDIR/log/exim_stage2/%slog
 pid_file_path = VARDIR/run/exim_stage2.pid

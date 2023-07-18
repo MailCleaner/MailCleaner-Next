@@ -148,13 +148,14 @@ foreach my $stage (@eximids) {
                 dump_exim_file($stage, "$dir/$current_file") or fatal_error("CANNOTDUMPEXIMFILE1", $lasterror);
             }
         }
-        $custom ++;
+        $custom++;
     }
 
-
     dump_exim_file($stage) or fatal_error("CANNOTDUMPEXIMFILE2", $lasterror);
+    ownership($stage);
 }
-my $stage = 1;
+my $stage = grep(/^1$/, @eximids);
+exit unless ($stage);
 my %stage1_conf = get_exim_config($stage) or fatal_error("NOEXIMCONFIGURATIONFOUND", "no exim configuration found for stage ${stage}");
 
 ## dump the rbl ignore hosts file
@@ -195,8 +196,6 @@ if ( -f "/etc/init.d/rsyslog" ) {
     # TODO: deprecated. Migrate to syslog-ng
     #`/etc/init.d/sysklogd restart`;
 }
-
-ownership($stage);
 
 sub dump_exim_file($stage, $include_file=undef)
 {
@@ -1183,8 +1182,8 @@ EXIMUSER    * = (ROOT) NOPASSWD: EXIMBIN
     my @dirs = (
         "${VARDIR}/log/exim_stage${stage}",
 		"${VARDIR}/spool/tmp/exim_stage${stage}",
-		"${VARDIR}/spool/tmp/exim_stage${stage}/auth_cache",
 		"${VARDIR}/spool/exim_stage${stage}",
+		glob("${VARDIR}/spool/tmp/exim_stage${stage}/*"),
 		glob("${VARDIR}/spool/exim_stage${stage}/*"),
     );
     push(@dirs,
@@ -1199,8 +1198,8 @@ EXIMUSER    * = (ROOT) NOPASSWD: EXIMBIN
     }
 
     my @files = (
-        "${VARDIR}/log/exim_stage${stage}/mainlog",
-        "${VARDIR}/log/exim_stage${stage}/rejectlog",
+		glob("${VARDIR}/log/exim_stage${stage}/*"),
+		glob("${VARDIR}/spool/exim_stage${stage}/db/*"),
     );
     push (@files,
 		"${SRCDIR}/etc/exim/stage1_scripts.pl",
@@ -1211,7 +1210,6 @@ EXIMUSER    * = (ROOT) NOPASSWD: EXIMBIN
 		"${VARDIR}/spool/tmp/exim/blacklists/senders",
 		"${VARDIR}/spool/mailcleaner/full_whitelisted_hosts.list",
 		"${VARDIR}/spool/mailcleaner/full_whitelisted_senders.list",
-		glob("${VARDIR}/spool/exim_stage1/db/*"),
 	    glob("${VARDIR}/spool/tmp/mailcleaner/*.list"),
 	    glob("${SRCDIR}/etc/exim/certs/*"),
     ) if ($stage == 1);
