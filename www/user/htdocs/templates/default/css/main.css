@@ -133,7 +133,7 @@ input {
     line-height: 48px;
     width: 184px;
     background-image: none;
-    background-color: #022971;
+    background-color: #E8E8E8;
     border-bottom: 1px solid #D4D3D2;
     border-right: 1px solid #D4D3D2;
     overflow: hidden;
@@ -152,7 +152,7 @@ input {
     height: 48px;
     line-height: 52px;
     background-image:none;
-    background-color: #022971;
+    background-color: #E8E8E8;
     border-bottom: 1px solid #D4D3D2;
     overflow: hidden;
     white-space: nowrap;
@@ -189,7 +189,8 @@ input {
 #generalconfigmenu li:hover {
     cursor: pointer;
     background-image:none;
-    background-color: #022971;
+    font-weight: bold;
+    color: #000000;
 }
 
 #generalconfigcontent {
