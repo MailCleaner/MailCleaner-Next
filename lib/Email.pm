@@ -40,12 +40,12 @@ our @EXPORT = qw(create getPref);
 our $VERSION = 1.0;
 
 
-sub create($address, $domain)
+sub create($address, $domain=undef)
 {
     my %prefs;
     my $d;
 
-    if ($address =~ /(\S+)\@(\S+)/) {
+    if (!defined($domain) && $address =~ /(\S+)\@(\S+)/) {
         $domain = $2;
         $d = Domain::create($domain);
     } else {
@@ -65,7 +65,7 @@ sub create($address, $domain)
     return $self;
 }
 
-sub getPref($self,$pref,$default)
+sub getPref($self,$pref,$default=undef)
 {
     if (!defined($self->{prefs}) || !defined($self->{prefs}{$pref})) {
         my $prefclient = PrefClient->new();

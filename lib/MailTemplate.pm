@@ -46,11 +46,12 @@ our $VERSION = 1.0;
 # @param    $filename       string    mail file name
 # @param    $template       string    template preference
 # @param    $destination    Email     destination mail address
+# @param    $language       string    preferred template language
+# @param    $type           string    html or plaintext template
 # @return                   this
 ###
-sub create
+sub create($directory,$filename,$template,$destination_h,$language='en',$type='html')
 {
-    my ($directory, $filename,$template,$destination_h,$language,$type ) = @_;
     my ($path, %subtemplates, $lang, $to, $from, %replacements, %headers, $sup_part, %values, %attachedpicts);
 
     my $email = ${$destination_h};
@@ -65,15 +66,11 @@ sub create
     # use english by default
     my $conf = ReadConfig::getInstance();
     if (
+        $lang ne 'en' &&
         ! -d $conf->getOption('SRCDIR')."/templates/$directory/$template/$lang/${filename}_parts" &&
         ! -f $conf->getOption('SRCDIR')."/templates/$directory/$template/$lang/${filename}.txt"
-    ) {}
+    ) {
                 $lang = 'en';
-    }
-
-    ## summary_type not yet available as user preference
-    if ($type !~ /(html|text)/) {
-        $type = 'html';
     }
 
     $to = $email->getAddress();

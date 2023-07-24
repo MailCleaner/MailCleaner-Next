@@ -86,9 +86,7 @@ sub create_lock_file($fullpathname, $timeout, $process_name)
 
 sub create_lockfile($filename, $path="/var/mailcleaner/spool/tmp", $timeout=10, $process_name=$$)
 {
-    if ( $path !~ /^\// ) {
-        $path = '/var/mailcleaner/spool/tmp/' . $path;
-    }
+    $path = '/var/mailcleaner/spool/tmp/' unless (defined($path));
     $path .= '/' if ($path  !~ /\/$/);
     make_path($path, {mode => 0755});
 
@@ -122,7 +120,7 @@ sub create_lockfile($filename, $path="/var/mailcleaner/spool/tmp", $timeout=10, 
     }
 }
 
-sub remove_lockfile($filename, $path)
+sub remove_lockfile($filename, $path=undef)
 {
     my $fullpathname;
 

@@ -35,7 +35,7 @@ our @ISA        = qw(Exporter);
 our @EXPORT     = qw(create);
 our $VERSION    = 1.0;
 
-sub create($username,$domain)
+sub create($username,$domain=undef)
 {
     my %prefs;
     my %addresses;

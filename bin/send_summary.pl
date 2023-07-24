@@ -39,17 +39,35 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
+
+my ($conf, $SRCDIR, $VARDIR, $MYMAILCLEANERPWD, $MCHOSTNAME, $DEFAULTDOMAIN, $HELONAME, $SMTPPROXY);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
+    confess "Could not get DB password" unless ($MYMAILCLEANERPWD = $conf->getOption('MYMAILCLEANERPWD'));
+    $MCHOSTNAME = $conf->getOption('MCHOSTNAME') || 'mailcleaner';
+    $DEFAULTDOMAIN = $conf->getOption('DEFAULTDOMAIN') || '';
+    $HELONAME = $conf->getOption('HELONAME') || '';
+    $SMTPPROXY = $conf->getOption('SMTPPROXY') || '';
+    unshift(@INC, $SRCDIR."/lib");
+}
 
 if ($0 =~ m/(\S*)\/\S+.pl$/) {
     my $path = $1."/../lib";
     unshift (@INC, $path);
 }
 
-require ReadConfig;
 require DB;
 require Email;
 require MailTemplate;
-require lib_utils;
+use lib_utils qw ( create_lockfile remove_lockfile );
 
 use Date::Calc qw(Add_Delta_Days Today Date_to_Text Date_to_Text_Long);
 use DateTime;
@@ -57,7 +75,6 @@ use Encode;
 use MIME::QuotedPrint;
 use Digest::SHA1 qw(sha1_hex);
 
-my $conf = ReadConfig::getInstance();
 if ($conf->getOption('ISMASTER') !~ /^[y|Y]$/) {
     print "NOTAMASTER";
     exit 0;
@@ -70,6 +87,7 @@ if ($mode < 0 || $mode >3) {
     print "INCORRECTPARAMS";
     exit 0;
 }
+
 my $days = shift;
 if ($days !~ /^\d+$/) {
     print "INCORRECTPARAMS";
@@ -84,8 +102,7 @@ if ($rc == 0) {
 }
 
 my $nodigest = 0;
-my $opts = shift;
-if ($opts =~ /^nodigest$/) {
+if (scalar(@ARGV) && $ARGV[0] =~ /^nodigest$/) {
     $nodigest = 1;
 }
 ## now we have coherent params.
@@ -395,8 +412,8 @@ sub getQuarantineTemplate($template,$tmpl,$spams,$type,$lang,$temp_id)
             $s_local = $1;
             $s_domain = $2;
             if ($type eq 'html') {
-                $s_local =~  s/^(\S{20}).*$/\1.../;
-                $s_domain =~  s/^(\S{20}).*$/\1.../;
+                $s_local =~  s/^(\S{20}).*$/$1.../;
+                $s_domain =~  s/^(\S{20}).*$/$1.../;
             }
         }
 
@@ -406,14 +423,14 @@ sub getQuarantineTemplate($template,$tmpl,$spams,$type,$lang,$temp_id)
 
         my $decoded = eval { decode("MIME-Header", $s_subject); };
         if ($decoded) {
-            $decoded =~ s/^(.{100}).*$/\1.../;
+            $decoded =~ s/^(.{100}).*$/$1.../;
             my $encoded = encode("utf8", $decoded);
             $text_subject = $decoded;
-            $decoded =~ s/^(.{50}).*$/\1.../;
+            $decoded =~ s/^(.{50}).*$/$1.../;
             $encoded = encode("utf8", $decoded);
             $s_subject = $encoded;
         } else {
-            $s_subject =~ s/^(.{50}).*$/\1.../;
+            $s_subject =~ s/^(.{50}).*$/$1.../;
         }
 
         my $tmpfrom = '';
