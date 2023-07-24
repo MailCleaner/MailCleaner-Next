@@ -164,12 +164,12 @@ if ($mode_given =~ /s/) {
             my $subcmd = "grep -e '^MTA\\s*=\\s*eximms' ".$config{SRCDIR}."/etc/mailscanner/MailScanner.conf";
             my $type = `$subcmd`;
             if ($type eq '') {
-                $cmd = "/sbin/exim4 -C $config{VARDIR}/spool/tmp/exim/$key.conf -bpc";
+                $cmd = "runuser -u Debian-exim -- /usr/sbin/exim4 -C $config{VARDIR}/spool/tmp/exim/$key.conf -bpc 2>/dev/null";
             } else {
                 $cmd = "ls $config{VARDIR}/spool/exim_stage2/input/*.env 2>&1 | grep -v 'No such' | wc -l";
             }
         } else {
-            $cmd = "/sbin/exim4 -C $config{VARDIR}/spool/tmp/exim/$key.conf -bpc";
+            $cmd = "runuser -u Debian-exim -- /usr/sbin/exim4 -C $config{VARDIR}/spool/tmp/exim/$key.conf -bpc 2>/dev/null";
         }
         $res = `$cmd`;
         chomp($res);
@@ -222,7 +222,7 @@ if ($mode_given =~ /s/) {
     }
     print "\n" unless ($verbose);
 } elsif ($mode_given =~ /t/) {
-    $cmd = "/sbin/exim4 -C $config{VARDIR}/spool/tmp/exim/exim/exim_stage2.conf -bp | head -1 | cut -d' ' -f2";
+    $cmd = "/usr/sbin/exim4 -C $config{VARDIR}/spool/tmp/exim/exim/exim_stage2.conf -bp | head -1 | cut -d' ' -f2";
     $res = `$cmd`;
     chomp($res);
     if ($verbose) {
