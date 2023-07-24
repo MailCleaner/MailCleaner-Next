@@ -9,8 +9,6 @@ Group=mailcleaner
 PrivateTmp=false
 EnvironmentFile=-/etc/sysconfig/exim
 ExecStartPre=+/usr/mailcleaner/bin/dump_exim_config.pl %I
-#ExecStart=/opt/exim4/bin/exim -C /var/mailcleaner/spool/tmp/exim/exim_stage%I.conf -bd -q5m
-ExecStart=/usr/sbin/exim4 -C /var/mailcleaner/spool/tmp/exim/exim_stage%I.conf -bd -q5m
 
 [Install]
 WantedBy=multi-user.target
