@@ -264,7 +264,8 @@ input {
     padding-right: 6px;
     padding-top: 3px;
     padding-bottom: 3px;
-    background-color: #022971;
+    background-color: #e8e8e8;
+    color: #022971;
     border:1px solid #D4D3D2;
     z-index: 10;
 }
