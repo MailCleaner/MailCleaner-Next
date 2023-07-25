@@ -26,6 +26,22 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
+
+my ($SRCDIR, $MYMAILCLEANERPWD);
+our ($VARDIR);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    my $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
+    confess "Could not get DB password" unless ($MYMAILCLEANERPWD = $conf->getOption('MYMAILCLEANERPWD'));
+    unshift(@INC, $SRCDIR."/lib");
+}
 
 # Process codes:
 my %codes = (
@@ -43,8 +59,6 @@ if ($0 =~ m/(\S*)\/\S+.pl$/) {
     my $path = $1."/../lib";
     unshift (@INC, $path);
 }
-
-my %config = readConfig("/etc/mailcleaner.conf");
 
 my $mode_given;
 my $verbose = 0;
@@ -90,7 +104,7 @@ if (! $mode_given) {
     usage();
 }
 if ($mode_given =~ /s/) {
-    my $restartdir = $config{VARDIR}."/run/";
+    my $restartdir = $VARDIR."/run/";
     my @output;
     my $i = 0;
     $cmd = "ps -efww";
@@ -161,15 +175,15 @@ if ($mode_given =~ /s/) {
     foreach ( 0 .. 2 ) {
     my $key = $order[$_]->{'id'};
         if ($key eq 'exim_stage2') {
-            my $subcmd = "grep -e '^MTA\\s*=\\s*eximms' ".$config{SRCDIR}."/etc/mailscanner/MailScanner.conf";
+            my $subcmd = "grep -e '^MTA\\s*=\\s*eximms' ".${SRCDIR}."/etc/mailscanner/MailScanner.conf";
             my $type = `$subcmd`;
             if ($type eq '') {
-                $cmd = "runuser -u Debian-exim -- /usr/sbin/exim4 -C $config{VARDIR}/spool/tmp/exim/$key.conf -bpc 2>/dev/null";
+                $cmd = "runuser -u Debian-exim -- /usr/sbin/exim4 -C ${VARDIR}/spool/tmp/exim/${key}.conf -bpc 2>/dev/null";
             } else {
-                $cmd = "ls $config{VARDIR}/spool/exim_stage2/input/*.env 2>&1 | grep -v 'No such' | wc -l";
+                $cmd = "ls ${VARDIR}/spool/exim_stage2/input/*.env 2>&1 | grep -v 'No such' | wc -l";
             }
         } else {
-            $cmd = "runuser -u Debian-exim -- /usr/sbin/exim4 -C $config{VARDIR}/spool/tmp/exim/$key.conf -bpc 2>/dev/null";
+            $cmd = "runuser -u Debian-exim -- /usr/sbin/exim4 -C ${VARDIR}/spool/tmp/exim/${key}.conf -bpc 2>/dev/null";
         }
         $res = `$cmd`;
         chomp($res);
@@ -222,7 +236,7 @@ if ($mode_given =~ /s/) {
     }
     print "\n" unless ($verbose);
 } elsif ($mode_given =~ /t/) {
-    $cmd = "/usr/sbin/exim4 -C $config{VARDIR}/spool/tmp/exim/exim/exim_stage2.conf -bp | head -1 | cut -d' ' -f2";
+    $cmd = "/usr/sbin/exim4 -C ${VARDIR}/spool/tmp/exim/exim/exim_stage2.conf -bp | head -1 | cut -d' ' -f2";
     $res = `$cmd`;
     chomp($res);
     if ($verbose) {
@@ -231,7 +245,7 @@ if ($mode_given =~ /s/) {
         print($res."\n");
     }
 } elsif ($mode_given =~ /u/) {
-    $cmd = "echo \"use mc_config; select id, date from update_patch order by id desc limit 1;\" | /opt/mysql5/bin/mysql --skip-column-names -S $config{VARDIR}/run/mysql_slave/mysqld.sock -umailcleaner -p$config{MYMAILCLEANERPWD}";
+    $cmd = "echo \"use mc_config; select id, date from update_patch order by id desc limit 1;\" | /opt/mysql5/bin/mysql --skip-column-names -S ${VARDIR}/run/mysql_slave/mysqld.sock -umailcleaner -p${MYMAILCLEANERPWD}";
     $res = `$cmd`;
     my $patch = "";
     if ($res =~ /^(\d+)\s+(\S+)$/) {
@@ -282,32 +296,10 @@ sub usage
 
 sub getNumberOfGreylistDomains
 {
-    my $cmd = "wc -l ".$config{VARDIR}."/spool/mailcleaner/domains_to_greylist.list  | cut -d' ' -f1";
+    my $cmd = "wc -l ".$VARDIR."/spool/mailcleaner/domains_to_greylist.list  | cut -d' ' -f1";
     my $res = `$cmd`;
     if ($res =~ m/(\d+)\s+/) {
         return $1;
     }
     return 0;
-}
-
-#############################
-sub readConfig($configfile)
-{
-    my %config;
-    my ($var, $value);
-
-    open (my $CONFIG, '<', $configfile) or die "Cannot open $configfile: $!\n";
-    while (<$CONFIG>) {
-        chomp;              # no newline
-        s/#.*$//;           # no comments
-        s/^\*.*$//;         # no comments
-        s/;.*$//;           # no comments
-        s/^\s+//;           # no leading white
-        s/\s+$//;           # no trailing white
-        next unless length; # anything left?
-        my ($var, $value) = split(/\s*=\s*/, $_, 2);
-        $config{$var} = $value;
-    }
-    close $CONFIG;
-    return %config;
 }

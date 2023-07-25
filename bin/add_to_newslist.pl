@@ -28,15 +28,22 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+my ($SRCDIR);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    my $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    unshift(@INC, $SRCDIR."/lib");
 }
 
+use lib_utils qw(open_as);
 require DB;
-
-my %config = readConfig("/etc/mailcleaner.conf");
 
 my $dest = shift;
 my $sender = shift;
@@ -74,28 +81,6 @@ sub isValidEmail($email_str)
 {
     return 1 if ($email_str =~ /^\S*\@\S+\.\S+$/);
     return 0;
-}
-
-##########################################
-sub readConfig($configfile)
-{   # Reads configuration file given as argument.
-    my %config;
-    my ($var, $value);
-
-    open(my $CONFIG, '<', $configfile) || err("CONFIGREADFAIL");
-    while (<$CONFIG>) {
-        chomp;              # no newline
-        s/#.*$//;           # no comments
-        s/^\*.*$//;         # no comments
-        s/;.*$//;           # no comments
-        s/^\s+//;           # no leading white
-        s/\s+$//;           # no trailing white
-        next unless length; # anything left?
-        my ($var, $value) = split(/\s*=\s*/, $_, 2);
-        $config{$var} = $value;
-    }
-    close $CONFIG;
-    return %config;
 }
 
 sub err($err="UNKNOWNERROR")

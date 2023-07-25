@@ -41,21 +41,15 @@ use warnings;
 use utf8;
 use Carp qw( confess );
 
-my ($conf, $SRCDIR, $VARDIR, $MYMAILCLEANERPWD, $MCHOSTNAME, $DEFAULTDOMAIN, $HELONAME, $SMTPPROXY);
+my ($SRCDIR);
 BEGIN {
     if ($0 =~ m/(\S*)\/\S+.pl$/) {
         my $path = $1."/../lib";
         unshift (@INC, $path);
     }
     require ReadConfig;
-    $conf = ReadConfig::getInstance();
+    my $conf = ReadConfig::getInstance();
     $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
-    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
-    confess "Could not get DB password" unless ($MYMAILCLEANERPWD = $conf->getOption('MYMAILCLEANERPWD'));
-    $MCHOSTNAME = $conf->getOption('MCHOSTNAME') || 'mailcleaner';
-    $DEFAULTDOMAIN = $conf->getOption('DEFAULTDOMAIN') || '';
-    $HELONAME = $conf->getOption('HELONAME') || '';
-    $SMTPPROXY = $conf->getOption('SMTPPROXY') || '';
     unshift(@INC, $SRCDIR."/lib");
 }
 

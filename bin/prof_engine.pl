@@ -21,17 +21,21 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+my ($SRCDIR, $VARDIR);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    my $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
 }
 
-require ReadConfig;
-
-my $conf = ReadConfig::getInstance();
-
-my $logfile=$conf->getOption('VARDIR')."/log/mailscanner/infolog";
+my $logfile="$VARDIR/log/mailscanner/infolog";
 
 open(my $LOGFILE, '<', $logfile) or die "cannot open log file: $logfile\n";
 

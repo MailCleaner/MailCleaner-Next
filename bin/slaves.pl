@@ -21,25 +21,24 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+my ($SRCDIR);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    my $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    unshift(@INC, $SRCDIR."/lib");
 }
 
-use DBI();
+require DB;
 use Term::ReadKey;
 
-my %config = readConfig("/etc/mailcleaner.conf");
-
-my $slave_dbh = DBI->connect(
-    "DBI:mysql:database=mc_config;mysql_socket=$config{'VARDIR'}/run/mysql_slave/mysqld.sock",
-    "mailcleaner","$config{'MYMAILCLEANERPWD'}", {RaiseError => 0, PrintError => 0}
-);
-if (!$slave_dbh) {
-    printf ("ERROR: no slave database found on this system.\n");
-    exit 1;
-}
+my $slave_dbh = DB::connect('slave', 'mc_config') || confess("ERROR: no slave database found on this system.\n");
 
 view_slaves();
 
@@ -52,25 +51,4 @@ sub view_slaves
         printf $ref->{'hostname'}."\n";
     }
     $sth->finish();
-}
-
-sub readConfig($configfile)
-{
-    my %config;
-    my ($var, $value);
-
-    open (my $CONFIG, '<', $configfile) or die "Cannot open $configfile: $!\n";
-    while (<$CONFIG>) {
-        chomp;              # no newline
-        s/#.*$//;           # no comments
-        s/^\*.*$//;         # no comments
-        s/;.*$//;           # no comments
-        s/^\s+//;           # no leading white
-        s/\s+$//;           # no trailing white
-        next unless length; # anything left?
-        my ($var, $value) = split(/\s*=\s*/, $_, 2);
-        $config{$var} = $value;
-    }
-    close $CONFIG;
-    return %config;
 }

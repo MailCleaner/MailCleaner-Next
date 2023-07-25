@@ -36,10 +36,10 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(connect);
 our $VERSION = 1.0;
 
-sub connect($type,$db='mc_config',$critical=0)
+sub connect($type,$db='mc_config',$critical=1)
 {
     if (!$type || $type !~ /slave|master|realmaster|custom/) {
-        print "BADCONNECTIONTYPE\n";
+        print "BADCONNECTIONTYPE (".(defined($type) ? $type : 'null').")\n";
         return "";
     }
 
@@ -192,11 +192,11 @@ sub getListOfHash($self,$query,$nowarnings=0)
 
 sub getList($self,$query,$nowarnings=0)
 {
-    my $dbh = $self->{dbh};
+    my $dbh = $self->{dbh} || confess("Not connected to a database\n");
     my @results;
 
-    my $sth = $dbh->prepare($query);
-    my $res = $sth->execute();
+    my $sth = $dbh->prepare($query) || confess("Failed to run prepare: $query\n");
+    my $res = $sth->execute() || confess("Failed to execute prepare: $query\n");
     if (!defined($res)) {
         if (! $nowarnings) {
             print "WARNING, CANNOT QUERY ($query => ".$dbh->errstr.")\n";

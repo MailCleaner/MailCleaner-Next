@@ -30,19 +30,22 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+my ($conf, $SRCDIR);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    unshift(@INC, $SRCDIR."/lib");
 }
 
 use Net::SMTP;
-use DBI();
-
-my %config = readConfig("/etc/mailcleaner.conf");
-
-# get master config
-my %master_conf = get_master_config();
+require DB;
 
 my $debug = 0;
 my $opt = shift;
@@ -53,16 +56,10 @@ if ($opt && $opt =~ /\-D/) {
 
 
 # connect to slave database
-my $slave_dbh = DBI->connect(
-    "DBI:mysql:database=mc_spool;host=localhost;mysql_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
-    "mailcleaner", "$config{MYMAILCLEANERPWD}", {RaiseError => 0, PrintError => 0}
-) or die("CANNOTCONNECTSLAVEDB\n", $slave_dbh->errstr);
+my $slave_dbh = DB::connect('slave', 'mc_spool');
 
 # connect to master database
-my $master_dbh = DBI->connect(
-    "DBI:mysql:database=mc_spool;host=$master_conf{'__MYMASTERHOST__'}:$master_conf{'__MYMASTERPORT__'}",
-    "mailcleaner", "$master_conf{'__MYMASTERPWD__'}", {RaiseError => 0, PrintError => 0}
-) or die("CANNOTCONNECTMASTERDB\n", $master_dbh->errstr);
+my $master_dbh = DB::connect('realmaster', 'mc_spool');
 
 my $total = 0;
 
@@ -102,51 +99,3 @@ foreach my $letter ('a','b','c','d','e','f','g','h','i','j','k','l','m','n','o',
     }
 }
 print "SUCCESSFULL|$total\n";
-#my $sth = $dbh->prepare("SELECT hostname, port, password FROM master");
-
-sub get_master_config
-{
-    my %mconfig;
-    my $dbh = DBI->connect(
-        "DBI:mysql:database=mc_config;host=localhost;mysql_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
-        "mailcleaner", "$config{MYMAILCLEANERPWD}", {RaiseError => 0, PrintError => 0}
-    ) or die("CANNOTCONNECTDB", $dbh->errstr);
-
-    my $sth = $dbh->prepare("SELECT hostname, port, password FROM master");
-    $sth->execute() or die("CANNOTEXECUTEQUERY", $dbh->errstr);
-
-    if ($sth->rows < 1) {
-        return;
-    }
-    my $ref = $sth->fetchrow_hashref() or return;
-
-    $mconfig{'__MYMASTERHOST__'} = $ref->{'hostname'};
-    $mconfig{'__MYMASTERPORT__'} = $ref->{'port'};
-    $mconfig{'__MYMASTERPWD__'} = $ref->{'password'};
-
-    $sth->finish();
-    $dbh->disconnect();
-    return %mconfig;
-}
-
-##########################################
-sub readConfig($configfile)
-{
-    my %config;
-    my ($var, $value);
-
-    open (my $CONFIG, '<', $configfile) or die "Cannot open $configfile: $!\n";
-    while (<$CONFIG>) {
-        chomp;              # no newline
-        s/#.*$//;           # no comments
-        s/^\*.*$//;         # no comments
-        s/;.*$//;           # no comments
-        s/^\s+//;           # no leading white
-        s/\s+$//;           # no trailing white
-        next unless length; # anything left?
-        my ($var, $value) = split(/\s*=\s*/, $_, 2);
-        $config{$var} = $value;
-    }
-    close $CONFIG;
-    return %config;
-}

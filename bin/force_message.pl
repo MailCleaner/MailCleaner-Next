@@ -30,16 +30,26 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+my ($SRCDIR, $VARDIR);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    my $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
+    unshift(@INC, $SRCDIR."/lib");
 }
 
-use Net::SMTP;
-use DBI();
+use lib_utils qw(open_as);
+require DB;
 
-my %config = readConfig("/etc/mailcleaner.conf");
+use Net::SMTP;
+
 my %master_conf;
 
 my $msg_id = shift;
@@ -58,7 +68,7 @@ if ( (!$for) || !($for =~ /^(\S+)\@(\S+)$/)) {
 my $for_local = $1;
 my $for_domain = $2;
 
-my $msg_file = $config{'VARDIR'}."/spam/".$for_domain."/".$for."/".$msg_id;
+my $msg_file = $conf->getOption('VARDIR')."/spam/".$for_domain."/".$for."/".$msg_id;
 
 if ( open(my $MSG, '<', $msg_file) ) {
     my $start_msg = 0;
@@ -115,7 +125,6 @@ if ( open(my $MSG, '<', $msg_file) ) {
     $smtp->datasend("X-MailCleaner-Forced: message forced\n");
     $smtp->datasend($msg);
     $smtp->dataend();
-    %master_conf = get_master_config();
     mark_forced();
 
     print("MSGFORCED\n");
@@ -127,44 +136,12 @@ if ( open(my $MSG, '<', $msg_file) ) {
 exit 1;
 
 ##########################################
-sub get_master_config
-{
-    my $dbh;
-    my %mconfig;
-
-    $dbh = DBI->connect(
-        "DBI:mysql:database=mc_config;host=localhost;mysql_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
-        "mailcleaner", "$config{MYMAILCLEANERPWD}", {RaiseError => 0, PrintError => 0}
-    ) or fatal_error("CANNOTCONNECTDB", $dbh->errstr);
-
-    my $sth = $dbh->prepare("SELECT hostname, port, password FROM master");
-    $sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
-
-    if ($sth->rows < 1) {
-        return;
-    }
-    my $ref = $sth->fetchrow_hashref() or return;
-
-    $mconfig{'__MYMASTERHOST__'} = $ref->{'hostname'};
-    $mconfig{'__MYMASTERPORT__'} = $ref->{'port'};
-    $mconfig{'__MYMASTERPWD__'} = $ref->{'password'};
-
-    $sth->finish();
-    return %mconfig;
-}
-
-##########################################
 sub mark_forced
 {
     my $dbh;
-    my $mdn = "DBI:mysql:database=mc_spool;host=$master_conf{'__MYMASTERHOST__'};port=$master_conf{'__MYMASTERPORT__'}";
+    $dbh = DB::connect('realmaster','mc_spool');
 
-    $dbh = DBI->connect(
-        $mdn, "mailcleaner", "$master_conf{'__MYMASTERPWD__'}", {RaiseError => 0, PrintError => 0}
-    ) or return;
-
-
-     my $table = "misc";
+    my $table = "misc";
     if ($for_local =~ /^([a-z,A-Z])/) {
         $table = lc($1);
     } elsif ($for_local =~ /^[0-9]/) {
@@ -177,28 +154,6 @@ sub mark_forced
     $sth->execute() or return;
 
     $dbh->disconnect();
-}
-
-##########################################
-sub readConfig($configfile)
-{
-    my %config;
-    my ($var, $value);
-
-    open (my $CONFIG, '<', $configfile) or die "Cannot open $configfile: $!\n";
-    while (<$CONFIG>) {
-        chomp;              # no newline
-        s/#.*$//;           # no comments
-        s/^\*.*$//;         # no comments
-        s/;.*$//;           # no comments
-        s/^\s+//;           # no leading white
-        s/\s+$//;           # no trailing white
-        next unless length; # anything left?
-        my ($var, $value) = split(/\s*=\s*/, $_, 2);
-        $config{$var} = $value;
-    }
-    close $CONFIG;
-    return %config;
 }
 
 ############################################

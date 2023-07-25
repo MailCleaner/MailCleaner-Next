@@ -32,31 +32,30 @@ use strict;
 use warnings;
 use utf8;
 use Carp qw( confess );
-use File::Touch qw( touch );
 
-our ($conf, $SRCDIR, $VARDIR, $MYMAILCLEANERPWD);
+our ($SRCDIR, $VARDIR, $HOSTID, $MYMAILCLEANERPWD);
 BEGIN {
     if ($0 =~ m/(\S*)\/\S+.pl$/) {
         my $path = $1."/../lib";
         unshift (@INC, $path);
     }
     require ReadConfig;
-    $conf = ReadConfig::getInstance();
+    my $conf = ReadConfig::getInstance();
     $SRCDIR = $conf->getOption('SRCDIR');
     $VARDIR = $conf->getOption('VARDIR');
+    $HOSTID = $conf->getOption('HOSTID');
     $MYMAILCLEANERPWD = $conf->getOption('MYMAILCLEANERPWD');
     unshift(@INC, $SRCDIR."/lib");
 }
 
+require DB;
 use lib_utils qw( open_as );
-
-use DBI();
+use File::Touch qw( touch );
 
 our $DEBUG = 1;
 our $uid = getpwnam('www-data');
 our $gid = getgrnam('mailcleaner');
 
-my $HOSTID=$conf->getOption('HOSTID');
 
 my $lasterror = "";
 
@@ -111,8 +110,7 @@ APACHE      * = (ROOT) NOPASSWD: SETPINDB
 
 # Dump configuration
 my $dbh;
-$dbh = DBI->connect("DBI:MariaDB:database=mc_config;host=localhost;mariadb_socket=${VARDIR}/run/mysql_slave/mysqld.sock",
-    "mailcleaner", $conf->getOption('MYMAILCLEANERPWD'), {RaiseError => 0, PrintError => 0}) or fatal_error("CANNOTCONNECTDB", "Failed to connect");
+$dbh = DB::connect('slave', 'mc_config');
 
 my %sys_conf = get_system_config() or fatal_error("NOSYSTEMCONFIGURATIONFOUND", "no record found for system configuration");
 

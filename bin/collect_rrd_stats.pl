@@ -28,13 +28,22 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+#use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+my ($SRCDIR, $VARDIR, $ISMASTER);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    my $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
+    $ISMASTER = $conf->getOption('ISMASTER') || 'Y';
+    unshift(@INC, $SRCDIR."/lib");
 }
 
-require ReadConfig;
 require DB;
 require RRDStats;
 require RRDArchive;
@@ -45,17 +54,12 @@ if (defined($mode) && $mode eq 'daily') {
    $m = 'daily';
 }
 
-my $conf = ReadConfig::getInstance();
-if ($conf->getOption('ISMASTER') !~ /^[Yy]$/) {
+if ($ISMASTER !~ /^[Yy]$/) {
     # not a master, so no more processing
     exit 0;
 }
 
-if (! -d $conf->getOption('VARDIR')."/spool/rrdtools") {
-    mkdir $conf->getOption('VARDIR')."/spool/rrdtools";
-}
-
-$conf->getOption('SRCDIR');
+mkdir "${VARDIR}/spool/rrdtools" unless (-d "${VARDIR}/spool/rrdtools");
 
 # get stats to plot
 my @stats = ('cpu', 'load', 'network', 'memory', 'disks', 'messages', 'spools');

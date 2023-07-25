@@ -33,15 +33,28 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
+
+my ($SRCDIR, $VARDIR);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    my $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
+    unshift(@INC, $SRCDIR."/lib");
+}
 
 if ($0 =~ m/(\S*)\/\S+.pl$/) {
     my $path = $1."/../lib";
     unshift (@INC, $path);
 }
 
+require DB;
 use File::Copy;
-
-my %config = readConfig("/etc/mailcleaner.conf");
 
 my $quardir = shift;
 my $forced_postfix = '-F'.int(rand(100));;
@@ -50,7 +63,7 @@ if (! $quardir || (! ($quardir =~ /\d{8}\/([a-z,A-Z,0-9]{6}-[a-z,A-Z,0-9]{6}-[a-
     bad_usage();
 }
 
-my $dir = $config{VARDIR}."/spool/mailscanner/quarantine/".$quardir;
+my $dir = "${VARDIR}/spool/mailscanner/quarantine/${quardir}";
 my $id = $1;
 chomp $dir;
 
@@ -62,12 +75,9 @@ if (! -d $dir ) {
     exit;
 }
 
-if (!open(my $HFILE, '<', $dir."/".$id."-H")) {
-    die("CANNOTFINDHEADERFILE");
-}
-if (!open(my $DHFILE, '>', $config{VARDIR}."/spool/exim_stage4/input/".$id."-H")) {}
-    die("CANNOTOPENDESTHEADERFILE");
-}
+open(my $HFILE, '<', $dir."/".$id."-H") || die("CANNOTFINDHEADERFILE");
+open(my $DHFILE, '>', "${VARDIR}/spool/exim_stage4/input/${id}-H") || die("CANNOTOPENDESTHEADERFILE");
+
 my $id_header = '';
 my $hsize;
 my $hname;
@@ -108,18 +118,18 @@ while (<$HFILE>) {
 close $HFILE;
 close $DHFILE;
 
-if (!copy($dir."/".$id."-D", $config{VARDIR}."/spool/exim_stage4/input/")) {
+if (!copy($dir."/".$id."-D", "${VARDIR}/spool/exim_stage4/input/")) {
     die "NOTFORCED: failed to copy file from: ";
 }
 my @exts = ('H', 'D', 'J', 'T');
 foreach my $ext ( @exts ) {
-    my $spoolfile = $config{VARDIR}."/spool/exim_stage4/input/".$id."-".$ext;
+    my $spoolfile = "${VARDIR}/spool/exim_stage4/input/${id}-${ext}";
     if (-f $spoolfile) {
         chown $uid, $gid, $spoolfile;
     }
 }
 sleep 2;
-my $cmd = "/opt/exim4/bin/exim -C ".$config{SRCDIR}."/etc/exim/exim_stage4.conf -M ".$id." 2>&1";
+my $cmd = "runuser -u Debian-exim -- /usr/sbin/exim4 -C ${VARDIR}/spool/tmp/exim/exim_stage4.conf -M ".$id." 2>/dev/null";
 my $res = `$cmd`;
 if ($res =~ /^$/) {
     mark_forced($id);
@@ -142,37 +152,11 @@ sub bad_usage
 ##########################################
 sub mark_forced($id)
 {
-    use DBI;
-    my $dbh = DBI->connect(
-        "DBI:mysql:database=mc_stats;host=localhost;mysql_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
-        "mailcleaner", "$config{MYMAILCLEANERPWD}", {RaiseError => 0, PrintError => 0}
-    ) || return;
+    my $dbh = DB::connect('slave', 'mc_stats');
 
     my $query = "UPDATE maillog SET content_forced='1' WHERE id='$id'";
     my $sth = $dbh->prepare($query);
     $sth->execute() or return;
 
     $dbh->disconnect();
-}
-
-##########################################
-sub readConfig($configfile)
-{
-    my %config;
-    my ($var, $value);
-
-    open (my $CONFIG, '<', $configfile) or die "Cannot open $configfile: $!\n";
-    while (<$CONFIG>) {
-        chomp;              # no newline
-        s/#.*$//;           # no comments
-        s/^\*.*$//;         # no comments
-        s/;.*$//;           # no comments
-        s/^\s+//;           # no leading white
-        s/\s+$//;           # no trailing white
-        next unless length; # anything left?
-        my ($var, $value) = split(/\s*=\s*/, $_, 2);
-        $config{$var} = $value;
-    }
-    close $CONFIG;
-    return %config;
 }

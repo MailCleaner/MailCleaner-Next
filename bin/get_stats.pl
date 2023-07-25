@@ -28,13 +28,20 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+my ($conf, $SRCDIR, $VARDIR);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
 }
 
-require ReadConfig;
 require Stats;
 
 my $what = shift;
@@ -82,14 +89,13 @@ if ( ( defined($verbose_o) && $verbose_o eq '-f') ||  ( defined($fulldays_o) && 
 print "PID ".$$."\n" if $batchmode;
 print "STARTTIME ".time()."\n" if $batchmode;
 
-my $conf = ReadConfig::getInstance();
-my $basedir = $conf->getOption('VARDIR')."/spool/mailcleaner/counts";
+my $basedir = "${VARDIR}/spool/mailcleaner/counts";
 my @dirs;
 my $dir = '';
 my %whats;
 
 my %domains;
-my $domainsfile = $conf->getOption('VARDIR')."/spool/tmp/mailcleaner/domains.list";
+my $domainsfile = "${VARDIR}/spool/tmp/mailcleaner/domains.list";
 if (open(my $DOMAINFILE, '<', $domainsfile)) {
     while (<$DOMAINFILE>) {
         if (/^(\S+)\:/) {

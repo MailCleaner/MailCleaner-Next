@@ -24,28 +24,35 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+my ($SRCDIR, $VARDIR, $ISMASTER);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    my $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
+    $ISMASTER = $conf->getOption('ISMASTER') || 'Y';
+    unshift(@INC, $SRCDIR."/lib");
 }
 
-require ReadConfig;
 require DB;
 require Email;
 require MailTemplate;
 require lib_utils;
 use LWP::UserAgent;
 
-my $conf = ReadConfig::getInstance();
-if ($conf->getOption('ISMASTER') !~ /^[y|Y]$/) {
+if ($ISMASTER !~ /^[y|Y]$/) {
     print "NOTAMASTER";
     exit 0;
 }
 
-my $vardir = $conf->getOption('VARDIR');
-if (-e "$vardir/spool/mailcleaner/disable-watchdog-emails") {
-    print "Email reporting disabled with '$vardir/spool/mailcleaner/disable-watchdog-emails'\n";
+if (-e "${VARDIR}/spool/mailcleaner/disable-watchdog-emails") {
+    print "Email reporting disabled with '${VARDIR}/spool/mailcleaner/disable-watchdog-emails'\n";
     exit 0;
 }
 
@@ -59,7 +66,7 @@ my $lang = $sysconf->getPref('default_language') || 'en';
 my $temp_id = 'default';
 
 my $recipient;
-my $custom_recipient = "$vardir/spool/mailcleaner/watchdog-recipient";
+my $custom_recipient = "${VARDIR}/spool/mailcleaner/watchdog-recipient";
 if (-e $custom_recipient && open(my $fh, '<', $custom_recipient)) {
     while (<$fh>) {
         $recipient .= $_;

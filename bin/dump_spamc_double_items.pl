@@ -23,7 +23,7 @@ use warnings;
 use utf8;
 use Carp qw( confess );
 
-our ($conf, $SRCDIR, $VARDIR, $HOSTID);
+our ($conf, $SRCDIR);
 BEGIN {
     if ($0 =~ m/(\S*)\/\S+.pl$/) {
         my $path = $1."/../lib";
@@ -32,8 +32,6 @@ BEGIN {
     require ReadConfig;
     $conf = ReadConfig::getInstance();
     $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
-    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
-    confess "Failed to get HOSTID from '/etc/mailcleaner.conf'" unless ($HOSTID = $conf->getOption('HOSTID'));
 }
 
 use lib_utils qw(open_as);

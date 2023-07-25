@@ -27,13 +27,21 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+our ($SRCDIR, $CLIENTID, $HOSTID, $REGISTERED);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    my $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    $CLIENTID = $conf->getOption('CLIENTID') || undef;
+    $HOSTID = $conf->getOption('HOSTID') || 1;
 }
 
-require ReadConfig;
 use LWP::UserAgent;
 use XML::Simple;
 use Net::DNS::Resolver;
@@ -55,7 +63,6 @@ EOF
 
 my $minsleeptime=0;
 my $maxsleeptime=20;
-my $conf = ReadConfig::getInstance();
 
 my %options=();
 getopts(":rh", \%options);
@@ -69,12 +76,12 @@ if (defined $options{h}) {
   usage();
 }
 
-if (!$conf->getOption('REGISTERED')) {
+if (!$REGISTERED) {
     print STDERR "** ERROR ** Useless on unregistered host. You won't be validated.\n";
     exit 1;
 }
 
-my $updates_config_file = $conf->getOption('SRCDIR').'/etc/mailcleaner/updates.cf';
+my $updates_config_file = "${SRCDIR}/etc/mailcleaner/updates.cf";
 if (! -f $updates_config_file ) {
     print STDERR "** ERROR ** No updates configuration found. Aborting.\n";
     exit 1;
@@ -123,8 +130,8 @@ sub checkHTTP($params)
 
     my $xml = XML::Simple->new(ForceArray => 1, KeepRoot => 0);
     my $data = {
-        'clientID' => $conf->getOption('CLIENTID'),
-        'hostID' => $conf->getOption('HOSTID'),
+        'clientID' => $CLIENTID,
+        'hostID' => $HOSTID,
         'license' => $license
     };
 
@@ -148,7 +155,7 @@ sub checkDNS
     my %return = ('status' => 0, 'message' => 'no check done');
 
     my $random = String::Random->new();
-    my $query = $conf->getOption('CLIENTID').'-'.$conf->getOption('HOSTID').'-'.$random->randpattern("cccccccccc").'.'.$updates_config->param('service-check.dnsDomain');
+    my $query = $CLIENTID.'-'.$HOSTID.'-'.$random->randpattern("cccccccccc").'.'.$updates_config->param('service-check.dnsDomain');
     my $dnsResult = gethostbyname( $query );
     if ($dnsResult) {
         $dnsResult = Socket::inet_ntoa($dnsResult);

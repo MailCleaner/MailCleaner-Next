@@ -50,7 +50,7 @@ require DB;
 
 our $DEBUG = 1;
 our $uid = getpwnam( 'mysql' );
-our $gid = getgrnam( 'mailcleaner' );
+our $gid = getgrnam( 'mysql' );
 
 ## added 10 for migration ease
 my %config;

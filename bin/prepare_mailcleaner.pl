@@ -25,20 +25,21 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
-use File::Touch qw( touch );
+use Carp qw( confess );
 
-our ($conf, $SRCDIR, $VARDIR, $MYMAILCLEANERPWD);
+our ($SRCDIR);
 BEGIN {
     if ($0 =~ m/(\S*)\/\S+.pl$/) {
         my $path = $1."/../lib";
         unshift (@INC, $path);
     }
     require ReadConfig;
-    $conf = ReadConfig::getInstance();
+    my $conf = ReadConfig::getInstance();
     $SRCDIR = $conf->getOption('SRCDIR');
-    $VARDIR = $conf->getOption('VARDIR');
     unshift(@INC, $SRCDIR."/lib");
 }
+
+use File::Touch qw( touch );
 
 # Enable sudoers.d in main sudoers file
 my $enabled = 0;

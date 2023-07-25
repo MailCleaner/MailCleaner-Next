@@ -29,13 +29,21 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+our ($SRCDIR, $VARDIR);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    my $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
+    unshift(@INC, $SRCDIR."/lib");
 }
 
-require ReadConfig;
 require DB;
 
 my $VERBOSE = 0;
@@ -77,8 +85,6 @@ if (($updatemode + $checkmode + $repairmode) > 1) {
     print "Cannot do more than one thing at once, please choose between --update, --mycheck or --myrepair\n";
     exit 1;
 }
-
-my $conf = ReadConfig::getInstance();
 
 ## check replication if wanted
 if ($repcheck > 0) {
@@ -156,7 +162,7 @@ sub getRefTables($dbname)
         $prefix='sp';
     }
 
-    my $install_dir = $conf->getOption('SRCDIR')."/install/dbs";
+    my $install_dir = "$SRCDIR/install/dbs";
     if ($dbname eq 'mc_spool') {
         $install_dir .= "/spam";
     }
@@ -288,7 +294,7 @@ sub addDatabase($dbtype,$dbname='slave')
         $dbtype = 'master';
     }
 
-    my $mysqld = $conf->getOption('SRCDIR')."/etc/init.d/mysql_".$dbtype;
+    my $mysqld = "${SRCDIR}/etc/init.d/mysql_${dbtype}";
     print "Restarting $dbtype database to change permissions...\n";
     `$mysqld restart nopass 2>&1`;
     sleep(20);
@@ -300,10 +306,10 @@ sub addDatabase($dbtype,$dbname='slave')
     print "Restarting $dbtype database with new permissions...\n";
     `$mysqld restart 2>&1`;
     sleep(20);
-    my $descfile = $conf->getOption('SRCDIR')."/install/dbs/".$dbname.".sql";
+    my $descfile = "${SRCDIR}/install/dbs/${dbname}.sql";
     if (-f $descfile) {
         print "Creating schema...\n";
-        my $mysql = $conf->getOption('SRCDIR')."/bin/mc_mysql";
+        my $mysql = "${SRCDIR}/bin/mc_mysql";
         if ($dbtype eq 'slave') {
             $mysql .= " -s $dbname";
         } else {
@@ -321,7 +327,7 @@ sub addDatabase($dbtype,$dbname='slave')
 sub checkReplicationStatus($fix)
 {
     my $haserror = 0;
-    my $logfile = $conf->getOption('VARDIR')."/log/mysql_slave/mysql.log";
+    my $logfile = "${VARDIR}/log/mysql_slave/mysql.log";
     if (! -f $logfile) {
         print "WARNING: slave mysql log file not found ! ($logfile)\n";
         return 0;
@@ -343,7 +349,7 @@ sub checkReplicationStatus($fix)
             my $query = "ALTER TABLE $3 DROP COLUMN $1;";
             my $dbr = DB::connect('slave', $2);
             if ( $dbr->execute($query)) {
-                my $cmd = $conf->getOption('SRCDIR')."/etc/init.d/mysql_slave restart >/dev/null 2>&1";
+                my $cmd = "${SRCDIR}/etc/init.d/mysql_slave restart >/dev/null 2>&1";
                 my $resexec = `$cmd`;
                 print " should be fixed!\n";
             } else {
@@ -376,7 +382,7 @@ sub compareUpdateDatabase($db_ref,$dbname,$update)
                 if ($dbtype eq 'slave') {
                     $type = '-s';
                 }
-                my $cmd = $conf->getOption('SRCDIR')."/bin/mc_mysql $type < ".$reftables{$table} ." 2>&1";
+                my $cmd = "${SRCDIR}/bin/mc_mysql ${type} < ${reftables{$table}} 2>&1";
                 my $res = `$cmd`;
                 if (! $res eq '' ) {
                     print "ERROR, cannot create database: $res\nABORTED\n";

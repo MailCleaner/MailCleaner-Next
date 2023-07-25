@@ -23,13 +23,21 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+my ($SRCDIR, $ISMASTER);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    my $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    $ISMASTER = $conf->getOption('ISMASTER') || 'Y';
+    unshift(@INC, $SRCDIR."/lib");
 }
 
-require ReadConfig;
 require DB;
 
 output("Starting spam syncronisation");
@@ -41,8 +49,7 @@ if ( -d $TMPDIR) {
 }
 
 
-my $conf = ReadConfig::getInstance();
-if ($conf->getOption('ISMASTER') !~ /^[y|Y]$/) {
+if ($ISMASTER !~ /^[y|Y]$/) {
     print "NOTAMASTER";
     exit 0;
 }
@@ -85,7 +92,7 @@ foreach my $s_h (@slavesarray) {
             #print "  slave $sid - done!\n";
 
             output("($sid) - reimporting spam_$l ...");
-            my $exportcmd = $conf->getOption('SRCDIR')."/bin/mc_mysql -m mc_spool < $TMPDIR/spam_$l-$sid.sql";
+            my $exportcmd = "${SRCDIR}/bin/mc_mysql -m mc_spool < $TMPDIR/spam_$l-$sid.sql";
             $res = `$exportcmd`;
             if ( ! $res eq '' ) {
                 print "Something went wrong while reimporting spams on table: spam_$l from host ".$s_h->{'hostname'}.":\n";

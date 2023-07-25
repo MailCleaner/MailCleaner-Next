@@ -31,7 +31,7 @@ use warnings;
 use utf8;
 use Carp qw( confess );
 
-my ($conf, $SRCDIR, $VARDIR, $MYMAILCLEANERPWD);
+my ($conf, $SRCDIR, $VARDIR);
 BEGIN {
     if ($0 =~ m/(\S*)\/\S+.pl$/) {
         my $path = $1."/../lib";
@@ -41,7 +41,6 @@ BEGIN {
     $conf = ReadConfig::getInstance();
     $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
     $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
-    confess "Failed to get DB password" unless ($MYMAILCLEANERPWD = $conf->getOption('MYMAILCLEANERPWD'));
 }
 
 use lib_utils qw(open_as);

@@ -28,17 +28,17 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+#use Carp qw( confess );
 
-my ($conf, $SRCDIR, $VARDIR);
+my ($SRCDIR);
 BEGIN {
     if ($0 =~ m/(\S*)\/\S+.pl$/) {
         my $path = $1."/../lib";
         unshift (@INC, $path);
     }
     require ReadConfig;
-    $conf = ReadConfig::getInstance();
+    my $conf = ReadConfig::getInstance();
     $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
-    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
     unshift(@INC, $SRCDIR."/lib");
 }
 

@@ -29,13 +29,21 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+my ($SRCDIR, $VARDIR, $ISMASTER);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    my $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
+    $ISMASTER = $conf->getOption('ISMASTER') || 'Y';
 }
 
-require ReadConfig;
 require DB;
 require Email;
 require MailTemplate;
@@ -44,8 +52,7 @@ use Digest::MD5 qw(md5_hex);
 
 my $max_pending_age = 0; # in days
 
-my $conf = ReadConfig::getInstance();
-if ($conf->getOption('ISMASTER') !~ /^[y|Y]$/) {
+if ($ISMASTER !~ /^[y|Y]$/) {
   print "NOTAMASTER";
   exit 0;
 }

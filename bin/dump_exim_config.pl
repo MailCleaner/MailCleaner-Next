@@ -37,14 +37,14 @@ use warnings;
 use utf8;
 use Carp qw( confess );
 
-my ($conf, $SRCDIR, $VARDIR, $MYMAILCLEANERPWD, $MCHOSTNAME, $DEFAULTDOMAIN, $HELONAME, $SMTPPROXY);
+our ($SRCDIR, $VARDIR, $MYMAILCLEANERPWD, $MCHOSTNAME, $DEFAULTDOMAIN, $HELONAME, $SMTPPROXY);
 BEGIN {
     if ($0 =~ m/(\S*)\/\S+.pl$/) {
         my $path = $1."/../lib";
         unshift (@INC, $path);
     }
     require ReadConfig;
-    $conf = ReadConfig::getInstance();
+    my $conf = ReadConfig::getInstance();
     $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
     $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
     confess "Could not get DB password" unless ($MYMAILCLEANERPWD = $conf->getOption('MYMAILCLEANERPWD'));
@@ -448,6 +448,8 @@ sub get_system_config()
         use_archiver, archiver_host, trusted_ips, html_wl_ips, tag_mode_bypass_whitelist,
         whitelist_both_from FROM system_conf sc, antispam an, httpd_config hc");
     return unless %row;
+    print(ref($db)."<<<\n");
+    print "$_ => $row{$_}\n" foreach (keys(%row));
 
     $sconfig{'__PRIMARY_HOSTNAME__'} = $row{'hostname'};
     if (${MCHOSTNAME}) {
@@ -847,7 +849,7 @@ sub get_exim_config($stage)
     $config{'__SMTP_BANNER__'} = $row{'smtp_banner'};
     $config{'__ERRORS_REPLY_TO__'} = $row{'errors_reply_to'};
 
-    if ( -f ${SRCDIR}."/etc/mailcleaner/version.def" && -f $conf->getOption('SRCDIR')."/etc/edition.def") {
+    if ( -f "${SRCDIR}/etc/mailcleaner/version.def" && -f "${SRCDIR}/etc/edition.def") {
         my $cmd = "cat ".${SRCDIR}."/etc/mailcleaner/version.def";
         my $version = `$cmd`;
         chomp($version);

@@ -33,9 +33,22 @@
 use v5.36;
 use strict;
 use warnings;
-use DBI();
+use utf8;
+use Carp qw( confess );
 
-my %config = readConfig("/etc/mailcleaner.conf");
+my ($SRCDIR);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    my $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    unshift(@INC, $SRCDIR."/lib");
+}
+
+require DB;
 
 my $last_days = shift;
 if (!$last_days || $last_days !~ /^\d+$/) {
@@ -56,10 +69,7 @@ if (!$until_now || $until_now !~ /^o|g|d$/) {
 }
 
 my $dbh;
-$dbh = DBI->connect(
-    "DBI:mysql:database=mc_stats;host=localhost;mysql_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
-    "mailcleaner", "$config{MYMAILCLEANERPWD}", {RaiseError => 0, PrintError => 0}
-) or fatal_error("CANNOTCONNECTDB", $dbh->errstr);
+$dbh = DB::connect('slave','mc_stats');
 
 if ($until_now =~ /^d$/) {
     for (my $i=$last_days; $i>=0; $i--) {
@@ -119,28 +129,4 @@ sub get_stats($days,$mode)
     printf("   spams:    %d (%2.2f%%)\n", $val{2}, $per_spam);
     printf("   viruses:  %d (%2.2f%%)\n", $val{3}, $per_virus);
     printf("   clean:    %d (%2.2f%%)\n", $val{4}, $per_clean);
-}
-
-
-#############################
-sub readConfig
-{
-    my $configfile = shift;
-    my %config;
-    my ($var, $value);
-
-    open(my $CONFIG, '<', $configfile) or die "Cannot open $configfile: $!\n";
-    while (<$CONFIG>) {
-        chomp;              # no newline
-        s/#.*$//;           # no comments
-        s/^\*.*$//;         # no comments
-        s/;.*$//;           # no comments
-        s/^\s+//;           # no leading white
-        s/\s+$//;           # no trailing white
-        next unless length; # anything left?
-        my ($var, $value) = split(/\s*=\s*/, $_, 2);
-        $config{$var} = $value;
-    }
-    close $CONFIG;
-    return %config;
 }

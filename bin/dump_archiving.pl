@@ -30,14 +30,14 @@ use warnings;
 use utf8;
 use Carp qw( confess );
 
-our ($conf, $SRCDIR, $VARDIR);
+our ($SRCDIR, $VARDIR);
 BEGIN {
     if ($0 =~ m/(\S*)\/\S+.pl$/) {
         my $path = $1."/../lib";
         unshift (@INC, $path);
     }
     require ReadConfig;
-    $conf = ReadConfig::getInstance();
+    my $conf = ReadConfig::getInstance();
     $SRCDIR = $conf->getOption('SRCDIR');
     $VARDIR = $conf->getOption('VARDIR');
     unshift(@INC, $SRCDIR."/lib");

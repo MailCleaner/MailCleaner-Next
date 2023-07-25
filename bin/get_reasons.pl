@@ -31,13 +31,20 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+my ($SRCDIR, $VARDIR);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    my $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
+    unshift(@INC, $SRCDIR."/lib");
 }
-
-my %config = readConfig("/etc/mailcleaner.conf");
 
 my $msg_id = shift;
 my $for = shift;
@@ -61,7 +68,7 @@ if ( (!$for) || !($for =~ /^(\S+)\@(\S+)$/)) {
 my $for_local = $1;
 my $for_domain = $2;
 
-my $msg_file = $config{'VARDIR'}."/spam/".$for_domain."/".$for."/".$msg_id;
+my $msg_file = "${VARDIR}/spam/${for_domain}/${for}/${msg_id}";
 
 print $msg_file."\n";
 
@@ -123,31 +130,6 @@ if ( open(my $MSG, '<', $msg_file)) {
     print "MSGFILENOTFOUND\n";
 }
 
-
-exit 1;
-
-##########################################
-sub readConfig($configfile)
-{
-    my %config;
-    my ($var, $value);
-
-    open (my $CONFIG, '<', $configfile) or die "Cannot open $configfile: $!\n";
-    while (<$CONFIG>) {
-        chomp;              # no newline
-        s/#.*$//;           # no comments
-        s/^\*.*$//;         # no comments
-        s/;.*$//;           # no comments
-        s/^\s+//;           # no leading white
-        s/\s+$//;           # no trailing white
-        next unless length; # anything left?
-        my ($var, $value) = split(/\s*=\s*/, $_, 2);
-        $config{$var} = $value;
-    }
-    close $CONFIG;
-    return %config;
-}
-
 ############################################
 sub print_usage
 {
@@ -155,3 +137,5 @@ sub print_usage
     print "Usage: get_reasons.pl message_id destination\@adresse\n";
     exit 0;
 }
+
+exit 1;

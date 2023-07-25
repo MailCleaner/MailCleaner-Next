@@ -21,17 +21,22 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+my ($SRCDIR, $VARDIR);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    my $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR');
+    $VARDIR = $conf->getOption('VARDIR');
+    unshift(@INC, $SRCDIR."/lib");
 }
 
-require ReadConfig;
-
-my $conf = ReadConfig::getInstance();
-
-my $logfile=$conf->getOption('VARDIR')."/log/exim_stage4/mainlog";
+my $logfile="${VARDIR}/log/exim_stage4/mainlog";
 
 open(my $LOGFILE, '<', $logfile) or die "cannot open log file: $logfile\n";
 

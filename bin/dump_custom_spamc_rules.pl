@@ -23,7 +23,7 @@ use warnings;
 use utf8;
 use Carp qw( confess );
 
-our ($conf, $SRCDIR, $VARDIR);
+our ($conf, $SRCDIR);
 BEGIN {
     if ($0 =~ m/(\S*)\/\S+.pl$/) {
         my $path = $1."/../lib";
@@ -32,7 +32,6 @@ BEGIN {
     require ReadConfig;
     $conf = ReadConfig::getInstance();
     $SRCDIR = $conf->getOption('SRCDIR');
-    $VARDIR = $conf->getOption('VARDIR');
     unshift(@INC, $SRCDIR."/lib");
 }
 
@@ -40,7 +39,6 @@ use lib_utils qw( open_as );
 
 require DB;
 my $db = DB::connect('slave', 'mc_config');
-my $dbh;
 our %domains;
 our %senders;
 my $rules_file = '/usr/mailcleaner/share/spamassassin/98_mc_custom.cf';

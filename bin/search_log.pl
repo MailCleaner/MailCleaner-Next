@@ -21,13 +21,23 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+my ($SRCDIR, $VARDIR, $HOSTID, $ISMASTER);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    my $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
+    $HOSTID = $conf->getOption('HOSTID') || 1;
+    $ISMASTER = $conf->getOption('ISMASTER') || 'Y';
+    unshift(@INC, $SRCDIR."/lib");
 }
 
-require ReadConfig;
 use Date::Calc qw(:all);
 
 my $start = shift;
@@ -39,8 +49,7 @@ my @filter = ();
 my $fakeids = 1;
 my $batchwithlog = 0;
 my $batchid = 0;
-my $config = ReadConfig::new();
-my $tmpdir = $config->getOption('VARDIR').'/run/mailcleaner/log_search/';
+my $tmpdir = "${VARDIR}/run/mailcleaner/log_search/";
 
 my $MAXRESULTS = 10000000;
 
@@ -91,8 +100,8 @@ my %stopo = ( 'year' => $1, 'month' => $2, 'day' => $3 );
 print "PID ".$$."\n" if $batch;
 print "STARTTIME ".time()."\n" if $batch;
 
-my $conf = ReadConfig::getInstance();
-chdir($conf->getOption('VARDIR')."/log") or die("cannot move to log directory: ".$conf->getOption('VARDIR')."/log\n");
+my $LOGDIR="${VARDIR}/log";
+chdir($LOGDIR) or die("cannot move to log directory: ${LOGDIR}/log\n");
 
 my $today = `date +%Y%m%d`;
 my $today_str = `date +%Y%m%d`;
@@ -100,7 +109,6 @@ if ($today_str !~ m/^(\d\d\d\d)(\d\d)(\d\d)$/) {
     print "Error, bad today string: $today_str\n";
 }
 my %today = ( 'year' => $1, 'month' => $2, 'day' => $3 );
-my $LOGDIR=$conf->getOption('VARDIR')."/log";
 if ($start > $today_str && $stop > $today_str) {
     $starto{'year'}--;
     $start = sprintf('%04d%02d%02d', $starto{'year'}, $starto{'month'}, $starto{'day'});
@@ -259,10 +267,10 @@ sub loopThroughLogs($filename,$type,$what,$store)
 
 sub populateIDs($file,$what,$store)
 {
-    my $cmd = "/opt/exim4/bin/exigrep '$what' ".$conf->getOption('VARDIR')."/log/$file";
+    my $cmd = "/opt/exim4/bin/exigrep '$what' ${VARDIR}/log/$file";
     print " -> searching $file... \n" if !$batch;
     my $result = '';
-    if  ( -f $conf->getOption('VARDIR')."/log/$file") {
+    if  ( -f "${VARDIR}/log/$file") {
         $result = `$cmd`;
     }
     my @lines = split /\n/, $result, $MAXRESULTS;
@@ -506,7 +514,7 @@ sub printBatchResult($msg)
         $_accepted = 2;
     }
 
-    print $_datein."|".$config->getOption('HOSTID')."|".$_senderhostname."|".$_senderhostip."|".$_accepted."|".$_relayed."|".$_inreport."|".$msg_o{'id'}."|".$_from."|".$_tos."|".$msg_o{'nid'};
+    print $_datein."|".$HOSTID."|".$_senderhostname."|".$_senderhostip."|".$_accepted."|".$_relayed."|".$_inreport."|".$msg_o{'id'}."|".$_from."|".$_tos."|".$msg_o{'nid'};
 
     # $_spam will be 0 for ham, 1 for spam, 2 for newsletter and 3 for spam and newsletter
     my $_spam = 0;

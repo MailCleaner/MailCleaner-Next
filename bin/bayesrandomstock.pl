@@ -29,17 +29,26 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
-if ($0 =~ m/(\S*)\/\S+.pl$/) {
-    my $path = $1."/../lib";
-    unshift (@INC, $path);
+my ($SRCDIR, $VARDIR, $HOSTID, $CLIENTID);
+BEGIN {
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    my $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR');
+    $VARDIR = $conf->getOption('VARDIR');
+    $HOSTID = $conf->getOption('HOSTID') || 1;
+    $CLIENTID = $conf->getOption('CLIENTID') || undef;
+    unshift(@INC, $SRCDIR."/lib");
 }
 
-require ReadConfig;
 require SystemPref;
 require PrefDaemon;
 
-my $conf = ReadConfig::getInstance();
 my $gaction = shift;
 my $action = "";
 if (defined($gaction) && $gaction eq "-s") {
@@ -51,7 +60,6 @@ if (!$sysconf->getPref('do_stockme')) {
     exit 0;
 }
 
-my $VARDIR=$conf->getOption('VARDIR');
 my $CENTERPATH=$VARDIR."/spool/learningcenter";
 my $SPAMDIR=$CENTERPATH."/stockspam/";
 my $HAMDIR=$CENTERPATH."/stockham";
@@ -129,7 +137,7 @@ foreach my $WHAT (@whats) {
         # create bayes tar
         my $date=`date +%Y%m%d`;
         chomp($date);
-        my $tarfile = "$STOCKDIR/$WHAT-".$conf->getOption('CLIENTID')."-".$conf->getOption('HOSTID')."_$date.tar.gz";
+        my $tarfile = "$STOCKDIR/$WHAT-".$CLIENTID."-".$HOSTID."_$date.tar.gz";
         my $command = "tar -C $STOCKDIR/$WHAT/ -cvzf $tarfile cur";
         system("$command");
 
