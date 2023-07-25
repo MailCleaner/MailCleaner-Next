@@ -1200,6 +1200,7 @@ EXIMUSER    * = (ROOT) NOPASSWD: EXIMBIN
     my @files = (
 		glob("${VARDIR}/log/exim_stage${stage}/*"),
 		glob("${VARDIR}/spool/exim_stage${stage}/db/*"),
+	    glob("${VARDIR}/spool/tmp/mailcleaner/*.list"),
     );
     push (@files,
 		"${SRCDIR}/etc/exim/stage1_scripts.pl",
@@ -1210,12 +1211,21 @@ EXIMUSER    * = (ROOT) NOPASSWD: EXIMBIN
 		"${VARDIR}/spool/tmp/exim/blacklists/senders",
 		"${VARDIR}/spool/mailcleaner/full_whitelisted_hosts.list",
 		"${VARDIR}/spool/mailcleaner/full_whitelisted_senders.list",
-	    glob("${VARDIR}/spool/tmp/mailcleaner/*.list"),
 	    glob("${SRCDIR}/etc/exim/certs/*"),
+	    glob("${VARDIR}/spool/tmp/mailcleaner/dkim/*"),
     ) if ($stage == 1);
+    push (@files,
+	    glob("${SRCDIR}/etc/exim/certs/*"),
+	    glob("${VARDIR}/spool/tmp/mailcleaner/dkim/*"),
+    ) if ($stage == 4);
     foreach my $file (@files) {
 	    touch($file) unless (-e $file);
         chown($uid, $gid, $file);
+        if ($file =~ m/\.pl$/) {
+            chmod 0774, $file;
+        } else {
+            chmod 0664, $file;
+        }
     }
 
     if ($stage == 1) {
