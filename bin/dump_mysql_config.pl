@@ -49,6 +49,8 @@ use File::Path qw(make_path);
 require DB;
 
 our $DEBUG = 1;
+our $uid = getpwnam( 'mysql' );
+our $gid = getgrnam( 'mailcleaner' );
 
 ## added 10 for migration ease
 my %config;
@@ -74,8 +76,9 @@ if (scalar(@ARGV)) {
         confess "Invalid database $_" unless ($_ =~ /^(slave|master)$/);
     }
 }
-foreach (@stages) {
-    confess "CANNOTDUMPMYSQLFILE" unless (dump_mysql_file($_,%config));
+foreach my $stage (@stages) {
+    confess "CANNOTDUMPMYSQLFILE" unless (dump_mysql_file($stage,%config));
+    ownership($stage);
 }
 
 #############################
@@ -85,8 +88,8 @@ sub dump_mysql_file($stage,%config)
     my $target_file = "${SRCDIR}/etc/mysql/my_$stage.cnf";
 
     my ($TEMPLATE, $TARGET);
-    confess "Cannot open $template_file: $!" unless ($TEMPLATE = ${open_as($template_file, '<')});
-    confess "Cannot open $target_file: $!" unless ($TARGET = ${open_as($target_file)});
+    confess "Cannot open $template_file: $!" unless ($TEMPLATE = ${open_as($template_file, '<', 0664, 'mysql:mailcleaner')});
+    confess "Cannot open $target_file: $!" unless ($TARGET = ${open_as($target_file, '>', 0664, 'mysql:mailcleaner')});
 
     while(<$TEMPLATE>) {
         my $line = $_;
@@ -105,4 +108,49 @@ sub dump_mysql_file($stage,%config)
     close $TARGET;
 
     return 1;
+}
+
+sub ownership($stage)
+{
+    use File::Touch qw( touch );
+
+    mkdir('/etc/sudoers.d') unless (-d '/etc/sudoers.d/');
+    if (open(my $fh, '>', '/etc/sudoers.d/mysql')) {
+        print $fh "
+User_Alias  MYSQL = mysql
+Runas_Alias ROOT = root
+Cmnd_Alias  START = /usr/bin/mariadbd-safe
+Cmnd_Alias  INSTALL = /usr/bin/mysql-install_db
+Cmnd_Alias  UPGRADE = /usr/bin/mysql-upgrade
+
+M%SQL       * = (ROOT) NOPASSWD: START
+M%SQL       * = (ROOT) NOPASSWD: INSTALL
+M%SQL       * = (ROOT) NOPASSWD: UPGRADE
+";
+    }
+    symlink("${VARDIR}/spool/mysql_${stage}","${VARDIR}/spool/mariadb_${stage}") if ( ! -e "${VARDIR}/spool/mariadb_${stage}");
+
+    my @dirs = (
+        "${VARDIR}/run/mysql_${stage}",
+        "${VARDIR}/log/mysql_${stage}",
+        "${VARDIR}/spool/mysql_${stage}",
+        "${VARDIR}/spool/mariadb_${stage}",
+    );
+    foreach my $dir (@dirs) {
+	    mkdir ($dir) unless (-d $dir);
+		chown($uid, $gid, $dir);
+    }
+
+    my @files = (
+		glob("${VARDIR}/log/mysql_${stage}/*"),
+		glob("${VARDIR}/spool/mysql_${stage}/*"),
+    );
+    foreach (glob("${VARDIR}/spool/mysql_${stage}/*")) {
+        push(@files, glob("$_/*"));
+    }
+    foreach my $file (@files) {
+	    touch($file) unless (-e $file);
+        chown($uid, $gid, $file);
+        chmod 0744, $file;
+    }
 }

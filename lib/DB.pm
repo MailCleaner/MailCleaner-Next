@@ -25,6 +25,7 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
 package DB;
 require Exporter;
@@ -35,59 +36,45 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(connect);
 our $VERSION = 1.0;
 
-sub connect($type,$db,$critical=0)
+sub connect($type,$db='mc_config',$critical=0)
 {
     if (!$type || $type !~ /slave|master|realmaster|custom/) {
         print "BADCONNECTIONTYPE\n";
         return "";
     }
-    my $dbase = 'mc_config';
-    if ($db) {
-        $dbase = $db;
-    }
 
     # determine socket to use
     my $conf = ReadConfig::getInstance();
     my $socket = $conf->getOption('VARDIR')."/run/mysql_master/mysqld.sock";
-    if ($type =~ /slave/) {
-        $socket = $conf->getOption('VARDIR')."/run/mysql_slave/mysqld.sock";
+    $socket = $conf->getOption('VARDIR')."/run/mysql_slave/mysqld.sock" if ($type =~ /slave/);
+
+    my $params = {};
+    my $realmaster = 0;
+    if ( $type =~ m/realmaster/) {
+        $realmaster = getRealMaster($conf->getOption('VARDIR')."/spool/mailcleaner/master.conf", $params);
+        confess("Failed to fetch parameters from master.conf\n") unless ($realmaster);
+    } elsif ($type =~ m/custom/) {
+        confess("'custom' type used without hashref as second argument\n") unless (ref($db));
+        confess("'custom' type requires value for 'host' in second argument hashref\n") unless (defined($db->{'host'}));
+        confess("'custom' type requires value for 'port' in second argument hashref\n") unless (defined($db->{'port'}));
+        confess("'custom' type requires value for 'password' in second argument hashref\n") unless (defined($db->{'password'}));
+        $params = $db;
+        $realmaster = 1;
     }
 
     my $dbh;
-    my $realmaster = 0;
-    my $masterfile = $conf->getOption('VARDIR')."/spool/mailcleaner/master.conf";
-    if ( ($type =~ /realmaster/ && -f $masterfile) || $type =~ /custom/) {
-        my $host;
-        my $port;
-        my $password;
-        if (open(my $MASTERFILE, '<', $masterfile)) {
-            while (<$MASTERFILE>) {
-                if (/HOST (\S+)/) { $host = $1; }
-                if (/PORT (\S+)/) { $port = $1; }
-                if (/PASS (\S+)/) { $password = $1; }
-            }
-            close $MASTERFILE;
-        }
-        if ($type =~ /custom/) {
-            $host = $db->{'host'};
-            $port = $db->{'port'};
-            $password = $db->{'password'};
-            $dbase = $db->{'database'};
-        }
-        if (! ( $host eq "" || $port eq "" || $password eq "") ) {
-            $dbh = DBI->connect(
-                "DBI:MariaDB:database=$dbase;host=$host:$port;",
-                "mailcleaner", $password, {RaiseError => 0, PrintError => 0, AutoCommit => 1}
-            ) or fatal_error("CANNOTCONNECTDB", $critical);
-            $realmaster = 1;
-        }
-    }
-    if ($realmaster < 1) {
+    if ($realmaster) {
+        $dbh = DBI->connect(
+            "DBI:MariaDB:database=$db;host=$params->{'host'}:$params->{'port'};",
+            "mailcleaner", $params->{'password'}, {RaiseError => 0, PrintError => 0, AutoCommit => 1}
+        ) or fatal_error("CANNOTCONNECTDB", $critical);
+    } else {
         $dbh = DBI->connect(
             "DBI:MariaDB:database=$db;host=localhost;mariadb_socket=$socket",
             "mailcleaner", $conf->getOption('MYMAILCLEANERPWD'), {RaiseError => 0, PrintError => 0}
         ) or fatal_error("CANNOTCONNECTDB 2", $critical);
     }
+
     my $self = {
         dbh => $dbh,
         type => $type,
@@ -95,6 +82,24 @@ sub connect($type,$db,$critical=0)
     };
 
     return bless $self, "DB";
+}
+
+sub getRealMaster($file, $params) {
+    return 0 unless (-f $file);
+    if (open(my $MASTERFILE, '<', $file)) {
+        while (<$MASTERFILE>) {
+            if (/HOST (\S+)/) { $params->{'host'} = $1; }
+            if (/PORT (\S+)/) { $params->{'port'} = $1; }
+            if (/PASS (\S+)/) { $params->{'password'} = $1; }
+        }
+        close $MASTERFILE;
+    } else {
+        confess("Failed to open $file to locate master\n");
+    }
+    confess("$file does not contain 'HOST' value\n") unless (defined($params->{'host'}));
+    confess("$file does not contain 'PORT' value\n") unless (defined($params->{'port'}));
+    confess("$file does not contain 'PASS' value\n") unless (defined($params->{'password'}));
+    return 1;
 }
 
 sub getType($self)

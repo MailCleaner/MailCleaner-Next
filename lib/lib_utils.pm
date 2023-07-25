@@ -159,7 +159,7 @@ sub open_as($file, $method=">", $chmod=0664, $chown='mailcleaner:mailcleaner')
         confess("Failed to create $path/$filename\n") unless touch("$path/$filename");
     }
 
-    confess "Failed to set mode for ${path}/${filename} to $uid:$gid\n" unless chmod($chmod, $path.'/'.$filename);
+    confess "Failed to set mode for ${path}/${filename} to ".sprintf("%o",$chmod)."\n" unless chmod($chmod, $path.'/'.$filename);
     confess "Failed to give ownership of $path/$filename to $uid:$gid\n" unless chown($uid, $gid, $path.'/'.$filename);
 
     my $mlong = 'read/write';
