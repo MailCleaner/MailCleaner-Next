@@ -31,7 +31,7 @@ use warnings;
 use utf8;
 use Carp qw( confess );
 
-our ($SRCDIR, $VARDIR;
+our ($SRCDIR, $VARDIR);
 BEGIN {
     if ($0 =~ m/(\S*)\/\S+.pl$/) {
         my $path = $1."/../lib";
@@ -49,10 +49,12 @@ require DB;
 require GetDNS;
 
 our $DEBUG = 1;
+our $uid = getpwnam('Debian-snmp');
+our $gid = getpwnam('mailcleaner');
 
 my $system_mibs_file = '/usr/share/snmp/mibs/MAILCLEANER-MIB.txt';
 if ( ! -d '/usr/share/snmp/mibs') {
- mkpath('/usr/share/snmp/mibs');
+    mkpath('/usr/share/snmp/mibs');
 }
 my $mc_mib_file = "${SRCDIR}/www/guis/admin/public/downloads/MAILCLEANER-MIB.txt";
 
@@ -73,11 +75,42 @@ if (-f $system_mibs_file) {
 }
 symlink($mc_mib_file,$system_mibs_file);
 
-#############################
+sub setup_snmpd_dir() {
+    my $include = 0;
+    if ( -e "/etc/snmp/snmpd.conf") {
+        if (open(my $fh, '<', "/etc/snmp/snmpd.conf")) {
+            while (<$fh>) {
+                if ($_ =~ m#includeDir\s+/etc/snmp/snmpd.conf.d#) {
+                    $include = 1;
+                }
+                last;
+            }
+            close($fh);
+        } else {
+            confess("Failed to read '/etc/snmp/snmpd.conf'\n");
+        }
+    }
+    unless ($include) {
+        if (open(my $fh, '>', "/etc/snmp/snmpd.conf")) {
+            print $fh 'includeDir /etc/snmp/snmpd.conf.d';
+            close($fh);
+            $include = 1;
+        } else {
+            confess("Failed to open '/etc/snmp/snmpd.conf' for writing");
+        }
+    }
+    if ( !-d "/etc/snmp/snmpd.conf.d") {
+        mkdir("/etc/snmp/snmpd.conf.d") || confess("Failed to create '/etc/snmp/snmpd.conf.d'\n");
+    }
+    return 1;
+}
+
 sub dump_snmpd_file()
 {
+    setup_snmpd_dir() || confess("Failed to create/verify '/etc/snmp/snmpd.conf.d'\n");
+
     my $template_file = "${SRCDIR}/etc/snmp/snmpd.conf_template";
-    my $target_file = "${SRCDIR}/etc/snmp/snmpd.conf";
+    my $target_file = "/etc/snmp/snmpd.conf.d/mailcleaner.conf";
 
     my $ipv6 = 0;
     if (open(my $interfaces, '<', '/etc/network/interfaces')) {
@@ -123,6 +156,7 @@ sub dump_snmpd_file()
     close $TEMPLATE;
     close $TARGET;
 
+    chown($uid, $gid, "/etc/snmp/snmpd.conf.d", $TARGET);
     return 1;
 }
 
