@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 # Provides compatibility with SystemD using old init script paths.
 
-systemctl $@ mariadb\@slave
+systemctl $@ mariadb\@master
