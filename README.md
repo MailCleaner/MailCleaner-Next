@@ -8,7 +8,9 @@ This repository is for a future release of MailCleaner. It is not working and de
 <img src="https://hosted.weblate.org/widgets/mailcleaner/-/svg-badge.svg" alt="Translation status" />
 </a>
 
-Official website : https://www.mailcleaner.org
+## Synopsis
+
+[Official website](https://www.mailcleaner.org)
 
 This is the repository for sources of MailCleaner Community Edition.
 
@@ -16,37 +18,34 @@ MailCleaner is a business anti spam gateway installed between your mail
 infrastructure and the Internet. It offers professional protection against 
 viruses and eliminates up to 99% of spam.
 
+## Enterprise Edition
+
 You can ask for an evaluation licence of Mailcleaner Enterprise Edition,
 providing you with the following benefits: 
 
 - An update of the SpamAssassin rules, ClamAV signatures, ClamSpam signatures and Newsletters detection rules every 15 minutes
 - Access to all MailCleaner RBLs and partner's RBLs 
 - Regular updates of Bayesian databases
-- Access to our technical support (Basic or Premium offers) 
-- Access to optional modules including Kaspersky, spamhaus, SURBL and MessageSniffer
+- Access to our technical support (Basic or Premium offers)
+- Additional in-house features such as a Machine Learning module 
+- Access to optional modules including ESET EFS anti-virus, SpamHaus and SURBL blacklists and MessageSniffer
+- Ensure the sustainable development of the project
 
-To start your free trial, please go to https://www.mailcleaner.net/antispam/test.html and choose the option that fits you best
+To start your free trial, please go [here](https://www.mailcleaner.net/antispam/test.html) and choose the option that fits you best.
 
 ## Getting started
 
-To start using MailCleaner on your own machines, you will need to download one of our virtual appliances 
-at https://www.mailcleaner.org/download/.
-
-You can find the installation guide at https://www.mailcleaner.net/downloads/MailCleaner-installation.pdf
-
-You can also try MailCleaner on the cloud for 30 days for free by registering at https://www.mailcleaner.net/antispam/test.html.
+MailCleaner Next is currently in an open Alpha state. This requires an existing installation of Debian Bookworm (12) dedicated to be used by MailCleaner. You can follow the instructions in [the installation guide](/INSTALL.md).
 
 ## Translations 
 
-We use weblate to translate the MailCleaner interface. If you want to contribute, 
-you can go to https://www.mailcleaner.org/translations/. 
+If you want to contribute to a translation of MailCleaner, you can do so with [Weblate](https://www.mailcleaner.org/translations/).
 
 **PULL REQUESTS TRANSLATING THE INTERFACE WILL NOT BE ACCEPTED**
 
-## MailCleaner community
+## MailCleaner Community
 
-To get some help from the community, you can check out the forum at
-http://forum.mailcleaner.org/
+To get some help from the community, you can check out [the forum](http://forum.mailcleaner.org/)
 
 ## Social media 
 
