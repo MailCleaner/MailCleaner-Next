@@ -206,7 +206,7 @@ sub getRefFields($file)
 
     open(my $TABLEFILE, '<', $file) or die("ERROR, cannot open reference database file $file\nABORTED\n");
     my $in_desc = 0;
-    while(<TABLEFILE>) {
+    while(<$TABLEFILE>) {
         chomp;
         if ( $_ =~ /CREATE\s+TABLE\s+(\S+)\s+\(/ ) {
             $in_desc = 1;
@@ -236,7 +236,7 @@ sub getRefFields($file)
             next;
         }
     }
-    close(TABLEFILE);
+    close($TABLEFILE);
     return %fields;
 }
 
