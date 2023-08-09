@@ -52,19 +52,42 @@ require DB;
 my $DEBUG = 0;
 
 my %greylist_conf = get_greylist_config();
+my $trusted_ips = get_trusted_ips();
 
-my $uid = getpwnam( 'mailcleaner' );
-my $gid = getgrnam( 'mailcleaner' );
+our $uid = getpwnam( 'greylist' );
+our $gid = getgrnam( 'mailcleaner' );
+our $confdir = "/etc/greylistd";
+
+foreach my $dir (
+    "${VARDIR}/spool/greylistd",
+    "${VARDIR}/run/greylistd"
+) {
+    make_path($dir, {'mode'=>0664,'user'=>$uid,'group'=>$gid}) unless ( -d $dir );
+}
+
+if ( -e $confdir && !-l $confdir ) {
+    unlink(glob($confdir."/*"));
+    rmdir($confdir);
+}
+
+symlink("${SRCDIR}/${confdir}", $confdir);
 
 dump_greylistd_file(\%greylist_conf);
 
-dump_domain_to_avoid($greylist_conf{'__AVOID_DOMAINS_'});
+dump_domain_to_avoid($greylist_conf{'__AVOID_DOMAINS__'});
 
-# This file should be created by dump_domains.pl, but in case it does not exist, we need it
-my $domainsfile = "${VARDIR}/spool/tmp/mailcleaner/domains_to_greylist.list";
-if ( ! -f $domainsfile) {
-    touch($domainsfile);
-    chown($uid, $gid, $domainsfile);
+dump_trusted_ips($trusted_ips);
+
+foreach my $file (
+    "${VARDIR}/spool/tmp/mailcleaner/domains_to_greylist.list",
+    "${SRCDIR}/${confdir}/config",
+    "${SRCDIR}/${confdir}/whitelist-hosts",
+    glob("${VARDIR}/spool/greylistd/*"),
+    glob("${VARDIR}/run/greylistd/*"),
+    "${VARDIR}/run/greylistd/socket"
+) {
+    touch($file) unless(-f $file);
+    chown($uid, $gid, $file);
 }
 
 sub get_greylist_config()
@@ -79,12 +102,22 @@ sub get_greylist_config()
     $ret{'__RETRYMIN__'} = $configs{'retry_min'};
     $ret{'__RETRYMAX__'} = $configs{'retry_max'};
     $ret{'__EXPIRE__'} = $configs{'expire'};
-    $ret{'__AVOID_DOMAINS_'} = $configs{'avoid_domains'};
+    $ret{'__AVOID_DOMAINS__'} = $configs{'avoid_domains'};
 
     return %ret;
 }
 
-#############################
+sub get_trusted_ips()
+{
+    my $slave_db = DB::connect('slave', 'mc_config');
+
+    my %configs = $slave_db->getHashRow(
+        "SELECT trusted_ips FROM antispam;"
+    );
+
+    return $configs{'trusted_ips'};
+}
+
 sub dump_domain_to_avoid($domains)
 {
     my @domains_to_avoid;
@@ -93,7 +126,7 @@ sub dump_domain_to_avoid($domains)
     }
 
     my $dir = "${VARDIR}/spool/tmp/mailcleaner/";
-    make_path($dir, {'mode'=>0755,'user'=>$uid,'group'=>$gid}) unless ( -d $dir );
+    make_path($dir, {'mode'=>0664,'user'=>$uid,'group'=>$gid}) unless ( -d $dir );
     my $file = "${dir}/domains_to_avoid_greylist.list";
     my $DOMAINTOAVOID;
     confess "Cannot open $file: $!" unless ($DOMAINTOAVOID = ${open_as($file)} );
@@ -104,16 +137,21 @@ sub dump_domain_to_avoid($domains)
     close $DOMAINTOAVOID;
 }
 
-#############################
-sub dump_greylistd_file($href)
+sub dump_trusted_ips($ips)
 {
-    my %greylist_conf = %{$href};
+    my $file = "${SRCDIR}/${confdir}/whitelist-hosts";
+    unlink($file) if (-e $file);
+    return 0 if ($ips =~ /^\s*$/);
+    my $TRUSTED_IPS;
+    confess "Cannot open $file: $!" unless ($TRUSTED_IPS = ${open_as($file)} );
+    print $TRUSTED_IPS $ips;
+    close $TRUSTED_IPS;
+}
 
-    my $dir = "${SRCDIR}/etc/greylistd";
-    make_path($dir, {'mode'=>0755,'user'=>$uid,'group'=>$gid}) unless ( -e $dir );
-
-    my $template_file = "${dir}/greylistd.conf_template";
-    my $target_file = "${dir}/greylistd.conf";
+sub dump_greylistd_file($greylistd_conf)
+{
+    my $template_file = "${SRCDIR}/${confdir}/config_template";
+    my $target_file = "${SRCDIR}/${confdir}/config";
 
     my ($TEMPLATE, $TARGET);
     confess "Cannot open $template_file: $!\n" unless ($TEMPLATE = ${open_as($template_file, '<')} );
@@ -125,8 +163,8 @@ sub dump_greylistd_file($href)
         $line =~ s/__VARDIR__/$VARDIR/g;
         $line =~ s/__SRCDIR__/$SRCDIR/g;
 
-        foreach my $key (keys %greylist_conf) {
-            $line =~ s/$key/$greylist_conf{$key}/g;
+        foreach my $key (keys %{$greylistd_conf}) {
+            $line =~ s/$key/$greylistd_conf->{$key}/g;
         }
 
         print $TARGET $line;

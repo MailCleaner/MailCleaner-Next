@@ -88,7 +88,7 @@ my @order = (
     { 'id' => 'mysql_master', 'service' => 'mariadb@master', 'human' => 'Master Database' },
     { 'id' => 'mysql_slave', 'service' => 'mariadb@slave', 'human' => 'Slave Database' },
     { 'id' => 'snmpd', 'service' => 'snmpd', 'human' => 'SNMP Daemon' },
-    { 'id' => 'greylistd', 'proc' => 'greylistd/greylistd.conf', 'human' => 'Greylist Daemon' },
+    { 'id' => 'greylistd', 'service' => 'greylistd', 'human' => 'Greylist Daemon' },
     { 'id' => 'cron', 'proc' => '/usr/sbin/cron', 'human' => 'Scheduler' },
     { 'id' => 'preftdaemon', 'proc' => 'PrefTDaemon', 'human' => 'Preferences Daemon' },
     { 'id' => 'spamd', 'proc' => 'spamd.sock', 'human' => 'SpamAssassin Daemon' },
