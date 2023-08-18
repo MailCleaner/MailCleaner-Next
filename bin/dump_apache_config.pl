@@ -102,11 +102,22 @@ if (open(my $fh, '>', '/etc/sudoers.d/apache')) {
     print $fh "
 User_Alias  APACHE = www-data
 Runas_Alias ROOT = root
+Runas_Alias EXIM = Debian-exim
 Cmnd_Alias  SETPINDB = $SRCDIR/scripts/configuration/set_password_in_db.sh
+Cmnd_Alias  CHECKSPOOLS = $SRCDIR/bin/check_spools.sh
+Cmnd_Alias  GETSTATUS = $SRCDIR/bin/get_status.pl -s
 
 APACHE      * = (ROOT) NOPASSWD: SETPINDB
+APACHE      * = (EXIM) NOPASSWD: CHECKSPOOLS
+APACHE      * = (ROOT) NOPASSWD: GETSTATUS
 ";
 }
+
+# Add to mailcleaner group if not already a member
+`usermod -a -G mailcleaner www-data` unless (grep(/\bmailcleaner\b/, `groups www-data`));
+
+# SystemD auth causes timeouts
+`sed -iP '/^session.*pam_systemd.so/d' /etc/pam.d/common-session`;
 
 # Dump configuration
 my $dbh;

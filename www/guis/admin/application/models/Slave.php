@@ -23,6 +23,7 @@ class Default_Model_Slave
     {
         $this->_id = $id;
     }
+
     public function getId()
     {
         return $this->_id;
@@ -69,6 +70,7 @@ class Default_Model_Slave
         $url .= $this->getHostname() . ":5132/soap/index.php?wsdl";
         return $url;
     }
+
     public function sendSoap($service, $params = NULL)
     {
         $url = $this->getSoapUrl();
@@ -89,10 +91,7 @@ class Default_Model_Slave
             }
             return $result;
         } catch (Exception $e) {
-            return [
-                'error' => 'Unexpected answer or timeout from ' . $this->getHostname(),
-                'message' => $e->getMessage()
-            ];
+            return ['error' => 'Unexpected answer or timeout from ' . $this->getHostname(), 'message' => $e->getMessage()];
         }
     }
 
@@ -126,74 +125,99 @@ class Default_Model_Slave
     public function getStatus($what)
     {
 
-        $ret = ['status' => 'unknown', 'value' => ''];
-
-        $config = new MailCleaner_Config();
-        $file = $config->getOption('VARDIR') . "/run/mailcleaner." . $this->getHostname() . ".status";
-
-        if (!file_exists($file)) {
-            return 'unknown';
+        if ($what == 'hardware') {
+            $get = ['disksusage'];
+        } elseif ($what == 'load') {
+            $get = ['loadavg05', 'memoryusage'];
+        } else {
+            $get = [$what];
         }
-        $lines = file($file);
-        if (!$lines) {
-            return $ret;
+        $soap = $this->sendSoapRequest('Status_getStatusValues', $get);
+        if (!isset($soap['data'])) {
+            return ['status' => 'critical', 'message' => 'soap error', 'value' => 'SOAP request did not return data: ' . print_r($soap)];
         }
-
-        $data = [];
-        foreach ($lines as $line_num => $line) {
-            if (preg_match("/^([A-Za-z0-9]+)\s*:\s*(.*)\s*$/", $line, $val)) {
-                $data[$val[1]] = $val[2];
-            }
-        }
-
+        $data = $soap['data'];
         switch ($what) {
             case 'hardware':
                 $ret = ['status' => 'ok', 'message' => 'healthy', 'value' => ''];
-                if ($data['Disk'] != 'OK') {
-                    $ret = ['status' => 'critical', 'message' => 'disk', 'value' => $data['Disk']];
+                if (!isset($data['disksusage'])) {
+                    return ['status' => 'critical', 'message' => 'no disks', 'value' => 'SOAP request returned no disks'];
                 }
-                if ($data['Swap'] > 20) {
-                    $ret = ['status' => 'critical', 'message' => 'swap', 'value' => $data['Swap']];
+                foreach ($data['disksusage'] as $disk) {
+                    if ($disk['puse'] >= 80) {
+                        if ($disk['puse'] >= 90) {
+                            $ret['status'] = 'critical';
+                        } else {
+                            $ret['status'] = 'warning';
+                        }
+                        $ret['message'] = 'disk';
+                        $ret['value'] .= $disk['mount'] . ' ' . $disk['puse'] . '% full; ';
+                    }
                 }
-                if ($data['Raid'] != 'OK') {
-                    $ret = ['status' => 'critical', 'message' => 'raid', 'value' => $data['Raid']];
+                if ($ret['value'] != '') {
+                    $ret['value'] = preg_replace('/; $/', '', $ret['value']);
                 }
                 break;
 
             case 'spools':
-
-                $ret = ['status' => 'ok', 'message' => 'spoolslow', 'value' => $data['Spools']];
-                if (intval($data['Spools']) > 1000) {
-                    $ret = ['status' => 'warning', 'message' => 'spoolsmedium', 'value' => $data['Spools']];
+                $stages = ['1' => 'Incoming', 2 => 'Filtering', 4 => 'Outgoing'];
+                $queues = [];
+                $ret = ['status' => 'ok', 'message' => 'spoolslow', 'value' => $data['spools']];
+                if (!isset($data['spools'])) {
+                    return ['status' => 'critical', 'message' => 'no spools', 'value' => 'SOAP request returned no spools'];
                 }
-                if (intval($data['Spools']) > 2000) {
-                    $ret = ['status' => 'critical', 'message' => 'spoolshigh', 'value' => $data['Spools']];
+                foreach ($data['spools'] as $stage => $count) {
+                    if ($count >= 100) {
+                        $ret['status'] = 'critical';
+                        $queues[$stages[$stage]] = $count;
+                    }
+                }
+                if (sizeof($queues)) {
+                    $ret['message'] = strtolower(implode(', ', array_keys($queues)));
+                    $ret['value'] = '';
+                    foreach ($queues as $s => $c) {
+                        $ret['value'] .= "$s: $c, ";
+                    }
+                    $ret['value'] = preg_replace('/, $/', '', $ret['value']);
                 }
                 break;
 
             case 'load':
-                $ret = ['status' => 'ok', 'message' => 'loadlow', 'value' => $data['Load']];
-                if (floatval($data['Load']) > 100) {
-                    $ret = ['status' => 'warning', 'message' => 'loadmedium', 'value' => $data['Load']];
+                $ret = ['status' => 'ok', 'message' => 'loadlow', 'value' => ''];
+                if (!isset($data['loadavg05'])) {
+                    return ['status' => 'critical', 'message' => 'no loadavg05', 'value' => 'SOAP request returned no loadavg05'];
                 }
-                if (floatval($data['Load']) > 500) {
-                    $ret = ['status' => 'critical', 'message' => 'loadhigh', 'value' => $data['Load']];
+                if ($data['loadavg05'] >= 4.00) {
+                    $ret['message'] = 'cpu';
+                    if ($data['loadavg05'] >= 8.00) {
+                        $ret['status'] = 'critical';
+                    } else {
+                        $ret['status'] = 'warning';
+                    }
+                    $ret['value'] = "Last 5m CPU => " . $data['loadavg05'];
+                }
+                if (!isset($data['memoryusage'])) {
+                    return ['status' => 'critical', 'message' => 'no memoryusage', 'value' => 'SOAP request returned no memoryusage'];
+                }
+                $mempct = $data['memoryusage']['memfree'] / $data['memoryusage']['memfree'];
+                if ($mempct < 0.10) {
+                    if ($ret['message'] == 'cpu') {
+                        $ret['message'] .= ', ram';
+                    } else {
+                        $ret['message'] = 'ram';
+                    }
+                    if ($mempct < 0.05) {
+                        $ret['status'] = 'critical';
+                    } elseif ($ret['status'] != 'critical') {
+                        $ret['status'] = 'warning';
+                    }
+                    $ret['value'] .= ($ret['value'] ? ', ' : '') . "RAM Free => " . sprintf("%2d", $mempct * 100) . "%";
                 }
                 break;
-
-            case 'raid':
-                $ret = ['status' => 'ok', 'message' => 'healthy', 'value' => $data['Raid']];
-                if ($data['Raid'] != 'OK') {
-                    $ret = ['status' => 'critical', 'message' => 'raid', 'value' => $data['Raid']];
-                }
-                break;
-
-            case 'disk':
-                $ret = ['status' => 'ok', 'message' => 'low', 'value' => $data['Disk']];
-                if ($data['Disk'] != 'OK') {
-                    $ret = ['status' => 'critical', 'message' => 'disk', 'value' => $data['Disk']];
-                }
-                break;
+            default:
+                $ret['status'] = 'error';
+                $ret['message'] = 'invalid';
+                $ret['value'] = 'unknown status type requested';
         }
 
         return $ret;
@@ -214,10 +238,7 @@ class Default_Model_Slave
             $result = $client->$service($params, $limit);
             return $result;
         } catch (Exception $e) {
-            return [
-                'error' => 'Unexpected answer or timeout from ' . $this->getHostname(),
-                'message' => $e->getMessage()
-            ];
+            return ['error' => 'Unexpected answer or timeout from ' . $this->getHostname(), 'message' => $e->getMessage()];
         }
     }
 
@@ -264,7 +285,7 @@ class Default_Model_Slave
         if (!isset($what['stats']) || !is_array($what['stats'])) {
             $what['stats'] = [
                 'cleans' => 'globalCleanCount',
-                'spams' =>  'globalSpamCount',
+                'spams' => 'globalSpamCount',
                 'dangerous' => 'globalVirusCount+globalNameCount+globalOtherCount'
             ];
         }
@@ -334,7 +355,7 @@ class Default_Model_Slave
         $what = [];
         $what['stats'] = [
             'cleans' => 'globalCleanCount',
-            'spams' =>  'globalRefusedCount+globalSpamCount',
+            'spams' => 'globalRefusedCount+globalSpamCount',
             'dangerous' => 'globalVirusCount+globalNameCount+globalOtherCount',
             'outgoing' => 'globalRelayedCount'
         ];
@@ -348,7 +369,7 @@ class Default_Model_Slave
         $what = [];
         $what['stats'] = [
             'accepted' => 'globalMsgCount',
-            'refused' =>  'globalRefusedCount',
+            'refused' => 'globalRefusedCount',
             'delayed' => 'globalDelayedCount',
             'relayed' => 'globalRelayedCount'
         ];
@@ -362,7 +383,7 @@ class Default_Model_Slave
         $what = [];
         $what['stats'] = [
             'cleans' => 'globalCleanCount',
-            'spams' =>  'globalSpamCount',
+            'spams' => 'globalSpamCount',
             'dangerous' => 'globalVirusCount+globalNameCount+globalOtherCount'
         ];
         $ret = $this->getTodaySNMPStats($what);
@@ -375,7 +396,7 @@ class Default_Model_Slave
         $what = [];
         $what['stats'] = [
             'rbl' => 'globalRefusedRBLCount+globalRefusedBackscatterCount',
-            'blacklists' =>  'globalRefusedHostCount+globalRefusedBadSenderCount',
+            'blacklists' => 'globalRefusedHostCount+globalRefusedBadSenderCount',
             'relay' => 'globalRefusedRelayCount',
             'bad signature' => 'globalRefusedBATVCount+globalRefusedBadSPFCount+globalRefusedBadRDNSCount',
             'callout' => 'globalRefusedCalloutCount',
@@ -391,7 +412,7 @@ class Default_Model_Slave
         $what = [];
         $what['stats'] = [
             'greylisted' => 'globalDelayedGreylistCount',
-            'rate limited' =>  'globalDelayedRatelimitCount'
+            'rate limited' => 'globalDelayedRatelimitCount'
         ];
         $ret = $this->getTodaySNMPStats($what);
         $stats = new Default_Model_ReportingStats();
@@ -426,11 +447,7 @@ class Default_Model_Slave
             }
             $data = $datares['data'];
         }
-        $fdata = [
-            'cleans' => (int)$data['cleans'],
-            'spams' => (int)$data['spams'],
-            'dangerous' => $data['viruses'] + $data['contents']
-        ];
+        $fdata = ['cleans' => (int)$data['cleans'], 'spams' => (int)$data['spams'], 'dangerous' => $data['viruses'] + $data['contents']];
         $stats = new Default_Model_ReportingStats();
         $stats->createPieChart(0, $fdata, ['render' => true, 'label_orientation' => 'vertical']);
     }

@@ -9,10 +9,10 @@
 ?>
 <h1><?php echo $this->t->_('Overall system\'s status') ?></h1>
 
+<span class="versionrow <?php echo $this->mcedition == 'Community Edition' ? 'un' : ''; ?>registered"><?php echo $this->t->_('MailCleaner') ?> : <?php echo $this->t->_($this->mcedition) ?></span>
 <div class="globalsubbloc">
     <table class="globalstatustableversion">
         <tr>
-            <td colspan="2" class="versionrow"><?php echo $this->t->_('MailCleaner') ?> : <?php echo $this->t->_($this->mcedition) ?></td>
         </tr>
         <tr>
             <td colspan="2">&nbsp;</td>
@@ -49,7 +49,15 @@
                 </td>
 
                 <td class="globalstatusvalue">
-                    <?php echo $this->t->_($statusname . ' status is'); ?> <strong><?php echo $this->t->_($status['message']) ?></strong>
+                    <?php
+                    echo $this->t->_($statusname . ' status is ');
+                    if ($status['status'] == 'ok') {
+                        echo '<strong>' . $this->t->_($status['message']);
+                    } else {
+                        echo '<strong class="status_' . $status['status'] . '" title="' . $this->t->_($status['value']) . '">' . $this->t->_($status['message']);
+                    }
+                    ?>
+                    </strong>
                 </td>
             </tr>
         <?php } ?>

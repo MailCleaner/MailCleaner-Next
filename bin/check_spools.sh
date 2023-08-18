@@ -35,18 +35,19 @@ VARDIR=$(grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 if [ "VARDIR" = "" ]; then
 	VARDIR=/var/mailcleaner
 fi
-EXIMBIN=/opt/exim4/bin/exim
+#EXIMBIN=/opt/exim4/bin/exim
+EXIMBIN=/usr/sbin/exim4
 
 echo -n "Stage 1:       "
-$EXIMBIN -C $SRCDIR/etc/exim/exim_stage1.conf -bpc
+$EXIMBIN -C $VARDIR/spool/tmp/exim/exim_stage1.conf -bpc
 
 echo -n "Stage 2:       "
 TYPE=$(grep -e '^MTA\s*=\s*eximms' $SRCDIR/etc/mailscanner/MailScanner.conf)
 if [ "$TYPE" = "" ]; then
-	$EXIMBIN -C $SRCDIR/etc/exim/exim_stage2.conf -bpc
+	$EXIMBIN -C $VARDIR/spool/tmp/exim/exim_stage2.conf -bpc
 else
 	ls $VARDIR/spool/exim_stage2/input/*.env 2>&1 | grep -v 'No such' | wc -l
 fi
 
 echo -n "Stage 4:       "
-$EXIMBIN -C $SRCDIR/etc/exim/exim_stage4.conf -bpc
+$EXIMBIN -C $VARDIR/spool/tmp/exim/exim_stage4.conf -bpc

@@ -17,21 +17,6 @@ class MCSoap_Status
         require_once('MailCleaner/Config.php');
 
         $config = new MailCleaner_Config();
-        $statusfile = $config->getOption('VARDIR') . '/run/mailcleaner.status';
-
-        if (!file_exists($statusfile)) {
-            return $ret;
-        }
-        $lines = file($statusfile);
-        if (!$lines) {
-            return $ret;
-        }
-
-        foreach ($lines as $line_num => $line) {
-            if (preg_match("/^$element\s*:\s*(.*)\s*$/", $line, $val)) {
-                return $val[1];
-            }
-        }
 
         if (preg_match('/^loadavg(05|10|15)/', $element, $matches)) {
             $cmdres = `/bin/cat /proc/loadavg`;
@@ -68,7 +53,7 @@ class MCSoap_Status
 
         if ($element == 'memoryusage') {
             $data = [];
-            $cmdres = `/usr/bin/free -o`;
+            $cmdres = `/usr/bin/free`;
             foreach (preg_split("/\n/", $cmdres) as $line) {
                 if (preg_match('/^Mem:\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/', $line, $matches)) {
                     $data['memtotal'] = $matches[1];

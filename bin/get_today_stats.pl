@@ -27,7 +27,6 @@ use warnings;
 use utf8;
 use Carp qw( confess );
 
-=header
 my ($SRCDIR, $VARDIR);
 BEGIN {
     if ($0 =~ m/(\S*)\/\S+.pl$/) {
@@ -39,7 +38,6 @@ BEGIN {
     $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
     $VARDIR = $conf->getOption('VARDIR') || '/var/mailcleaner';
 }
-=cut
 
 require StatsClient;
 

@@ -45,7 +45,7 @@ class Soaper
             );
         } catch (Exception $e) {
             //@todo  catch more exceptions
-            return "SOAPERRORCANNOTCONNECTSLAVE";
+            return "SOAPERRORCANNOTCONNECTSLAVE: $e";
         }
         return "OK";
     }
