@@ -28,7 +28,7 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
-#use Carp qw( confess );
+use Carp qw( confess );
 
 my ($SRCDIR, $VARDIR, $ISMASTER);
 BEGIN {
@@ -60,6 +60,7 @@ if ($ISMASTER !~ /^[Yy]$/) {
 }
 
 mkdir "${VARDIR}/spool/rrdtools" unless (-d "${VARDIR}/spool/rrdtools");
+mkdir "${VARDIR}/spool/newrrds" unless (-d "${VARDIR}/spool/newrrds");
 
 # get stats to plot
 my @stats = ('cpu', 'load', 'network', 'memory', 'disks', 'messages', 'spools');
@@ -85,7 +86,6 @@ foreach my $host (@hosts) {
         }
     }
 }
-
 
 ## new rrd collecting scheme
 my %collections;

@@ -38,6 +38,9 @@ sub new($hostname)
 {
     my $conf = ReadConfig::getInstance();
     my $spooldir = $conf->getOption('VARDIR')."/spool/rrdtools/".$hostname;
+    mkdir ($conf->getOption('VARDIR')."/www") unless (-d $conf->getOption('VARDIR')."/www");
+    mkdir ($conf->getOption('VARDIR')."/www/mrtg") unless (-d $conf->getOption('VARDIR')."/www/mrtg");
+    mkdir ($conf->getOption('VARDIR')."/www/stats") unless (-d $conf->getOption('VARDIR')."/www/stats");
     my $pictdir = $conf->getOption('VARDIR')."/www/mrtg/".$hostname;
     my %stats = ();
 
