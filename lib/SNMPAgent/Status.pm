@@ -24,6 +24,7 @@ use v5.36;
 use strict;
 use warnings;
 use utf8;
+use Carp qw( confess );
 
 use NetSNMP::agent;
 use NetSNMP::OID (':all');
@@ -153,8 +154,11 @@ sub getPatchLevel
     }
 
     if ($patch eq 'Unknown') {
-        my $dbh = DBI->connect("DBI:mysql:database=mc_config;mysql_socket=".$conf->getOption('VARDIR')."/run/mysql_slave/mysqld.sock",
-            "mailcleaner",$conf->getOption('MYMAILCLEANERPWD'), {RaiseError => 0, PrintError => 1} );
+
+        my $dbh = DBI->connect(
+            "DBI:MariaDB:database=mc_config;host=localhost;mariadb_socket=/var/mailcleaner/run/mysql_slave/mysqld.sock",
+            "mailcleaner", $conf->getOption('MYMAILCLEANERPWD'), {RaiseError => 0, PrintError => 0}
+        ) || confess("CANNOTCONNECTDB");
         my $sth = $dbh->prepare("SELECT id FROM update_patch ORDER BY id DESC LIMIT 1");
         if ($sth->execute()) {
             if (my $row = $sth->fetchrow_hashref()) {
