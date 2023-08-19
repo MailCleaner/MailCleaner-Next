@@ -79,7 +79,7 @@ sub get_master_config
     my %mconfig;
     my $dbh;
     $dbh = DBI->connect(
-        "DBI:mysql:database=mc_config;host=localhost;mysql_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
+        "DBI:MariaDB:database=mc_config;host=localhost;mariadb_socket=$config{VARDIR}/run/mysql_slave/mysqld.sock",
         "mailcleaner", "$config{MYMAILCLEANERPWD}", {RaiseError => 0, PrintError => 0}
     ) or die("CANNOTCONNECTDB", $dbh->errstr);
 
@@ -195,7 +195,7 @@ sub remove_and_save_MC_RBLs
 
     my %master_conf = get_master_config();
     my $master_dbh = DBI->connect(
-        "DBI:mysql:database=mc_config;host=$master_conf{'__MYMASTERHOST__'}:$master_conf{'__MYMASTERPORT__'}",
+        "DBI:MariaDB:database=mc_config;host=$master_conf{'__MYMASTERHOST__'}:$master_conf{'__MYMASTERPORT__'}",
         "mailcleaner", "$master_conf{'__MYMASTERPWD__'}", {RaiseError => 0, PrintError => 0}
     );
     if ( ! defined($master_dbh) ) {
@@ -252,7 +252,7 @@ sub handle_dns_ok
         # Database connexion
         my %master_conf = get_master_config();
         my $master_dbh = DBI->connect(
-            "DBI:mysql:database=mc_config;host=$master_conf{'__MYMASTERHOST__'}:$master_conf{'__MYMASTERPORT__'}",
+            "DBI:MariaDB:database=mc_config;host=$master_conf{'__MYMASTERHOST__'}:$master_conf{'__MYMASTERPORT__'}",
             "mailcleaner", "$master_conf{'__MYMASTERPWD__'}", {RaiseError => 0, PrintError => 0}
         );
         if ( ! defined($master_dbh) ) {

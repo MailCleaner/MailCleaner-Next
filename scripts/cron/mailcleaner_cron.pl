@@ -91,7 +91,7 @@ if ($rc != 0) {
 # but in future we may think of different times for daily/weekly or monthly jobs
 
 my $slave_dbh = DBI->connect(
-    "DBI:mysql:database=mc_config;mysql_socket=$config{'VARDIR'}/run/mysql_slave/mysqld.sock",
+    "DBI:MariaDB:database=mc_config;mariadb_socket=$config{'VARDIR'}/run/mysql_slave/mysqld.sock",
     "mailcleaner","$config{'MYMAILCLEANERPWD'}", {RaiseError => 0, PrintError => 1}
 );
 if (!$slave_dbh) {

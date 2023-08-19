@@ -31,7 +31,7 @@ my $days_to_keep = shift;
 
 if (! $days_to_keep) {
     my $config_dbh = DBI->connect(
-        "DBI:mysql:database=mc_config;host=localhost;mysql_socket=$config{'VARDIR'}/run/mysql_slave/mysqld.sock",
+        "DBI:MariaDB:database=mc_config;host=localhost;mariadb_socket=$config{'VARDIR'}/run/mysql_slave/mysqld.sock",
         'mailcleaner', $config{'MYMAILCLEANERPWD'}, {'RaiseError' => 0, PrintError => 0 }
     );
     if ($config_dbh) {

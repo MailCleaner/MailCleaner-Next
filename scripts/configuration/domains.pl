@@ -29,7 +29,7 @@ use Term::ReadKey;
 my %config = readConfig("/etc/mailcleaner.conf");
 
 my $master_dbh = DBI->connect(
-    "DBI:mysql:database=mc_config;mysql_socket=$config{'VARDIR'}/run/mysql_master/mysqld.sock",
+    "DBI:MariaDB:database=mc_config;mariadb_socket=$config{'VARDIR'}/run/mysql_master/mysqld.sock",
     "mailcleaner","$config{'MYMAILCLEANERPWD'}", {RaiseError => 0, PrintError => 0}
 );
 

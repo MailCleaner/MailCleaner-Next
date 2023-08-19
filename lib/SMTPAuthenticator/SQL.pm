@@ -36,7 +36,7 @@ our $VERSION = 1.0;
 sub create($server,$port,$params)
 {
     my $usessl = 0;
-    my $database_type = 'mysql';
+    my $database_type = 'MariaDB';
     my $database = '';
     my $dbtable = '',
     my $dbuser = '',
@@ -68,7 +68,7 @@ sub create($server,$port,$params)
         my $conf = ReadConfig::getInstance();
         my $socket = $conf->getOption('VARDIR')."/run/mysql_slave/mysqld.sock";
 
-        $dsn = "DBI:mysql:database=mc_config;host=localhost;mysql_socket=$socket";
+        $dsn = "DBI:MariaDB:database=mc_config;host=localhost;mariadb_socket=$socket";
         $dbuser = 'mailcleaner';
         $dbpass = $conf->getOption('MYMAILCLEANERPWD');
         $dbtable = 'mysql_auth';
