@@ -37,34 +37,25 @@ if ($0 =~ m/(\S*)\/\S+.pl$/) {
     unshift (@INC, $path);
 }
 
-my @params;
-while (1) {
-    my $param = shift;
-    if ( !defined $param ) {
-        last;
-    }
-    push @params, $param;
-}
-if ( @params < 2 ) {
+if ( scalar(@ARGV) < 2 ) {
     show_usage('not enough parameters');
 }
-my $daemon = shift @params;
-my $action = pop @params;
+my $daemon = shift @ARGV;
+my $action = pop @ARGV;
 
 if ( $action !~ /^(start|stop|restart|status)$/ ) {
     show_usage( 'bad action (' . $action . ')' );
 }
 
 my %options;
-while (@params) {
-    my $k = shift @params;
+while (my $k = shift(@ARGV)) {
     if ( $k !~ /^\-(\S+)/ ) {
         print
 "Warning: parameter ($k) is a value without a key. It will be discarded.\n";
         next;
     }
     my $key = $1;
-    my $v   = shift @params;
+    my $v   = shift @ARGV || '';
     if ( $v =~ /^-/ ) {
         print
 "Warning: parameter key ($v) comes before a value. It will be discarded.\n";
