@@ -186,7 +186,7 @@ sub statusHook($self)
 }
 
 ####### Main processing
-sub dataRead($self,$data)
+sub dataRead($self,$data,$server='')
 {
     my $data_ = $self->{data_};
 
@@ -234,7 +234,7 @@ sub dataRead($self,$data)
         $element = lc($element);
         my $value = $2;
 
-        my $valh = $self->accessFlatElement( $element, 1 );
+        my $valh = $self->accessFlatElement( $element );
         $self->addElementValue( $valh, $value );
         $self->addStat( 'queries_add', 1 );
         $self->setElementValue( $data_->{$element}, 'stable', 0 );
@@ -256,7 +256,7 @@ sub dataRead($self,$data)
         $element =~ s/'/\\'/;
         $element = lc($element);
 
-        my $valh = $self->accessFlatElement( $element, 0 );
+        my $valh = $self->accessFlatElement( $element );
         $self->addStat( 'queries_get', 1 );
         return $valh->{'value'};
     }

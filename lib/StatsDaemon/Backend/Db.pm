@@ -64,7 +64,7 @@ sub threadInit($self)
     $self->connectBackend();
 }
 
-sub accessFlatElement($self,$elemen)
+sub accessFlatElement($self,$element)
 {
     my $value = 0;
 
