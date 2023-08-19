@@ -227,15 +227,26 @@ sub initDaemon($self)
         if ($pid) {
             # parent
             my $fh;
-            if (open(my $fh, '>>', $self->{pidfile})) {
+            if (open(my $fh, '>', $self->{pidfile})) {
                 print $fh $pid;
                 close $fh;
             } else {
                 print STDERR "Unable to log PID to $self->{pidfile}: $!\n";
             }
             $self->doLog( 'Deamonized with PID ' . $pid, 'daemon' );
-            $result = "started.";
-            return output($result,@errors);
+            sleep(1);
+            foreach my $p ( @{ $t->table } ) {
+                my $cmndline = $p->{'cmndline'};
+                $cmndline =~ s/\s*$//g;
+                if ($cmndline eq $self->{'name'}) {
+                    if ($p->{'pid'} == $$) {
+                        next;
+                    } elsif ($p->{'pid'} == $pid) {
+                        return output("started.",@errors);
+                    }
+                }
+            }
+            return output('Failed to start.',@errors);
             exit();
         } elsif ($pid == -1) {
             # failed
@@ -243,10 +254,10 @@ sub initDaemon($self)
             push @errors, "Couldn't fork: $!";
             return output($result,@errors);
         } else {
-            # child
-            open STDIN, '<', '/dev/null';
-            open STDOUT, '>>', '/dev/null';
-            open STDERR, '>>', '/dev/null';
+            # Child now logs to JournalD
+            #open STDIN, '<', '/dev/null';
+            #open STDOUT, '>>', '/dev/null';
+            #open STDERR, '>>', '/dev/null';
             setsid();
             umask 0;
         }
@@ -533,7 +544,7 @@ sub getThreadID($self)
 }
 
 ##### Log management
-sub doLog($self,$message,$given_set,$priority='info')
+sub doLog($self,$message,$given_set=undef,$priority='info')
 {
     foreach my $set ( @{ $self->{logged_sets} } ) {
         if ( $set eq 'all' || !defined($given_set) || $set eq $given_set ) {
