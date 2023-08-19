@@ -1,3 +1,4 @@
+apt-utils
 apache2
 bind9
 cpanminus
@@ -43,5 +44,8 @@ libnet-dns-perl
 libnet-http-perl
 libnet-ip-perl
 libnet-ldap-perl
+libnet-snmp-perl
 libproc-processtable-perl
+librrdtool-oo-perl
 libstring-approx-perl
+rsyslog
