@@ -76,6 +76,9 @@ chown($uid, $gid,
     '/tmp/php_sessions.sqlite',
     '/var/mailcleaner/log/apache',
     '/var/mailcleaner/run/configurator',
+    '/var/mailcleaner/run/ssl.cache',
+    '/etc/apache2',
+    glob('/etc/apache2/*'),
     glob($VARDIR.'/log/apache/*'),
     glob($VARDIR.'/run/configurator/*'),
     glob($SRCDIR.'/etc/apache/sites/*'),
@@ -130,11 +133,8 @@ my %apache_conf;
 
 dump_apache_file("/etc/apache/apache2.conf_template", "/etc/apache/apache2.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
 
-if (-e "${SRCDIR}/etc/apache/sites/mailcleaner.conf.disabled") {
-    unlink("${SRCDIR}/etc/apache/sites/mailcleaner.conf");
-} else {
-    dump_apache_file("/etc/apache/sites/mailcleaner.conf_template", "/etc/apache/sites/mailcleaner.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
-}
+dump_apache_file("/etc/apache/sites/mailcleaner.conf_template", "/etc/apache/sites/mailcleaner.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
+dump_apache_file("/etc/apache/sites/soap.conf_template", "/etc/apache/sites/soap.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
 
 if (-e "${SRCDIR}/etc/apache/sites/configurator.conf.disabled") {
     unlink("${SRCDIR}/etc/apache/sites/configurator.conf");

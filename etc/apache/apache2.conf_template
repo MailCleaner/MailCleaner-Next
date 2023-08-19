@@ -160,20 +160,4 @@ RewriteEngine On
 RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
 RewriteRule .* - [F]
 
-Listen 5132
-<VirtualHost *:5132>
-    AssignUserId www-data mailcleaner
-
-    DocumentRoot "__SRCDIR__/www/soap/htdocs"
-    ErrorLog __VARDIR__/log/apache/error_soap.log
-    CustomLog __VARDIR__/log/apache/access_soap.log combined
-
-    KeepAlive Off
-    Alias /soap __SRCDIR__/www/soap/public
-
-    RewriteEngine On
-    RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
-    RewriteRule .* - [F]
-</VirtualHost>
-
 Include __SRCDIR__/etc/apache/sites/*.conf
