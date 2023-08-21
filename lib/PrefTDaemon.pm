@@ -112,7 +112,7 @@ sub connectBackend($self)
     return 0;
 }
 
-sub dataRead($self,$data)
+sub dataRead($self,$data,$server)
 {
     $self->doLog("Received datas: $data", 'prefdaemon', 'debug');
     my $ret = 'NOTHINGDONE';
