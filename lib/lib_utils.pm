@@ -40,6 +40,7 @@ our @EXPORT = qw(
     remove_lockfile
     open_as
     valid_rfc822_email
+    rmrf
 );
 
 # TODO: this is just `grep`...?
@@ -170,6 +171,15 @@ sub open_as($file, $method=">", $chmod=0664, $chown='mailcleaner:mailcleaner')
         return \$fh;
     } else {
         confess("Failed to open $path/$filename for $mlong: $!\n");
+    }
+}
+
+sub rmrf($path) {
+    if (-d $path) {
+        rmrf($_) foreach (glob($path."/*"));
+        rmdir($path);
+    } else {
+        unlink($path);
     }
 }
 

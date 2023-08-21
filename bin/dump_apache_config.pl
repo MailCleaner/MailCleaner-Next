@@ -49,7 +49,7 @@ BEGIN {
 }
 
 require DB;
-use lib_utils qw( open_as );
+use lib_utils qw( open_as rmrf );
 use File::Touch qw( touch );
 
 our $DEBUG = 1;
@@ -81,20 +81,21 @@ chown($uid, $gid,
     glob('/etc/apache2/*'),
     glob($VARDIR.'/log/apache/*'),
     glob($VARDIR.'/run/configurator/*'),
-    glob($SRCDIR.'/etc/apache/sites/*'),
+    glob($SRCDIR.'/etc/apache/sites-available/*'),
     glob($SRCDIR.'/www/guis/admin/public/tmp/*'),
 );
 
 # Fix symlinks if broken
 my %links = (
-    "/etc/apache/php.ini" => "$SRCDIR/etc/apache/php.ini",
+    "/etc/apache2" => "$SRCDIR/etc/apache",
+    "$SRCDIR/etc/apache/sites-enabled/configurator.conf" => "$SRCDIR/etc/apache/sites-available/configurator.conf",
 );
 foreach my $link (keys(%links)) {
     if (-e $link) {
         if (-l $link) {
             next if ($links{$link} eq readlink($link));
         }
-        unlink($link);
+        rmrf($link);
     }
     symlink($links{$link}, $link);
 }
@@ -133,13 +134,13 @@ my %apache_conf;
 
 dump_apache_file("/etc/apache/apache2.conf_template", "/etc/apache/apache2.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
 
-dump_apache_file("/etc/apache/sites/mailcleaner.conf_template", "/etc/apache/sites/mailcleaner.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
-dump_apache_file("/etc/apache/sites/soap.conf_template", "/etc/apache/sites/soap.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
+dump_apache_file("/etc/apache/sites-available/mailcleaner.conf_template", "/etc/apache/sites-available/mailcleaner.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
+dump_apache_file("/etc/apache/sites-available/soap.conf_template", "/etc/apache/sites-available/soap.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
 
-if (-e "${SRCDIR}/etc/apache/sites/configurator.conf.disabled") {
-    unlink("${SRCDIR}/etc/apache/sites/configurator.conf");
+if (-e "${SRCDIR}/etc/apache/configurator.conf.disabled") {
+    unlink("${SRCDIR}/etc/apache/sites-enabled/configurator.conf");
 } else {
-    dump_apache_file("/etc/apache/sites/configurator.conf_template", "/etc/apache/sites/configurator.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
+    dump_apache_file("/etc/apache/sites-available/configurator.conf_template", "/etc/apache/sites-available/configurator.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
 }
 
 dump_soap_wsdl() or fatal_error("CANNOTDUMPWSDLFILE", $lasterror);

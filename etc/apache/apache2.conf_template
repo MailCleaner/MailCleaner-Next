@@ -160,4 +160,4 @@ RewriteEngine On
 RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
 RewriteRule .* - [F]
 
-Include __SRCDIR__/etc/apache/sites/*.conf
+Include __SRCDIR__/etc/apache/sites-enabled/*.conf

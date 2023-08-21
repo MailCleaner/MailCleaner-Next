@@ -13,7 +13,7 @@ Listen __HTTPSPORT__
 <VirtualHost *:__HTTPPORT__>
     AssignUserId www-data mailcleaner
 
-#    <If "! -f '__SRCDIR__/etc/apache/sites/configurator.conf.disabled'">
+#    <If "! -f '__SRCDIR__/etc/apache/configurator.conf.disabled'">
 #    	Redirect / http://__SERVERNAME__:4242/
 #    </If>
     Redirect / https://__SERVERNAME__/
@@ -29,7 +29,7 @@ SSLCompression off
 <VirtualHost *:__HTTPSPORT__>
     AssignUserId www-data mailcleaner
 
-#    <If "! -f '__SRCDIR__/etc/apache/sites/configurator.conf.disabled'">
+#    <If "! -f '__SRCDIR__/etc/apache/configurator.conf.disabled'">
 #    	Redirect / http://__SERVERNAME__:4242/
 #    </If>
 
