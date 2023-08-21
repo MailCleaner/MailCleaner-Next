@@ -1,0 +1,10 @@
+aliasquery/*
+!aliasquery/default
+reports/*
+!reports/default
+summary/*
+!summary/default
+userpassword/*
+!userpassword/default
+warnhit/*
+!warnhit/default
