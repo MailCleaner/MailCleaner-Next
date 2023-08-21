@@ -2,7 +2,9 @@
 
 ## Warning:
 
-This repository is for a future release of MailCleaner. It is not working and definitely not ready for production. None of the changes made to this repository will necessarily be compatible with the 'current' version of MailCleaner. Please visit our Website or official GitHub page for the active version of MailCleaner.
+This repository is for a future release of MailCleaner. Mail delivery and proper Spam filtering are not guaranteed. If you would like to help [contribute](/CONTRIBUTING.md) to this future release, we are welcoming testers of the [Alpha release installation](/INSTALL.md).
+
+Please visit our Website or official GitHub page for the active version of MailCleaner.
 
 <a href="https://hosted.weblate.org/engage/mailcleaner/?utm_source=widget">
 <img src="https://hosted.weblate.org/widgets/mailcleaner/-/svg-badge.svg" alt="Translation status" />
@@ -37,12 +39,6 @@ To start your free trial, please go [here](https://www.mailcleaner.net/antispam/
 
 MailCleaner Next is currently in an open Alpha state. This requires an existing installation of Debian Bookworm (12) dedicated to be used by MailCleaner. You can follow the instructions in [the installation guide](/INSTALL.md).
 
-## Translations 
-
-If you want to contribute to a translation of MailCleaner, you can do so with [Weblate](https://www.mailcleaner.org/translations/).
-
-**PULL REQUESTS TRANSLATING THE INTERFACE WILL NOT BE ACCEPTED**
-
 ## MailCleaner Community
 
 To get some help from the community, you can check out [the forum](http://forum.mailcleaner.org/)
@@ -52,4 +48,3 @@ To get some help from the community, you can check out [the forum](http://forum.
 - [Facebook](https://www.facebook.com/mailcleaner)
 - [Twitter](https://twitter.com/mailcleaner)
 - [LinkedIn](https://www.linkedin.com/company/mailcleaner/)
-- [Google+](https://plus.google.com/115459290639872536123)
