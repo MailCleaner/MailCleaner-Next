@@ -1,0 +1,5 @@
+/70_mc_dkim_scores.cf
+/70_mc_spf_scores.cf
+/92_mc_dnsbl_disabled.cf
+/sa_plugins.pre
+/mailscanner.cf
