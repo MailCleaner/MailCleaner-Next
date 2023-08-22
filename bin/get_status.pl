@@ -95,7 +95,7 @@ my @order = (
     { 'id' => 'clamd', 'proc' => 'clamd.conf', 'human' => 'ClamAV Daemon' },
     { 'id' => 'clamspamd', 'proc' => 'clamspamd.conf', 'human' => 'ClamSpam Daemon' },
     { 'id' => 'newsld', 'proc' => 'newsld.sock', 'human' => 'Newsletter Daemon' },
-    { 'id' => 'spamhandler', 'proc' => 'SpamHandler', 'human' => 'SpamHandler Daemon' },
+    { 'id' => 'spamhandler', 'service' => 'spamhandler', 'human' => 'SpamHandler Daemon' },
     { 'id' => 'firewall', 'proc' => 'SpamHandler', 'human' => 'Firewall' }
 );
 
