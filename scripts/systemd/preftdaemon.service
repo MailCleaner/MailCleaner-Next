@@ -11,4 +11,4 @@ Type=forking
 ExecStart=/usr/mailcleaner/bin/daemon_starter.pl PrefTDaemon -d start
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=mailcleaner.target

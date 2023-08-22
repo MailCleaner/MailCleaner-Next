@@ -8,6 +8,3 @@ Group=mailcleaner
 PrivateTmp=false
 EnvironmentFile=-/etc/sysconfig/exim
 ExecStartPre=+/usr/mailcleaner/bin/dump_exim_config.pl %I
-
-[Install]
-WantedBy=multi-user.target
