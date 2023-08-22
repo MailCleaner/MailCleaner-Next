@@ -1,0 +1,7 @@
+/*.cf
+/!20_aux_tlds.cf
+/!70_mc_newsletters.cf
+/!92_mc_dnsbl_disabled.cf
+/!99_mc_wl_domains.cf
+/!W_Senders.cf
+/!local.cf
