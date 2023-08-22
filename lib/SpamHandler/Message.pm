@@ -938,7 +938,8 @@ sub quarantine($self)
             . $self->{env_rcpt} . "/"
             . $self->{exim_id};
 
-    if ( !open(my $MSGFILE, ">", $filename) ) {
+    my $MSGFILE;
+    if ( !open($MSGFILE, ">", $filename) ) {
         print " cannot open quarantine file $filename for writing";
         $self->{daemon}->doLog(
             "Cannot open quarantine file $filename for writing",
@@ -1029,10 +1030,8 @@ sub log($self,$dbname,$inmasterh)
     return $loggedonce;
 }
 
-sub decisiveModule($self)
+sub decisiveModule($self, $module, $line)
 {
-    my ($module, $line) = @_;
-
     $line =~ s/.*$module \((.*)/$1/;
     $line =~ s/decisive\).*/decisive/;
     my $position = my $decisive = $line;
