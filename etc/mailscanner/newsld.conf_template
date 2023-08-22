@@ -1,6 +1,6 @@
-socketpath=__VARDIR__/run/newsld.sock
+socketpath=__VARDIR__/run/spamd/newsld.sock
 max-children=__NBPROCESSES__
-pidfile=__VARDIR__/run/newsld.pid
+pidfile=__VARDIR__/run/spamd/newsld.pid
 syslog=__VARDIR__/log/mailscanner/newsld.log
 username=debian-spamd
 groupname=mailcleaner

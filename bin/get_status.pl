@@ -91,10 +91,10 @@ my @order = (
     { 'id' => 'greylistd', 'service' => 'greylistd', 'human' => 'Greylist Daemon' },
     { 'id' => 'cron', 'proc' => '/usr/sbin/cron', 'human' => 'Scheduler' },
     { 'id' => 'preftdaemon', 'service' => 'preftdaemon', 'human' => 'Preferences Daemon' },
-    { 'id' => 'spamd', 'proc' => 'spamd.sock', 'human' => 'SpamAssassin Daemon' },
+    { 'id' => 'spamd', 'service' => 'spamd@spamd', 'human' => 'SpamAssassin Daemon' },
     { 'id' => 'clamd', 'proc' => 'clamd.conf', 'human' => 'ClamAV Daemon' },
     { 'id' => 'clamspamd', 'proc' => 'clamspamd.conf', 'human' => 'ClamSpam Daemon' },
-    { 'id' => 'newsld', 'proc' => 'newsld.sock', 'human' => 'Newsletter Daemon' },
+    { 'id' => 'newsld', 'service' => 'spamd@newsld', 'human' => 'Newsletter Daemon' },
     { 'id' => 'spamhandler', 'service' => 'spamhandler', 'human' => 'SpamHandler Daemon' },
     { 'id' => 'firewall', 'proc' => 'SpamHandler', 'human' => 'Firewall' }
 );

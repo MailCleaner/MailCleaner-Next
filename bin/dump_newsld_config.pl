@@ -64,12 +64,15 @@ dump_saplugins_conf();
 
 # Set proper permissions
 mkdir $_ foreach (
+    $VARDIR.'/run/spamd',
     $VARDIR.'/spool/newsld',
 );
 chown($uid, $gid,
-    glob($VARDIR.'/spool/newsld'),
+    $VARDIR.'/run/spamd',
+    $VARDIR.'/spool/newsld',
     glob($VARDIR.'/spool/newsld/*'),
     glob($SRCDIR.'/share/newsld/*'),
+    glob($VARDIR.'/log/mailscanner/newsld*'),
 );
 
 # Configure sudoer permissions if they are not already
@@ -85,8 +88,8 @@ SPAMD       * = (ROOT) NOPASSWD: BIN
 }
 
 # Add to mailcleaner and mailscanner groups if not already a member
-`usermod -a -G mailcleaner www-data` unless (grep(/\bmailcleaner\b/, `groups www-data`));
-`usermod -a -G mailscanner www-data` unless (grep(/\bmailscanner\b/, `groups www-data`));
+`usermod -a -G mailcleaner debian-spamd` unless (grep(/\bmailcleaner\b/, `groups debian-spamd`));
+`usermod -a -G mailscanner debian-spamd` unless (grep(/\bmailscanner\b/, `groups debian-spamd`));
 
 # SystemD auth causes timeouts
 `sed -iP '/^session.*pam_systemd.so/d' /etc/pam.d/common-session`;

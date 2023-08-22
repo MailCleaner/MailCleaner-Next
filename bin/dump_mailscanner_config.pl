@@ -71,7 +71,7 @@ dump_filename_config() or fatal_error("NOFILENAMECONFIGURATIONFOUND", "no record
 dump_filetype_config() or fatal_error("NOFILETYPECONFIGURATIONFOUND", "no record found for filetypes");
 dump_dnsblacklists_conf();
 
-# Set proper permissions
+# Create necessary directories
 foreach (
     $VARDIR.'/spool/mailscanner',
     $VARDIR.'/spool/exim_stage4',
@@ -80,18 +80,20 @@ foreach (
     mkdir $_ unless (-d $_);
 }
 
+# Set proper permissions
 chown($uid, $gid,
     glob($VARDIR.'/spool/spamd'),
     glob($VARDIR.'/spool/spamd/*'),
     glob($SRCDIR.'/share/spamd/*'),
     glob($SRCDIR.'/share/spamd/plugins/*'),
     glob($SRCDIR.'/share/spamd/plugins/iXhash/*'),
+    $VARDIR.'/log/mailscanner',
+    glob($VARDIR.'/log/mailscanner/*'),
 );
 
 # Configure sudoer permissions if they are not already
 # Add to mailcleaner and mailscanner groups if not already a member
-`usermod -a -G mailcleaner www-data` unless (grep(/\bmailcleaner\b/, `groups www-data`));
-`usermod -a -G mailscanner www-data` unless (grep(/\bmailscanner\b/, `groups www-data`));
+`usermod -a -G mailcleaner mailscanner` unless (grep(/\bmailcleaner\b/, `groups mailscanner`));
 
 # SystemD auth causes timeouts
 `sed -iP '/^session.*pam_systemd.so/d' /etc/pam.d/common-session`;

@@ -67,18 +67,20 @@ symlink("${SRCDIR}/etc/mailscanner/spam.assassin.prefs.conf", "${SRCDIR}/share/s
 
 # Set proper permissions
 mkdir $_ foreach (
+    $VARDIR.'/run/spamd',
     $VARDIR.'/spool/spamd',
 );
 chown($uid, $gid,
     $SRCDIR.'/etc/mailscanner/spam.assassin.prefs.conf',
     $SRCDIR.'/share/spamd/mailscanner.cf',
-    $VARDIR.'/',
+    $VARDIR.'/run/spamd',
     $VARDIR.'/spool/spamd',
     glob($VARDIR.'/spool/spamd/*'),
     glob($SRCDIR.'/share/spamd/*'),
     glob($SRCDIR.'/share/spamd/plugins/*'),
     glob($SRCDIR.'/share/spamd/plugins/iXhash/*'),
     glob($SRCDIR.'/share/spamd/plugins/iXhash/*'),
+    glob($VARDIR.'/log/mailscanner/newsld*'),
 );
 
 # Configure sudoer permissions if they are not already
@@ -87,15 +89,15 @@ if (open(my $fh, '>', '/etc/sudoers.d/spamd')) {
     print $fh "
 User_Alias  SPAMD = debian-spamd
 Runas_Alias ROOT = root
-Cmnd_Alias  SPAMDBIN = /usr/local/bin/spamd
+Cmnd_Alias  SPAMDBIN = /usr/sbin/spamd
 
 SPAMD       * = (ROOT) NOPASSWD: SPAMDBIN
 ";
 }
 
 # Add to mailcleaner and mailscanner groups if not already a member
-`usermod -a -G mailcleaner www-data` unless (grep(/\bmailcleaner\b/, `groups www-data`));
-`usermod -a -G mailscanner www-data` unless (grep(/\bmailscanner\b/, `groups www-data`));
+`usermod -a -G mailcleaner debian-spamd` unless (grep(/\bmailcleaner\b/, `groups debian-spamd`));
+`usermod -a -G mailscanner debian-spamd` unless (grep(/\bmailscanner\b/, `groups debian-spamd`));
 
 # SystemD auth causes timeouts
 `sed -iP '/^session.*pam_systemd.so/d' /etc/pam.d/common-session`;
