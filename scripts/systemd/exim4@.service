@@ -1,5 +1,4 @@
 [Unit]
-Description=Exim Mail Transport Agent Stage %I
 After=network.target
 Conflicts=sendmail.service postfix.service
 
