@@ -53,28 +53,48 @@ require GetDNS;
 my $db = DB::connect('slave', 'mc_config');
 
 our $DEBUG = 1;
+our $uid = getpwnam('debian-spamd');
+our $gid = getgrnam('mailcleaner');
+
 my $lasterror = "";
 
 my $scanners = get_active_scanners();
 my @prefilters = get_prefilters();
 our %sys_conf = get_system_config() or fatal_error("NOSYSTEMCONFIGURATIONFOUND", "no record found for system configuration");
 our %ms_conf = get_ms_config() or fatal_error("NOMAILSCANNERCONFIGURATIONFOUND", "no record found for default mailscanner configuration");
-our %sa_conf = get_sa_config() or fatal_error("NOSPAMASSASSINCONFIGURATION", "no default configuration found for spamassassin");
 my @dnslists = get_dnslists() or fatal_error("NODNSLISTINFORMATIONS", "no dnslists information found");
 
 dump_ms_file() or fatal_error("CANNOTDUMPMAILSCANNERFILE", $lasterror);
-dump_sa_file() or fatal_error("CANNOTDUMPSPAMASSASSINFILE", $lasterror);
 dump_prefilter_files() or fatal_error("CANNOTDUMPPREFILTERS", $lasterror);
 dump_virus_file() or fatal_error("CANNOTDUMPVIRUSFILE", $lasterror);
 dump_filename_config() or fatal_error("NOFILENAMECONFIGURATIONFOUND", "no record found for filenames");
 dump_filetype_config() or fatal_error("NOFILETYPECONFIGURATIONFOUND", "no record found for filetypes");
-dump_Oscar_config();
-dump_FuzzyOcr_config();
-dump_saplugins_conf();
 dump_dnsblacklists_conf();
 
-unlink("${SRCDIR}/share/spamassassin/mailscanner.cf");
-symlink("${SRCDIR}/etc/mailscanner/spam.assassin.prefs.conf", "${SRCDIR}/share/spamassassin/mailscanner.cf");
+# Set proper permissions
+foreach (
+    $VARDIR.'/spool/mailscanner',
+    $VARDIR.'/spool/exim_stage4',
+    $VARDIR.'/spool/exim_stage4/spamstore',
+) {
+    mkdir $_ unless (-d $_);
+}
+
+chown($uid, $gid,
+    glob($VARDIR.'/spool/spamd'),
+    glob($VARDIR.'/spool/spamd/*'),
+    glob($SRCDIR.'/share/spamd/*'),
+    glob($SRCDIR.'/share/spamd/plugins/*'),
+    glob($SRCDIR.'/share/spamd/plugins/iXhash/*'),
+);
+
+# Configure sudoer permissions if they are not already
+# Add to mailcleaner and mailscanner groups if not already a member
+`usermod -a -G mailcleaner www-data` unless (grep(/\bmailcleaner\b/, `groups www-data`));
+`usermod -a -G mailscanner www-data` unless (grep(/\bmailscanner\b/, `groups www-data`));
+
+# SystemD auth causes timeouts
+`sed -iP '/^session.*pam_systemd.so/d' /etc/pam.d/common-session`;
 
 #############################
 sub get_system_config()
@@ -207,16 +227,9 @@ sub get_ms_config()
         $memsize = $1;
     }
     ## and calculate the number of processes that best fit
-    $config{'__NBPROCESSES__'} = 5;
-    if ($memsize > 0 && $memsize < 520000) { $config{'__NBPROCESSES__'} = 2; }
-    if ($memsize > 1000000) { $config{'__NBPROCESSES__'} = 3; }
-    if ($memsize > 1500000) { $config{'__NBPROCESSES__'} = 4; }
-    if ($memsize > 2000000) { $config{'__NBPROCESSES__'} = 5; }
-    if ($memsize > 3000000) { $config{'__NBPROCESSES__'} = 6; }
-    if ($memsize > 4000000) { $config{'__NBPROCESSES__'} = 10; }
-    if ($memsize > 5000000) { $config{'__NBPROCESSES__'} = 12; }
-    if ($memsize > 20000000) { $config{'__NBPROCESSES__'} = 20; }
-    $config{'__NBSAPROCESSES__'} = $config{'__NBPROCESSES__'} + 1;
+    $config{'__NBPROCESSES__'} = 2 + int($memsize/1000000);
+    $config{'__NBPROCESSES__'} = 20 if ($config{'__NBPROCESSES__'} > 20);
+    print $config{'__NBPROCESSES__'};
 
     ## generate prefilters option
     my $pfoption = "";
@@ -226,61 +239,6 @@ sub get_ms_config()
     }
     $config{'__PREFILTERS__'} = $pfoption;
 
-    return %config;
-}
-
-#############################
-sub get_sa_config()
-{
-    my %config;
-
-    my %row = $db->getHashRow(
-        "SELECT use_bayes, bayes_autolearn, ok_languages, ok_locales, use_rbls, rbls_timeout,
-        use_dcc, dcc_timeout, use_razor, razor_timeout, use_pyzor, pyzor_timeout, trusted_ips,
-        sa_rbls, spf_timeout, use_spf, dkim_timeout, use_dkim, dmarc_follow_quarantine_policy,
-        use_fuzzyocr, use_imageinfo, use_pdfinfo, use_botnet FROM antispam WHERE set_id=1"
-    );
-    return unless %row;
-
-    $config{'__USE_BAYES__'} = $row{'use_bayes'};
-    $config{'__BAYES_AUTOLEARN__'} = $row{'bayes_autolearn'};
-    $config{'__OK_LOCALES__'} = $row{'ok_locales'};
-    $config{'__OK_LANGUAGES__'} = $row{'ok_languages'};
-    $config{'__SKIP_RBLS__'} = 1;
-    $config{'__USE_RBLS__'} = $row{'use_rbls'};
-    $config{'__SKIP_RBLS__'} = 0 if ($row{'use_rbls'});
-    $config{'__RBLS_TIMEOUT__'} = $row{'rbls_timeout'};
-    $config{'__USE_DCC__'} = $row{'use_dcc'};
-    $config{'__DCC_TIMEOUT__'} = $row{'dcc_timeout'};
-    $config{'__USE_RAZOR__'} = $row{'use_razor'};
-    $config{'__RAZOR_TIMEOUT__'} = $row{'razor_timeout'};
-    $config{'__USE_PYZOR__'} = $row{'use_pyzor'};
-    $config{'__PYZOR_TIMEOUT__'} = $row{'pyzor_timeout'};
-    $config{'__TRUSTEDIPS__'} = "";
-    if ($row{'trusted_ips'} && $row{'trusted_ips'} ne 'no') {
-        $config{'__TRUSTEDIPS__'} = join(" ", expand_host_string($row{'trusted_ips'},('dumper'=>'mailscanner/trustedips')));
-    }
-    $config{'__SA_RBLS__'} = $row{'sa_rbls'};
-    $config{'__USE_SPF__'} = $row{'use_spf'};
-    $config{'__SPF_TIMEOUT__'} = $row{'spf_timeout'};
-    $config{'__USE_DKIM__'} = $row{'use_dkim'};
-    $config{'__DKIM_TIMEOUT__'} = $row{'dkim_timeout'};
-    $config{'__USE_FUZZYOCR__'} = $row{'use_fuzzyocr'};
-    $config{'__USE_IMAGEINFO__'} = $row{'use_imageinfo'};
-    $config{'__USE_PDFINFO__'} = $row{'use_pdfinfo'};
-    $config{'__USE_BOTNET__'} = $row{'use_botnet'};
-    $config{'__QUARANTINE_DMARC__'} = $row{'dmarc_follow_quarantine_policy'};
-    my $cmd = 'ifconfig  | grep \'inet addr:\'| grep -v \'127.0.0.1\' | cut -d: -f2 | awk \'{ print $1}\'';
-    my $ip = `$cmd`;
-    chomp($ip);
-    $config{'__SYSTEMIP__'} = "";
-    if (defined($ip) && ! $ip eq "") {
-        foreach my $sip (split(/\s/, $ip)) {
-            if ($sip =~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/) {
-                $config{'__SYSTEMIP__'} .= " ".$sip;
-            }
-        }
-    }
     return %config;
 }
 
@@ -319,77 +277,12 @@ sub dump_ms_file()
 }
 
 #############################
-sub dump_sa_file()
-{
-    my $template = ConfigTemplate::create(
-        'etc/mailscanner/spam.assassin.prefs.conf_template',
-        'etc/mailscanner/spam.assassin.prefs.conf'
-    );
-    $template->setReplacements(\%sa_conf);
-    $template->setCondition('QUARANTINE_DMARC', 0);
-    if ($sa_conf{'__QUARANTINE_DMARC__'}) {
-        $template->setCondition('QUARANTINE_DMARC', 1);
-    }
-
-    return 0 unless $template->dump();
-
-    $template = ConfigTemplate::create(
-        'etc/mailscanner/spamd.conf_template',
-        'etc/mailscanner/spamd.conf'
-    );
-    $template->setReplacements(\%sa_conf);
-    $template->setReplacements(\%ms_conf);
-    return 0 unless $template->dump();
-
-    $template = ConfigTemplate::create(
-        'etc/mailscanner/newsld.conf_template',
-        'etc/mailscanner/newsld.conf'
-    );
-    return 0 unless $template->dump();
-
-    $template = ConfigTemplate::create(
-        'share/spamassassin/92_mc_dnsbl_disabled.cf_template',
-        'share/spamassassin/92_mc_dnsbl_disabled.cf'
-    );
-    my @givenlist = split ' ', $sa_conf{'__SA_RBLS__'};
-    if (!$sa_conf{'__SKIP_RBLS__'}) {
-        foreach my $list (@givenlist) {
-            $template->setCondition($list, 1);
-        }
-    }
-    foreach my $list (@dnslists) {
-        my %l = %{$list};
-        my $lname = $l{'name'};
-        if ($sa_conf{'__SA_RBLS__'} =~ /\b$lname\b/ && !$sa_conf{'__SKIP_RBLS__'}) {
-            $template->setCondition($lname, 1);
-        }
-    }
-    return 0 unless $template->dump();
-
-
-    $template = ConfigTemplate::create(
-        'share/spamassassin/70_mc_spf_scores.cf_template',
-        'share/spamassassin/70_mc_spf_scores.cf'
-    );
-    $template->setCondition('__USE_SPF__', $sa_conf{'__USE_SPF__'});
-    return 0 unless $template->dump();
-
-    $template = ConfigTemplate::create(
-        'share/spamassassin/70_mc_dkim_scores.cf_template',
-        'share/spamassassin/70_mc_dkim_scores.cf'
-    );
-    $template->setCondition('__USE_DKIM__', $sa_conf{'__USE_DKIM__'});
-
-    return $template->dump();
-}
-
-#############################
 sub dump_prefilter_files()
 {
     my $basedir=$conf->getOption('SRCDIR')."/etc/mailscanner/prefilters";
 
     return 1 if ( ! -d $basedir) ;
-    opendir(QDIR, $basedir) or die "Couldn't read directory $basedir";
+    opendir(QDIR, $basedir) or confess "Couldn't read directory $basedir";
     while(my $entry = readdir(QDIR)) {
         if ($entry =~ /(\S+)(\.cf)_template$/) {
             my $templatefile = $basedir."/".$entry;
@@ -464,57 +357,6 @@ sub dump_virus_file()
         'etc/mailscanner/virus.scanners.conf'
     );
     return $template->dump();
-}
-
-#############################
-sub dump_Oscar_config()
-{
-    my $template = ConfigTemplate::create(
-        'etc/mailscanner/OscarOcr.cf_template',
-        'share/spamassassin/OscarOcr.cf'
-    );
-    return $template->dump();
-}
-
-#############################
-sub dump_FuzzyOcr_config()
-{
-    my $template = ConfigTemplate::create(
-        'etc/mailscanner/FuzzyOcr.cf_template',
-        'share/spamassassin/FuzzyOcr.cf'
-    );
-    return $template->dump();
-}
-
-#############################
-sub dump_saplugins_conf()
-{
-    my $template = ConfigTemplate::create(
-        'etc/mailscanner/sa_plugins.pre',
-        'share/spamassassin/sa_plugins.pre'
-    );
-    my %replace = (
-        '__IF_DCC__' => getModuleStatus('__USE_DCC__'),
-        '__IF_PYZOR__' => getModuleStatus('__USE_PYZOR__'),
-        '__IF_RAZOR__' => getModuleStatus('__USE_RAZOR__'),
-        '__IF_BAYES__' => getModuleStatus('__USE_BAYES__'),
-        '__IF_IMAGEINFO__' => getModuleStatus('__USE_IMAGEINFO__'),
-        '__IF_DKIM__' => getModuleStatus('__USE_DKIM__'),
-        '__IF_URIDNSBL__' => getModuleStatus('__USE_RBLS__'),
-        '__IF_SPF__' => getModuleStatus('__USE_SPF__'),
-        '__IF_FUZZYOCR__' => getModuleStatus('__USE_FUZZYOCR__'),
-        '__IF_OSCAR__' => getModuleStatus('__USE_FUZZYOCR__'),
-        '__IF_PDFINFO__' => getModuleStatus('__USE_PDFINFO__'),
-        '__IF_BOTNET__' => getModuleStatus('__USE_BOTNET__'),
-    );
-
-    $template->setReplacements(\%replace);
-    return $template->dump();
-}
-
-sub getModuleStatus($module)
-{
-    return ( (defined($sa_conf{$module}) && $sa_conf{$module} < 1) ? "#" : "" );
 }
 
 #############################
@@ -608,7 +450,7 @@ sub dump_dnsblacklists_conf()
 #############################
 sub fatal_error($msg, $full)
 {
-    print $msg . ( $DEBUG ? "\n Full information: $full \n" : "\n" );
+    confess $msg . ( $DEBUG ? "\n Full information: $full \n" : "\n" );
 }
 
 sub log_dns($str)
