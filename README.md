@@ -2,7 +2,7 @@
 
 ## Warning:
 
-This repository is for a future release of MailCleaner. Mail delivery and proper Spam filtering are not guaranteed. If you would like to help [contribute](/CONTRIBUTING.md) to this future release, we are welcoming testers of the [Alpha release installation](/INSTALL.md).
+This repository is for a future release of MailCleaner. Mail delivery and proper Spam filtering are not guaranteed. If you would like to help [contribute](/MailCleaner/MailCleaner-Next/wiki/Contributing-Guide) to this future release, we are welcoming testers of the [Alpha release installation](/MailCleaner/MailCleaner-Next/wiki/Installation-Guide).
 
 Please visit our Website or official GitHub page for the active version of MailCleaner.
 
@@ -37,7 +37,7 @@ To start your free trial, please go [here](https://www.mailcleaner.net/antispam/
 
 ## Getting started
 
-MailCleaner Next is currently in an open Alpha state. This requires an existing installation of Debian Bookworm (12) dedicated to be used by MailCleaner. You can follow the instructions in [the installation guide](/INSTALL.md).
+MailCleaner Next is currently in an open Alpha state. This requires an existing installation of Debian Bookworm (12) dedicated to be used by MailCleaner. You can follow the instructions in [the installation guide](/MailCleaner/MailCleaner-Next/wiki/Installation-Guide).
 
 ## MailCleaner Community
 
