@@ -2,7 +2,7 @@
 
 ## Warning:
 
-This repository is for a future release of MailCleaner. Mail delivery and proper Spam filtering are not guaranteed. If you would like to help [contribute](/MailCleaner/MailCleaner-Next/wiki/Contributing-Guide) to this future release, we are welcoming testers of the [Alpha release installation](/MailCleaner/MailCleaner-Next/wiki/Installation-Guide).
+This repository is for a future release of MailCleaner. Mail delivery and proper Spam filtering are not guaranteed. If you would like to help [contribute](https://github.com/MailCleaner/MailCleaner-Next/wiki/Contributing-Guide) to this future release, we are welcoming testers of the [Alpha release installation](https://github.com/MailCleaner/MailCleaner-Next/wiki/Installation-Guide).
 
 Please visit our Website or official GitHub page for the active version of MailCleaner.
 
