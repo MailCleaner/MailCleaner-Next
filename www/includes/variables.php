@@ -13,7 +13,7 @@
 
 // debug or not
 ini_set('error_reporting', E_ALL & ~E_STRICT & ~E_DEPRECATED);
-ini_set('display_errors', 0);
+ini_set('display_errors', 1);
 
 // do the logging stuff as soon as possible
 require_once('Pear/Log.php');
