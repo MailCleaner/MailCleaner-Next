@@ -288,6 +288,9 @@ class Template
 
         // replace tag with values
         foreach ($replace as $tag => $value) {
+            if (is_null($value)) {
+                $value = '';
+            }
             $line = str_replace($tag, $value, $line);
         }
 
