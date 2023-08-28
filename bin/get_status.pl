@@ -96,7 +96,7 @@ my @order = (
     { 'id' => 'clamspamd', 'proc' => 'clamspamd.conf', 'human' => 'ClamSpam Daemon' },
     { 'id' => 'newsld', 'service' => 'spamd@newsld', 'human' => 'Newsletter Daemon' },
     { 'id' => 'spamhandler', 'service' => 'spamhandler', 'human' => 'SpamHandler Daemon' },
-    { 'id' => 'firewall', 'proc' => 'SpamHandler', 'human' => 'Firewall' }
+    { 'id' => 'firewall', 'service' => 'ufw', 'human' => 'Firewall (ufw)' }
 );
 
 my $res;
