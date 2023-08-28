@@ -300,6 +300,7 @@ sub get_apache_config()
     $config{'tls_certificate_data'} = $ref->{'tls_certificate_data'};
     $config{'tls_certificate_key'} = $ref->{'tls_certificate_key'};
     $config{'tls_certificate_chain'} = $ref->{'tls_certificate_chain'};
+    $config{'__PHP_VERSION__'} = 8.2;
 
     $sth->finish();
     return %config;
