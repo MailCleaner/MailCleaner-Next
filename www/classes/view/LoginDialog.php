@@ -147,9 +147,9 @@ class LoginDialog
         $this->auth_->start();
 
         // ok, now check if user has given a good login/password pair !
-        $_POST['username'] = utf8_decode($this->username_);
+        $_POST['username'] = $this->username_;
         if (isset($_POST['password'])) {
-            $_POST['password'] = utf8_decode($_POST['password']);
+            $_POST['password'] = $_POST['password'];
         } else {
             $_POST['password'] = '';
         }

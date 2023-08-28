@@ -94,7 +94,7 @@ abstract class AddressFetcher
     protected function addAddress($address, $main)
     {
         $address = strtolower($address);
-        $address = utf8_decode($address);
+        $address = $address;
         $this->addresses_[$address] = $main;
     }
 

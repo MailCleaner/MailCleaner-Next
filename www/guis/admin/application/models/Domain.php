@@ -1204,8 +1204,8 @@ class Default_Model_Domain
         $domain_->load($this->getParam('name'));
 
         $username = $domain_->getFormatedLogin($username);
-        $_POST['username'] = utf8_decode($username);
-        $_POST['password'] = utf8_decode($password);
+        $_POST['username'] = $username;
+        $_POST['password'] = $password;
         $auth_ = AuthManager::getAuthenticator($domain_->getPref('auth_type'));
         $auth_->create($domain_);
 

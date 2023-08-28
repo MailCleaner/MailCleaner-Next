@@ -58,7 +58,6 @@ class ReasonSet
 
         $score_a = [];
         foreach ($res as $res_l) {
-            $res_l = utf8_decode($res_l);
             if (preg_match('/^(\S+)\:\:(\S+)\:\:(.*)$/', $res_l, $score_a)) {
                 if ($score_a[1] == "TOTAL_SCORE") {
                     $this->total_score_ = $score_a[2];

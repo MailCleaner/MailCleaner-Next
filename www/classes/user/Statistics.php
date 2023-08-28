@@ -113,12 +113,14 @@ class Statistics
                         'pcontent' => 0.0
                     ];
                 }
-                $this->stats_['msgs'] += $stats->msg;
-                $this->stats_['spams'] += $stats->spam;
-                $this->stats_['bytes'] += $stats->bytes;
-                $this->stats_['virus'] += $stats->virus;
-                $this->stats_['content'] += $stats->content;
-                $this->stats_['clean'] += $stats->clean;
+                if (is_array($stats)) {
+                    $this->stats_['msgs'] += $stats['msg'];
+                    $this->stats_['spams'] += $stats['spam'];
+                    $this->stats_['bytes'] += $stats['bytes'];
+                    $this->stats_['virus'] += $stats['virus'];
+                    $this->stats_['content'] += $stats['content'];
+                    $this->stats_['clean'] += $stats['clean'];
+                }
             }
         }
         // compute stats
