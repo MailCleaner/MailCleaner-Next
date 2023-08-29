@@ -94,7 +94,7 @@ abstract class AddressFetcher
     protected function addAddress($address, $main)
     {
         $address = strtolower($address);
-        $address = $address;
+        $address = iconv_mime_decode($address, ICONV_MIME_DECODE_CONTINUE_ON_ERROR, 'UTF-8');
         $this->addresses_[$address] = $main;
     }
 

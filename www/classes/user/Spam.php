@@ -232,6 +232,7 @@ class Spam
         if (is_object($soap_res) && is_array($soap_res->text)) {
             $body = $soap_res->text;
             foreach ($body as $line) {
+                $line = iconv_mime_decode($line, ICONV_MIME_DECODE_CONTINUE_ON_ERROR, 'UTF-8');
                 $tab = str_split($line, 72);
                 foreach ($tab as $l) {
                     $this->body_ .= $l;
@@ -413,6 +414,7 @@ class Spam
             foreach ($soap_res->text as $l) {
                 $tab = str_split($l, 72);
                 foreach ($tab as $line) {
+                    $line = iconv_mime_decode($line, ICONV_MIME_DECODE_CONTINUE_ON_ERROR, 'UTF-8');
                     $ret .= $line . "\n";
                 }
             }

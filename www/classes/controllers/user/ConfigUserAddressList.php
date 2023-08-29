@@ -17,9 +17,10 @@
 class ConfigUserAddressList
 {
 
-    private $form_;
     private $message_;
     private $add_;
+    private $addform_;
+    private $remform_;
 
     public function __construct()
     {
@@ -29,7 +30,6 @@ class ConfigUserAddressList
 
     public function processInput()
     {
-        global $lang_;
         global $user_;
 
         if ($user_->isStub()) {

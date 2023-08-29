@@ -93,8 +93,7 @@ class ReasonSet
      */
     public function getHtmlList($t)
     {
-        global $lang_;
-
+        $ret = '';
         $i = 0;
         foreach ($this->reasons_ as $reason => $values) {
             if ($i++ % 2) {

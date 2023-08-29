@@ -310,7 +310,7 @@ class PrefHandler
                         $query .= " WHERE " . $where_clause;
                     }
                 }
-                $this->last_query = $query;
+                $this->last_query_ = $query;
                 if (!$db_masterconf->doExecute($query)) {
                     return 'ERR_SAVEPREF_EXECUTEQUERY';
                 }

@@ -201,7 +201,7 @@ class Form
             $ret .= "disabled";
         }
         $ret .= " />";
-        $ret .= "<input type=\"hidden\" name=\"$fname\" id=\"${fname}_checkbox\" value=\"" . htmlentities($selected) . "\" />";
+        $ret .= "<input type=\"hidden\" name=\"$fname\" id=\"{$fname}_checkbox\" value=\"" . htmlentities($selected) . "\" />";
         return $ret;
     }
 

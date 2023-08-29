@@ -26,7 +26,7 @@ class User extends PrefHandler
      * Addresses belonging to the user. This is an array of email addresses (strings)
      * @var array
      */
-    private    $addresses_ = [];
+    private $addresses_ = [];
 
     /**
      * User information
@@ -40,7 +40,7 @@ class User extends PrefHandler
      * User preferences
      * @var array
      */
-    private    $pref_ = [
+    private $pref_ = [
         'language'   => 'en',
         'gui_displayed_spams' => '20',
         'gui_displayed_days' => '7',
@@ -558,7 +558,7 @@ class User extends PrefHandler
             $add->load($a);
             // save address that is not already registered
             if ($add->isRegistered()) {
-                $add->setUser(null);
+                $add->setUser(0);
                 $add->save();
             }
             unset($this->addresses_[$a]);
