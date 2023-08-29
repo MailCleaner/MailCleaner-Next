@@ -49,34 +49,49 @@ use lib_utils qw( open_as );
 
 my $lasterror;
 
-dump_file("clamav.conf");
-dump_file("freshclam.conf");
-dump_file("clamd.conf");
-dump_file("clamspamd.conf");
+my $uid = getpwnam( 'clamav' );
+my $gid = getgrnam( 'mailcleaner' );
 
-if (-e "${VARDIR}/spool/mailcleaner/clamav-unofficial-sigs") {
-    if (-e "${VARDIR}/spool/clamav/unofficial-sigs") {
-        my @src = glob("${VARDIR}/spool/clamav/unofficial-sigs/*");
-        foreach my $s (@src) {
-            my $d = $s;
-            $d =~ s/unofficial-sigs\///;
-             unless (-e $d) {
-                symlink($s, $d);
-            }
-        }
-    } else {
-        print "${VARDIR}/spool/clamav/unofficial-sigs does not exist. Run ${SRCDIR}/scripts/cron/update_antivirus.sh then try again\n";
-    }
-} else {
-    my @dest = glob("${VARDIR}/spool/clamav/*");
-    foreach my $d (@dest) {
-        my $s = $d;
-        $s =~ s/clamav/clamav\/unofficial-sigs/;
-        if (-l $d && $s eq readlink($d)) {
-            unlink($d);
-        }
-    }
+# Create necessary dirs/files if they don't exist
+foreach my $dir (
+    $VARDIR."/log/clamav/",
+    $VARDIR."/run/clamav/",
+    $VARDIR."/spool/clamav/",
+) {
+    mkdir($dir) unless (-d $dir);
+    chown($uid, $gid, $dir);
 }
+
+foreach my $file (
+    glob($VARDIR."/log/clamav/*"),
+    glob($VARDIR."/run/clamav/*"),
+    glob($VARDIR."/spool/clamav/*"),
+) {
+    chown($uid, $gid, $file);
+}
+
+# Configure sudoer permissions if they are not already
+mkdir '/etc/sudoers.d' unless (-d '/etc/sudoers.d');
+if (open(my $fh, '>', '/etc/sudoers.d/apache')) {
+    print $fh "
+User_Alias  CLAMAV = clamav
+Runas_Alias ROOT = root
+Cmnd_Alias  CLAMBIN = /usr/sbin/clamd
+
+CLAMAV      * = (ROOT) NOPASSWD: CLAMBIN
+";
+}
+
+# Add to mailcleaner and mailscanner groups if not already a member
+`usermod -a -G mailcleaner clamav` unless (grep(/\bmailcleaner\b/, `groups clamav`));
+`usermod -a -G mailscanner clamav` unless (grep(/\bmailscanner\b/, `groups clamav`));
+
+# SystemD auth causes timeouts
+`sed -iP '/^session.*pam_systemd.so/d' /etc/pam.d/common-session`;
+
+# Dump configuration
+dump_file("clamav.conf");
+dump_file("clamd.conf");
 
 #############################
 sub dump_file($file)

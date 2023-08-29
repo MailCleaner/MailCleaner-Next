@@ -92,7 +92,7 @@ my @order = (
     { 'id' => 'cron', 'proc' => '/usr/sbin/cron', 'human' => 'Scheduler' },
     { 'id' => 'preftdaemon', 'service' => 'preftdaemon', 'human' => 'Preferences Daemon' },
     { 'id' => 'spamd', 'service' => 'spamd@spamd', 'human' => 'SpamAssassin Daemon' },
-    { 'id' => 'clamd', 'proc' => 'clamd.conf', 'human' => 'ClamAV Daemon' },
+    { 'id' => 'clamd', 'service' => 'clamav-daemon', 'human' => 'ClamAV Daemon' },
     { 'id' => 'clamspamd', 'proc' => 'clamspamd.conf', 'human' => 'ClamSpam Daemon' },
     { 'id' => 'newsld', 'service' => 'spamd@newsld', 'human' => 'Newsletter Daemon' },
     { 'id' => 'spamhandler', 'service' => 'spamhandler', 'human' => 'SpamHandler Daemon' },
