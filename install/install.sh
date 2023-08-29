@@ -3,33 +3,124 @@
 if [ "$LOGFILE" = "" ]; then
 	LOGFILE=/tmp/mailcleaner.log
 fi
+
+# Create config file if it does not exist
 if [ "$CONFFILE" = "" ]; then
 	CONFFILE=/etc/mailcleaner.conf
 fi
-if [ "$VARDIR" = "" ]; then
-	VARDIR=$(grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
-	if [ "VARDIR" = "" ]; then
-		VARDIR=/var/mailcleaner
+
+if [ ! -f $CONFFILE ]; then
+	HOSTNAME=$(hostname)
+	cat >$CONFFILE <<EOF
+SRCDIR = /usr/mailcleaner
+VARDIR = /var/mailcleaner
+MCHOSTNAME = $HOSTNAME
+HOSTID = 1
+DEFAULTDOMAIN = 
+ISMASTER = Y
+MYMAILCLEANERPWD = MCPassw0rd
+HELONAME = $HOSTNAME
+MASTERIP = 127.0.0.1
+MASTERPWD = MCPassw0rd
+EOF
+fi
+
+# Setup missing vars
+if [ "$SRCDIR" = "" ]; then
+	SRCDIR=$(grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
+	if [ "$SRCDIR" = "" ]; then
+		SRCDIR="/usr/mailcleaner"
 	fi
 fi
+export SRCDIR
+if [ "$VARDIR" = "" ]; then
+	VARDIR=$(grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
+	if [ "$VARDIR" = "" ]; then
+		VARDIR="/var/mailcleaner"
+	fi
+fi
+export VARDIR
 
-export ACTUALUPDATE="2014120101"
-export MCVERSION="Enterprise Edition 2014"
+# Configure .bashrc
+if [[ -e /root/.bashrc ]]; then
+	if grep -Pq "source \${SRCDIR}/.bashrc" /root/.bashrc; then
+		echo "Updating /root/.bashrc"
+		mv /root/.bashrc /root/.bashrc_preexisting
+	fi
+fi
+if [[ ! -e /root/.bashrc ]]; then
+	cat >/root/.bashrc <<EOF
+SRCDIR=\$(grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
+if [[ -z \$SRCDIR ]]; then
+	SRCDIR="/usr/mailcleaner"
+fi
+export \$SRCDIR
 
+# If you had a .bashrc file before installing mailcleaner, it is now sourced here
+if [ -e /root/.bashrc_preexisting ]; then
+	source /root/.bashrc_preexisting
+fi
+
+# Import environment from MailCleaner
+source \${SRCDIR}/.bashrc
+EOF
+fi
+
+# Install `pyenv`
+if [[ ! -d $VARDIR ]]; then
+	mkdir $VARDIR
+fi
+cd $VARDIR
+if [[ ! -d .pyenv ]]; then
+	git clone --depth=1 https://github.com/pyenv/pyenv.git .pyenv 2>/dev/null >/dev/null
+	cd .pyenv
+else
+	cd .pyenv
+	git pull --rebase origin master 2>/dev/null >/dev/null
+fi
+export PYENV_ROOT="$VARDIR/.pyenv"
+if ! grep -q $PYENV_ROOT <<<$(echo $PATH); then
+	echo "Adding $PYENV_ROOT to $PATH, but this should be included in $SRCDIR/.bashrc."
+	export PATH="$PYENV_ROOT/bin:$PATH"
+fi
+eval "$(pyenv init --path)"
+pyenv install 3.11.2 -s
+pyenv local 3.11.2
+
+pip install mailcleaner-library --trusted-host repository.mailcleaner.net --index https://repository.mailcleaner.net/python/ --extra-index https://pypi.org/simple/
+
+IMPORT_MC_LIB=$(python -c "import mailcleaner")
+if [ $? -eq 1 ]; then
+	echo "Failed to install MailCleaner Library. Not imported."
+	exit
+fi
+
+exit
 ###############################################
-### creating mailcleaner, mysql and clamav user
+### creating users: mailcleaner, clamav, debian-spamd, mailscanner, mysql, www-data
 if [ "$(grep 'mailcleaner' /etc/passwd)" = "" ]; then
 	groupadd mailcleaner 2>&1 >>$LOGFILE
-	useradd -d $VARDIR -s /bin/bash -g mailcleaner mailcleaner 2>&1 >>$LOGFILE
-fi
-if [ "$(grep 'mysql' /etc/passwd)" = "" ]; then
-	groupadd mysql 2>&1 >>$LOGFILE
-	useradd -d /var/lib/mysql -s /bin/false -g mysql mysql 2>&1 >>$LOGFILE
+	useradd -d $VARDIR -s /bin/bash -c "MailCleaner User" -g mailcleaner mailcleaner 2>&1 >>$LOGFILE
 fi
 if [ "$(grep 'clamav' /etc/passwd)" = "" ]; then
 	groupadd clamav 2>&1 >>$LOGFILE
 	useradd -g clamav -s /bin/false -c "Clam AntiVirus" clamav 2>&1 >>$LOGFILE
 fi
+if [ "$(grep 'debian-spamd' /etc/passwd)" = "" ]; then
+	groupadd clamav 2>&1 >>$LOGFILE
+	useradd -g clamav -s /bin/false -c "SpamD" clamav 2>&1 >>$LOGFILE
+fi
+if [ "$(grep 'mysql' /etc/passwd)" = "" ]; then
+	groupadd mysql 2>&1 >>$LOGFILE
+	useradd -d /var/lib/mysql -s /bin/false -c "MariaDB User" -g mysql mysql 2>&1 >>$LOGFILE
+fi
+### Assigning groups: mailcleaner, clamav, debian-spamd, mailscanner, mysql, www-data
+../bin/dump_apache_config.pl:`usermod -a -G mailcleaner www-data` unless (grep(/\bmailcleaner\b/, `groups www-data`));
+../bin/dump_mailscanner_config.pl:`usermod -a -G mailcleaner mailscanner` unless (grep(/\bmailcleaner\b/, `groups mailscanner`));
+../bin/dump_newsld_config.pl:`usermod -a -G mailcleaner debian-spamd` unless (grep(/\bmailcleaner\b/, `groups debian-spamd`));
+../bin/dump_newsld_config.pl:`usermod -a -G mailscanner debian-spamd` unless (grep(/\bmailscanner\b/, `groups debian-spamd`));
+../bin/dump_spamd_config.pl:`usermod -a -G mailcleaner debian-spamd` unless (grep(/\bmailcleaner\b/, `groups debian-spamd`));
+../bin/dump_spamd_config.pl:`usermod -a -G mailscanner debian-spamd` unless (grep(/\bmailscanner\b/, `groups debian-spamd`));
 
 ###############################################
 ### check or create spool dirs
@@ -280,3 +371,4 @@ sleep 5
 $SRCDIR/etc/init.d/apache restart 2>&1 >>$LOGFILE
 $SRCDIR/bin/collect_rrd_stats.pl 2>&1 >>$LOGFILE
 echo "[done]"
+
