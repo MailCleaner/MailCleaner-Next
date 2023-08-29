@@ -5,8 +5,7 @@ export VARDIR=$(grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 if [[ -n $CLIENTID ]]; then
 	export $CLIENTID="${CLIENTID}-"
 fi
-export PROMPT_COMMAND='echo -ne "\033]0;root@$(hostname) - ${CLIENTID}${HOSTID} \007"'
-#export PS1='\h:\w$ '
+export PS1="${CLIENTID}${HOSTID} - \u@\h:\w# "
 umask 022
 
 export PYENV_ROOT="${VARDIR}/.pyenv"
