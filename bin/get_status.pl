@@ -93,7 +93,7 @@ my @order = (
     { 'id' => 'preftdaemon', 'service' => 'preftdaemon', 'human' => 'Preferences Daemon' },
     { 'id' => 'spamd', 'service' => 'spamd@spamd', 'human' => 'SpamAssassin Daemon' },
     { 'id' => 'clamd', 'service' => 'clamav-daemon', 'human' => 'ClamAV Daemon' },
-    { 'id' => 'clamspamd', 'proc' => 'clamspamd.conf', 'human' => 'ClamSpam Daemon' },
+    { 'id' => 'clamspamd', 'service' => 'clamspamd', 'human' => 'ClamSpam Daemon' },
     { 'id' => 'newsld', 'service' => 'spamd@newsld', 'human' => 'Newsletter Daemon' },
     { 'id' => 'spamhandler', 'service' => 'spamhandler', 'human' => 'SpamHandler Daemon' },
     { 'id' => 'firewall', 'service' => 'ufw', 'human' => 'Firewall (ufw)' }
