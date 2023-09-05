@@ -3,7 +3,7 @@ CLIENTID=$(grep 'CLIENTID' /etc/mailcleaner.conf | cut -d ' ' -f3)
 export HOSTID=$(grep 'HOSTID' /etc/mailcleaner.conf | cut -d ' ' -f3)
 export VARDIR=$(grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 if [[ -n $CLIENTID ]]; then
-	export $CLIENTID="${CLIENTID}-"
+	export CLIENTID="${CLIENTID}-"
 fi
 export PS1="${CLIENTID}${HOSTID} - \u@\h:\w# "
 umask 022
