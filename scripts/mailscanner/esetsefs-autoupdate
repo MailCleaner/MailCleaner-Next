@@ -1,0 +1,6 @@
+#!/usr/bin/perl
+
+use Sys::Syslog;
+
+# Remove the next line if you actually want to do something with this!
+exit 0;

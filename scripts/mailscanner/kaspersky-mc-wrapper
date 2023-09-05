@@ -1,0 +1,66 @@
+#!/bin/sh
+
+# kaspersky-wrapper --	start Kaspersky kavehost(server) and invoke klbscan
+# tool for use with	mailscanner
+# MailCleaner Copyright (C) 2015
+# Mentor Reka
+PackageDir=$1
+shift
+Scanner="bin/klbscan"
+
+# Options of klbscan.sh
+#     --disinfect - disinfect infected objects
+#     --delete - delete infected objects
+#     --scanner-type=[ inproc | service | outproc ] - type of scanner
+#     --task-threads=0..32 - amount of scanning threads
+#     --heuristic-level=[ shallow | medium | detail | maximum ] - set level of heuristic analysis
+#     --archives - scan archives and sfx archives
+#     --packed - scan packed executables
+#     --mail-bases - scan mail bases
+#     --mail-plain - scan plain emails
+#     --license-path=<path> - path to dir which contains license key
+#     --database-path=<path> - path to dir wich contains antivirus bases
+#     --comm-socket=<socket_name> - communication socket name (only in case of --scanner-type=service
+#     --scan-socket=<socket_name> - scanning socket name (only in case of --scanner-type=service
+#     --event-socket=<socket_name> - socket name for events transmission (only in case of --scanner-type=service
+#     --version - print product version and version of antivirus bases
+ScanOptions=" "
+#ScanOptions="$ScanOptions --disinfect"
+#ScanOptions="$ScanOptions --delete"
+#ScanOptions="$ScanOptions --scanner-type=inproc"		# INPROC: scanning KAV Engine gets loaded into the klbscan process memory.
+#ScanOptions="$ScanOptions --scanner-type=outproc"		# OUTPROC: separate standalone kavehost process and is fully accessible from the klbscan process memory
+ScanOptions="$ScanOptions --scanner-type=service"		# /!\ Doesn't work yet SERVICE: in a separate standalone kavehost process and is registered in the operating system as a UNIX service
+#ScanOptions="$ScanOptions --task-threads=10"
+ScanOptions="$ScanOptions --heuristic-level=maximum"
+ScanOptions="$ScanOptions --archives"
+ScanOptions="$ScanOptions --packed"
+ScanOptions="$ScanOptions --mail-bases"
+ScanOptions="$ScanOptions --mail-plain"
+ScanOptions="$ScanOptions --license-path=/opt/kaspersky/bin/"
+#ScanOptions="$ScanOptions --database-path=?"
+#ScanOptions="$ScanOptions --comm-socket=<socket_name>"
+#ScanOptions="$ScanOptions --scan-socket=<socket_name>"
+#ScanOptions="$ScanOptions --event-socket=<socket_name>"
+ScanOptions="$ScanOptions --version"
+
+if [ "x$1" = "x-IsItInstalled" ]; then
+  [ -x ${PackageDir}/$scanner ] && exit 0
+  exit 1
+fi
+
+KL_PLUGINS_PATH=/opt/kaspersky/ppl
+LD_LIBRARY_PATH=/opt/kaspersky/lib:$KL_PLUGINS_PATH:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH KL_PLUGINS_PATH
+
+# Some debug prints
+#  echo $PWD >> /tmp/kavargs.log
+#  echo $2 >> /tmp/kavargs.log
+# $PackageDir"/"$Scanner $ScanOptions $PWD | tee /tmp/kav.log
+# An example of output:
+# CLEAN   /var/mailcleaner/spool/tmp/mailscanner/incoming/29001/1Zo6zv-0007c1-Oj/nmsg-29001-2.txt 2015-10-19 11..
+# For keeping a mail..
+#    tar -cvzf /tmp/kaspertest-$$.tgz $PWD/
+
+$PackageDir"/"$Scanner $ScanOptions $PWD
+
+retval=$?
