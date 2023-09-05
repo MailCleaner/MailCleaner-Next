@@ -18,14 +18,16 @@ ERRORS=''
 
 echo "Bootstrapping MailCleaner installation"
 
-echo -n "Configuring console..."
-sed -i 's/FONTFACE=".*/FONTFACE="Terminus"/' /etc/default/console-setup
-sed -i 's/FONTSIZE=".*/FONTSIZE="24x12"/' /etc/default/console-setup
-systemctl restart console-setup
-if [ $! ]; then
-    echo -e "\b\b\b x "
-else
-    echo -e "\b\b\b * "
+if [[ -e "/etc/default/console-setup" ]]; then
+    echo -n "Configuring console..."
+    sed -i 's/FONTFACE=".*/FONTFACE="Terminus"/' /etc/default/console-setup
+    sed -i 's/FONTSIZE=".*/FONTSIZE="24x12"/' /etc/default/console-setup
+    systemctl restart console-setup
+    if [ $! ]; then
+        echo -e "\b\b\b x "
+    else
+        echo -e "\b\b\b * "
+    fi
 fi
 
 # Check for non-free
