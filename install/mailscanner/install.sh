@@ -7,14 +7,14 @@
 
 clear
 
-SRCDIR="/usr/mailcleaner/"
+SRCDIR="/usr/mailcleaner"
 if [[ -n $1 ]]; then
-    if [[ $1 == '-y' ]]; then
-        FLAG=1
-    else
-        echo "Invalid option '$1'"
-        exit
-    fi
+	if [[ $1 == '-y' ]]; then
+		FLAG=1
+	else
+		echo "Invalid option '$1'"
+		exit
+	fi
 fi
 
 # where i started the installation
@@ -22,56 +22,56 @@ THISCURRPMDIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 # Function used to Wait for n seconds
 timewait() {
-    DELAY=$1
-    sleep $DELAY
+	DELAY=$1
+	sleep $DELAY
 }
 
 # Check for root user
 if [ $(whoami) != "root" ]; then
-    clear
-    echo
-    echo "Installer must be run as root. Aborting. Use 'su -' to switch to the root environment."
-    echo
-    exit 192
+	clear
+	echo
+	echo "Installer must be run as root. Aborting. Use 'su -' to switch to the root environment."
+	echo
+	exit 192
 fi
 
 clear
 if [[ -z $FLAG ]]; then
-    echo
-    echo "WRANING: backup your custom MailScanner files before proceeding. They will be overwritten!"
-    echo
-    echo "These items should be installed before proceeding: perl, perldoc, curl, cpan"
-    echo
-    echo "Press <return> to continue or CTRL+C to quit."
-    echo
-    read foobar
+	echo
+	echo "WRANING: backup your custom MailScanner files before proceeding. They will be overwritten!"
+	echo
+	echo "These items should be installed before proceeding: perl, perldoc, curl, cpan"
+	echo
+	echo "Press <return> to continue or CTRL+C to quit."
+	echo
+	read foobar
 fi
 
 # ask if the user wants missing modules installed via CPAN
 clear
 if [[ -z $FLAG ]]; then
-    echo
-    echo "Do you want to install missing perl modules via CPAN?"
-    echo
-    echo "I can attempt to install Perl modules via CPAN. Missing modules will likely "
-    echo "cause MailScanner to malfunction."
-    echo
-    echo "WARNING: You must have perl, perldoc, curl, cpan installed for this to work!"
-    echo
-    echo "Recommended: Y (yes)"
-    echo
-    read -r -p "Install missing Perl modules via CPAN? [n/Y] : " response
+	echo
+	echo "Do you want to install missing perl modules via CPAN?"
+	echo
+	echo "I can attempt to install Perl modules via CPAN. Missing modules will likely "
+	echo "cause MailScanner to malfunction."
+	echo
+	echo "WARNING: You must have perl, perldoc, curl, cpan installed for this to work!"
+	echo
+	echo "Recommended: Y (yes)"
+	echo
+	read -r -p "Install missing Perl modules via CPAN? [n/Y] : " response
 fi
 
 if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]; then
-    # user wants to use CPAN for missing modules
-    CPANOPTION=1
+	# user wants to use CPAN for missing modules
+	CPANOPTION=1
 elif [ -z $response ]; then
-    # user wants to use CPAN for missing modules
-    CPANOPTION=1
+	# user wants to use CPAN for missing modules
+	CPANOPTION=1
 else
-    # user does not want to use CPAN
-    CPANOPTION=0
+	# user does not want to use CPAN
+	CPANOPTION=0
 fi
 
 # the array of perl modules needed
@@ -188,108 +188,108 @@ ARMOD+=('Mail::SpamAssassin')
 # 32 or 64 bit
 MACHINE_TYPE=$(uname -m)
 
+if [[ -n $FLAG ]]; then
+	echo "Installing MailScanner..."
+fi
 # logging starts here
 (
-    clear
-    echo
-    echo "Installation results are being logged to /tmp/mailscanner-install.log"
-    echo
-    timewait 1
+	clear
+	echo
+	echo "Installation results are being logged to /tmp/mailscanner-install.log"
+	echo
+	timewait 1
 
-    CURL=$(which curl)
+	CURL=$(which curl)
 
-    # check for curl
-    if [ ! -x "$CURL" ]; then
-        clear
-        echo
-        echo "The curl command cannot be found. Please install this to continue"
-        echo
-        exit 1
-    fi
+	# check for curl
+	if [ ! -x "$CURL" ]; then
+		clear
+		echo
+		echo "The curl command cannot be found. Please install this to continue"
+		echo
+		exit 1
+	fi
 
-    # create the cpan config if there isn't one and the user
-    # elected to use CPAN
-    if [ $CPANOPTION == 1 ]; then
-        # user elected to use CPAN option
-        if [ ! -f '/root/.cpan/CPAN/MyConfig.pm' ]; then
-            echo
-            echo "CPAN config missing. Creating one ..."
-            echo
-            mkdir -p /root/.cpan/CPAN
-            cd /root/.cpan/CPAN
-            "$CURL" -O https://s3.amazonaws.com/msv5/CPAN/MyConfig.pm
-            cd "$THISCURRPMDIR"
-            timewait 1
-        fi
-    fi
+	# create the cpan config if there isn't one and the user
+	# elected to use CPAN
+	if [ $CPANOPTION == 1 ]; then
+		# user elected to use CPAN option
+		if [ ! -f '/root/.cpan/CPAN/MyConfig.pm' ]; then
+			echo
+			echo "CPAN config missing. Creating one ..."
+			echo
+			mkdir -p /root/.cpan/CPAN
+			cd /root/.cpan/CPAN
+			"$CURL" -O https://s3.amazonaws.com/msv5/CPAN/MyConfig.pm
+			cd "$THISCURRPMDIR"
+			timewait 1
+		fi
+	fi
 
-    # fix the stupid line in /etc/freshclam.conf that disables freshclam
-    COUT='#Example'
-    if [ -f '/etc/freshclam.conf' ]; then
-        perl -pi -e 's/Example/'$COUT'/;' /etc/freshclam.conf
-    fi
+	# fix the stupid line in /etc/freshclam.conf that disables freshclam
+	COUT='#Example'
+	if [ -f '/etc/freshclam.conf' ]; then
+		perl -pi -e 's/Example/'$COUT'/;' /etc/freshclam.conf
+	fi
 
-    # now check for missing perl modules and install them via cpan
-    # if the user elected to do so
-    clear
-    echo
-    echo "Checking Perl Modules ... "
-    echo
-    timewait 2
+	# now check for missing perl modules and install them via cpan
+	# if the user elected to do so
+	clear
+	echo
+	echo "Checking Perl Modules ... "
+	echo
+	timewait 2
 
-    for i in "${ARMOD[@]}"; do
-        perldoc -l $i >/dev/null 2>&1
-        if [ $? != 0 ]; then
-            if [ $CPANOPTION == 1 ]; then
-                clear
-                echo "$i is missing. Installing via CPAN ..."
-                echo
-                perl -MCPAN -e "CPAN::Shell->force(qw(install $i ));"
-            else
-                echo "WARNING: $i is missing. You should fix this."
-            fi
-        else
-            echo "$i => OK"
-        fi
-    done
+	for i in "${ARMOD[@]}"; do
+		perldoc -l $i >/dev/null 2>&1
+		if [ $? != 0 ]; then
+			if [ $CPANOPTION == 1 ]; then
+				clear
+				echo "$i is missing. Installing via CPAN ..."
+				echo
+				perl -MCPAN -e "CPAN::Shell->force(qw(install $i ));"
+			else
+				echo "WARNING: $i is missing. You should fix this."
+			fi
+		else
+			echo "$i => OK"
+		fi
+	done
 
-    # make sure in starting directory
-    cd "$THISCURRPMDIR"
+	# make sure in starting directory
+	cd "$THISCURRPMDIR"
 
-    clear
-    echo
-    echo "Installing the MailScanner files ... "
+	clear
+	echo
+	echo "Installing the MailScanner files ... "
 
-    if [ -d '/etc/MailScanner' ] && [[ ! -s "$SRCDIR/etc/mailscanner" ]]; then
-        rm -rf /etc/MailScanner
-    fi
-    ln -s $SRCDIR/etc/mailscanner /etc/MailScanner
+	if [ -d '/etc/MailScanner' ]; then
+		rm -rf /etc/MailScanner
+	elif [[ ! -s "/etc/MailScanner" ]]; then
+		rm /etc/MailScanner
+	fi
+	ln -s $SRCDIR/etc/mailscanner /etc/MailScanner
 
-    $SRCDIR/bin/dump_mailscanner_config.pl 2>/dev/null >/dev/null
-    if [ -f "$SRCDIR/etc/mailscanner/MailScanner.conf" ]; then
-        cp -fr ./bin/* /usr/bin/
-        cp -fr ./lib/* /usr/share/perl5/
+	$SRCDIR/bin/dump_mailscanner_config.pl 2>/dev/null >/dev/null
+	if [ -f "$SRCDIR/etc/mailscanner/MailScanner.conf" ]; then
+		cp -fr ./bin/* /usr/bin/
+		cp -fr ./lib/* /usr/share/perl5/
 
-        if [ -d '/etc/MailScanner' ]; then
-            rm -rf /etc/MailScanner
-        fi
-        ln -s $SRCDIR/etc/mailscanner /etc/MailScanner
+		echo
+		echo '----------------------------------------------------------'
+		echo 'Installation Complete'
+		echo
+		echo 'See http://www.mailscanner.info for more information and  '
+		echo 'support via the MailScanner mailing list.'
+		echo
 
-        echo
-        echo '----------------------------------------------------------'
-        echo 'Installation Complete'
-        echo
-        echo 'See http://www.mailscanner.info for more information and  '
-        echo 'support via the MailScanner mailing list.'
-        echo
+	else
 
-    else
-
-        echo
-        echo '----------------------------------------------------------'
-        echo 'Installation Failed'
-        echo
-        echo 'I cannot find the MailScanner source files in my directory'
-    fi
+		echo
+		echo '----------------------------------------------------------'
+		echo 'Installation Failed'
+		echo
+		echo 'I cannot find the MailScanner source files in my directory'
+	fi
 
 ) 2>&1 | tee >/tmp/mailscanner-install.log

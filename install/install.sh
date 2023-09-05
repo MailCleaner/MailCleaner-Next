@@ -76,6 +76,7 @@ if [[ "$(which docker)" == "" ]]; then
     deb [arch=$ARCH] https://download.docker.com/linux/debian bookworm stable
 EOF
     fi
+    clear
     echo "Installing Docker..."
     apt-get update 2>&1 >/dev/null
     apt-get --assume-yes install docker-ce docker-ce-rootless-extras
@@ -87,6 +88,8 @@ if [[ ! -d $VARDIR ]]; then
 fi
 cd $VARDIR
 if [[ ! -d .pyenv ]]; then
+    clear
+    echo "Installing Pyenv..."
 	git clone --depth=1 https://github.com/pyenv/pyenv.git .pyenv 2>/dev/null >/dev/null
 	cd .pyenv
 else
@@ -102,7 +105,9 @@ eval "$(pyenv init --path)"
 pyenv install 3.11.2 -s
 pyenv local 3.11.2
 
-pip install mailcleaner-library --trusted-host repository.mailcleaner.net --index https://repository.mailcleaner.net/python/ --extra-index https://pypi.org/simple/
+clear
+echo "Installing MailCleaner Python Library..."
+pip install mailcleaner-library --trusted-host repository.mailcleaner.net --index https://repository.mailcleaner.net/python/ --extra-index https://pypi.org/simple/ 2>/dev/null >/dev/null
 
 IMPORT_MC_LIB=$(python -c "import mailcleaner")
 if [ $? -eq 1 ]; then
@@ -110,6 +115,10 @@ if [ $? -eq 1 ]; then
 	exit
 fi
 
+echo "Installing MailScanner..."
+$SRCDIR/install/mailscanner/install.sh -y
+
+# TODO: Continue here
 exit
 ###############################################
 ### creating users: mailcleaner, clamav, debian-spamd, mailscanner, mysql, www-data
@@ -338,15 +347,6 @@ if [ -f /etc/cron.daily/find ]; then
 	rm /etc/cron.daily/find
 fi
 
-## create starter status file
-cat >$VARDIR/run/mailcleaner.status <<EOF
-Disk : OK
-Swap: 0
-Raid: OK
-Spools: 0
-Load: 0.00
-EOF
-cp $VARDIR/run/mailcleaner.status $VARDIR/run/mailcleaner.127.0.0.1.status
 
 ## import default certificate
 CERTFILE=$SRCDIR/etc/apache/certs/default.pem
