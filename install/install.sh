@@ -66,6 +66,21 @@ source \${SRCDIR}/.bashrc
 EOF
 fi
 
+# Install `docker`
+if [[ "$(which docker)" == "" ]]; then
+    if [[ "$(find /etc/apt/sources.list.d -name docker*)" == "" ]] || [[ "$(grep -R download.docker.com /etc/apt/sources.list.d)" == "" ]]; then
+        echo "Adding Docker repository..."
+        curl -fsSL https://download.docker.com/linux/debian/gpg >/etc/apt/trusted.gpg.d/docker.asc
+        ARCH=$(uname -r | sed "s/^.*\-\([^\-]*\)/\1/");
+        cat >/etc/apt/sources.list.d/docker.list <<EOF
+    deb [arch=$ARCH] https://download.docker.com/linux/debian bookworm stable
+EOF
+    fi
+    echo "Installing Docker..."
+    apt-get update 2>&1 >/dev/null
+    apt-get --assume-yes install docker-ce docker-ce-rootless-extras
+fi
+
 # Install `pyenv`
 if [[ ! -d $VARDIR ]]; then
 	mkdir $VARDIR
