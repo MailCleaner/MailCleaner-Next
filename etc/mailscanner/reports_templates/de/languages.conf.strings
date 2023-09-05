@@ -1,0 +1,122 @@
+/* # */
+/* # This file contains all the word, phrases and sentences that are output */
+/* # to a user by MailScanner. They are all here so that you can translate */
+/* # them into your language. */
+/* # You should only edit what is on the right of each "=". */
+/* # If you set the "Language Strings" option in MailScanner.conf to be a */
+/* # ruleset (or even a function!) then you can output responses in different */
+/* # languages to different users and customers. */
+/* # */
+/* # Used in spam header */
+"Blacklisted" = "blacklisted";
+"Whitelisted" = "whitelisted";
+"NotSpam" = "not spam";
+"Spam" = "spam";
+/* # used when creating VirusWarning.txt */
+"TheEntireMessage" = "die gesamte Nachricht";
+"NotNamed" = "namenlos";
+/* # used for sysadmin notifications */
+"NoticeSubject" = "Warnung: Ein Virus wurde in der E-Mail entdeckt";
+"FullHeadersAre" = "Die vollständigen Kopfzeilen sind";
+/* # used for delivering truly disinfected attachments */
+"Disinfected" = "Desinfiziert";
+/* # used for virus report in unparsable messages */
+"CantAnalyze" = "Die Nachricht konnte nicht analysiert werden";
+/* # used for virus report in unparsable TNEF messages */
+"BadTNEF" = "Fehler beim Verarbeiten des Outlook Rich-Text-Anhangs";
+/* # used for creating sysadmin notifications */
+"NoticeHeading" = "In der folgenden E-Mail wurden Viren gefunden";
+/* # used when SpamAssassin has timed out too often */
+"SADisabled" = "Wurde nach %d Zeit&uuml;berschreitungen deaktiviert";
+/* # used when message size exceeds configured SpamAssassin max message size */
+"SATooLarge" = "Nachricht ist länger als die maximal für den Test konfiguriert";
+/* # used when trying to use SpamAssassin on a bad message with no headers */
+"SANoHeaders" = "Die Nachricht enthielt keine Kopfzeilen";
+/* # used when creating SpamAssassin results header */
+"score" = "Wertung";
+"required" = "benoetigt";
+"SATimedOut" = "Zeit&uuml;berschreitung";
+/* # used when creating reports for messages with dangerous content */
+"PartialMessage" = "Zerteilte Nachrichten k&ouml;nnen nicht auf Viren gepr&uuml;ft werden und werden gel&ouml;scht";
+"FoundIFrame" = "In einer HTML-Nachricht wurde eine gef&auml;hrliche IFrame-Anweisung gefunden";
+"FoundForm" = "Die Nachricht enthielt ein HTML-Formular";
+"FoundScript" = "Fand ein Skript in der HTML Nachricht";
+"FoundObject" = "In einer HTML-Nachricht wurde eine gef&auml;hrliche \"Object Codebase\"-/\"Data\"-Anweisung gefunden";
+"ExternalBody" = "Externe Nachrichteninhalte k&ouml;nnen nicht auf Viren gepr&uuml;ft werden und werden gel&ouml;scht";
+"EudoraLongMIME" = "Eudora \"long-MIME-boundary\"-Angriff";
+/* # used when detecting denial-of-service attacks */
+"DOSAttack" = "Versuchter Angriff (Denial of Service) in der Nachricht!";
+/* # used when detecting+blocking (un)encrypted messages */
+"encrypted" = "Die Nachricht war verschlüsselt";
+"unencrypted" = "Die Nachricht war unverschlüsselt";
+/* # used in spam reports */
+"SpamAssassin" = "SpamAssassin";
+/* # Used in virus reports */
+"Report" = "Achtung";
+/* # Used in virus reports */
+"TooBig" = "Nachricht ist zu groß";
+"AttachmentTooLarge" = "Anhang ist zu groß";
+"AttachmentTooSmall" = "Anhang ist zu klein";
+"TooManyAttachments" = "Zu viele Anhänge in der E-Mail";
+/* # Used in filename/filetype/content reports */
+"MailScanner" = "MailScanner";
+/* # Used in MCP checks */
+"MCP" = "MCP";
+"MCPSpamAssassin" = "MCP-Checker";
+"MCPnotspam" = "MCP-Clean";
+"MCPspam" = "MCP-Trapped";
+"MCPblacklisted" = "MCP-Blacklisted";
+"MCPwhitelisted" = "MCP-Whitelisted";
+"MCPsadisabled" = "MCP deaktiviert";
+"MCPsanoheaders" = "MCP Nachricht besass keine Kopfzeilen (header)";
+"MCPsatimedout" = "Zeitberschreitung durch MCP";
+/* # Used in passworded-archives checks */
+"UnreadableArchive" = "Die Nachricht enthielt eine komprimierte Datei (Archiv), die nicht ge&ouml;ffnet werden konnte";
+"PasswordedArchive" = "Die Nachricht enthielt eine durch ein Passwort gesch&uuml;tzte, komprimierte Datei (Archiv)";
+"NonPasswordedArchive" = "Message contained archive which was not password-protected";
+"ArchiveTooDeep" = "Nachricht enthielt zu viele ineinander verschachtelte Archiv-Dateien";
+/* # Used in Postmaster notices */
+"NoticeVirusInfected" = "Virus erkannt";
+"NoticeFilenameInfected" = "Unerlaubten Dateinamen gefunden";
+"NoticeOtherInfected" = "Sonstige gef&auml;hrliche Inhalte gefunden";
+"NoticePasswordProtected" = "Passwort-gesch&uuml;tzte Archiv-Datei gefunden";
+"NoticeNonPasswordProtected" = "Non-password-protected Archive Detected";
+/* # NoticePrefix = The following e-mails were found to have */
+"# NoticePrefix" = "The following e-mails were found to have";
+"NoticePrefix" = "Die folgenden E-Mails besassen";
+/* # Used in Phishing Fraud attack detections. The "End" must close all the */
+/* # HTML highlighting done in the "Start". */
+"PossibleFraudStart" = "<font color=\"red\"><b>MailScanner hat einen m&ouml;glichen T&auml;uschungsversuch durch";
+"PossibleFraudEnd" = "festgestellt.</b></font>";
+/* # NumericLinkWarning = <font color="red"><b>MailScanner Warnung: numerical links are often malicious:</b></font> */
+"# NumericLinkWarning" = "<font color=\"red\"><b>MailScanner Warnung: numerical links are often malicious:</b></font>";
+"NumericLinkWarning" = "<font color=\"red\"><b>MailScanner Warnung: nummerische Links sind oftmals  arglistig:</b></font>";
+/* # Used in "From:" header of many reports */
+"PostmasterName" = "MailScanner";
+/* # GSDisabled = Custom Spam Scanner disabled due to repeated failures */
+"# GSDisabled" = "Custom Spam Scanner disabled due to repeated failures";
+"GSDisabled" = "Custom Spam Scanner abgeschaltet wegen wiederholter Fehler";
+/* # Used in simple filename allow/deny rules (not filename.rules.conf) */
+"FoundBlockedFilename" = "Blockierten Dateinamen entdeckt";
+"FoundBlockedFiletype" = "Blockierten Dateitypen entdeckt";
+/* # Used in SpamAssassin cache results headers */
+"cached" = "zwischen gespeichert";
+"notcached" = "nicht zwischen gespeichert";
+/* # Genutzt beim Vergleich der Nachrichten-Größe mit Max Spam Check Size */
+"skippedastoobig" = "kein Spam (zu groß)";
+/* # Genutzt für Wasserzeichen im Spam-Bericht */
+"watermarked" = "Wasserzeichen angewendet";
+"NoticeSizeInfected" = "Anhang mit Überschreitung des Größen-Limits entdeckt";
+/* # Genutzt  zur Erkennung von Phishing-Angriffen. Der "End"-Teil muss alle HTML-Elemente schließen, */
+/* # die bei "Start" geöffnet werden. */
+"DefiniteFraudStart" = "<font color="red"><b>MailScanner hat einen eindeutigen Betrugs-Versuch auf der Webseite  ";
+"DefiniteFraudEnd" = "entdeckt. Der Webseite sollte <i>nicht</i> vertraut werden:</b></font>";
+/* # Genutzt bei Berichten über Angriffe auf HTML::Parser (genutzt zur Analyse von HTML-Nachrichten) */
+"HTMLParserAttack" = "MailScanner wurde durch einen Denial Of Service-Angriff attackiert, wodurch ein Teil der Nachricht gelöscht wurde. Bitte kontaktieren Sie Ihren Email-Anbieter für weitere Informationen und geben Sie in diesem Fall diesen kompletten Bericht an. ";
+/* # Genutzt bei Berichten über Nachrichten, die MailScanner zum Absturz brachten. */
+"KilledMailScanner" = "Nachricht versuchte MailScanner zum Absturz zu bringen";
+"HiddenLinkWarningStart" = "<font color="red"><b>MailScanner hat entdeckt, dass der Link zu ";
+"HiddenLinkWarningEnd" = "führt. Seien Sie vorsichtig und öffnen Sie den Link nur, wenn dieser vertrauenswürdig ist.</b></font>";
+/* # QP DOS Detection */
+"QPDOSFail" = "Suspected QP DOS, checks failed, could not read file"
+"QPDOSFound" = "Suspected QP DOS, found blank space line of length"

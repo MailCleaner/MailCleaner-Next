@@ -1,0 +1,15 @@
+This is a message from the MailScanner E-Mail Virus Protection Service
+----------------------------------------------------------------------
+The original e-mail message was too large, and has been removed.
+
+You should try compressing any or all of the attachments before sending
+message.
+
+The content filters found this:
+$report
+-- 
+Postmaster
+%org-long-name%
+%web-site%
+
+
