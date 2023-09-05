@@ -114,7 +114,7 @@ php
 php-bcmath
 php-bz2
 php-curl
-php-dba
+php8.2-dba
 php-dev
 php-gd
 php-gmp
