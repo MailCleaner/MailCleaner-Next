@@ -1,6 +1,9 @@
 [Unit]
 Description=MailScanner Anti-Virus daemon for MailCleaner
-After=clamav-daemon.service dccifd.service clamspamd.service spamd@newsld.service spamd@spamd.service mariadb@slave.service preftdaemon.service
+Requires=mariadb@slave.service preftdaemon.service
+BindsTo=clamav-daemon.socket clamspamd.service spamd@newsld.service spamd@spamd.service
+Before=exim4@2.service
+PartOf=mailcleaner.service
 
 [Service]
 User=mailscanner

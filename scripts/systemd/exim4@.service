@@ -1,6 +1,7 @@
 [Unit]
 After=network.target
 Conflicts=sendmail.service postfix.service
+PartOf=mailcleaner.service
 
 [Service]
 User=Debian-exim

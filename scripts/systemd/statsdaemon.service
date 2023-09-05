@@ -1,6 +1,8 @@
 [Unit]
 Description=Statistics daemon for MailCleaner
 After=mariadb@master.service
+Requires=mariadb@master.service
+PartOf=mailcleaner.service
 
 [Service]
 User=mailcleaner

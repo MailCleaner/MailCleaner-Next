@@ -1,6 +1,8 @@
 [Unit]
 Description=SpamHandler daemon for MailCleaner
 After=mariadb@master.service
+Requires=mariadb@master.service
+PartOf=mailscanner.service mailcleaner.service
 
 [Service]
 User=mailcleaner

@@ -3,6 +3,7 @@ Description=ClamAV Spam daemon for MailCleaner
 Documentation=man:clamd(8) man:clamd.conf(5) https://docs.clamav.net/
 After=clamav-daemon.socket
 ConditionPathExistsGlob=/var/mailcleaner/spool/clamspam/*db
+PartOf=mailscanner.service mailcleaner.service
 
 [Service]
 Type=forking
@@ -12,4 +13,4 @@ ExecReload=/bin/kill -USR2 $MAINPID
 TimeoutStartSec=420
 
 [Install]
-WantedBy=mailscanner.target
+WantedBy=mailcleaner.target
