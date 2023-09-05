@@ -34,8 +34,8 @@ Quarantine Permissions = 0664
 PID file = __VARDIR__/run/mailscanner.pid
 
 MTA = exim
-Sendmail = /opt/exim4/bin/exim -C __VARDIR__/spool/tmp/exim/exim_stage4.conf
-Sendmail2 = /opt/exim4/bin/exim -C __VARDIR__/spool/tmp/exim/exim_stage4.conf
+Sendmail = /usr/sbin/exim -C __VARDIR__/spool/tmp/exim/exim_stage4.conf
+Sendmail2 = /usr/sbin/exim -C __VARDIR__/spool/tmp/exim/exim_stage4.conf
 
 ####################################
 ## system optimisation
@@ -53,7 +53,7 @@ Deliver Unparsable TNEF = __DELIVERBADTNEF__
 TNEF Expander = /usr/bin/tnef
 TNEF Timeout = __TNEFTIMEOUT__
 
-File Command = /opt/file/bin/mc2-file
+File Command = /usr/bin/file
 File Timeout = __FILETIMEOUT__
 Gunzip Command = /bin/gunzip
 Gunzip Timeout = 50
@@ -419,7 +419,7 @@ Deliver In Background = yes
 Delivery Method = batch
 Split Exim Spool = no
 Lockfile Dir = __VARDIR__/spool/tmp/mailscanner/incoming/Locks
-Custom Functions Dir = /opt/MailScanner/lib/MailScanner/CustomFunctions
+Custom Functions Dir = __SRCDIR__/lib/MailScanner/CustomFunctions
 Lock Type =
 Minimum Code Status = supported
 Automatic Syntax Check = yes
