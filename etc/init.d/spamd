@@ -1,1 +1,5 @@
-/usr/mailcleaner/etc/init.d/systemctl
+#!/usr/bin/env bash
+
+# Proper service name is 'spamd@spamd'. This file provides compatibility for 'spamd'.
+SERVICE=$(echo $0 | sed -r 's/(.*)\/([^\/@]+)/\1\/spamd@\2/')
+$SERVICE $@
