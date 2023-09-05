@@ -84,7 +84,7 @@ my @order = (
     { 'id' => 'exim_stage2', 'service' => 'exim4@2', 'human' => 'Filtering MTA' },
     { 'id' => 'exim_stage4', 'service' => 'exim4@4', 'human' => 'Outgoing MTA' },
     { 'id' => 'apache', 'service' => 'apache2', 'human' => 'Web Server' },
-    { 'id' => 'mailscanner', 'proc' => 'MailScanner', 'human' => 'Filtering Engine' },
+    { 'id' => 'mailscanner', 'service' => 'mailscanner', 'human' => 'Filtering Engine' },
     { 'id' => 'mysql_master', 'service' => 'mariadb@master', 'human' => 'Master Database' },
     { 'id' => 'mysql_slave', 'service' => 'mariadb@slave', 'human' => 'Slave Database' },
     { 'id' => 'snmpd', 'service' => 'snmpd', 'human' => 'SNMP Daemon' },
