@@ -70,6 +70,7 @@ dump_virus_file() or fatal_error("CANNOTDUMPVIRUSFILE", $lasterror);
 dump_filename_config() or fatal_error("NOFILENAMECONFIGURATIONFOUND", "no record found for filenames");
 dump_filetype_config() or fatal_error("NOFILETYPECONFIGURATIONFOUND", "no record found for filetypes");
 dump_dnsblacklists_conf();
+dump_reports_files();
 
 # Create necessary directories
 foreach (
@@ -231,7 +232,6 @@ sub get_ms_config()
     ## and calculate the number of processes that best fit
     $config{'__NBPROCESSES__'} = 2 + int($memsize/1000000);
     $config{'__NBPROCESSES__'} = 20 if ($config{'__NBPROCESSES__'} > 20);
-    print $config{'__NBPROCESSES__'};
 
     ## generate prefilters option
     my $pfoption = "";
@@ -447,6 +447,27 @@ sub dump_dnsblacklists_conf()
     );
     $template->setReplacements(\%replace);
     return $template->dump();
+}
+
+sub dump_reports_files($lang=0) {
+    # This is a placeholder function. Currently there are no variables in the reports files, so
+    # they just need to be copies templates
+    my @langs;
+    if ($lang) {
+        @langs = ( $lang );
+    } else {
+        @langs = glob($SRCDIR.'/etc/mailscanner/reports_templates/*');
+    }
+    foreach my $lang (@langs) {
+        my $dst = $lang;
+        $dst =~ s/_templates//;
+        mkdir($dst) unless (-e $dst);
+        foreach my $src (glob($lang.'/*')) {
+            my $file = $src;
+            $file =~ s#.*/([^/]*)#$1#;
+            symlink($src, "${dst}/${file}") unless (-e "${dst}/${file}");
+        }
+    }
 }
 
 #############################
