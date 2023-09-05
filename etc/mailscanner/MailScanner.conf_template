@@ -12,7 +12,7 @@
 ###############################
 
 Max Children = __NBPROCESSES__
-Run As User = mailcleaner
+Run As User = mailscanner
 Run As Group = mailcleaner
 
 Additional Library Paths = __SRCDIR__/lib
