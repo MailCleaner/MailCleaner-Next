@@ -53,7 +53,7 @@ require GetDNS;
 my $db = DB::connect('slave', 'mc_config');
 
 our $DEBUG = 1;
-our $uid = getpwnam('debian-spamd');
+our $uid = getpwnam('mailscanner');
 our $gid = getgrnam('mailcleaner');
 
 my $lasterror = "";
@@ -87,18 +87,21 @@ foreach (
 
 # Set proper permissions
 chown($uid, $gid,
-    glob($VARDIR.'/spool/spamd'),
-    glob($VARDIR.'/spool/spamd/*'),
-    glob($SRCDIR.'/share/spamd/*'),
-    glob($SRCDIR.'/share/spamd/plugins/*'),
-    glob($SRCDIR.'/share/spamd/plugins/iXhash/*'),
+    $VARDIR.'/log/mailscanner',
+    glob($VARDIR.'/run/mailscanner*'),
     $VARDIR.'/log/mailscanner',
     glob($VARDIR.'/log/mailscanner/*'),
+    $VARDIR.'/spool/tmp/mailscanner',
+    $VARDIR.'/spool/tmp/mailscanner/incoming',
+    $VARDIR.'/spool/tmp/mailscanner/incoming/Locks',
+    glob($VARDIR.'/spool/tmp/mailscanner/incoming/*'),
 );
 
 # Configure sudoer permissions if they are not already
-# Add to mailcleaner and mailscanner groups if not already a member
+# Add to mailcleaner, Debian-spamd, and clamav groups if not already a member
 `usermod -a -G mailcleaner mailscanner` unless (grep(/\bmailcleaner\b/, `groups mailscanner`));
+`usermod -a -G Debian-spamd mailscanner` unless (grep(/\bmailcleaner\b/, `groups mailscanner`));
+`usermod -a -G clamav mailscanner` unless (grep(/\bmailcleaner\b/, `groups mailscanner`));
 
 # SystemD auth causes timeouts
 `sed -iP '/^session.*pam_systemd.so/d' /etc/pam.d/common-session`;
