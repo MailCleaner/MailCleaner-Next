@@ -135,6 +135,15 @@ foreach my $what ( @tmpwhats ) {
             opendir(DIR, $dir);
             while(my $entry = readdir(DIR)) {
                 next if $entry =~ /^\./;
+                next unless (-d "${dir}/${entry}");
+                my $skip = 0;
+                foreach (split(//,$entry)) {
+                    if (unpack("H*",$_) =~ /([01][0-9a-f]|7f)/) {
+                        $skip = 1;
+                        $last;
+                    }
+                }
+                next if $skip;
                 if ($what eq '*') {
                     next if $entry eq '_global';
                     next if (!defined($domains{$entry}));

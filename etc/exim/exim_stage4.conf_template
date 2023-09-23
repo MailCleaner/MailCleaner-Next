@@ -42,6 +42,7 @@ tls_privatekey = __VARDIR__/spool/tmp/exim/privatekey
 # TODO: pull updated GnuTLS ciphers from DB
 #tls_require_ciphers = __CIPHERS__
 tls_require_ciphers = SECURE256:+SECURE128:-VERS-TLS-ALL:+VERS-TLS1.2:-DHE-DSS:-CAMELLIA-128-CBC
+tls_verify_certificates = /etc/ssl/certs/ca-certificates.crt
 __ELSE__ USETLS
 tls_advertise_hosts =
 __FI__
@@ -348,6 +349,13 @@ remote_smtp:
   connect_timeout = 30s
 __IF__ USETLS
   hosts_require_tls = <; ${if match_domain{$domain}{+domains_require_tls_to} {*}{__HOSTS_REQUIRE_TLS__} }
+  tls_advertise_hosts = *
+  tls_certificate = __VARDIR__/spool/tmp/exim/certificate
+  tls_privatekey = __VARDIR__/spool/tmp/exim/privatekey
+# TODO: pull updated GnuTLS ciphers from DB
+#tls_require_ciphers = __CIPHERS__
+  tls_require_ciphers = SECURE256:+SECURE128:-VERS-TLS-ALL:+VERS-TLS1.2:-DHE-DSS:-CAMELLIA-128-CBC
+  tls_verify_certificates = /etc/ssl/certs/ca-certificates.crt
 __FI__
   hosts_try_chunking =
 __IF__ ALLOW_LONG

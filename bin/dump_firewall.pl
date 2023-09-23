@@ -46,6 +46,7 @@ use lib_utils qw(open_as);
 
 use Net::DNS;
 require GetDNS;
+our $dns = GetDNS->new();
 require DB;
 
 my $DEBUG = 1;
@@ -58,6 +59,7 @@ my %services = (
     'mail' => ['25', 'TCP'],
     'soap' => ['5132', 'TCP']
 );
+our %fail2ban_sets = ('mc-exim' => 'mail', 'mc-ssh' => 'ssh', 'mc-webauth' => 'web');
 our $iptables = "/usr/sbin/iptables";
 our $ip6tables = "/usr/sbin/ip6tables";
 our $ipset = "/usr/sbin/ipset";
@@ -266,6 +268,27 @@ sub do_start_script($rules)
         }
     }
 
+    my $existing = {};
+    my $sets_raw = `$ipset list`;
+    my $set = '';
+    my $members = 0;
+    foreach (split(/\n/, $sets_raw)) {
+        if ($_ =~ m/^Name: (.*)$/) {
+            $set = $1;
+            $existing->{$set} = {};
+            $members = 0;
+            next;
+        }
+        if (!$members) {
+            if ($_ =~ m/Members:/) {
+                $members = 1 if ($set =~ /BLACKLIST(IP|NET)/);
+            }
+            next;
+        }
+        next if ($_ =~ /^\s*$/);
+        $existing->{$set}->{$_} = 1;
+    }
+
     my @blacklist_files = ('/usr/mailcleaner/etc/firewall/blacklist.txt', '/usr/mailcleaner/etc/firewall/blacklist_custom.txt');
     my $blacklist = 0;
     my $blacklist_script = '/usr/mailcleaner/etc/firewall/blacklist';
@@ -277,19 +300,57 @@ sub do_start_script($rules)
             if ( $blacklist == 0 ) {
                 confess ("Failed to open $blacklist_script: $!\n") unless ($BLACKLIST = ${open_as($blacklist_script, ">>", 0755)});
                 print $BLACKLIST "#!/bin/sh\n\n";
-                print $BLACKLIST "$ipset -N blacklist nethash\n\n";
+                print $BLACKLIST "$ipset create BLACKLISTIP hash:ip\n" unless (defined($existing->{'BLACKLISTIP'}));
+                print $BLACKLIST "$ipset create BLACKLISTNET hash:net\n" unless (defined($existing->{'BLACKLISTNET'}));
+                foreach my $period (qw( bl 1d 1w 1m 1y )) {
+                    foreach my $f2b (keys(%fail2ban_sets)) {
+                        print $BLACKLIST "${ipset} create ${f2b}-${period} hash:ip\n" unless (defined($existing->{"${f2b}-${period}"}));
+                    }
+                }
                 $blacklist = 1;
             }
             confess ("Failed to open $blacklist_file: $!\n") unless ($BLACK_IP = ${open_as($blacklist_file, "<")});
             foreach my $IP (<$BLACK_IP>) {
                 chomp($IP);
-                print $BLACKLIST "$ipset add blacklist $IP\n"
+                if ($IP =~ m#/\d+$#) {
+                    if ($existing->{'BLACKISTNET'}->{$IP}) {
+                        delete($existing->{'BLACKLISTNET'}->{$IP});
+                    } else {
+                        print $BLACKLIST "${ipset} add BLACKLISTNET $IP\n";
+                    }
+                } else {
+                    if ($existing->{'BLACKISTIP'}->{$IP}) {
+                        delete($existing->{'BLACKLISTIP'}->{$IP});
+                    } else {
+                        print $BLACKLIST "${ipset} add BLACKLISTIP $IP\n";
+                    }
+                }
             }
             close $BLACK_IP;
         }
     }
+    my $remove = '';
+    foreach my $list (keys(%{$existing})) {
+        foreach my $IP (keys(%{$existing->{$list}})) {
+            $remove .= "${ipset} del ${list} ${IP}\n";
+        }
+    }
+    if ($remove ne '') {
+        print $BLACKLIST "\n# Cleaning up removed IPs:\n$remove\n";
+    }
     if ( $blacklist == 1 ) {
-        print $BLACKLIST "\n$iptables -I INPUT -m set --match-set blacklist src -j REJECT\n";
+        foreach my $period (qw( bl 1d 1w 1m 1y )) {
+            foreach my $f2b (keys(%fail2ban_sets)) {
+                my $ports = $services{$fail2ban_sets{$f2b}}[0];
+                $ports =~ s/[:|]/,/;
+                print $BLACKLIST "${iptables} -I INPUT -p ".lc($services{$fail2ban_sets{$f2b}}[1])." ".($ports =~ m/,/ ? '-m multiport --dports' : '--dport')." ${ports} -m set --match-set ${f2b}-${period} src -j REJECT\n";
+                print $BLACKLIST "${iptables} -I INPUT -p ".lc($services{$fail2ban_sets{$f2b}}[1])." ".($ports =~ m/,/ ? '-m multiport --dports' : '--dport')." ${ports} -m set --match-set ${f2b}-${period} src -j LOG\n";
+            }
+        }
+        foreach (qw( BLACKLISTIP BLACKLISTNET )) {
+            print $BLACKLIST "${iptables} -I INPUT -m set --match-set $_ st src -j REJECT\n";
+            print $BLACKLIST "${iptables} -I INPUT -m set --match-set $_ st src -j LOG\n\n";
+        }
         print $START "\n$blacklist_script\n";
     }
 
@@ -350,6 +411,5 @@ sub getSubnets()
 
 sub expand_host_string($string, %args)
 {
-    my $dns = GetDNS->new();
     return $dns->dumper($string,%args);
 }
