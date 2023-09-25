@@ -1,0 +1,15 @@
+[Unit]
+Description=SpamLogger daemon for MailCleaner
+After=mariadb@master.service
+Requires=mariadb@master.service
+PartOf=mailscanner.service mailcleaner.service
+
+[Service]
+User=mailscanner
+Group=mailcleaner
+PrivateTmp=false
+Type=forking
+ExecStart=/usr/mailcleaner/bin/spamloggerdaemon.pl /usr/mailcleaner/etc/spamlogger/spamlogger.conf
+
+[Install]
+WantedBy=mailcleaner.target

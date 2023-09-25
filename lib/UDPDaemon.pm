@@ -32,6 +32,8 @@ use Socket;
 use Symbol;
 use IO::Socket::INET;
 require Mail::SpamAssassin::Timeout;
+use lib_utils qw( open_as );
+use Carp qw ( confess );
 
 our $LOGGERLOG;
 
@@ -92,8 +94,8 @@ sub create($class,$daemonname,$conffilepath)
 sub logMessage($self,$message)
 {
     if ($self->{debug}) {
-        if ( !defined(fileno($LOGGERLOG))) {
-            open($LOGGERLOG, '>>', "/tmp/".$self->{logfile});
+        if ( !fileno($LOGGERLOG) ) {
+            confess "Failed to open log file: /tmp".$self->{logfile}.": $!\n" unless ( $LOGGERLOG = ${open_as("/tmp".$self->{logfile}, '>>', 0664, 'mailscanner:mailcleaner')} );
             $| = 1;
         }
         my $date=`date "+%Y-%m-%d %H:%M:%S"`;
@@ -107,7 +109,7 @@ sub logMessage($self,$message)
 ######
 sub startDaemon($self)
 {
-    open($LOGGERLOG, '>>', $self->{logfile});
+    confess "Failed to open log file: $self->{logfile}: $!\n" unless ( $LOGGERLOG = ${open_as($self->{logfile}, '>>', 0664, 'mailscanner:mailcleaner')} );
 
     my $pid = fork();
     if (!defined($pid)) {
