@@ -89,7 +89,7 @@ my @order = (
     { 'id' => 'mysql_slave', 'service' => 'mariadb@slave', 'human' => 'Slave Database' },
     { 'id' => 'snmpd', 'service' => 'snmpd', 'human' => 'SNMP Daemon' },
     { 'id' => 'greylistd', 'service' => 'greylistd', 'human' => 'Greylist Daemon' },
-    { 'id' => 'cron', 'proc' => '/usr/sbin/cron', 'human' => 'Scheduler' },
+    { 'id' => 'cron', 'service' => 'cron', 'human' => 'Scheduler' },
     { 'id' => 'preftdaemon', 'service' => 'preftdaemon', 'human' => 'Preferences Daemon' },
     { 'id' => 'spamd', 'service' => 'spamd@spamd', 'human' => 'SpamAssassin Daemon' },
     { 'id' => 'clamd', 'service' => 'clamav-daemon', 'human' => 'ClamAV Daemon' },
@@ -107,8 +107,6 @@ if ($mode_given =~ /s/) {
     my $restartdir = $VARDIR."/run/";
     my @output;
     my $i = 0;
-    $cmd = "ps -efww";
-    $res = `$cmd`;
     foreach my $service (@order) {
         my $key = $service->{'id'};
         last if ($key eq 'firewall');
@@ -121,8 +119,6 @@ if ($mode_given =~ /s/) {
             } else {
                 $st = 0;
             }
-        } elsif (defined($service->{'proc'})) {
-            $st = 1 if ($res =~ /$service->{'proc'}/);
         } else {
             $order[$i++]{'status'} = 255;
             next;
