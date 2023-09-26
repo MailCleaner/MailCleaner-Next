@@ -135,7 +135,9 @@ php-zip
 poppler-utils
 procps
 pwgen
+pyzor
 python-is-python3
+razor
 re2c
 rrdtool
 rsyslog

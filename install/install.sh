@@ -242,17 +242,6 @@ $SRCDIR/bin/dump_exim_config.pl 2>&1 >>$LOGFILE
 echo "[done]"
 
 ###############################################
-### building anti-spams
-
-echo -n " - Building Antispam tools...                          "
-./install_dcc.sh 2>&1 >>$LOGFILE
-./install_razor.sh 2>&1 >>$LOGFILE
-./install_pyzor.sh 2>&1 >>$LOGFILE
-./install_sa.sh 2>&1 >>$LOGFILE
-cd $SRCDIR/install 2>&1 >>$LOGFILE
-echo "[done]"
-
-###############################################
 ### building MailScanner
 
 cd $SRCDIR/install
