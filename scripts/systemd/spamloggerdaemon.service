@@ -1,8 +1,8 @@
 [Unit]
 Description=SpamLogger daemon for MailCleaner
-After=mariadb@master.service
-Requires=mariadb@master.service
-PartOf=mailscanner.service mailcleaner.service
+After=mariadb@slave.service
+Requires=mariadb@slave.service
+PartOf=mailscanner.service mailcleaner.target
 
 [Service]
 User=mailscanner

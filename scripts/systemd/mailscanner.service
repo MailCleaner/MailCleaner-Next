@@ -3,7 +3,7 @@ Description=MailScanner Anti-Virus daemon for MailCleaner
 Requires=mariadb@slave.service preftdaemon.service
 BindsTo=clamav-daemon.socket clamspamd.service spamd@newsld.service spamd@spamd.service
 Before=exim4@2.service
-PartOf=mailcleaner.service
+PartOf=mailcleaner.target
 
 [Service]
 User=mailscanner

@@ -1,8 +1,8 @@
 [Unit]
 Description=Preferences daemon for MailCleaner
-After=mariadb@master.service
-Requires=mariadb@master.service
-PartOf=mailcleaner.service
+After=mariadb@slave.service
+Requires=mariadb@slave.service
+PartOf=mailcleaner.target
 
 [Service]
 User=mailcleaner
@@ -11,6 +11,7 @@ PrivateTmp=false
 Type=forking
 #ExecStartPre=+/usr/mailcleaner/bin/dump_stats_daemon.pl %I
 ExecStart=/usr/mailcleaner/bin/daemon_starter.pl PrefTDaemon -d start
+KillSignal=SIGKILL
 
 [Install]
 WantedBy=mailcleaner.target

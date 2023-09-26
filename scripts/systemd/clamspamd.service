@@ -1,9 +1,10 @@
 [Unit]
 Description=ClamAV Spam daemon for MailCleaner
 Documentation=man:clamd(8) man:clamd.conf(5) https://docs.clamav.net/
-After=clamav-daemon.socket
+Requires=mariadb@slave.service
+After=clamav-daemon.socket mariadb@slave.service
 ConditionPathExistsGlob=/var/mailcleaner/spool/clamspam/*db
-PartOf=mailscanner.service mailcleaner.service
+PartOf=mailscanner.service mailcleaner.target
 
 [Service]
 Type=forking

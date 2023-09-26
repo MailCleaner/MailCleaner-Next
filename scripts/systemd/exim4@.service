@@ -1,7 +1,8 @@
 [Unit]
-After=network.target
+Requires=mariadb@slave.service
+After=network.target mariadb@slave.service
 Conflicts=sendmail.service postfix.service
-PartOf=mailcleaner.service
+PartOf=mailcleaner.target
 
 [Service]
 User=Debian-exim
