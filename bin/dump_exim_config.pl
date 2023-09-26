@@ -65,7 +65,7 @@ use File::Path qw (make_path);
 use File::Touch;
 use File::Copy;
 
-our $DEBUG = 1;
+our $DEBUG = 0;
 our $SPMC = "$VARDIR/spool/mailcleaner";
 our $db = DB::connect('slave', 'mc_config');
 our $include_debug = 0;
