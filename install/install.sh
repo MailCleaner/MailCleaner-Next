@@ -68,18 +68,18 @@ fi
 
 # Install `docker`
 if [[ "$(which docker)" == "" ]]; then
-    if [[ "$(find /etc/apt/sources.list.d -name docker*)" == "" ]] || [[ "$(grep -R download.docker.com /etc/apt/sources.list.d)" == "" ]]; then
-        echo "Adding Docker repository..."
-        curl -fsSL https://download.docker.com/linux/debian/gpg >/etc/apt/trusted.gpg.d/docker.asc
-        ARCH=$(uname -r | sed "s/^.*\-\([^\-]*\)/\1/");
-        cat >/etc/apt/sources.list.d/docker.list <<EOF
+	if [[ "$(find /etc/apt/sources.list.d -name docker*)" == "" ]] || [[ "$(grep -R download.docker.com /etc/apt/sources.list.d)" == "" ]]; then
+		echo "Adding Docker repository..."
+		curl -fsSL https://download.docker.com/linux/debian/gpg >/etc/apt/trusted.gpg.d/docker.asc
+		ARCH=$(uname -r | sed "s/^.*\-\([^\-]*\)/\1/")
+		cat >/etc/apt/sources.list.d/docker.list <<EOF
     deb [arch=$ARCH] https://download.docker.com/linux/debian bookworm stable
 EOF
-    fi
-    clear
-    echo "Installing Docker..."
-    apt-get update 2>&1 >/dev/null
-    apt-get --assume-yes install docker-ce docker-ce-rootless-extras
+	fi
+	clear
+	echo "Installing Docker..."
+	apt-get update 2>&1 >/dev/null
+	apt-get --assume-yes install docker-ce docker-ce-rootless-extras
 fi
 
 # Install `pyenv`
@@ -88,8 +88,8 @@ if [[ ! -d $VARDIR ]]; then
 fi
 cd $VARDIR
 if [[ ! -d .pyenv ]]; then
-    clear
-    echo "Installing Pyenv..."
+	clear
+	echo "Installing Pyenv..."
 	git clone --depth=1 https://github.com/pyenv/pyenv.git .pyenv 2>/dev/null >/dev/null
 	cd .pyenv
 else
@@ -118,33 +118,16 @@ fi
 echo "Installing MailScanner..."
 $SRCDIR/install/mailscanner/install.sh -y
 
-# TODO: Continue here
-exit
 ###############################################
-### creating users: mailcleaner, clamav, debian-spamd, mailscanner, mysql, www-data
+### creating users: mailcleaner, mailscanner (all others provided by packages)
 if [ "$(grep 'mailcleaner' /etc/passwd)" = "" ]; then
 	groupadd mailcleaner 2>&1 >>$LOGFILE
 	useradd -d $VARDIR -s /bin/bash -c "MailCleaner User" -g mailcleaner mailcleaner 2>&1 >>$LOGFILE
 fi
-if [ "$(grep 'clamav' /etc/passwd)" = "" ]; then
-	groupadd clamav 2>&1 >>$LOGFILE
-	useradd -g clamav -s /bin/false -c "Clam AntiVirus" clamav 2>&1 >>$LOGFILE
+if [ "$(grep 'mailscanner' /etc/passwd)" = "" ]; then
+	groupadd mailscanner 2>&1 >>$LOGFILE
+	useradd -d $VARDIR -s /bin/bash -c "MailScanner" -g mailscanner mailscanner 2>&1 >>$LOGFILE
 fi
-if [ "$(grep 'debian-spamd' /etc/passwd)" = "" ]; then
-	groupadd clamav 2>&1 >>$LOGFILE
-	useradd -g clamav -s /bin/false -c "SpamD" clamav 2>&1 >>$LOGFILE
-fi
-if [ "$(grep 'mysql' /etc/passwd)" = "" ]; then
-	groupadd mysql 2>&1 >>$LOGFILE
-	useradd -d /var/lib/mysql -s /bin/false -c "MariaDB User" -g mysql mysql 2>&1 >>$LOGFILE
-fi
-### Assigning groups: mailcleaner, clamav, debian-spamd, mailscanner, mysql, www-data
-../bin/dump_apache_config.pl:`usermod -a -G mailcleaner www-data` unless (grep(/\bmailcleaner\b/, `groups www-data`));
-../bin/dump_mailscanner_config.pl:`usermod -a -G mailcleaner mailscanner` unless (grep(/\bmailcleaner\b/, `groups mailscanner`));
-../bin/dump_newsld_config.pl:`usermod -a -G mailcleaner debian-spamd` unless (grep(/\bmailcleaner\b/, `groups debian-spamd`));
-../bin/dump_newsld_config.pl:`usermod -a -G mailscanner debian-spamd` unless (grep(/\bmailscanner\b/, `groups debian-spamd`));
-../bin/dump_spamd_config.pl:`usermod -a -G mailcleaner debian-spamd` unless (grep(/\bmailcleaner\b/, `groups debian-spamd`));
-../bin/dump_spamd_config.pl:`usermod -a -G mailscanner debian-spamd` unless (grep(/\bmailscanner\b/, `groups debian-spamd`));
 
 ###############################################
 ### check or create spool dirs
@@ -336,7 +319,6 @@ if [ -f /etc/cron.daily/find ]; then
 	rm /etc/cron.daily/find
 fi
 
-
 ## import default certificate
 CERTFILE=$SRCDIR/etc/apache/certs/default.pem
 KF=$(grep -n 'BEGIN RSA PRIVATE KEY' $CERTFILE | cut -d':' -f1)
@@ -375,4 +357,3 @@ sleep 5
 $SRCDIR/etc/init.d/apache restart 2>&1 >>$LOGFILE
 $SRCDIR/bin/collect_rrd_stats.pl 2>&1 >>$LOGFILE
 echo "[done]"
-

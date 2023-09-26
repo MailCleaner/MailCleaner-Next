@@ -69,6 +69,8 @@ symlink("${SRCDIR}/etc/mailscanner/spam.assassin.prefs.conf", "${SRCDIR}/share/s
 mkdir $_ foreach (
     $VARDIR.'/run/spamd',
     $VARDIR.'/spool/spamd',
+    $VARDIR.'/spool/dcc/',
+    $VARDIR.'/run/dcc/',
 );
 chown($uid, $gid,
     $SRCDIR.'/etc/mailscanner/spam.assassin.prefs.conf',
@@ -94,6 +96,10 @@ chown($dccuid, $dccgid,
     glob('/usr/lib/dcc/*'),
     '/var/lib/dcc',
     glob('/var/lib/dcc/*'),
+    $VARDIR.'/spool/dcc/',
+    glob($VARDIR.'/spool/dcc/*'),
+    $VARDIR.'/run/dcc/',
+    glob($VARDIR.'/run/dcc/*'),
 );
 
 # Configure sudoer permissions if they are not already

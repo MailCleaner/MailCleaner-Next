@@ -74,9 +74,14 @@ dump_reports_files();
 
 # Create necessary directories
 foreach (
+    $VARDIR.'/spam',
     $VARDIR.'/spool/mailscanner',
+    $VARDIR.'/spool/spamassassin',
     $VARDIR.'/spool/exim_stage4',
     $VARDIR.'/spool/exim_stage4/spamstore',
+    $VARDIR.'/spool/mailscanner',
+    $VARDIR.'/spool/mailscanner/incoming',
+    $VARDIR.'/spool/mailscanner/incoming/Locks',
     $VARDIR.'/spool/tmp',
     $VARDIR.'/spool/tmp/mailscanner',
     $VARDIR.'/spool/tmp/mailscanner/incoming',
@@ -87,11 +92,17 @@ foreach (
 
 # Set proper permissions
 chown($uid, $gid,
+    $VARDIR.'/spam',
+    $VARDIR.'/spool/spamassassin',
     $VARDIR.'/log/mailscanner',
     glob($VARDIR.'/run/mailscanner*'),
     $VARDIR.'/log/mailscanner',
     glob($VARDIR.'/log/mailscanner/*'),
     $VARDIR.'/log/mailcleaner/SpamLogger.log',
+    $VARDIR.'/spool/mailscanner',
+    $VARDIR.'/spool/mailscanner/incoming',
+    $VARDIR.'/spool/mailscanner/incoming/Locks',
+    glob($VARDIR.'/spool/mailscanner/incoming/*'),
     $VARDIR.'/spool/tmp/mailscanner',
     $VARDIR.'/spool/tmp/mailscanner/incoming',
     $VARDIR.'/spool/tmp/mailscanner/incoming/Locks',

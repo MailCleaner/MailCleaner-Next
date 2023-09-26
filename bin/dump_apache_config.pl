@@ -68,6 +68,9 @@ unlink($_) foreach (glob("$VARDIR/www/stats/*.png"));
 # Create necessary dirs/files if they don't exist
 touch('/tmp/php_sessions.sqlite') || print("Failed to create /tmp/php_sessions.sqlite\n");
 mkdir('/var/mailcleaner/log/apache') unless (-d '/var/mailcleaner/log/apache');
+mkdir('/var/mailcleaner/www') unless (-d '/var/mailcleaner/www');
+mkdir('/var/mailcleaner/www/mrtg') unless (-d '/var/mailcleaner/www/mrtg');
+mkdir('/var/mailcleaner/www/stats') unless (-d '/var/mailcleaner/www/stats');
 mkdir('/var/mailcleaner/run/configurator') unless (-d '/var/mailcleaner/run/configurator');
 
 # Set proper permissions
@@ -75,6 +78,10 @@ chown($uid, $gid,
     '/tmp/php_sessions/',
     '/tmp/php_sessions.sqlite',
     '/var/mailcleaner/log/apache',
+    '/var/mailcleaner/www/',
+    glob('/var/mailcleaner/www/*'),
+    glob('/var/mailcleaner/www/mrtg/*'),
+    glob('/var/mailcleaner/www/stats/*'),
     '/var/mailcleaner/run/configurator',
     '/var/mailcleaner/run/ssl.cache',
     '/etc/apache2',

@@ -1185,6 +1185,7 @@ EXIMUSER    * = (ROOT) NOPASSWD: EXIMBIN
         "${VARDIR}/log/exim_stage${stage}",
 		"${VARDIR}/spool/tmp/exim_stage${stage}",
 		"${VARDIR}/spool/exim_stage${stage}",
+		"${VARDIR}/spool/exim_stage${stage}/input",
 		glob("${VARDIR}/spool/tmp/exim_stage${stage}/*"),
 		glob("${VARDIR}/spool/exim_stage${stage}/*"),
     );
@@ -1194,6 +1195,10 @@ EXIMUSER    * = (ROOT) NOPASSWD: EXIMBIN
 		"${VARDIR}/spool/tmp/exim/blacklists",
 		"${VARDIR}/spool/tmp/exim/certs",
     ) if ($stage == 1);
+    push(@dirs,
+		"${VARDIR}/spool/exim_stage${stage}/paniclog",
+		"${VARDIR}/spool/exim_stage${stage}/spamstore",
+    ) if ($stage == 4);
     foreach my $dir (@dirs) {
 	    mkdir ($dir) unless (-d $dir);
 		chown($uid, $gid, $dir);
