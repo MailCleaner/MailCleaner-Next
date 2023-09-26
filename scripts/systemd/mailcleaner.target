@@ -2,5 +2,6 @@
 Description=Mailcleaner - SMTP Antivirus/Antispam Gateway
 Conflicts=mailcleaner-stopped.target
 Requires=multi-user.target apache2.service clamav-daemon.service clamspamd.service exim4@1.service exim4@2.service exim4@4.service greylistd.service mailscanner.service mariadb@master.service mariadb@slave.service preftdaemon.service snmpd.service spamd@newsld.service spamd@spamd.service spamhandler.service sshd.service statsdaemon.service ufw.service
-After=multi-user.target
+Conflicts=rescue.service rescue.target
+After=basic.target rescue.service rescue.target multi-user.target
 AllowIsolate=yes
