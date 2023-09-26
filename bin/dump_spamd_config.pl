@@ -72,6 +72,8 @@ mkdir $_ foreach (
 );
 chown($uid, $gid,
     $SRCDIR.'/etc/mailscanner/spam.assassin.prefs.conf',
+    $SRCDIR.'/share/spamassassin',
+    glob($SRCDIR.'/share/spamassassin/*'),
     $SRCDIR.'/share/spamd/mailscanner.cf',
     $VARDIR.'/run/spamd',
     $VARDIR.'/spool/spamd',
@@ -83,6 +85,15 @@ chown($uid, $gid,
     $SRCDIR.'/share/spamd/plugins/iXhash',
     glob($SRCDIR.'/share/spamd/plugins/iXhash/*'),
     glob($VARDIR.'/log/mailscanner/newsld*'),
+);
+
+my $dccuid = getpwnam('dcc');
+my $dccgid = getgrnam('dcc');
+chown($dccuid, $dccgid,
+    '/usr/lib/dcc',
+    glob('/usr/lib/dcc/*'),
+    '/var/lib/dcc',
+    glob('/var/lib/dcc/*'),
 );
 
 # Configure sudoer permissions if they are not already
@@ -97,7 +108,7 @@ SPAMD       * = (ROOT) NOPASSWD: SPAMDBIN
 ";
 }
 
-# Add to mailcleaner and mailscanner groups if not already a member
+# Fix group memberships
 `usermod -a -G mailcleaner debian-spamd` unless (grep(/\bmailcleaner\b/, `groups debian-spamd`));
 `usermod -a -G mailscanner debian-spamd` unless (grep(/\bmailscanner\b/, `groups debian-spamd`));
 

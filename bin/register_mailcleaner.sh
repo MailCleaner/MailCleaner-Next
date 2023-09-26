@@ -328,6 +328,9 @@ sed -ri 's/^(\s+).*__MAINHEADERBG__.*$/\1background-color: #741864; \/\*__MAINHE
 sed -ri 's/^(\s+).*__MAINHEADERBG__.*$/\1background-color: #741864; \/\*__MAINHEADERBG__\*\//g' $SRCDIR/www/user/htdocs/templates/default/css/navigation.css
 sed -ri 's/^(\s+).*__MAINHEADERBG__.*$/\1background-color: #741864; \/\*__MAINHEADERBG__\*\//g' $SRCDIR/www/user/htdocs/templates/default/css/login.css
 
+# Disabling public DCC servers, per license
+sed -iP 's/^\(dcc.\.dcc-servers\.net.*\)/\#\1/' /var/lib/dcc/map.txt
+
 echo "Enterprise Edition" >$SRCDIR/etc/edition.def
 echo "REGISTERED = 1" >>$CONFFILE
 
