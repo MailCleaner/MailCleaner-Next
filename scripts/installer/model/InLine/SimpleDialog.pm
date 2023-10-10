@@ -56,12 +56,17 @@ sub build($this, $text, $default='')
 
 sub display($this)
 {
-    print $this->{text}. " [".$this->{default}."]: ";
+    print $this->{text}.' '.(defined($this->{default}) ? "[".$this->{default}."]" : '[\'q\' to skip]').": ";
     ReadMode 'normal';
     my $result = ReadLine(0);
     chomp $result;
+    return 0 if ($result eq 'q');
     if ( $result eq "") {
-        $result = $this->{default};
+        if (defined($this->{default})) {
+            $result = $this->{default};
+        } else {
+            return $this->display();
+        }
     }
     return $result;
 }
