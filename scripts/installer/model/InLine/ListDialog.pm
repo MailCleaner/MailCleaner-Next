@@ -81,6 +81,12 @@ sub display($this)
         @slist = @llist;
     }
     my $i = 0;
+    my @overflow;
+    if (scalar(@slist) > 44) {
+        @overflow = splice(@slist,44);
+        @slist = splice(@slist,0,44);
+        push(@slist, 'more...');
+    }
     foreach my $el (@slist ) {
         last if $i >= $nbln;
         my $str;
@@ -104,6 +110,10 @@ sub display($this)
     if ( $result !~ m/^[0-9]+$/ || $result < 1 || $result > @slist) {
         return -1;
         $result = $this->{default};
+    }
+    if ($slist[$result-1] eq 'more...') {
+        $this->{list} = \@overflow;
+        return $this->display();
     }
     return $slist[$result-1];
 }
