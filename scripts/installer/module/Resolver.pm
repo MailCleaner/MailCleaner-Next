@@ -68,10 +68,10 @@ sub ask($this)
         while( !module::Interface::isIP($ldns)  && (! $ldns eq '' )) {
             print "Bad address format, please type again.\n" if  ! $ldns eq 'none';
             $ldns = $dlg->display();
-            last if $ldns eq '';
+            last unless ($ldns);
         }
-        $this->{dns}{$n} = $ldns;
-        last if $ldns eq '';
+        $this->{dns}{$n} = $ldns if ($ldns);
+        last unless $ldns;
     }
 
     ##############
