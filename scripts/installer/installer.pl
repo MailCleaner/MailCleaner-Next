@@ -32,7 +32,8 @@ require module::Network;
 require module::Hostname;
 require module::Keyboard;
 require module::Timezone;
-require module::MCInstaller;
+require module::MCSetup;
+require module::Cluster;
 require module::RootPassword;
 require DialogFactory;
 
@@ -56,8 +57,8 @@ while (doMenu()) {
 
 $dlg->clear();
 
-my $mcinstall = module::MCInstaller::get();
-if (! $mcinstall->isMCInstalled() ) {
+my $mcinstall = module::MCSetup::get();
+if (! $mcinstall->isInstalled() ) {
     $mcinstall->do();
 }
 
@@ -107,13 +108,23 @@ sub doMenu
         return 1;
     }
 
-    $dlg->clear();
     if ($res eq 'MailCleaner setup') {
-        my $mcinstall = module::MCInstaller::get();
+        my $mcinstall = module::MCSetup::get();
         $mcinstall->do();
         $currentstep = 7;
         return 1;
     }
+
+    if ($res eq 'Join existing cluster (optional)') {
+        my $mcinstall = module::Cluster::get();
+        if ($mcinstall->do()) {
+            $currentstep = 8;
+        } else {
+            $currentstep = 6;
+        }
+        return 1;
+    }
+    $dlg->clear();
 
     die "Invalid selection: $res\n";
 }
