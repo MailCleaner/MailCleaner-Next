@@ -45,10 +45,8 @@ sub get
     return $this;
 }
 
-sub do
+sub do($this)
 {
-    my $this = shift;
-
     my $dfact = DialogFactory::get('InLine');
     my $dlg = $dfact->getYesNoDialog();
 

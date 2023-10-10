@@ -48,17 +48,8 @@ sub get
     return $this;
 }
 
-sub build
+sub build($this,$text,$listh,$default=1,$keeporder=0)
 {
-    my $this = shift;
-    my $text = shift;
-    my $listh = shift;
-    my $default = shift;
-    my $keeporder = shift;
-
-    if (! defined($keeporder)) {
-        $keeporder = 0;
-    }
     $this->{text} = $text;
     $this->{default} = $default;
     $this->{list} = $listh;
@@ -67,18 +58,14 @@ sub build
     return $this;
 }
 
-sub clear
+sub clear($this)
 {
-    my $this = shift;
-
-    system('clear');
+    #system('clear');
 }
 
-sub display
+sub display($this)
 {
-    my $this = shift;
-
-    system('clear');
+    $this->clear();
     print $this->{text}."\n";
     for (my $j=0; $j<length($this->{text}); $j++) {
         print "-";

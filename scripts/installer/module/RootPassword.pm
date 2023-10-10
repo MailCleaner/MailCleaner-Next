@@ -41,10 +41,8 @@ sub get
     return $this;
 }
 
-sub do
+sub do($this)
 {
-    my $this = shift;
-
     system('clear');
     print `passwd`;
     wait;

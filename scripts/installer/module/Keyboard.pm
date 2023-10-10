@@ -35,6 +35,8 @@ our @ISA        = qw(Exporter);
 our @EXPORT     = qw(get ask do);
 our $VERSION    = 1.0;
 
+my @levels = ( 'layout', 'language', 'variant', 'keymap' );
+
 sub get
 {
     my $this = {
@@ -47,16 +49,15 @@ sub get
     return $this;
 }
 
-sub do
+sub do($this)
 {
-    my $this = shift;
-    my $layout = '';
-
     require $this->{mapfile};
     my $dfact = DialogFactory::get('InLine');
     $this->{dlg} = $dfact->getListDialog();
 
     my %list = %{$::keymaps->{pc}};
+
+    my $layout = '';
     my $file = $this->dolist(\%list, 'pc', \$layout);
 
     # Load temporary keymap
@@ -66,25 +67,33 @@ sub do
 }
 
 
-sub dolist
+sub dolist($this, $listh, $parent, $layout, $depth=-1)
 {
-    my $this = shift;
-    my $listh = shift;
-    my $parent = shift;
-    my $layout = shift;
+    $depth++;
     return $listh unless ref($listh) eq 'HASH';
     my %list = %{$listh};
 
     my @dlglist;
-    foreach my $key (keys %list) {
-        next if $key eq 'default';
-        push @dlglist, $key;
+    my $default = $list{'default'} || '';
+    my $standard = 1 if (defined($list{'Standard'}));
+    foreach my $key (sort(keys %list)) {
+        if ($key eq 'default' || $key eq 'Standard') {
+            next;
+        } elsif ($default ne '' && $key eq $default) {
+            next;
+        } else {
+            push @dlglist, $key;
+        }
     }
+    unshift(@dlglist, 'Standard') if ($standard);
+    unshift(@dlglist, $default) if ($default ne '');
+
+    return $this->dolist($list{$dlglist[0]}, $dlglist[0], \'skip', $depth) if (scalar(@dlglist) == 1);
     my $dlg = $this->{dlg};
-    $dlg->build('Make your choice ('.$parent.')', \@dlglist, 1);
+    $dlg->build('Select '.$levels[$depth].':', \@dlglist, 1, 1);
     my $res = $dlg->display();
     $$layout = $res if ($$layout eq '');
-    return $this->dolist($list{$res}, $res, \'skip');
+    return $this->dolist($list{$res}, $res, \'skip', $depth);
 }
 
 1;

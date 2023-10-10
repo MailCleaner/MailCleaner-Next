@@ -31,10 +31,8 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(get getSimpleDialog getListDialog getYesNoDialog);
 our $VERSION = 1.0;
 
-sub get
+sub get($model)
 {
-    my $model = shift;
-
     my $this = {
          model => $model
     };
@@ -42,20 +40,16 @@ sub get
     return $this;
 }
 
-sub getSimpleDialog
+sub getSimpleDialog($this)
 {
-    my $this = shift;
-
     if ($this->{model} eq 'InLine') {
         require model::InLine::SimpleDialog;
         return model::InLine::SimpleDialog::get();
     }
 }
 
-sub getPasswordDialog
+sub getPasswordDialog($this)
 {
-    my $this = shift;
-
     if ($this->{model} eq 'InLine') {
         require model::InLine::PasswordDialog;
         return model::InLine::PasswordDialog::get();
@@ -63,9 +57,8 @@ sub getPasswordDialog
 }
 
 
-sub getListDialog
+sub getListDialog($this)
 {
-    my $this = shift;
     if ($this->{model} eq 'InLine') {
         require model::InLine::ListDialog;
         return model::InLine::ListDialog::get();
@@ -73,9 +66,8 @@ sub getListDialog
 }
 
 
-sub getYesNoDialog
+sub getYesNoDialog($this)
 {
-    my $this = shift;
     if ($this->{model} eq 'InLine') {
         require model::InLine::YesNoDialog;
         return model::InLine::YesNoDialog::get();

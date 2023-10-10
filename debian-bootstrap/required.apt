@@ -6,6 +6,7 @@ bogofilter
 bzip2
 ca-certificates
 clamav-daemon
+console-data
 curl
 cpanminus
 cron

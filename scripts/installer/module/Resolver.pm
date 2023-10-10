@@ -47,19 +47,13 @@ sub get
     return $this;
 }
 
-sub setDNS
+sub setDNS($this, $pos, $value)
 {
-    my $this = shift;
-    my $pos = shift;
-    my $value = shift;
-
     $this->{dns}{$pos} = $value;
 }
 
-sub ask
+sub ask($this)
 {
-    my $this = shift;
-
     my $dfact = DialogFactory::get('InLine');
     my $dlg = $dfact->getSimpleDialog();
     print "\n\nConfiguring resolver\n";
@@ -99,10 +93,8 @@ sub ask
     $this->{dnss} = $dnss;
 }
 
-sub do
+sub do($this)
 {
-    my $this = shift;
-
     my $dnss = "";
     foreach my $dns (sort keys %{$this->{dns}}) {
         $dnss .= " ".$this->{dns}{$dns};
@@ -113,10 +105,8 @@ sub do
     print "got domain: ".$this->{domain}."\n";
 }
 
-sub getConfig
+sub getConfig($this)
 {
-    my $this = shift;
-
     my $str = "\n";
     foreach my $dns (sort keys %{$this->{dns}}) {
         next if $this->{dns}{$dns} eq '';
@@ -130,13 +120,9 @@ sub getConfig
     return $str;
 }
 
-sub isDomainName
+sub isDomainName($domain)
 {
-    my $domain = shift;
-
-    if ( $domain =~ m/^[-a-zA-Z0-9_.]+$/) {
-        return 1;
-    }
+    return 1 if ($domain =~ m/^[-a-zA-Z0-9_.]+$/);
     return 0;
 }
 

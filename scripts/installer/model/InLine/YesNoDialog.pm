@@ -46,25 +46,16 @@ sub get
     return $this;
 }
 
-sub build
+sub build($this, $text, $default='')
 {
-    my $this = shift;
-    my $text = shift;
-    my $default = shift;
-
     $this->{text} = $text;
     $this->{default} = $this->getYesNo($default);
 
     return $this;
 }
 
-sub display
+sub display($this)
 {
-    my $this = shift;
-
-    if (!$this->{default}) {
-        $this->{default} = '';
-    }
     print $this->{text}."\n";
     print "Enter \"y\" or \"n\" [".$this->{default}."]: ";
     ReadMode 'normal';
@@ -76,22 +67,14 @@ sub display
     return $this->getYesNo($result);
 }
 
-sub clear
+sub clear($this)
 {
-    my $this = shift;
-
     system('clear');
 }
 
-sub getYesNo
+sub getYesNo($this, $value='no')
 {
-    my $this = shift;
-    my $value = shift;
-
-    if ($value =~ m/^(y|yes)$/i) {
-        return 'yes';
-    }
-
+    return 'yes' if ($value =~ m/^(y|yes)$/i);
     return 'no';
 }
 

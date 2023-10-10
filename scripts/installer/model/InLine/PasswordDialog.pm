@@ -34,7 +34,6 @@ our $VERSION = 1.0;
 
 sub get
 {
-
     my $text = '';
     my $default = '';
 
@@ -47,25 +46,16 @@ sub get
     return $this;
 }
 
-sub build
+sub build($this, $text, $default='')
 {
-    my $this = shift;
-    my $text = shift;
-    my $default = shift;
-
     $this->{text} = $text;
     $this->{default} = $default;
 
     return $this;
 }
 
-sub display
+sub display($this)
 {
-    my $this = shift;
-
-    if (!$this->{default}) {
-        $this->{default} = '';
-    }
     print $this->{text}. " [".$this->{default}."]: ";
     ReadMode 'noecho';
 
@@ -91,10 +81,8 @@ sub display
     return $result;
 }
 
-sub clear
+sub clear($this)
 {
-    my $this = shift;
-
     system('clear');
 }
 

@@ -32,9 +32,8 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(get ask do);
 our $VERSION = 1.0;
 
-sub get
+sub get($interface)
 {
-    my $interface = shift;
     my %dns;
 
     my $this = {
@@ -51,10 +50,8 @@ sub get
     return $this;
 }
 
-sub ask
+sub ask($this)
 {
-    my $this = shift;
-
     my $dfact = DialogFactory::get('InLine');
     my $dlg = $dfact->getSimpleDialog();
     $dlg->clear();
@@ -108,17 +105,13 @@ sub ask
     $this->{gateway} = $lgate;
 }
 
-sub getGateway
+sub getGateway($this)
 {
-    my $this = shift;
-
     return $this->{gateway};
 }
 
-sub do
+sub do($this)
 {
-    my $this = shift;
-
     print "Interface: ".$this->{interface}."\n";
     print "got ip: ".$this->{ip}."\n";
     print "got mask: ".$this->{mask}."\n";
@@ -126,10 +119,8 @@ sub do
     print "got broadcast: ".$this->{broadcast}."\n";
 }
 
-sub getConfig
+sub getConfig($this)
 {
-    my $this = shift;
-
     my $str;
 
     $str = "allow-hotplug ".$this->{interface}."\n";
@@ -146,10 +137,8 @@ sub getConfig
 }
 
 
-sub computeData
+sub computeData($this)
 {
-    my $this = shift;
-
     my $cmd = "ipcalc -nb ".$this->{ip}."/".$this->{mask};
     my $res = `$cmd`;
 
@@ -168,10 +157,8 @@ sub computeData
 
 ########
 ## static functions
-sub isIP
+sub isIP($ip)
 {
-    my $ip = shift;
-
     if ( $ip =~ m/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/ ) {
         return 0 if $1 < 0 || $1 > 255;
         return 0 if $2 < 0 || $2 > 255;

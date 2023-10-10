@@ -46,10 +46,8 @@ sub get
     return $this;
 }
 
-sub do
+sub do($this)
 {
-    my $this = shift;
-
     my $dfact = DialogFactory::get('InLine');
     my $dlg = $dfact->getSimpleDialog();
     my $yndlg = $dfact->getYesNoDialog();
@@ -184,10 +182,8 @@ sub do
     $dlg->display();
 }
 
-sub isMCInstalled
+sub isMCInstalled($this)
 {
-    my $this = shift;
-
     if ( -d $this->{srcdir} ) {
         return 1;
     }

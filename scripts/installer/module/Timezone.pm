@@ -44,10 +44,8 @@ sub get
     return $this;
 }
 
-sub do
+sub do($this)
 {
-    my $this = shift;
-
     my $dfact = DialogFactory::get('InLine');
     $this->{dlg} = $dfact->getListDialog();
 
@@ -78,11 +76,8 @@ sub do
 }
 
 
-sub dolist
+sub dolist($this, $dir, $parent)
 {
-    my $this = shift;
-    my $dir = shift;
-    my $parent = shift;
     return $dir unless -d $dir;
 
     my @dlglist;

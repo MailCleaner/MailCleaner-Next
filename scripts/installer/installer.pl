@@ -29,29 +29,37 @@ if ($0 =~ m/(\S*)\/\S+.pl$/) {
 }
 
 require module::Network;
-#require module::Hostname;
+require module::Hostname;
 require module::Keyboard;
-#require module::Timezone;
-#require module::MCInstaller;
+require module::Timezone;
+require module::MCInstaller;
 require module::RootPassword;
 require DialogFactory;
 
 my $d = DialogFactory::get('InLine');
 my $dlg = $d->getListDialog();
 
-#my @basemenu = ('Keyboard configuration', 'Set root password', 'Hostname setting', 'Network configuration', 'Timezone configuration', 'MailCleaner (re)installation', 'Exit');
-my @basemenu = ('Keyboard configuration', 'Set root password (Optionnal: Connect to the web interface to access the configurator)', 'Network configuration (Optionnal: You could do this with the MailCleaner Web Interface)', 'Exit');
+my @basemenu = (
+    'Keyboard configuration', 
+    'Set root shell password', 
+    'Set hostname', 
+    'Network configuration', 
+    'Timezone configuration', 
+    'MailCleaner setup', 
+    'Join existing cluster (optional)', 
+    'Exit'
+);
 my $currentstep = 1;
 
 while (doMenu()) {
 }
 
-#$dlg->clear();
+$dlg->clear();
 
-#my $mcinstall = module::MCInstaller::get();
-#if (! $mcinstall->isMCInstalled() ) {
-#    $mcinstall->do();
-#}
+my $mcinstall = module::MCInstaller::get();
+if (! $mcinstall->isMCInstalled() ) {
+    $mcinstall->do();
+}
 
 $dlg->clear();
 exit 0;
@@ -68,38 +76,44 @@ sub doMenu
         my $keyb = module::Keyboard::get();
         $keyb->do();
         $currentstep = 2;
+        return 1;
     }
 
-    if ($res eq 'Set root password (Optionnal: Connect to the web interface to access the configurator)') {
+    if ($res eq 'Set root shell password') {
         my $pass = module::RootPassword::get();
         $pass->do();
         $currentstep = 3;
+        return 1;
     }
 
-#    if ($res eq 'Hostname setting') {
-#        my $hostn = module::Hostname::get();
-#        $hostn->do();
-#        $currentstep = 4;
-#    }
+    if ($res eq 'Set hostname') {
+        my $hostn = module::Hostname::get();
+        $hostn->do();
+        $currentstep = 4;
+        return 1;
+    }
 
-    if ($res eq 'Network configuration (Optionnal: You could do this with the MailCleaner Web Interface)') {
+    if ($res eq 'Network configuration') {
         my $net = module::Network::get();
         $net->do();
-        $currentstep = 4;
+        $currentstep = 5;
+        return 1;
     }
 
-#    if ($res eq 'Timezone configuration') {
-#        my $tz = module::Timezone::get();
-#        $tz->do();
-#        $currentstep = 5;
-#    }
+    if ($res eq 'Timezone configuration') {
+        my $tz = module::Timezone::get();
+        $tz->do();
+        $currentstep = 6;
+        return 1;
+    }
 
-#    if ($res eq 'MailCleaner (re)installation') {
-#         $dlg->clear();
-#         my $mcinstall = module::MCInstaller::get();
-#         $mcinstall->do();
-#         $currentstep = 5;
-#     }
+    $dlg->clear();
+    if ($res eq 'MailCleaner setup') {
+        my $mcinstall = module::MCInstaller::get();
+        $mcinstall->do();
+        $currentstep = 7;
+        return 1;
+    }
 
-    return 1;
+    die "Invalid selection: $res\n";
 }
