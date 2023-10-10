@@ -49,15 +49,19 @@ sub do($this)
     my $dfact = DialogFactory::get('InLine');
     my $dlg = $dfact->getSimpleDialog();
 
-    $dlg->build('Enter the new hostname', 'mailcleaner');
+    my $current = `hostname`;
+    chomp($current);
+    $dlg->build('Enter the new hostname', $current);
     my $name = $dlg->display();
 
     if ($name =~ m/^[-a-zA-Z0-9_.]+$/) {
         `hostname $name`;
-        my $cmd = "echo $name > ".$this->{hostnamefile};
-        `$cmd`;
-        $cmd = "echo 127.0.0.1 $name >> ".$this->{hostsfile};
-        `$cmd`;
+        `echo $name > ".$this->{hostnamefile}`;
+        `sed -i '/127\.0\.0\.1/d' $this->{hostsfile}`;
+        if ($name =~ m/^(\w+)\..*/) {
+            $name .= " $1";
+        }
+        `echo 127.0.0.1 localhost $name >> $this->{hostsfile}`;
     }
 }
 
