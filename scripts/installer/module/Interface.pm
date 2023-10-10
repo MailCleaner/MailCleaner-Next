@@ -43,7 +43,6 @@ sub get($interface)
         gateway => '',
         broadcast => '',
         dns => '',
-        network => ''
     };
 
     bless $this, 'module::Interface';
@@ -128,10 +127,8 @@ sub getConfig($this)
     $str .= "iface ".$this->{interface}." inet static\n";
     $str .= "        address ".$this->{ip}."\n";
     $str .= "        netmask ".$this->{mask}."\n";
-    $str .= "        network ".$this->{network}."\n";
-    $str .= "        broadcast ".$this->{broadcast}."\n";
     $str .= "        gateway ".$this->{gateway}."\n";
-    $str .= "        pre-up echo 1 > /proc/sys/net/ipv6/conf/eth0/disable_ipv6\n";
+    $str .= "        broadcast ".$this->{broadcast}."\n";
 
     return $str;
 }
@@ -139,19 +136,27 @@ sub getConfig($this)
 
 sub computeData($this)
 {
-    my $cmd = "ipcalc -nb ".$this->{ip}."/".$this->{mask};
-    my $res = `$cmd`;
+    my @ipoct = split(/\./, $this->{ip});
+    my @nmoct = split(/\./, $this->{mask});
+    my @broct = ();
+    my @gwoct = ();
 
-    if ($res =~ m/Broadcast:\s+([0-9.]+)/) {
-        $this->{broadcast} = $1;
+    for (my $i = 0; $i < 4; $i++) {
+        if ($nmoct[$i] == 255) {
+            push(@gwoct, $ipoct[$i]);
+            push(@broct, $ipoct[$i]);
+        } else {
+            if ($i == 3) {
+                push(@gwoct, 1);
+                push(@broct, 255);
+            } else {
+                push(@gwoct, 0);
+                push(@broct, 0);
+            }
+        }
     }
-    if ($res =~ m/HostMin:\s+([0-9.]+)/) {
-        $this->{gateway} = $1;
-        $this->{dns} = $1;
-    }
-    if ($res =~ m/Network:\s+([0-9.]+)/) {
-        $this->{network} = $1;
-    }
+    $this->{gateway} = join('.', @gwoct);
+    $this->{broadcast} = join('.', @broct);
 }
 
 
