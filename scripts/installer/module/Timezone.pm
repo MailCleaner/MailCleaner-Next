@@ -85,7 +85,7 @@ sub dolist($this, $dir, $parent)
     while(my $entry = readdir(DIR)) {
         next if $entry =~ m/\./;
         if ( -d $dir."/".$entry || -f $dir."/".$entry) {
-        push @dlglist, $entry;
+            push @dlglist, $entry;
         }
     }
     close(DIR);
