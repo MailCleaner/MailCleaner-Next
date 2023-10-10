@@ -38,24 +38,51 @@ if (!$master_dbh) {
     exit 1;
 }
 
+my %options = (
+    'host' => 1,
+    'view' => 2,
+    'delete' => 3,
+    'add' => 4,
+    'setmaster' => 5
+);
+
+my $start;
+if (defined($ARGV[0])) {
+    my $optre = join('|', keys(%options));
+    if ($ARGV[0] =~ m/\-\-($optre)/) {
+        $start = $1;
+        print "Starting: $start\n";
+    } else {
+        die "Invalid option: $ARGV[0]\n";
+    }
+    if (defined($ARGV[1])) {
+        die "Excess option(s): ".join(splice(@ARGV,1))."\n";
+    }
+}
+
 my $quit=0;
 while (! $quit) {
     system("clear");
-    my $required = checkHost();
-    printf "\n################################\n";
-    printf "## Mailcleaner slaves manager ##\n";
-    printf "################################\n\n";
-    printf "1) change host settings" . ($required ? " (required!)\n" : "\n" );
-    printf "2) view slaves\n";
-    printf "3) delete slave\n";
-    printf "4) add slave\n";
-    printf "5) set this host as slave\n";
-    printf "q) quit\n";
-    printf "\nEnter your choice: ";
+    my $key;
+    if (defined($start)) {
+        $key = $options{$start};
+    } else {
+        my $required = checkHost();
+        printf "\n################################\n";
+        printf "## Mailcleaner slaves manager ##\n";
+        printf "################################\n\n";
+        printf "1) change host settings" . ($required ? " (required!)\n" : "\n" );
+        printf "2) view slaves\n";
+        printf "3) delete slave\n";
+        printf "4) add slave\n";
+        printf "5) set this host as slave\n";
+        printf "q) quit\n";
+        printf "\nEnter your choice: ";
 
-    ReadMode 'cbreak';
-    my $key = ReadKey(0);
-    ReadMode 'normal';
+        ReadMode 'cbreak';
+        $key = ReadKey(0);
+        ReadMode 'normal';
+    }
 
     if ($key =~ /q/) {
         $quit=1;
@@ -70,6 +97,7 @@ while (! $quit) {
     } elsif ($key =~ /5/) {
         set_as_slave();
     }
+    $quit = 1 if (defined($start));
 }
 
 if (defined $master_dbh) {
