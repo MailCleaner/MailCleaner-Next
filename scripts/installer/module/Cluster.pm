@@ -24,16 +24,12 @@ use strict;
 use warnings;
 use utf8;
 
-my ($SRCDIR, $MYMAILCLENARPWD);
 BEGIN {
     if ($0 =~ m/(\S*)\/\S+\.pl$/) {
         my $path = $1."/../../lib";
         unshift(@INC, $path);
     }
     require ReadConfig;
-    my $conf = ReadConfig::getInstance();
-    $SRCDIR = $conf->getOption('SRCDIR');
-    $MYMAILCLENARPWD = $conf->getOption('MYMAILCLENARPWD') || undef;
 }
 
 require Exporter;
@@ -53,6 +49,10 @@ sub get
 
 sub do($this)
 {
+    my ($SRCDIR, $MYMAILCLENARPWD);
+    my $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR');
+    $MYMAILCLENARPWD = $conf->getOption('MYMAILCLENARPWD') || undef;
     unless (defined($MYMAILCLENARPWD)) {
         print "Database password is not configured in `/etc/mailcleaner.conf`. Please run previous step. [Enter]\n";
         my $null = <STDIN>;
