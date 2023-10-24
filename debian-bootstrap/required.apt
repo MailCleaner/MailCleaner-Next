@@ -11,6 +11,7 @@ curl
 cpanminus
 cron
 dcc
+docker.io
 dnsutils
 exim4
 fail2ban

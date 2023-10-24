@@ -96,6 +96,13 @@ else
 	exit
 fi
 
+# Docker repository
+if [ ! -e /etc/apt/keyrings/docker.gpg ]; then
+	wget -q -O /etc/apt/trusted.gpg.d/docker.asc https://download.docker.com/linux/debian/gpg
+        cat /etc/apt/trusted.gpg.d/docker.asc | gpg --yes --dearmor -o /etc/apt/keyrings/docker.gpg 
+	echo 'deb [signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable' | tee /etc/apt/sources.list.d/docker.list
+fi
+
 # DCC repository
 if [ ! -e /etc/apt/keyrings/obs-home-voegelas.gpg ]; then
 	wget -q -O /etc/apt/trusted.gpg.d/obs-home-voegelas.asc https://download.opensuse.org/repositories/home:/voegelas/Debian_12/Release.key
@@ -201,9 +208,6 @@ else
 fi
 
 clear
-echo "Bootstrapping complete, starting main MailCleaner Installation..."
-sleep 2
-/usr/mailcleaner/install/install.sh
 if [ $! ]; then
 	echo -e "\b\b\b x "
 	ERRORS="${ERRORS}
@@ -211,11 +215,11 @@ x Failed running /usr/mailcleaner/install/install.sh"
 fi
 
 clear
-if [[ $ERRORS == "" ]]; then
-	echo "Finished without errors!"
-	echo "Please run /usr/mailcleaner/scripts/installer/installer.pl to finish the MailCleaner setup."
-else
+if [[ $ERRORS != "" ]]; then
 	echo "Finished with errors:"
 	echo $ERRORS
 	echo "Please try to remedy these errors, report them as needed, then run this script again to verify that there are no remaining errors with the installation."
 fi
+echo "Bootstrapping complete, starting main MailCleaner Installation Wizard. Please follow all steps... [Enter]"
+readline NULL
+/usr/mailcleaner/scripts/installer/installer.pl
