@@ -82,39 +82,6 @@ EOF
 	apt-get --assume-yes install docker-ce docker-ce-rootless-extras
 fi
 
-# Install `pyenv`
-if [[ ! -d $VARDIR ]]; then
-	mkdir $VARDIR
-fi
-cd $VARDIR
-if [[ ! -d .pyenv ]]; then
-	clear
-	echo "Installing Pyenv..."
-	git clone --depth=1 https://github.com/pyenv/pyenv.git .pyenv 2>/dev/null >/dev/null
-	cd .pyenv
-else
-	cd .pyenv
-	git pull --rebase origin master 2>/dev/null >/dev/null
-fi
-export PYENV_ROOT="$VARDIR/.pyenv"
-if ! grep -q $PYENV_ROOT <<<$(echo $PATH); then
-	echo "Adding $PYENV_ROOT to $PATH, but this should be included in $SRCDIR/.bashrc."
-	export PATH="$PYENV_ROOT/bin:$PATH"
-fi
-eval "$(pyenv init --path)"
-pyenv install 3.11.2 -s
-pyenv local 3.11.2
-
-clear
-echo "Installing MailCleaner Python Library..."
-pip install mailcleaner-library --trusted-host repository.mailcleaner.net --index https://repository.mailcleaner.net/python/ --extra-index https://pypi.org/simple/ 2>/dev/null >/dev/null
-
-IMPORT_MC_LIB=$(python -c "import mailcleaner")
-if [ $? -eq 1 ]; then
-	echo "Failed to install MailCleaner Library. Not imported."
-	exit
-fi
-
 echo "Installing MailScanner..."
 $SRCDIR/install/mailscanner/install.sh -y
 
@@ -133,7 +100,7 @@ fi
 ### check or create spool dirs
 #echo ""
 echo -n " - Checking/creating spool directories...              "
-./MC_create_vars.sh 2>&1 >>$LOGFILE
+$SRCDIR/install/MC_create_vars.sh 2>&1 >>$LOGFILE
 echo "[done]"
 
 ###############################################
@@ -150,15 +117,11 @@ if [ "$ISMASTER" = "Y" ]; then
 	MASTERKEY=$(cat $VARDIR/.ssh/id_ed25519.pub)
 fi
 
-##############################################
-## setting ssh as default for rsh
-update-alternatives --set rsh /usr/bin/ssh 2>&1 >>$LOGFILE
-
 ###############################################
 ### building libraries
 
 echo -n " - Installing libraries...                             "
-./install_libs.sh 2>&1 >>$LOGFILE
+$SRCDIR/install/install_libs.sh 2>&1 >>$LOGFILE
 echo "[done]"
 
 ###############################################
@@ -168,7 +131,7 @@ echo -n " - Creating databases...                               "
 MYMAILCLEANERPWD=$(pwgen -1)
 echo "MYMAILCLEANERPWD = $MYMAILCLEANERPWD" >>$CONFFILE
 export MYMAILCLEANERPWD
-./MC_prepare_dbs.sh 2>&1 >>$LOGFILE
+$SRCDIR/install/MC_prepare_dbs.sh 2>&1 >>$LOGFILE
 
 ## recreate my_slave.cnf
 #$SRCDIR/bin/dump_mysql_config.pl 2>&1 >> $LOGFILE
@@ -217,12 +180,50 @@ echo "update mta_config set smtp_banner='\$smtp_active_hostname ESMTP MailCleane
 ### installing mailcleaner cron job
 # TODO: Create symlinks from /etc/cron.* to repo and source with those instead
 echo -n " - Installing scheduled jobs...                        "
-echo "0,15,30,45 * * * *  $SRCDIR/scripts/cron/mailcleaner_cron.pl > /dev/null" >>/var/spool/cron/crontabs/root
-echo "0-59/5 * * * * $SRCDIR/bin/collect_rrd_stats.pl > /dev/null" >>/var/spool/cron/crontabs/root
+if [[ ! -d /var/spool/cron/crontabs ]]; then
+	mkdir -p /var/spool/cron/crontabs
+fi
+ln -s $SRCDIR/scripts/cron/crontab/root /var/spool/cron/crontabs/root
+ln -s $SRCDIR/scripts/cron/crontab/mailcleaner /var/spool/cron/crontabs/mailcleaner
 crontab /var/spool/cron/crontabs/root 2>&1 >>$LOGFILE
 /etc/init.d/cron restart 2>&1 >>$LOGFILE
 
 echo "[done]"
+
+###############################################
+### installing `pyenv`
+if [[ ! -d $VARDIR ]]; then
+	mkdir $VARDIR
+fi
+cd $VARDIR
+if [[ ! -d .pyenv ]]; then
+	clear
+	echo "Installing Pyenv..."
+	git clone --depth=1 https://github.com/pyenv/pyenv.git .pyenv 2>/dev/null >/dev/null
+	cd .pyenv
+else
+	cd .pyenv
+	git pull --rebase origin master 2>/dev/null >/dev/null
+fi
+export PYENV_ROOT="$VARDIR/.pyenv"
+if ! grep -q $PYENV_ROOT <<<$(echo $PATH); then
+	echo "Adding $PYENV_ROOT to $PATH, but this should be included in $SRCDIR/.bashrc."
+	export PATH="$PYENV_ROOT/bin:$PATH"
+fi
+eval "$(pyenv init --path)"
+pyenv install 3.11.2 -s
+pyenv local 3.11.2
+
+clear
+echo "Installing MailCleaner Python Library..."
+pip install mailcleaner-library --trusted-host repository.mailcleaner.net --index https://repository.mailcleaner.net/python/ --extra-index https://pypi.org/simple/ 2>/dev/null >/dev/null
+
+IMPORT_MC_LIB=$(python -c "import mailcleaner")
+if [ $? -eq 1 ]; then
+	echo "Failed to install MailCleaner Library. Not imported."
+	#exit
+fi
+
 ###############################################
 echo -n " - Starting..."
 systemctl set-default mailcleaner.target
