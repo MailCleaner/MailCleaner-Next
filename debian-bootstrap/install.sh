@@ -98,8 +98,8 @@ fi
 # DCC repository
 if [ ! -e /etc/apt/keyrings/obs-home-voegelas.gpg ]; then
 	wget -q -O /etc/apt/trusted.gpg.d/obs-home-voegelas.asc https://download.opensuse.org/repositories/home:/voegelas/Debian_12/Release.key
-	cat /etc/apt/trusted.gpg.d/obs-home-voegelas.asc | sudo gpg --yes --dearmor -o /etc/apt/keyrings/obs-home-voegelas.gpg
-	echo 'deb [signed-by:/etc/apt/keyrings/obs-home-voegelas.gpg] https://download.opensuse.org/repositories/home:/voegelas/Debian_12/ ./' | sudo tee /etc/apt/sources.list.d/obs-voegelas.list
+	cat /etc/apt/trusted.gpg.d/obs-home-voegelas.asc | gpg --yes --dearmor -o /etc/apt/keyrings/obs-home-voegelas.gpg
+	echo 'deb [signed-by:/etc/apt/keyrings/obs-home-voegelas.gpg] https://download.opensuse.org/repositories/home:/voegelas/Debian_12/ ./' | tee /etc/apt/sources.list.d/obs-voegelas.list
 fi
 
 # Clear cache
