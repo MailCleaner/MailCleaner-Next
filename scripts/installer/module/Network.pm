@@ -66,7 +66,6 @@ sub do($this)
     my %configured;
     $this->doint(\%interfaces,\%configured);
 
-    print $interfaces{$_}."\n" foreach(keys(%interfaces));
     my $gw = (keys(%interfaces))[0];
     if (scalar(keys(%interfaces)) > 1) {
         my @gateways = map { "$_ ($interfaces{$_})" } keys(%interfaces);
@@ -74,7 +73,8 @@ sub do($this)
         $gw = $this->{dlg}->display();
     }
     foreach my $if (keys %interfaces) {
-        if (open(my $fh, '>>', $this->{networkfile}.'.d'.$if)) {
+	next if ($interfaces{$if} eq '');
+        if (open(my $fh, '>>', $this->{networkfile}.'.d/'.$if)) {
             print $fh '    post-up /sbin/ip route add '.$interfaces{$if}.' dev '.$if.'\n';
             print $fh '    post-up /sbin/ip route add default via '.$interfaces{$if}.' dev '.$if.'\n' if ($gw eq $if);
             print $fh '    pre-down /sbin/ip route del default via '.$interfaces{$if}.' dev '.$if.'\n' if ($gw eq $if);
@@ -92,13 +92,11 @@ sub do($this)
         close $RESFILE;
     }
     if (open(my $NETFILE, '>', $this->{networkfile})) {
-        print $NETFILE 'source /etc/network/interfaces.d/*';
-        print $NETFILE 'auto lo';
-        print $NETFILE 'iface lo inet loopback';
+        print $NETFILE "source /etc/network/interfaces.d/*\n";
         close $NETFILE;
-
-        `/etc/init.d/networking restart 2>&1 > /dev/null`;
     }
+    print("Restarting networking...");
+    `/etc/init.d/networking restart 2>&1 > /dev/null`;
 }
 
 sub doint($this, $listh, $configured)
@@ -122,9 +120,18 @@ sub doint($this, $listh, $configured)
         return 0 if ($if eq 'finish');
     }
 
+    my @am = ( 'auto (DHCP)', 'manual' );
+    $dlg->build("Configuration mode [auto]:", \@am, 1, 1);
+    my $auto = $dlg->display();
     my $int = module::Interface::get($if);
-    $int->ask();
-    my $config .= $int->getConfig();
+    my $config;
+    if ($auto eq $am[0]) {
+	$config = $int->dhcp();
+    } else {
+    	$int->ask();
+    	$config = $int->getConfig();
+    }
+    $dlg->clear();
 
     if (open(my $fh, '>', $this->{networkfile}.'.d/'.$if)) {
         print $fh $config;
