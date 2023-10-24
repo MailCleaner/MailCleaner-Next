@@ -9,14 +9,14 @@ UID=mailcleaner
 GID=mailcleaner
 
 function check_dir {
-	if [ ! -d $dir ]; then
-		echo "directory: $dir does not exists !"
-		mkdir $dir
-		echo "directory: $dir created"
+	if [ ! -d $1 ]; then
+		echo "directory: $1 does not exists !"
+		mkdir $1
+		echo "directory: $1 created"
 	else
-		echo "directory $dir ok"
+		echo "directory $1 ok"
 	fi
-	chown $uid:$gid $dir
+	chown $UID:$GID $1
 }
 
 check_dir $VARDIR
