@@ -109,8 +109,10 @@ if [ ! -d $VARDIR/.ssh ]; then
 	mkdir $VARDIR/.ssh
 fi
 
-ssh-keygen -q -t ed25519 -f $VARDIR/.ssh/id_ed25519 -N ""
-chown -R mailcleaner:mailcleaner $VARDIR/.ssh
+if [ ! -e $VARDIR/.ssh/id_ed25519 ]; then
+	ssh-keygen -q -t ed25519 -f $VARDIR/.ssh/id_ed25519 -N ""
+	chown -R mailcleaner:mailcleaner $VARDIR/.ssh
+fi
 
 if [ "$ISMASTER" = "Y" ]; then
 	MASTERHOST=127.0.0.1
@@ -118,18 +120,16 @@ if [ "$ISMASTER" = "Y" ]; then
 fi
 
 ###############################################
-### building libraries
-
-echo -n " - Installing libraries...                             "
-$SRCDIR/install/install_libs.sh 2>&1 >>$LOGFILE
-echo "[done]"
-
-###############################################
 ### creating databases
 
 echo -n " - Creating databases...                               "
-MYMAILCLEANERPWD=$(pwgen -1)
-echo "MYMAILCLEANERPWD = $MYMAILCLEANERPWD" >>$CONFFILE
+if [ -e '/etc/mailcleaner.conf' ]; then
+	MYMAILCLEANERPWD="$(grep MYMAILCLEANERPWD /etc/mailcleaner.conf | cut -d' ' -f3-)"
+fi
+if [ -z $MYMAILCLEANERPWD ]; then
+	MYMAILCLEANERPWD=$(pwgen -1)
+	echo "MYMAILCLEANERPWD = $MYMAILCLEANERPWD" >>$CONFFILE
+fi
 export MYMAILCLEANERPWD
 $SRCDIR/install/MC_prepare_dbs.sh 2>&1 >>$LOGFILE
 
@@ -215,6 +215,9 @@ pyenv install 3.11.2 -s
 pyenv local 3.11.2
 
 clear
+
+systemctl start mariadb@master
+systemctl start mariadb@slave
 echo "Installing MailCleaner Python Library..."
 pip install mailcleaner-library --trusted-host repository.mailcleaner.net --index https://repository.mailcleaner.net/python/ --extra-index https://pypi.org/simple/ 2>/dev/null >/dev/null
 
