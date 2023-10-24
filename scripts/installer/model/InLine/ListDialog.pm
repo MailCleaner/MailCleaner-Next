@@ -60,7 +60,7 @@ sub build($this,$text,$listh,$default=1,$keeporder=0)
 
 sub clear($this)
 {
-    #system('clear');
+    system('clear');
 }
 
 sub display($this)
