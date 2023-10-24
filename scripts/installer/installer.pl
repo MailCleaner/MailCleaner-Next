@@ -46,7 +46,7 @@ my @basemenu = (
     'Set hostname', 
     'Network configuration', 
     'Timezone configuration', 
-    'MailCleaner setup', 
+    'MailCleaner configuration', 
     'Join existing cluster (optional)', 
     'Exit'
 );
@@ -108,16 +108,20 @@ sub doMenu
         return 1;
     }
 
-    if ($res eq 'MailCleaner setup') {
+    if ($res eq 'MailCleaner configuration') {
         my $mcinstall = module::MCSetup::get();
-        $mcinstall->do();
-        $currentstep = 7;
+	my $ret = $mcinstall->do();
+        if ($ret == 0) {
+            $currentstep = 7;
+        } elsif ($ret == 1) {
+	    $currentstep = 4;
+        }
         return 1;
     }
 
     if ($res eq 'Join existing cluster (optional)') {
-        my $mcinstall = module::Cluster::get();
-        if ($mcinstall->do()) {
+        my $cluster = module::Cluster::get();
+        if ($cluster->do()) {
             $currentstep = 8;
         } else {
             $currentstep = 6;
