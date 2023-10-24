@@ -49,6 +49,17 @@ sub get($interface)
     return $this;
 }
 
+sub dhcp($this)
+{
+    my $str;
+
+    $str = "allow-hotplug ".$this->{interface}."\n";
+    $str .= "auto ".$this->{interface}."\n";
+    $str .= "iface ".$this->{interface}." inet dhcp\n";
+
+    return $str;
+}
+
 sub ask($this)
 {
     my $dfact = DialogFactory::get('InLine');
