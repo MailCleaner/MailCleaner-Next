@@ -18,6 +18,7 @@ ERRORS=''
 
 echo "Bootstrapping MailCleaner installation"
 
+DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install console-data 2>/dev/null >/dev/null
 if [[ -e "/etc/default/console-setup" ]]; then
 	echo -n "Configuring console..."
 	sed -i 's/FONTFACE=".*/FONTFACE="Terminus"/' /etc/default/console-setup
@@ -128,7 +129,7 @@ for i in $(cat debian-bootstrap/required.apt); do
 		echo -e "  Checking $i *  "
 	else
 		echo -ne "\r  Installing $i..."
-		apt-get --assume-yes install $i 2>/dev/null >/dev/null
+		DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install $i 2>/dev/null >/dev/null
 
 		DPKG=$(dpkg -l)
 		if grep -qP "^ii  $i" <<<$DPKG; then
