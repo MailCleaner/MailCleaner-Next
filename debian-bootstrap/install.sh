@@ -99,7 +99,7 @@ fi
 if [ ! -e /etc/apt/keyrings/obs-home-voegelas.gpg ]; then
 	wget -q -O /etc/apt/trusted.gpg.d/obs-home-voegelas.asc https://download.opensuse.org/repositories/home:/voegelas/Debian_12/Release.key
 	cat /etc/apt/trusted.gpg.d/obs-home-voegelas.asc | gpg --yes --dearmor -o /etc/apt/keyrings/obs-home-voegelas.gpg
-	echo 'deb [signed-by:/etc/apt/keyrings/obs-home-voegelas.gpg] https://download.opensuse.org/repositories/home:/voegelas/Debian_12/ ./' | tee /etc/apt/sources.list.d/obs-voegelas.list
+	echo 'deb [signed-by=/etc/apt/keyrings/obs-home-voegelas.gpg] https://download.opensuse.org/repositories/home:/voegelas/Debian_12/ ./' | tee /etc/apt/sources.list.d/obs-voegelas.list
 fi
 
 # Clear cache
@@ -214,7 +214,7 @@ if [[ $ERRORS == "" ]]; then
 	echo "Finished without errors!"
 	echo "Please run /usr/mailcleaner/install/installer.pl to finish the MailCleaner setup."
 else
-	echo "Finished without errors:"
+	echo "Finished with errors:"
 	echo $ERRORS
 	echo "Please try to remedy these errors, report them as needed, then run this script again to verify that there are no remaining errors with the installation."
 fi
