@@ -81,8 +81,9 @@ sub do($this)
     my $pass1 = '-';
     my $pass2 = '';
     my $pdlg = $dfact->getPasswordDialog();
-    while ( $pass1 ne $pass2) {
-        print "Password mismatch, please try again.\n" if ! $pass2 eq '';
+    while ( $pass1 ne $pass2 || $pass1 eq "" ) {
+        print "Password mismatch, please try again.\n" unless ($pass2 eq '');
+        print "Password is require, please try again.\n" if ($pass1 eq '');
         $pdlg->build('Enter the admin user password for the web interface', '');
         $pass1 = $pdlg->display();
         $pdlg->build('Please confirm the admin user password', '');
