@@ -212,7 +212,7 @@ fi
 clear
 if [[ $ERRORS == "" ]]; then
 	echo "Finished without errors!"
-	echo "Please run /usr/mailcleaner/install/installer.pl to finish the MailCleaner setup."
+	echo "Please run /usr/mailcleaner/scripts/installer/installer.pl to finish the MailCleaner setup."
 else
 	echo "Finished with errors:"
 	echo $ERRORS
