@@ -56,7 +56,7 @@ sub ask($this)
 {
     my $dfact = DialogFactory::get('InLine');
     my $dlg = $dfact->getSimpleDialog();
-    print "\n\nConfiguring resolver\n";
+    print "Configuring resolver\n";
     print "--------------------\n\n";
 
     #############
