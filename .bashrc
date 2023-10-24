@@ -1,3 +1,8 @@
+# First-time configuration
+if [[ ! -e /var/mailcleaner/run/first-time-configuration ]]; then
+    /usr/mailcleaner/scripts/installer/installer.pl
+fi
+
 # Configure Prompt
 CLIENTID=$(grep 'CLIENTID' /etc/mailcleaner.conf | cut -d ' ' -f3)
 export HOSTID=$(grep 'HOSTID' /etc/mailcleaner.conf | cut -d ' ' -f3)

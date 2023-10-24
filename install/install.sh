@@ -228,3 +228,8 @@ echo -n " - Starting..."
 systemctl set-default mailcleaner.target
 systemctl start mailcleaner.target
 echo "[done]"
+
+if [ ! -d $VARDIR/run ]; then
+	mkdir -p $VARDIR/run
+fi
+touch $VARDIR/run/first-time-configuration
