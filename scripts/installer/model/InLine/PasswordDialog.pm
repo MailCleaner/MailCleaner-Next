@@ -59,7 +59,6 @@ sub display($this)
     print $this->{text}. " [".$this->{default}."]: ";
     ReadMode 'noecho';
 
-    ReadMode('raw');
     my $pass = '';
 
     while (1) {
