@@ -107,12 +107,14 @@ fi
 if [ ! -e /etc/apt/keyrings/obs-home-voegelas.gpg ]; then
 	wget -q -O /etc/apt/trusted.gpg.d/obs-home-voegelas.asc https://download.opensuse.org/repositories/home:/voegelas/Debian_12/Release.key
 	cat /etc/apt/trusted.gpg.d/obs-home-voegelas.asc | gpg --yes --dearmor -o /etc/apt/keyrings/obs-home-voegelas.gpg
+fi
+if [ ! -e /etc/apt/sources.list.d/obs-voegelas.list ]; then
 	echo 'deb [signed-by=/etc/apt/keyrings/obs-home-voegelas.gpg] https://download.opensuse.org/repositories/home:/voegelas/Debian_12/ ./' | tee /etc/apt/sources.list.d/obs-voegelas.list
 fi
 
 # Clear cache
 echo -n "Clearing APT cache..."
-#rm /var/lib/apt/lists/* 2>/dev/null
+rm /var/lib/apt/lists/* 2>/dev/null
 if [ $! ]; then
 	echo -e "\b\b\b x "
 else
@@ -121,7 +123,7 @@ fi
 
 # Update repositories
 echo -n "Updating APT repos..."
-#apt-get update 2>&1 >/dev/null
+apt-get update 2>&1 >/dev/null
 if [ $! ]; then
 	echo -e "\b\b\b x "
 else
