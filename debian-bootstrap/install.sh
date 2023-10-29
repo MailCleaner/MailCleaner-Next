@@ -222,5 +222,7 @@ if [[ $ERRORS != "" ]]; then
 	echo $ERRORS
 	echo "Please try to remedy these errors, report them as needed, then run this script again to verify that there are no remaining errors with the installation."
 fi
+echo "Creating bare mailcleaner configuration file..."
+touch /etc/mailcleaner.conf
 echo "Bootstrapping complete, starting main MailCleaner Installation Wizard. Please follow all steps..."
 /usr/mailcleaner/scripts/installer/installer.pl
