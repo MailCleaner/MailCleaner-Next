@@ -48,6 +48,7 @@ sub do($this)
 {
     my $dfact = DialogFactory::get('InLine');
     my $dlg = $dfact->getSimpleDialog();
+    $dlg->clear();
 
     my $current = `hostnamectl hostname`;
     chomp($current);
