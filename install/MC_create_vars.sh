@@ -5,8 +5,8 @@ if [ "VARDIR" = "" ]; then
 	VARDIR=/var/mailcleaner
 fi
 
-UID=mailcleaner
-GID=mailcleaner
+MCUID="mailcleaner"
+MCGID="mailcleaner"
 
 function check_dir {
 	if [ ! -d $1 ]; then
@@ -16,7 +16,7 @@ function check_dir {
 	else
 		echo "directory $1 ok"
 	fi
-	chown $UID:$GID $1
+	chown $MCUID:$MCGID $1
 }
 
 check_dir $VARDIR
