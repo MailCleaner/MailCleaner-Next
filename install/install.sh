@@ -131,13 +131,10 @@ if [ -z $MYMAILCLEANERPWD ]; then
 	echo "MYMAILCLEANERPWD = $MYMAILCLEANERPWD" >>$CONFFILE
 fi
 export MYMAILCLEANERPWD
+export MYROOTPWD=$MYMAILCLEANERPWD
 $SRCDIR/install/MC_prepare_dbs.sh 2>&1 >>$LOGFILE
 
-## recreate my_slave.cnf
-#$SRCDIR/bin/dump_mysql_config.pl 2>&1 >> $LOGFILE
 systemctl restart mariadb@slave 2>&1 >>$LOGFILE
-echo "[done]"
-sleep 5
 
 ###############################################
 ### install starter baysian packs
