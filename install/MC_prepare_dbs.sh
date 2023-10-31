@@ -94,7 +94,7 @@ GRANT ALL PRIVILEGES ON mc_config.* TO mailcleaner@"%" IDENTIFIED BY '$MYMAILCLE
 GRANT ALL PRIVILEGES ON mc_spool.* TO mailcleaner@"%" IDENTIFIED BY '$MYMAILCLEANERPWD' WITH GRANT OPTION;
 GRANT ALL PRIVILEGES ON mc_stats.* TO mailcleaner@"%" IDENTIFIED BY '$MYMAILCLEANERPWD' WITH GRANT OPTION;
 GRANT ALL PRIVILEGES ON dmarc_reporting.* TO mailcleaner@"%" IDENTIFIED BY '$MYMAILCLEANERPWD' WITH GRANT OPTION;
-GRANT RELOAD, SLAVE MONITOR, REPLICATION SLAVE ADMIN, REPLICATION CLIENT ON * . * TO  mailcleaner@"%";
+GRANT RELOAD, SLAVE MONITOR, REPLICATION SLAVE, REPLICATION SLAVE ADMIN, REPLICATION CLIENT ON *.* TO "mailcleaner"@"%";
 ALTER USER 'mailcleaner' IDENTIFIED BY '$MYROOTPWD';
 FLUSH PRIVILEGES;
 EOF
@@ -153,6 +153,7 @@ echo "INSERT INTO master (hostname, password, ssh_pub_key) VALUES ('$MASTERHOST'
 echo "INSERT INTO httpd_config (serveradmin, servername) VALUES('$CLIENTTECHMAIL', '$MCHOSTNAME');" | /usr/bin/mariadb -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/mysql_master/mysqld.sock mc_config
 
 echo "Configuring replication"
+echo $MASTERPASSWD
 echo "STOP SLAVE; CHANGE MASTER TO master_host='$MASTERHOST', master_user='mailcleaner', master_password='$MASTERPASSWD'; START SLAVE;" | /usr/bin/mariadb -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/mysql_slave/mysqld.sock mc_config
 
 echo "Restarting Slave DB"
