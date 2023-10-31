@@ -143,6 +143,8 @@ sub dump($self)
         my $line = $_;
         $lc++;
 
+	next if ($line =~ /^\s*#/);
+
         if ($line =~ /__IF__\s+(\S+)/) {
             if ($self->getCondition($1)) {
                 push @if_hist, $1;
@@ -209,7 +211,10 @@ sub dump($self)
                 $path_file = "$SRCDIR/etc/exim/custom/$inc_file";
             } elsif ( -f "$SRCDIR/etc/exim/$inc_file" ) {
                 $path_file = "$SRCDIR/etc/exim/$inc_file";
-            }
+            } else {
+		print STDERR "__INCLUDE__ $SRCDIR/etc/exim/$inc_file does not exist\n";
+		next;
+	    }
 
             open(my $PATHFILE, '<', $path_file);
             my @contains = <$PATHFILE>;
