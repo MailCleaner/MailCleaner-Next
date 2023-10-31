@@ -76,7 +76,6 @@ if [[ "$(which docker)" == "" ]]; then
     deb [arch=$ARCH] https://download.docker.com/linux/debian bookworm stable
 EOF
 	fi
-	clear
 	echo "Installing Docker..."
 	apt-get update 2>&1 >/dev/null
 	apt-get --assume-yes install docker-ce docker-ce-rootless-extras
@@ -98,10 +97,14 @@ fi
 
 ###############################################
 ### check or create spool dirs
-#echo ""
-echo -n " - Checking/creating spool directories...              "
+echo "Installing SystemD unit files..."
+$SRCDIR/install/systemd.sh 2>&1 >>$LOGFILE
+systemctl daemon-reload
+
+###############################################
+### check or create spool dirs
+echo "Checking/creating spool directories...              "
 $SRCDIR/install/MC_create_vars.sh 2>&1 >>$LOGFILE
-echo "[done]"
 
 ###############################################
 ## generate ssh keys
@@ -122,7 +125,6 @@ fi
 ###############################################
 ### creating databases
 
-echo -n " - Creating databases...                               "
 if [ -e '/etc/mailcleaner.conf' ]; then
 	MYMAILCLEANERPWD="$(grep MYMAILCLEANERPWD /etc/mailcleaner.conf | cut -d' ' -f3-)"
 fi
@@ -132,9 +134,19 @@ if [ -z $MYMAILCLEANERPWD ]; then
 fi
 export MYMAILCLEANERPWD
 export MYROOTPWD=$MYMAILCLEANERPWD
-$SRCDIR/install/MC_prepare_dbs.sh 2>&1 >>$LOGFILE
 
-systemctl restart mariadb@slave 2>&1 >>$LOGFILE
+systemctl start mariadb@master
+sleep 1
+DBEXISTS=`echo 'SELECT * FROM system_conf;' | mc_mysql -m mc_config 2>/dev/null`
+if [[ -n $FORCEDBREINSTALL ]]; then
+	echo "Forcing reinstallation of databases..."
+	unset INSTALLED
+fi
+if [[ -z "$DBEXISTS" ]]; then
+	echo "Creating databases..."
+	$SRCDIR/install/MC_prepare_dbs.sh 2>&1 >>$LOGFILE
+	systemctl restart mariadb@slave 2>&1 >>$LOGFILE
+fi
 
 ###############################################
 ### install starter baysian packs
@@ -175,17 +187,18 @@ echo "update mta_config set smtp_banner='\$smtp_active_hostname ESMTP MailCleane
 
 ###############################################
 ### installing mailcleaner cron job
-# TODO: Create symlinks from /etc/cron.* to repo and source with those instead
-echo -n " - Installing scheduled jobs...                        "
+echo "Installing scheduled jobs..."
 if [[ ! -d /var/spool/cron/crontabs ]]; then
 	mkdir -p /var/spool/cron/crontabs
 fi
-ln -s $SRCDIR/scripts/cron/crontab/root /var/spool/cron/crontabs/root
-ln -s $SRCDIR/scripts/cron/crontab/mailcleaner /var/spool/cron/crontabs/mailcleaner
-crontab /var/spool/cron/crontabs/root 2>&1 >>$LOGFILE
+if [[ ! -e /var/spool/cron/crontabs/root ]]; then
+	ln -s $SRCDIR/scripts/cron/crontab/root /var/spool/cron/crontabs/root
+	crontab /var/spool/cron/crontabs/root 2>&1 >>$LOGFILE
+fi
+if [[ ! -e /var/spool/cron/crontabs/mailcleaner ]]; then
+	ln -s $SRCDIR/scripts/cron/crontab/mailcleaner /var/spool/cron/crontabs/mailcleaner
+fi
 /etc/init.d/cron restart 2>&1 >>$LOGFILE
-
-echo "[done]"
 
 ###############################################
 ### installing `pyenv`
@@ -194,7 +207,6 @@ if [[ ! -d $VARDIR ]]; then
 fi
 cd $VARDIR
 if [[ ! -d .pyenv ]]; then
-	clear
 	echo "Installing Pyenv..."
 	git clone --depth=1 https://github.com/pyenv/pyenv.git .pyenv 2>/dev/null >/dev/null
 	cd .pyenv
@@ -211,8 +223,6 @@ eval "$(pyenv init --path)"
 pyenv install 3.11.2 -s
 pyenv local 3.11.2
 
-clear
-
 systemctl start mariadb@master
 systemctl start mariadb@slave
 echo "Installing MailCleaner Python Library..."
@@ -225,10 +235,9 @@ if [ $? -eq 1 ]; then
 fi
 
 ###############################################
-echo -n " - Starting..."
+echo "Starting..."
 systemctl set-default mailcleaner.target
 systemctl start mailcleaner.target
-echo "[done]"
 
 if [ ! -d $VARDIR/run ]; then
 	mkdir -p $VARDIR/run
