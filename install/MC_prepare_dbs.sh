@@ -30,8 +30,8 @@ systemctl stop mariadb@slave-nopass
 systemctl stop mariadb@master-nopass
 systemctl stop mariadb@slave
 systemctl stop mariadb@master
-pkill -9 mariadb
-pkill -9 mariadb-safe
+pkill -9 mariadbd
+pkill -9 mariadbd-safe
 
 echo "Removing previous mariadb databases and stopping mariadb"
 rm -rf $VARDIR/spool/mysql_master/*
@@ -92,7 +92,7 @@ GRANT ALL PRIVILEGES ON mc_config.* TO mailcleaner@"%" IDENTIFIED BY '$MYMAILCLE
 GRANT ALL PRIVILEGES ON mc_spool.* TO mailcleaner@"%" IDENTIFIED BY '$MYMAILCLEANERPWD' WITH GRANT OPTION;
 GRANT ALL PRIVILEGES ON mc_stats.* TO mailcleaner@"%" IDENTIFIED BY '$MYMAILCLEANERPWD' WITH GRANT OPTION;
 GRANT ALL PRIVILEGES ON dmarc_reporting.* TO mailcleaner@"%" IDENTIFIED BY '$MYMAILCLEANERPWD' WITH GRANT OPTION;
-GRANT RELOAD, REPLICATION SLAVE ADMIN, REPLICATION CLIENT ON * . * TO  mailcleaner@"%";
+GRANT RELOAD, SLAVE MONITOR, REPLICATION SLAVE ADMIN, REPLICATION CLIENT ON * . * TO  mailcleaner@"%";
 ALTER USER 'mailcleaner' IDENTIFIED BY '$MYROOTPWD';
 FLUSH PRIVILEGES;
 EOF
