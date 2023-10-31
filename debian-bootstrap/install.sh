@@ -7,8 +7,8 @@ GHREPO="MailCleaner-Next"
 #GHREPO="MailCleaner"
 
 # Git/HTTP protocol, to be changed upon repo going public
-GHHOST="git@github.com:"
-#GHHOST="https://github.com"
+#GHHOST="git@github.com:"
+GHHOST="https://github.com"
 
 # Current checksum of this script, to compare after `git pull`
 CURRENT=$(md5sum $0)
