@@ -1,12 +1,12 @@
 #!/bin/bash
 
-if [ "$SRCDIR" = "" ]; then
+if [ -z "$SRCDIR" ]; then
 	SRCDIR=$(grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 	if [ "SRCDIR" = "" ]; then
-		SRCDIR=/var/mailcleaner
+		SRCDIR=/usr/mailcleaner
 	fi
 fi
-if [ "$VARDIR" = "" ]; then
+if [ -z "$VARDIR" ]; then
 	VARDIR=$(grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 	if [ "VARDIR" = "" ]; then
 		VARDIR=/var/mailcleaner
@@ -23,24 +23,12 @@ if [ "$ORGANIZATION" = "" ]; then
 	ISMASTER=$(grep 'ISMASTER' /etc/mailcleaner.conf | cut -d ' ' -f3)
 fi
 
-##
-# purge
-
-#if [ "$INTERACTIVE" = "Y" ]; then
-#  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-#  echo "!! this will scratch all your mailcleaner databases !!"
-#  echo "are you sur you want to continue ? [Y/n]"
-#  read confirm
-#
-#  if [ "$confirm" = "n" ]; then
-#	echo "aborted.. nothing has been touched."
-#	exit
-#  fi
-#fi
+cd $SRCDIR/install
 
 echo "-- removing previous mariadb databases and stopping mariadb"
 systemctl stop mariadb@slave
 systemctl stop mariadb@master
+pkill mariadb
 rm -rf $VARDIR/spool/mysql_master/*
 rm -rf $VARDIR/spool/mysql_slave/* 2>&1
 rm -rf $VARDIR/log/mysql_master/*
@@ -85,9 +73,8 @@ chown -R mysql:mysql ${VARDIR}/spool/mysql_master 2>&1
 
 cp $SRCDIR/etc/mysql/my_slave.cnf_template $SRCDIR/etc/mysql/my_slave.cnf
 echo "-- starting mysql"
-systemctl start mariadb@master
-systemctl start mariadb@slave
-sleep 3
+systemctl start mariadb@master-nopass
+systemctl start mariadb@slave-nopass
 
 ##
 # delete default users and dbs and create mailcleaner dbs and users
@@ -120,10 +107,8 @@ UPDATE user SET Repl_slave_priv='Y', Repl_client_priv='Y' WHERE User='mailcleane
 FLUSH PRIVILEGES;
 EOF
 
-sleep 5
-
-/opt/mysql5/bin/mysql -S ${VARDIR}/run/mysql_slave/mysqld.sock </tmp/tmp_install.sql 2>&1
-/opt/mysql5/bin/mysql -S ${VARDIR}/run/mysql_master/mysqld.sock </tmp/tmp_install.sql 2>&1
+/usr/bin/mariadb -S ${VARDIR}/run/mysql_slave/mysqld.sock </tmp/tmp_install.sql 2>&1
+/usr/bin/mariadb -S ${VARDIR}/run/mysql_master/mysqld.sock </tmp/tmp_install.sql 2>&1
 
 rm /tmp/tmp_install.sql 2>&1
 
@@ -133,54 +118,50 @@ echo "-- creating mailcleaner spool tables"
 
 for SOCKDIR in mysql_slave mysql_master; do
 	for file in $(ls dbs/spam/*.sql); do
-		/opt/mysql5/bin/mysql -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/$SOCKDIR/mysqld.sock mc_spool <$file
+		/usr/bin/mariadb -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/$SOCKDIR/mysqld.sock mc_spool <$file
 	done
-	/opt/mysql5/bin/mysql -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/$SOCKDIR/mysqld.sock mc_spool <dbs/t_sp_spam.sql
+	/usr/bin/mariadb -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/$SOCKDIR/mysqld.sock mc_spool <dbs/t_sp_spam.sql
 done
 
-/opt/mysql5/bin/mysql -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/mysql_master/mysqld.sock dmarc_reporting <dbs/dmarc_reporting.sql
+/usr/bin/mariadb -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/mysql_master/mysqld.sock dmarc_reporting <dbs/dmarc_reporting.sql
 
 echo "-- inserting config and default values"
 
 ## TO DO: check these values !! either coming from the superior installation script or from /etc/mailcleaner.conf
 
-HOSTKEY=$(cat /etc/ssh/ssh_host_rsa_key.pub)
+HOSTKEY=$(cat /etc/ssh/ssh_host_ed25519_key.pub)
 if [ "$ISMASTER" = "Y" ]; then
 	MASTERHOST=127.0.0.1
-	MASTERKEY=$(cat $VARDIR/.ssh/id_rsa.pub)
+	MASTERKEY=$(cat $VARDIR/.ssh/id_ed25519.pub)
 	MASTERPASSWD=$MYMAILCLEANERPWD
 fi
 
 for SOCKDIR in mysql_master; do
-	echo "INSERT INTO system_conf (organisation, company_name, hostid, clientid, default_domain, contact_email, summary_from, analyse_to, falseneg_to, falsepos_to, src_dir, var_dir) VALUES ('$ORGANIZATION', '$MCHOSTNAME', '$HOSTID', '$CLIENTID', '$DEFAULTDOMAIN', '$CLIENTTECHMAIL', '$CLIENTTECHMAIL', '$CLIENTTECHMAIL', '$CLIENTTECHMAIL', '$CLIENTTECHMAIL', '$SRCDIR', '$VARDIR');" | /opt/mysql5/bin/mysql -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/$SOCKDIR/mysqld.sock mc_config
-	echo "INSERT INTO slave (id, hostname, password, ssh_pub_key) VALUES ('$HOSTID', '127.0.0.1', '$MYMAILCLEANERPWD', '$HOSTKEY');" | /opt/mysql5/bin/mysql -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/$SOCKDIR/mysqld.sock mc_config
-	echo "INSERT INTO master (hostname, password, ssh_pub_key) VALUES ('$MASTERHOST', '$MASTERPASSWD', '$MASTERKEY');" | /opt/mysql5/bin/mysql -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/$SOCKDIR/mysqld.sock mc_config
-	echo "INSERT INTO httpd_config (serveradmin, servername) VALUES('root', 'mailcleaner');" | /opt/mysql5/bin/mysql -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/$SOCKDIR/mysqld.sock mc_config
+	echo "INSERT INTO system_conf (organisation, company_name, hostid, clientid, default_domain, contact_email, summary_from, analyse_to, falseneg_to, falsepos_to, src_dir, var_dir) VALUES ('$ORGANIZATION', '$MCHOSTNAME', '$HOSTID', '$CLIENTID', '$DEFAULTDOMAIN', '$CLIENTTECHMAIL', '$CLIENTTECHMAIL', '$CLIENTTECHMAIL', '$CLIENTTECHMAIL', '$CLIENTTECHMAIL', '$SRCDIR', '$VARDIR');" | /usr/bin/mariadb -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/$SOCKDIR/mysqld.sock mc_config
+	echo "INSERT INTO slave (id, hostname, password, ssh_pub_key) VALUES ('$HOSTID', '127.0.0.1', '$MYMAILCLEANERPWD', '$HOSTKEY');" | /usr/bin/mariadb -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/$SOCKDIR/mysqld.sock mc_config
+	echo "INSERT INTO master (hostname, password, ssh_pub_key) VALUES ('$MASTERHOST', '$MASTERPASSWD', '$MASTERKEY');" | /usr/bin/mariadb -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/$SOCKDIR/mysqld.sock mc_config
+	echo "INSERT INTO httpd_config (serveradmin, servername) VALUES('root', 'mailcleaner');" | /usr/bin/mariadb -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/$SOCKDIR/mysqld.sock mc_config
 done
 
-sleep 10
-$SRCDIR/etc/init.d/mysql_slave restart nopass
-sleep 15
+systemctl start mariadb@slave-nopass
 ## MySQL redundency
-echo "STOP SLAVE; CHANGE MASTER TO master_host='$MASTERHOST', master_user='mailcleaner', master_password='$MASTERPASSWD'; START SLAVE;" | /opt/mysql5/bin/mysql -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/mysql_slave/mysqld.sock mc_config
-sleep 5
+echo "STOP SLAVE; CHANGE MASTER TO master_host='$MASTERHOST', master_user='mailcleaner', master_password='$MASTERPASSWD'; START SLAVE;" | /usr/bin/mariadb -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/mysql_slave/mysqld.sock mc_config
 $SRCDIR/etc/init.d/mysql_slave restart
-sleep 15
 
 ## creating stats tables
-/opt/mysql5/bin/mysql -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/mysql_slave/mysqld.sock mc_config <dbs/t_st_maillog.sql
+/usr/bin/mariadb -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/mysql_slave/mysqld.sock mc_config <dbs/t_st_maillog.sql
 
 ## creating local update table
-/opt/mysql5/bin/mysql -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/mysql_slave/mysqld.sock mc_config <dbs/t_cf_update_patch.sql
+/usr/bin/mariadb -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/mysql_slave/mysqld.sock mc_config <dbs/t_cf_update_patch.sql
 
 ## creating temp soap authentication table
-/opt/mysql5/bin/mysql -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/mysql_slave/mysqld.sock mc_spool <dbs/t_sp_soap_auth.sql
+/usr/bin/mariadb -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/mysql_slave/mysqld.sock mc_spool <dbs/t_sp_soap_auth.sql
 
 ## creating web admin user
-echo "INSERT INTO administrator (username, password, can_manage_users, can_manage_domains, can_configure, can_view_stats, can_manage_host, domains) VALUES('admin', ENCRYPT('$WEBADMINPWD'), 1, 1, 1, 1, 1, '*');" | /opt/mysql5/bin/mysql -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/mysql_master/mysqld.sock mc_config
+echo "INSERT INTO administrator (username, password, can_manage_users, can_manage_domains, can_configure, can_view_stats, can_manage_host, domains) VALUES('admin', ENCRYPT('$WEBADMINPWD'), 1, 1, 1, 1, 1, '*');" | /usr/bin/mariadb -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/mysql_master/mysqld.sock mc_config
 
 ## inserting last version update
-echo "INSERT INTO update_patch VALUES('$ACTUALUPDATE', NOW(), NOW(), 'OK', 'CD release');" | /opt/mysql5/bin/mysql -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/mysql_slave/mysqld.sock mc_config
+echo "INSERT INTO update_patch VALUES('$ACTUALUPDATE', NOW(), NOW(), 'OK', 'CD release');" | /usr/bin/mariadb -umailcleaner -p$MYMAILCLEANERPWD -S$VARDIR/run/mysql_slave/mysqld.sock mc_config
 
 #$SRCDIR/etc/init.d/mysql_master stop
 echo "-- DONE -- mailcleaner dbs are ready !"
