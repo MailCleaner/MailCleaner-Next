@@ -48,6 +48,6 @@ if [ ! -f $FILE ]; then
 	exit 1
 fi
 
-/usr/local/bin/spamassassin $DEBUG -t -p $SRCDIR/etc/mailscanner/spam.assassin.prefs.conf --siteconfigpath=$SRCDIR/share/spamassassin <$FILE
+/usr/bin/spamassassin $DEBUG -t -p $SRCDIR/etc/mailscanner/spam.assassin.prefs.conf --siteconfigpath=$SRCDIR/share/spamassassin <$FILE
 
 exit 0
