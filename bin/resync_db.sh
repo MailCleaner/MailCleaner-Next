@@ -91,8 +91,8 @@ if [ "$SRCDIR" = "" ]; then
 fi
 
 echo "starting slave db..."
-$SRCDIR/etc/init.d/mysql_slave start
-sleep 5
+systemctl start mariadb@slave
+sleep 1
 
 check_status
 if [[ $RUN != 1 ]]; then
@@ -144,8 +144,8 @@ $SRCDIR/bin/mc_mysql -s mc_config </var/tmp/master.sql
 echo "START SLAVE;" | $SRCDIR/bin/mc_mysql -s
 sleep 5
 
-$SRCDIR/etc/init.d/mysql_slave restart
-sleep 5
+systemctl restart mariadb@slave
+sleep 1
 $SRCDIR/bin/mc_mysql -s mc_config </var/tmp/updates.sql
 
 # Run the check again and record results
