@@ -28,8 +28,20 @@ use utf8;
 use Carp qw( confess );
 
 package DB;
+
+BEGIN {
+    my ($SRCDIR);
+    if ($0 =~ m/(\S*)\/\S+.pl$/) {
+        my $path = $1."/../lib";
+        unshift (@INC, $path);
+    }
+    require ReadConfig;
+    my $conf = ReadConfig::getInstance();
+    $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
+    unshift(@INC, $SRCDIR."/lib");
+}
+
 require Exporter;
-use ReadConfig;
 use DBI();
 
 our @ISA = qw(Exporter);
