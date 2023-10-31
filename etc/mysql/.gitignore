@@ -1,2 +1,6 @@
 /my_slave.cnf
 /my_master.cnf
+/my_slave
+/my_master
+/my_slave/nopass.cnf
+/my_master/nopass.cnf

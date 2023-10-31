@@ -71,7 +71,7 @@ my $lasterror = "";
 my @stages = ('master', 'slave');
 if (scalar(@ARGV)) {
     use List::Util qw (uniq);
-    @stages = uniq(@ARGV);
+    @stages = uniq( map { $_ =~ s/\/nopass//; $_ } @ARGV );
     foreach (@stages) {
         confess "Invalid database $_" unless ($_ =~ /^(slave|master)$/);
     }
@@ -84,12 +84,12 @@ foreach my $stage (@stages) {
 #############################
 sub dump_mysql_file($stage,%config)
 {
-    my $template_file = "${SRCDIR}/etc/mysql/my_$stage.cnf_template";
-    my $target_file = "${SRCDIR}/etc/mysql/my_$stage.cnf";
+    my $template_file = "${SRCDIR}/etc/mysql/my_${stage}.cnf_template";
+    my $target_path = "${SRCDIR}/etc/mysql/my_${stage}";
 
     my ($TEMPLATE, $TARGET);
     confess "Cannot open $template_file: $!" unless ($TEMPLATE = ${open_as($template_file, '<', 0664, 'mysql:mailcleaner')});
-    confess "Cannot open $target_file: $!" unless ($TARGET = ${open_as($target_file, '>', 0664, 'mysql:mailcleaner')});
+    confess "Cannot open ${target_path}.cnf: $!" unless ($TARGET = ${open_as("${target_path}.cnf", '>', 0664, 'mysql:mailcleaner')});
 
     while(<$TEMPLATE>) {
         my $line = $_;
@@ -107,12 +107,28 @@ sub dump_mysql_file($stage,%config)
     close $TEMPLATE;
     close $TARGET;
 
+    mkdir($target_path) unless (-d $target_path);
+    symlink("${target_path}.cnf", "${target_path}/nopass.cnf");
+
     return 1;
 }
 
 sub ownership($stage)
 {
     use File::Touch qw( touch );
+
+    unless ( -e "/etc/systemd/system/mariadb\@.service.d" ) {
+	symlink("${SRCDIR}/scripts/systemd/mariadb\@.service.d", "/etc/systemd/system/mariadb\@.service.d");
+	`systemctl daemon-reload`;
+    }
+    unless ( -e "/etc/systemd/system/mariadb\@${stage}.service.d" ) {
+	symlink("${SRCDIR}/scripts/systemd/mariadb\@${stage}.service.d", "/etc/systemd/system/mariadb\@${stage}.service.d");
+	`systemctl daemon-reload`;
+    }
+    unless ( -e "/etc/systemd/system/mariadb\@${stage}-nopass.service.d" ) {
+	symlink("${SRCDIR}/scripts/systemd/mariadb\@${stage}-nopass.service.d", "/etc/systemd/system/mariadb\@${stage}-nopass.service.d");
+	`systemctl daemon-reload`;
+    }
 
     mkdir('/etc/sudoers.d') unless (-d '/etc/sudoers.d/');
     if (open(my $fh, '>', '/etc/sudoers.d/mysql')) {

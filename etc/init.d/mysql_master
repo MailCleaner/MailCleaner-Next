@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
 # Provides compatibility with SystemD using old init script paths.
 
-systemctl $@ mariadb\@master
+STAGE=master
+if [[ "$2" -eq "nopass" ]]; then
+    STAGE=$STAGE-nopass
+fi
+systemctl $1 mariadb\@$stage
