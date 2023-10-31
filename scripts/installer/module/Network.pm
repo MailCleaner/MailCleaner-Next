@@ -38,7 +38,8 @@ sub get
 {
     my $this = {
         networkfile => "/etc/network/interfaces",
-        resolvfile => "/etc/resolv.conf"
+        resolvfile => "/etc/resolv.conf",
+        dhcp => 0
     };
 
     bless $this, 'module::Network';
@@ -82,7 +83,7 @@ sub do($this)
             close($fh);
         }
     }
-    my $resolv = module::Resolver::get();
+    my $resolv = module::Resolver::get($this->{dhcp});
     $resolv->setDNS(1, $interfaces{$gw});
     $resolv->ask();
     my $resconfig .= $resolv->getConfig();
@@ -97,6 +98,7 @@ sub do($this)
     }
     print("Restarting networking...");
     `/etc/init.d/networking restart 2>&1 > /dev/null`;
+    `dhclient` if ($this->{dhcp});
 }
 
 sub doint($this, $listh, $configured)
@@ -126,7 +128,8 @@ sub doint($this, $listh, $configured)
     my $int = module::Interface::get($if);
     my $config;
     if ($auto eq $am[0]) {
-	$config = $int->dhcp();
+	    $config = $int->dhcp();
+        $this->{dhcp} = 1;
     } else {
     	$int->ask();
     	$config = $int->getConfig();

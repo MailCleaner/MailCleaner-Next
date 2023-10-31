@@ -33,14 +33,15 @@ our @ISA = qw(Exporter);
 our @EXPORT = qw(get ask do);
 our $VERSION = 1.0;
 
-sub get
+sub get($dhcp=undef)
 {
     my %dns;
 
     my $this = {
         domain => '',
         %dns => (),
-        dnss => ''
+        dnss => '',
+        dhcp => $dhcp
     };
 
     bless $this, 'module::Resolver';
@@ -63,11 +64,21 @@ sub ask($this)
     ## get dns
     my %dnsname = (1 => 'primary', 2 => 'secondary', 3 => 'tertiary');
     for (my $n=1; $n<4; $n++) {
-        $dlg->build('Please enter a '.$dnsname{$n}.' DNS server', $this->{dns}{$n});
+        my $select;
+        if ($this->{dhcp}) {
+            $select = 'DHCP';
+        } else {
+            $select = $this->{dns}{$n};
+        }
+        $dlg->build('Please enter a '.$dnsname{$n}.' DNS server', $select);
         my $ldns = 'none';
         while( !module::Interface::isIP($ldns)  && (! $ldns eq '' )) {
             print "Bad address format, please type again.\n" if  ! $ldns eq 'none';
             $ldns = $dlg->display();
+            if ($ldns eq 'DHCP') {
+                $ldns = 0;
+                last;
+            }
             last unless ($ldns);
         }
         $this->{dns}{$n} = $ldns if ($ldns);
