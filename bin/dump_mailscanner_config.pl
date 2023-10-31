@@ -86,6 +86,7 @@ foreach (
     $VARDIR.'/spool/tmp/mailscanner',
     $VARDIR.'/spool/tmp/mailscanner/incoming',
     $VARDIR.'/spool/tmp/mailscanner/incoming/Locks',
+    $VARDIR.'/run/mailscanner',
 ) {
     mkdir $_ unless (-d $_);
 }
@@ -94,8 +95,8 @@ foreach (
 chown($uid, $gid,
     $VARDIR.'/spam',
     $VARDIR.'/spool/spamassassin',
-    $VARDIR.'/log/mailscanner',
-    glob($VARDIR.'/run/mailscanner*'),
+    $VARDIR.'/run/mailscanner',
+    glob($VARDIR.'/run/mailscanner/*'),
     $VARDIR.'/log/mailscanner',
     glob($VARDIR.'/log/mailscanner/*'),
     $VARDIR.'/log/mailcleaner/SpamLogger.log',
@@ -109,6 +110,7 @@ chown($uid, $gid,
     glob($VARDIR.'/spool/tmp/mailscanner/incoming/*'),
 );
 
+symlink($SRCDIR.'/etc/mailscanner', '/etc/MailScanner') unless (-e '/etc/MailScanner');
 # Configure sudoer permissions if they are not already
 # Add to mailcleaner, Debian-spamd, and clamav groups if not already a member
 `usermod -a -G mailcleaner mailscanner` unless (grep(/\bmailcleaner\b/, `groups mailscanner`));
