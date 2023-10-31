@@ -7,4 +7,19 @@
 #     systemctl start apache2
 
 SERVICE=$(echo $0 | sed -r 's/(.*\/)?([^\/]*)$/\2/')
+ACTION=$1
+if [[ $ACTION == 'restart' ]]; then
+    $0 stop
+    $0 start
+    exit
+fi
+
+echo -n "$ACTION $SERVICE: "
+if [[ $ACTION == 'status' ]]; then
+    systemctl is-active $SERVICE
+    exit
+fi
+
 systemctl $@ $SERVICE
+STATUS=$(systemctl is-active $SERVICE)
+echo $STATUS
