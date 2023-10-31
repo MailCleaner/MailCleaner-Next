@@ -448,8 +448,6 @@ sub get_system_config()
         use_archiver, archiver_host, trusted_ips, html_wl_ips, tag_mode_bypass_whitelist,
         whitelist_both_from FROM system_conf sc, antispam an, httpd_config hc");
     return unless %row;
-    print(ref($db)."<<<\n");
-    print "$_ => $row{$_}\n" foreach (keys(%row));
 
     $sconfig{'__PRIMARY_HOSTNAME__'} = $row{'hostname'};
     if (${MCHOSTNAME}) {
