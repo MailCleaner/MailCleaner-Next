@@ -98,7 +98,7 @@ fi
 ###############################################
 ### check or create spool dirs
 echo "Installing SystemD unit files..."
-$SRCDIR/install/systemd.sh 2>&1 >>$LOGFILE
+$SRCDIR/install/systemd.sh -f 2>&1 >>$LOGFILE
 systemctl daemon-reload
 
 ###############################################
