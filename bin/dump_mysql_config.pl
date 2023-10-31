@@ -85,11 +85,11 @@ foreach my $stage (@stages) {
 sub dump_mysql_file($stage,%config)
 {
     my $template_file = "${SRCDIR}/etc/mysql/my_${stage}.cnf_template";
-    my $target_path = "${SRCDIR}/etc/mysql/my_${stage}";
+    my $target_file = "${SRCDIR}/etc/mysql/my_${stage}.cnf";
 
     my ($TEMPLATE, $TARGET);
     confess "Cannot open $template_file: $!" unless ($TEMPLATE = ${open_as($template_file, '<', 0664, 'mysql:mailcleaner')});
-    confess "Cannot open ${target_path}.cnf: $!" unless ($TARGET = ${open_as("${target_path}.cnf", '>', 0664, 'mysql:mailcleaner')});
+    confess "Cannot open ${target_file}: $!" unless ($TARGET = ${open_as("${target_file}", '>', 0664, 'mysql:mailcleaner')});
 
     while(<$TEMPLATE>) {
         my $line = $_;
@@ -106,9 +106,6 @@ sub dump_mysql_file($stage,%config)
 
     close $TEMPLATE;
     close $TARGET;
-
-    mkdir($target_path) unless (-d $target_path);
-    symlink("${target_path}.cnf", "${target_path}/nopass.cnf");
 
     return 1;
 }
