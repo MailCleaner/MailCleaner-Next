@@ -116,24 +116,32 @@ if [ ! -e $VARDIR/.ssh/id_ed25519 ]; then
 	ssh-keygen -q -t ed25519 -f $VARDIR/.ssh/id_ed25519 -N ""
 	chown -R mailcleaner:mailcleaner $VARDIR/.ssh
 fi
+export HOSTKEY=`cat $VARDIR/.ssh/id_ed25519.pub`
 
+if [[ -z $ISMASTER ]]; then
+	ISMASTER="Y"
+fi
+export ISMASTER
 if [ "$ISMASTER" = "Y" ]; then
 	MASTERHOST=127.0.0.1
 	MASTERKEY=$(cat $VARDIR/.ssh/id_ed25519.pub)
+	MASTERPASSWD=$MYMAILCLEANERPWD
 fi
+if [[ -z $MASTERHOST ]]; then
+	MASTERHOST=127.0.0.1
+fi
+export MASTERHOST
+if [[ -z $MASTERKEY ]]; then
+	MASTERKEY=$HOSTKEY
+fi
+export MASTERKEY
+if [[ -z $MASTERPASSWD ]]; then
+	MASTERPASSWD=$MYMAILCLEANERPWD
+fi
+export MASTERPASSWD
 
 ###############################################
 ### creating databases
-
-if [ -e '/etc/mailcleaner.conf' ]; then
-	MYMAILCLEANERPWD="$(grep MYMAILCLEANERPWD /etc/mailcleaner.conf | cut -d' ' -f3-)"
-fi
-if [ -z $MYMAILCLEANERPWD ]; then
-	MYMAILCLEANERPWD=$(pwgen -1)
-	echo "MYMAILCLEANERPWD = $MYMAILCLEANERPWD" >>$CONFFILE
-fi
-export MYMAILCLEANERPWD
-export MYROOTPWD=$MYMAILCLEANERPWD
 
 systemctl start mariadb@master
 sleep 1
@@ -143,6 +151,44 @@ if [[ -n $FORCEDBREINSTALL ]]; then
 	unset INSTALLED
 fi
 if [[ -z "$DBEXISTS" ]]; then
+	if [ -e '/etc/mailcleaner.conf' ]; then
+		MYMAILCLEANERPWD="$(grep MYMAILCLEANERPWD /etc/mailcleaner.conf | cut -d' ' -f3-)"
+	fi
+	if [ -z $MYMAILCLEANERPWD ]; then
+		MYMAILCLEANERPWD=$(pwgen -1)
+		echo "MYMAILCLEANERPWD = $MYMAILCLEANERPWD" >>$CONFFILE
+	fi
+	export MYMAILCLEANERPWD
+	if [[ -z $WEBADMINPWD ]]; then
+		WEBADMINPWD=$MYMAILCLEANERWPD
+	fi
+	export WEBADMINPWD
+	export MYROOTPWD=$MYMAILCLEANERPWD
+	if [[ -z $HOSTID ]]; then
+		HOSTID=1
+	fi
+	export HOSTID
+	if [[ -z $CLIENTID ]]; then
+		CLIENTID=0
+	fi
+	export CLIENTID
+	if [[ -z $ORGANIZATION ]]; then
+		ORGANIZATION="Anonymous"
+	fi
+	export ORGANIZATION
+	if [[ -z $MCHOSTNAME ]]; then
+		MCHOSTNAME=`hostname`
+	fi
+	export MCHOSTNAME
+	if [[ -z $DEFAULTDOMAIN ]]; then
+		DEFAULTDOMAIN=''
+	fi
+	export DEFAULTDOMAIN
+	if [[ -z $CLIENTTECHMAIL ]]; then
+		CLIENTTECHMAIL='root@localhost'
+	fi
+	export CLIENTTECHMAIL
+
 	echo "Creating databases..."
 	$SRCDIR/install/MC_prepare_dbs.sh 2>&1 >>$LOGFILE
 	systemctl restart mariadb@slave 2>&1 >>$LOGFILE
