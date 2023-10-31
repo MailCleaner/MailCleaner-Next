@@ -13,7 +13,7 @@ cron
 dcc
 docker.io
 dnsutils
-exim4
+exim4-daemon-heavy
 fail2ban
 file
 giflib-tools
