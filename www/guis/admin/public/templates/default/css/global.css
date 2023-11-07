@@ -12,11 +12,15 @@ html, body {
     margin: 0;
     padding: 0;
     border: 0;
-    font-family:  Arial;
+    font-family: "Roboto",sans-serif;
     font-weight: normal;
     font-size: 1em;
     background-color: #FCFCFC;
     color: #363636;
+}
+
+h3 {
+    font-size: 1em;
 }
 
 a {
