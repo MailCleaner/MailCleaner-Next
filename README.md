@@ -37,11 +37,11 @@ To start your free trial, please go [here](https://www.mailcleaner.net/antispam/
 
 ## Getting started
 
-MailCleaner Next is currently in an open Alpha state. This requires an existing installation of Debian Bookworm (12) dedicated to be used by MailCleaner. You can follow the instructions in [the installation guide](/MailCleaner/MailCleaner-Next/wiki/Installation-Guide).
+MailCleaner Next is currently in an open Alpha state. This requires an existing installation of Debian Bookworm (12) dedicated to be used by MailCleaner. You can follow the instructions in [the installation guide](https://github.com/MailCleaner/MailCleaner-Next/wiki/Installation-Guide).
 
 ## MailCleaner Community
 
-To get some help from the community, you can check out [the forum](http://forum.mailcleaner.org/)
+To [report an issue](https://github.com/MailCleaner/MailCleaner-Next/issues), [find guides](https://github.com/MailCleaner/MailCleaner-Next/wiki), [contribute code](https://github.com/MailCleaner/MailCleaner-Next/pulls) or [discuss MailCleaner](https://github.com/MailCleaner/MailCleaner-Next/discussion), feel free to explore our [GitHub page](https://github.com/MailCleaner/MailCleaner-Next). For larger community discussions, you can check out [the community forum](http://forum.mailcleaner.org/).
 
 ## Social media 
 
