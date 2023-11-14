@@ -169,10 +169,10 @@ addresslist full_whitelisted_senders = VARDIR/spool/mailcleaner/full_whitelisted
 smtp_accept_reserve = __SMTP_RESERVE__
 smtp_reserve_hosts = ${if eq{$interface_port}{5870}{*}{+relay_from_hosts}}
 
-#__IF__ DMARCREPORTING
-#dmarc_history_file = VARDIR/spool/tmp/exim/dmarc.history
-#__FI__
-#dmarc_tld_file = SRCDIR/etc/rbls/effective_tlds.txt
+__IF__ DMARCREPORTING
+dmarc_history_file = VARDIR/spool/tmp/exim/dmarc.history
+__FI__
+dmarc_tld_file = SRCDIR/etc/rbls/effective_tlds.txt
 
 __INCLUDE__ stage1/ldap_callout
 
@@ -725,7 +725,7 @@ __INCLUDE__ stage1/recipient_verification
 __IF__ __LISTS_PER_DOMAIN__
           condition    = ${if eq{$acl_m0}{true}{yes}{no}}
 __FI__
-          #control       = dmarc_disable_verify
+          control       = dmarc_disable_verify
  __IF__ DEBUG
           logwrite      = DMARC DEBUG: disabling dmarc from $sender_host_address, sender $sender_address
  __FI__
@@ -1019,46 +1019,46 @@ __IF__ OUTGOINGVIRUSSCAN
  __FI__
 __FI__
 
-#  warn    dmarc_status   = accept : none : off
-#          !authenticated = *
-#          !hosts         = NOSPFDMARCHOSTS
-# __IF__ DEBUG
-#          log_message    = DMARC DEBUG: $dmarc_status $dmarc_used_domain
-# __FI__
-#          add_header     = :at_start:${authresults {$primary_hostname}}
+  warn    dmarc_status   = accept : none : off
+          !authenticated = *
+          !hosts         = NOSPFDMARCHOSTS
+ __IF__ DEBUG
+          log_message    = DMARC DEBUG: $dmarc_status $dmarc_used_domain
+ __FI__
+          add_header     = :at_start:${authresults {$primary_hostname}}
 
-#  warn    dmarc_status   = quarantine
-#          !authenticated = *
-#          !hosts         = NOSPFDMARCHOSTS
-#          add_header     = X-MailCleaner-DMARC: quarantine
-#          log_message    = Message from $dmarc_used_domain failed sender's DMARC policy, should quarantine.
+  warn    dmarc_status   = quarantine
+          !authenticated = *
+          !hosts         = NOSPFDMARCHOSTS
+          add_header     = X-MailCleaner-DMARC: quarantine
+          log_message    = Message from $dmarc_used_domain failed sender's DMARC policy, should quarantine.
 
-#__IF__ REJECTDMARC
-#  deny    dmarc_status   = reject
-#          !authenticated = *
-#          !hosts         = NOSPFDMARCHOSTS
-#__IF__ __LISTS_PER_DOMAIN__
-#          !condition    = ${if eq{$acl_m0}{true}{yes}{no}}
-#__FI__
-#          message       = Message from $dmarc_used_domain failed sender's DMARC policy, rejecting.
-#          set acl_c8    = smtp:refused:dmarc
-#          set acl_c9    = STATSADD
-#          set acl_c8    = domain:$domain:dmarc_refused
-#          set acl_c9    = STATSADD
-#          set acl_c8    = smtp:refused
-#          set acl_c9    = STATSADD
-#          set acl_c8    = domain:$domain:refused
-#          set acl_c9    = STATSADD
-# __IF__ DEBUG
-#          logwrite      = DEBUG - refused, message from $dmarc_used_domain failed sender's DMARC policy.
-# __FI__
-#__ELSE__ REJECTDMARC
-#  warn    dmarc_status   = reject
-#          !authenticated = *
-#          !hosts         = NOSPFDMARCHOSTS
-#          add_header     = X-MailCleaner-DMARC: reject
-#          log_message    = Message from $dmarc_used_domain failed sender's DMARC policy, should reject.
-#__FI__
+__IF__ REJECTDMARC
+  deny    dmarc_status   = reject
+          !authenticated = *
+          !hosts         = NOSPFDMARCHOSTS
+__IF__ __LISTS_PER_DOMAIN__
+          !condition    = ${if eq{$acl_m0}{true}{yes}{no}}
+__FI__
+          message       = Message from $dmarc_used_domain failed sender's DMARC policy, rejecting.
+          set acl_c8    = smtp:refused:dmarc
+          set acl_c9    = STATSADD
+          set acl_c8    = domain:$domain:dmarc_refused
+          set acl_c9    = STATSADD
+          set acl_c8    = smtp:refused
+          set acl_c9    = STATSADD
+          set acl_c8    = domain:$domain:refused
+          set acl_c9    = STATSADD
+ __IF__ DEBUG
+          logwrite      = DEBUG - refused, message from $dmarc_used_domain failed sender's DMARC policy.
+ __FI__
+__ELSE__ REJECTDMARC
+  warn    dmarc_status   = reject
+          !authenticated = *
+          !hosts         = NOSPFDMARCHOSTS
+          add_header     = X-MailCleaner-DMARC: reject
+          log_message    = Message from $dmarc_used_domain failed sender's DMARC policy, should reject.
+__FI__
 
   warn    !hosts        = <; +relay_from_hosts
           !authenticated = *
@@ -1356,9 +1356,7 @@ __IF__ USETLS
   tls_try_verify_hosts = *
   tls_certificate = __VARDIR__/spool/tmp/exim/certificate
   tls_privatekey = __VARDIR__/spool/tmp/exim/privatekey
-# TODO: pull updated GnuTLS ciphers from DB
-#tls_require_ciphers = __CIPHERS__
-  tls_require_ciphers = SECURE256:+SECURE128:-VERS-TLS-ALL:+VERS-TLS1.2:-DHE-DSS:-CAMELLIA-128-CBC
+  tls_require_ciphers = __CIPHERS__
   tls_verify_certificates = /etc/ssl/certs/ca-certificates.crt
 __FI__
   return_path = ${if and { \
