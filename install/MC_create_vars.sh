@@ -13,6 +13,8 @@ function check_dir {
 		echo "directory: $1 does not exists !"
 		mkdir $1
 		echo "directory: $1 created"
+		chown -R mailcleaner:mailcleaner $1
+		chmod -R 770 $1
 	else
 		echo "directory $1 ok"
 	fi
@@ -25,6 +27,7 @@ check_dir $VARDIR/spool
 check_dir $VARDIR/run
 check_dir $VARDIR/spool/tmp
 check_dir $VARDIR/log/mailcleaner
+check_dir $VARDIR/spool/clamspam
 check_dir $VARDIR/spool/mailcleaner
 check_dir $VARDIR/spool/mailcleaner/prefs
 check_dir $VARDIR/spool/mailcleaner/counts
