@@ -290,7 +290,7 @@ sub isBootstrapped($this)
 {
     # TODO: Update to look for mc-exim instead when available
     # if (-d '/opt/exim4/bin/exim') {
-    if (-e '/usr/sbin/exim') {
+    if (-e '/opt/exim4/bin/exim') {
         return 1;
     }
     return 0;

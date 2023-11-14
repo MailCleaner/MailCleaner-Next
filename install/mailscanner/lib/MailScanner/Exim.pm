@@ -66,7 +66,7 @@ my $UnsortedBatchesLeft;
 # set them to something sensible. This will need to be different
 # for Exim.
 sub initialise {
-  MailScanner::Config::Default('sendmail', '/usr/sbin/exim');
+  MailScanner::Config::Default('sendmail', '/opt/exim4/bin/exim');
   MailScanner::Config::Default('sendmail2',
 			       MailScanner::Config::Value('sendmail').
 			       ' -C /etc/exim/exim_send.conf');

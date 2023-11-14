@@ -61,7 +61,7 @@ class Spooler
      */
     public function getCount()
     {
-        $cmd = "/usr/sbin/exim -C " . $this->conf_file_ . " -bpc";
+        $cmd = "/opt/exim4/bin/exim -C " . $this->conf_file_ . " -bpc";
         $ret = `$cmd`;
         if (preg_match('/^\d+\s*$/', $ret)) {
             return $ret;
@@ -81,7 +81,7 @@ class Spooler
         // fields to search and display
         $fields = ['to' => [], 'time' => '', 'size' => '', 'id' => '', 'from' => '', 'status' => ''];
         // exim command to list queue
-        $cmd = "/usr/sbin/exim -C " . $this->conf_file_ . " -bp";
+        $cmd = "/opt/exim4/bin/exim -C " . $this->conf_file_ . " -bp";
         $list  = popen($cmd, "r");
 
         $ret = "";
@@ -173,7 +173,7 @@ class Spooler
      */
     public function runQueue()
     {
-        $cmd = "/usr/sbin/exim -C " . $this->conf_file_ . " -qff > /dev/null & echo \$!";
+        $cmd = "/opt/exim4/bin/exim -C " . $this->conf_file_ . " -qff > /dev/null & echo \$!";
         $ret = `$cmd`;
         $matches = [];
         if (preg_match('/^\s*(\d+)\s*$/', $ret, $matches)) {
@@ -188,7 +188,7 @@ class Spooler
      */
     public function forceOne($id)
     {
-        $cmd = "/usr/sbin/exim -C " . $this->conf_file_ . " -M $id > /dev/null & echo \$!";
+        $cmd = "/opt/exim4/bin/exim -C " . $this->conf_file_ . " -M $id > /dev/null & echo \$!";
         $ret = `$cmd`;
         $matches = [];
         if (preg_match('/^\s*(\d+)\s*$/', $ret, $matches)) {

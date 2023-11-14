@@ -129,7 +129,7 @@ foreach my $ext ( @exts ) {
     }
 }
 sleep 2;
-my $cmd = "runuser -u Debian-exim -- /usr/sbin/exim4 -C ${VARDIR}/spool/tmp/exim/exim_stage4.conf -M ".$id." 2>/dev/null";
+my $cmd = "runuser -u Debian-exim -- /opt/exim4/bin/exim -C ${VARDIR}/spool/tmp/exim/exim_stage4.conf -M ".$id." 2>/dev/null";
 my $res = `$cmd`;
 if ($res =~ /^$/) {
     mark_forced($id);

@@ -31,11 +31,11 @@ Quarantine User =
 Quarantine Group =
 Quarantine Permissions = 0664
 
-PID file = __VARDIR__/run/mailscanner.pid
+PID file = __VARDIR__/run/mailscanner/mailscanner.pid
 
 MTA = exim
-Sendmail = /usr/sbin/exim -C __VARDIR__/spool/tmp/exim/exim_stage4.conf
-Sendmail2 = /usr/sbin/exim -C __VARDIR__/spool/tmp/exim/exim_stage4.conf
+Sendmail = /opt/exim4/bin/exim -C __VARDIR__/spool/tmp/exim/exim_stage4.conf
+Sendmail2 = /opt/exim4/bin/exim -C __VARDIR__/spool/tmp/exim/exim_stage4.conf
 
 ####################################
 ## system optimisation

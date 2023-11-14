@@ -35,8 +35,7 @@ VARDIR=$(grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 if [ "VARDIR" = "" ]; then
 	VARDIR=/var/mailcleaner
 fi
-#EXIMBIN=/opt/exim4/bin/exim
-EXIMBIN=/usr/sbin/exim4
+EXIMBIN=/opt/exim4/bin/exim
 
 echo -n "Stage 1:       "
 $EXIMBIN -C $VARDIR/spool/tmp/exim/exim_stage1.conf -bpc
