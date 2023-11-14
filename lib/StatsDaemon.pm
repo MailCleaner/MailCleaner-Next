@@ -86,7 +86,7 @@ sub new($class,$myspec_thish)
         configfile => $conf->getOption('SRCDIR')
           . "/etc/mailcleaner/statsdaemon.conf",
         clean_thread_exit => 0,
-        backend_type => 'none',
+        backend_type => 'Db',
         'history_avoid_keys' => '',
         'history_avoid_keys_a' => []
     };
