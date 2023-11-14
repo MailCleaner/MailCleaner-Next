@@ -48,20 +48,34 @@ use lib_utils qw( open_as );
 
 my $lasterror;
 
+# Dump configuration
+dump_file("clamspamd.conf");
+
 my $uid = getpwnam( 'clamav' );
-my $gid = getgrnam( 'mailcleaner' );
+my $gid = getgrnam( 'clamav' );
+my $conf = '/etc/clamav';
+
+if (-e $conf && ! -s $conf) {
+	unlink(glob("$conf/*"), $conf);
+}
+symlink($SRCDIR."/".$conf, $conf) unless (-l $conf);
 
 # Create necessary dirs/files if they don't exist
 foreach my $dir (
-    $VARDIR."/log/clamav/",
-    $VARDIR."/run/clamav/",
-    $VARDIR."/spool/clamspam/",
+    "/etc/clamav",
+    $SRCDIR."/etc/clamav",
+    $VARDIR."/log/clamav",
+    $VARDIR."/run/clamav",
+    $VARDIR."/spool/clamav",
+    $VARDIR."/spool/clamspam",
 ) {
     mkdir($dir) unless (-d $dir);
     chown($uid, $gid, $dir);
 }
 
 foreach my $file (
+    glob($SRCDIR."/etc/clamav/*"),
+    $SRCDIR."/etc/clamav/clamspamd.conf",
     glob($VARDIR."/log/clamav/*"),
     glob($VARDIR."/run/clamav/*"),
     glob($VARDIR."/spool/clamspam/*"),
@@ -71,10 +85,9 @@ foreach my $file (
 
 # Configure sudoer permissions if they are not already
 mkdir '/etc/sudoers.d' unless (-d '/etc/sudoers.d');
-if (open(my $fh, '>', '/etc/sudoers.d/apache')) {
+if (open(my $fh, '>', '/etc/sudoers.d/clamav')) {
     print $fh "
 User_Alias  CLAMAV = clamav
-Runas_Alias ROOT = root
 Cmnd_Alias  CLAMBIN = /usr/sbin/clamd
 
 CLAMAV      * = (ROOT) NOPASSWD: CLAMBIN
@@ -88,9 +101,6 @@ CLAMAV      * = (ROOT) NOPASSWD: CLAMBIN
 # SystemD auth causes timeouts
 `sed -iP '/^session.*pam_systemd.so/d' /etc/pam.d/common-session`;
 
-# Dump configuration
-dump_file("clamspamd.conf");
-
 #############################
 sub dump_file($file)
 {
@@ -98,8 +108,8 @@ sub dump_file($file)
     my $target_file = $SRCDIR."/etc/clamav/".$file;
 
     my ($TEMPLATE, $TARGET);
-    confess "Cannot open $template_file" unless ( $TEMPLATE = ${open_as($template_file,'<')} );
-    confess "Cannot open $template_file" unless ( $TARGET = ${open_as($target_file)} );
+    confess "Cannot open $template_file" unless ( $TEMPLATE = ${open_as($template_file,'<',0664,'clamav:clamav')} );
+    confess "Cannot open $template_file" unless ( $TARGET = ${open_as($target_file,'>',0664,'clamav:clamav')} );
 
     while(<$TEMPLATE>) {
         my $line = $_;

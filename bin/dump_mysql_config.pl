@@ -131,7 +131,6 @@ sub ownership($stage)
     if (open(my $fh, '>', '/etc/sudoers.d/mysql')) {
         print $fh "
 User_Alias  MYSQL = mysql
-Runas_Alias ROOT = root
 Cmnd_Alias  START = /usr/bin/mariadbd-safe
 Cmnd_Alias  INSTALL = /usr/bin/mysql-install_db
 Cmnd_Alias  UPGRADE = /usr/bin/mysql-upgrade

@@ -107,7 +107,6 @@ mkdir '/etc/sudoers.d' unless (-d '/etc/sudoers.d');
 if (open(my $fh, '>', '/etc/sudoers.d/spamd')) {
     print $fh "
 User_Alias  SPAMD = debian-spamd
-Runas_Alias ROOT = root
 Cmnd_Alias  SPAMDBIN = /usr/sbin/spamd
 
 SPAMD       * = (ROOT) NOPASSWD: SPAMDBIN

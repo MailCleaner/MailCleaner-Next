@@ -1172,7 +1172,6 @@ sub ownership($stage)
     if (open(my $fh, '>', '/etc/sudoers.d/exim')) {
         print $fh "
 User_Alias  EXIMUSER = Debian-exim
-Runas_Alias ROOT = root
 Cmnd_Alias  EXIMBIN = /opt/exim4/bin/exim
 
 EXIMUSER    * = (ROOT) NOPASSWD: EXIMBIN

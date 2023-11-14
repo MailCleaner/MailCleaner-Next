@@ -46,6 +46,7 @@ BEGIN {
 
 use lib_utils qw(open_as);
 use File::Touch;
+use File::Path qw(make_path);
 
 require DB;
 
@@ -62,7 +63,8 @@ foreach my $dir (
     "${VARDIR}/spool/greylistd",
     "${VARDIR}/run/greylistd"
 ) {
-    make_path($dir, {'mode'=>0664,'user'=>$uid,'group'=>$gid}) unless ( -d $dir );
+    chmod(0755, $dir) if ( -d $dir );
+    make_path($dir, {'mode'=>0755,'user'=>$uid,'group'=>$gid}) unless ( -d $dir );
 }
 
 if ( -e $confdir && !-l $confdir ) {
@@ -78,17 +80,25 @@ dump_domain_to_avoid($greylist_conf{'__AVOID_DOMAINS__'});
 
 dump_trusted_ips($trusted_ips);
 
+`usermod -a -G mailcleaner greylist` unless (grep(/\bgreylist\b/, `groups clamav`));
+
+foreach my $dir (
+    "${VARDIR}/spool/greylistd",
+    "${VARDIR}/run/greylistd",
+) {
+    mkdir($dir) unless (-d $dir);
+    chown($uid, $gid, $dir);
+}
+
 foreach my $file (
     "${VARDIR}/spool/tmp/mailcleaner/domains_to_greylist.list",
     "${SRCDIR}/${confdir}/config",
     "${SRCDIR}/${confdir}/whitelist-hosts",
-    glob("${VARDIR}/spool/greylistd/*"),
-    glob("${VARDIR}/run/greylistd/*"),
-    "${VARDIR}/run/greylistd/socket"
 ) {
     touch($file) unless(-f $file);
     chown($uid, $gid, $file);
 }
+unlink "${VARDIR}/run/greylistd/socket" if (-e "${VARDIR}/run/greylistd/socket");
 
 sub get_greylist_config()
 {
@@ -126,7 +136,7 @@ sub dump_domain_to_avoid($domains)
     }
 
     my $dir = "${VARDIR}/spool/tmp/mailcleaner/";
-    make_path($dir, {'mode'=>0664,'user'=>$uid,'group'=>$gid}) unless ( -d $dir );
+    make_path($dir, {'mode'=>0755,'user'=>$uid,'group'=>$gid}) unless ( -d $dir );
     my $file = "${dir}/domains_to_avoid_greylist.list";
     my $DOMAINTOAVOID;
     confess "Cannot open $file: $!" unless ($DOMAINTOAVOID = ${open_as($file)} );
@@ -141,6 +151,7 @@ sub dump_trusted_ips($ips)
 {
     my $file = "${SRCDIR}/${confdir}/whitelist-hosts";
     unlink($file) if (-e $file);
+    return 0 unless (defined($ips));
     return 0 if ($ips =~ /^\s*$/);
     my $TRUSTED_IPS;
     confess "Cannot open $file: $!" unless ($TRUSTED_IPS = ${open_as($file)} );

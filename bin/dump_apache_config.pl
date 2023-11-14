@@ -112,7 +112,6 @@ mkdir '/etc/sudoers.d' unless (-d '/etc/sudoers.d');
 if (open(my $fh, '>', '/etc/sudoers.d/apache')) {
     print $fh "
 User_Alias  APACHE = www-data
-Runas_Alias ROOT = root
 Runas_Alias EXIM = Debian-exim
 Cmnd_Alias  SETPINDB = $SRCDIR/scripts/configuration/set_password_in_db.sh
 Cmnd_Alias  CHECKSPOOLS = $SRCDIR/bin/check_spools.sh
