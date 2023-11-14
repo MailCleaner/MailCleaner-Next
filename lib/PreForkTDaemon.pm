@@ -135,8 +135,8 @@ sub create($class,$daemonname,$conffilepath,$spec_thish)
     ## make sure we have the correct owners for critical files:
     foreach my $file (('pidfile', 'logfile', 'socketpath')) {
         if (defined($self->{$file}) && -f $self->{$file}) {
-            my $uid = getpwnam( $self->{'runasuser'});
-            my $gid = getgrnam( $self->{'runasgroup'});
+            my $uid = getpwnam( $self->{'runasuser'}) || getpwnam('mailcleaner');
+            my $gid = getgrnam( $self->{'runasgroup'}) || getgrnam('mailcleaner');
             chown $uid, $gid, $self->{$file};
         }
     }
