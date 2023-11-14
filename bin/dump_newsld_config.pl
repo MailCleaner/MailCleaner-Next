@@ -93,6 +93,8 @@ SPAMD       * = (ROOT) NOPASSWD: BIN
 # SystemD auth causes timeouts
 `sed -iP '/^session.*pam_systemd.so/d' /etc/pam.d/common-session`;
 
+symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
+
 #############################
 sub get_sa_config()
 {

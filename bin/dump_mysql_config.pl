@@ -126,6 +126,7 @@ sub ownership($stage)
 	symlink("${SRCDIR}/scripts/systemd/mariadb\@${stage}-nopass.service.d", "/etc/systemd/system/mariadb\@${stage}-nopass.service.d");
 	`systemctl daemon-reload`;
     }
+    symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
 
     mkdir('/etc/sudoers.d') unless (-d '/etc/sudoers.d/');
     if (open(my $fh, '>', '/etc/sudoers.d/mysql')) {

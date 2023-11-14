@@ -75,6 +75,8 @@ if (-f $system_mibs_file) {
 }
 symlink($mc_mib_file,$system_mibs_file);
 
+symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
+
 sub setup_snmpd_dir() {
     my $include = 0;
     if ( -e "/etc/snmp/snmpd.conf") {

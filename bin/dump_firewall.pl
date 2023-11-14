@@ -83,6 +83,8 @@ if (open(my $interfaces, '<', '/etc/network/interfaces')) {
     close($interfaces);
 }
 
+symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
+
 my %rules;
 get_default_rules(\%rules);
 get_external_rules(\%rules);
