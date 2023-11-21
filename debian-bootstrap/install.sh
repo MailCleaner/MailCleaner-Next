@@ -96,10 +96,17 @@ else
 	exit
 fi
 
+# MailCleaner repository
+if [ ! -e /etc/apt/keyrings/mailcleaner.gpg ]; then
+	cp /usr/mailcleaner/etc/mailcleaner/mailcleaner.asc /etc/apt/trusted.gpg.d/mailcleaner.asc
+	cat /etc/apt/trusted.gpg.d/mailcleaner.asc | gpg --yes --dearmor -o /etc/apt/keyrings/mailcleaner.gpg
+	echo 'deb [signed-by=/etc/apt/keyrings/mailcleaner.gpg] https://cdnmcpool.mailcleaner.net bookworm main' >/etc/apt/sources.list.d/mailcleaner.list
+fi
+
 # Docker repository
 if [ ! -e /etc/apt/keyrings/docker.gpg ]; then
 	wget -q -O /etc/apt/trusted.gpg.d/docker.asc https://download.docker.com/linux/debian/gpg
-        cat /etc/apt/trusted.gpg.d/docker.asc | gpg --yes --dearmor -o /etc/apt/keyrings/docker.gpg 
+	cat /etc/apt/trusted.gpg.d/docker.asc | gpg --yes --dearmor -o /etc/apt/keyrings/docker.gpg
 	echo 'deb [signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/debian bookworm stable' >/etc/apt/sources.list.d/docker.list
 fi
 

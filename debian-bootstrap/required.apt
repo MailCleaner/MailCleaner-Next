@@ -13,7 +13,6 @@ cron
 dcc
 docker.io
 dnsutils
-exim4-daemon-heavy
 fail2ban
 file
 giflib-tools
@@ -107,6 +106,7 @@ links
 lsb-release
 mariadb-client
 mariadb-server
+mc-exim
 net-tools
 netpbm
 ntp
