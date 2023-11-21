@@ -296,11 +296,11 @@ sub do_start_script($rules)
     my $blacklist_script = '/usr/mailcleaner/etc/firewall/blacklist';
     unlink $blacklist_script;
     my $BLACKLIST;
+    confess ("Failed to open $blacklist_script: $!\n") unless ($BLACKLIST = ${open_as($blacklist_script, ">>", 0755)});
     foreach my $blacklist_file (@blacklist_files) {
         my $BLACK_IP;
         if ( -e $blacklist_file ) {
             if ( $blacklist == 0 ) {
-                confess ("Failed to open $blacklist_script: $!\n") unless ($BLACKLIST = ${open_as($blacklist_script, ">>", 0755)});
                 print $BLACKLIST "#!/bin/sh\n\n";
                 print $BLACKLIST "$ipset create BLACKLISTIP hash:ip\n" unless (defined($existing->{'BLACKLISTIP'}));
                 print $BLACKLIST "$ipset create BLACKLISTNET hash:net\n" unless (defined($existing->{'BLACKLISTNET'}));
