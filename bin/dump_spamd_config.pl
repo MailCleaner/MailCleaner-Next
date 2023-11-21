@@ -117,6 +117,8 @@ SPAMD       * = (ROOT) NOPASSWD: SPAMDBIN
 `usermod -a -G mailcleaner debian-spamd` unless (grep(/\bmailcleaner\b/, `groups debian-spamd`));
 `usermod -a -G mailscanner debian-spamd` unless (grep(/\bmailscanner\b/, `groups debian-spamd`));
 
+symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
+
 # SystemD auth causes timeouts
 `sed -iP '/^session.*pam_systemd.so/d' /etc/pam.d/common-session`;
 

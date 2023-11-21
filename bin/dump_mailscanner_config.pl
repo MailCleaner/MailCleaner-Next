@@ -126,7 +126,8 @@ chown($uid, $gid,
     glob($VARDIR.'/spool/tmp/mailscanner/incoming/*'),
 );
 
-symlink($SRCDIR.'/etc/mailscanner', '/etc/MailScanner') unless (-e '/etc/MailScanner');
+symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
+
 # Configure sudoer permissions if they are not already
 # Add to mailcleaner, Debian-spamd, and clamav groups if not already a member
 `usermod -a -G mailcleaner mailscanner` unless (grep(/\bmailcleaner\b/, `groups mailscanner`));

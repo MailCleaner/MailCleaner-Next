@@ -60,6 +60,8 @@ if (-e $conf && ! -s $conf) {
 }
 symlink($SRCDIR."/".$conf, $conf) unless (-l $conf);
 
+symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
+
 # Create necessary dirs/files if they don't exist
 foreach my $dir (
     $SRCDIR."/etc/clamav/",

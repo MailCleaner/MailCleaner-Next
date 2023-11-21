@@ -1244,6 +1244,8 @@ EXIMUSER    * = (ROOT) NOPASSWD: EXIMBIN
         }
     }
 
+    symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
+
     my $dir = "${SRCDIR}/etc/exim/stage${stage}";
     if (-d $dir) {
         chown($uid, $gid, $dir);

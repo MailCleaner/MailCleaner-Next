@@ -74,6 +74,8 @@ if ( -e $confdir && !-l $confdir ) {
 
 symlink("${SRCDIR}/${confdir}", $confdir);
 
+symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
+
 dump_greylistd_file(\%greylist_conf);
 
 dump_domain_to_avoid($greylist_conf{'__AVOID_DOMAINS__'});

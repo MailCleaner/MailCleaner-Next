@@ -94,6 +94,7 @@ chown($uid, $gid,
 
 # Fix symlinks if broken
 my %links = (
+    '/etc/apparmor.d/mailcleaner' => $SRCDIR.'/etc/apparmor',
     "/etc/apache2" => "$SRCDIR/etc/apache",
     "$SRCDIR/etc/apache/sites-enabled/configurator.conf" => "$SRCDIR/etc/apache/sites-available/configurator.conf",
 );

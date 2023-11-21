@@ -91,6 +91,8 @@ CLAMAV      * = (ROOT) NOPASSWD: CLAMBIN
 ";
 }
 
+symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
+
 # Add to mailcleaner and mailscanner groups if not already a member
 `usermod -a -G mailcleaner clamav` unless (grep(/\bmailcleaner\b/, `groups clamav`));
 `usermod -a -G mailscanner clamav` unless (grep(/\bmailscanner\b/, `groups clamav`));
