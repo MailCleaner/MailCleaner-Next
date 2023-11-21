@@ -1,27 +1,27 @@
 #include <tunables/global>
 
-/usr/bin/freshclam {
+/usr/bin/freshclam flags=(attach_disconnected) {
   #include <abstractions/base>
   #include <abstractions/nameservice>
-  #include <abstractions/openssl>
   #include <abstractions/user-tmp>
+  #include <abstractions/openssl>
 
   capability dac_override,
+  capability chown,
 
   capability setgid,
   capability setuid,
-  capability chown,
 
   @{PROC}/filesystems r,
-  @{PROC}/[0-9]*/status r,
+  owner @{PROC}/[0-9]*/status r,
 
-  /usr/mailcleaner/etc/clamav/clamav.conf r,
+  /usr/mailcleaner/etc/clamav/clamd.conf r,
   /usr/mailcleaner/etc/clamav/freshclam.conf r,
+  /etc/clamav/clamd.conf r,
+  /etc/clamav/freshclam.conf r,
   /etc/clamav/onerrorexecute.d/* mr,
   /etc/clamav/onupdateexecute.d/* mr,
   /etc/clamav/virusevent.d/* mr,
-
-  /usr/bin/freshclam mr,
 
   owner @{HOME}/.clamtk/db/ rw,
   owner @{HOME}/.clamtk/db/** rwk,
@@ -29,17 +29,21 @@
   owner @{HOME}/.klamav/database/ rw,
   owner @{HOME}/.klamav/database/** rwk,
 
-  /tmp/ rw,
-  /tmp/** krw,
+  /usr/bin/freshclam mr,
 
   /var/lib/clamav/ r,
   /var/lib/clamav/** krw,
   /var/log/clamav/* krw,
-  /var/mailcleaner/log/clamav/** krw,
 
-  /{,var/}run/clamav/clamd.ctl w,
-  /{,var/}run/clamav/clamd.pid w,
+  /var/mailcleaner/log/clamav/** krw,
+  /var/mailcleaner/spool/clamav/** krw,
+
   /{,var/}run/clamav/freshclam.pid w,
+  /{,var/}run/clamav/clamd.ctl rw,
+  /{,var/}run/clamav/clamd.pid r,
+
+  /tmp/ rw,
+  /tmp/** krw,
 
   /var/spool/clamsmtp/* r,
 
@@ -49,10 +53,9 @@
 
   /var/spool/havp/** r,
 
-  /usr/bin/freshclam flags=(attach_disconnected) {
-
   deny /{,var/}run/samba/{gencache,unexpected}.tdb mrwkl,
 }
+
 
 /usr/sbin/clamd {
   #include <abstractions/base>

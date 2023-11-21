@@ -52,7 +52,7 @@ use File::Touch qw( touch );
 my $lasterror;
 
 my $uid = getpwnam( 'clamav' );
-my $gid = getgrnam( 'clamav' );
+my $gid = getgrnam( 'mailcleaner' );
 my $conf = '/etc/clamav';
 
 if (-e $conf && ! -s $conf) {
@@ -68,6 +68,7 @@ foreach my $dir (
     $VARDIR."/log/clamav/",
     $VARDIR."/run/clamav/",
     $VARDIR."/spool/clamspam/",
+    $VARDIR."/spool/clamav/",
 ) {
     mkdir($dir) unless (-d $dir);
     chown($uid, $gid, $dir);
@@ -81,9 +82,14 @@ foreach my $file (
 }
 
 foreach my $file (
+    $VARDIR."/log/clamav",
     glob($VARDIR."/log/clamav/*"),
+    $VARDIR."/run/clamav",
     glob($VARDIR."/run/clamav/*"),
+    $VARDIR."/spool/clamspam",
     glob($VARDIR."/spool/clamspam/*"),
+    $VARDIR."/spool/clamav",
+    glob($VARDIR."/spool/clamav/*"),
 ) {
     chown($uid, $gid, $file);
 }
@@ -102,6 +108,11 @@ CLAMAV      * = (ROOT) NOPASSWD: CLAMBIN
 # Add to mailcleaner and mailscanner groups if not already a member
 `usermod -a -G mailcleaner clamav` unless (grep(/\bmailcleaner\b/, `groups clamav`));
 `usermod -a -G mailscanner clamav` unless (grep(/\bmailscanner\b/, `groups clamav`));
+
+symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
+
+# Reload AppArmor rules
+`apparmor_parser -r ${SRCDIR}/etc/apparmor.d/clamav`;
 
 # SystemD auth causes timeouts
 `sed -iP '/^session.*pam_systemd.so/d' /etc/pam.d/common-session`;

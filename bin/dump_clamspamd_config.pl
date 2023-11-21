@@ -52,7 +52,7 @@ my $lasterror;
 dump_file("clamspamd.conf");
 
 my $uid = getpwnam( 'clamav' );
-my $gid = getgrnam( 'clamav' );
+my $gid = getgrnam( 'mailcleaner' );
 my $conf = '/etc/clamav';
 
 if (-e $conf && ! -s $conf) {
@@ -94,11 +94,14 @@ CLAMAV      * = (ROOT) NOPASSWD: CLAMBIN
 ";
 }
 
-symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
-
 # Add to mailcleaner and mailscanner groups if not already a member
 `usermod -a -G mailcleaner clamav` unless (grep(/\bmailcleaner\b/, `groups clamav`));
 `usermod -a -G mailscanner clamav` unless (grep(/\bmailscanner\b/, `groups clamav`));
+
+symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
+
+# Reload AppArmor rules
+`apparmor_parser -r ${SRCDIR}/etc/apparmor.d/clamav`;
 
 # SystemD auth causes timeouts
 `sed -iP '/^session.*pam_systemd.so/d' /etc/pam.d/common-session`;
