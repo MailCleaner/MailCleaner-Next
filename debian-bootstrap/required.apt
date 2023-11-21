@@ -21,6 +21,7 @@ git
 gpg
 greylistd
 iputils-ping
+ipset
 libapache2-mod-php
 libapache2-mpm-itk
 libarchive-any-perl
