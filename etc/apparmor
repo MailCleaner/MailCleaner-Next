@@ -1,14 +1,1 @@
-#include <tunables/global>
-
-/usr/sbin/mariadb {
-  #include </usr/mailcleaner/etc/apparmor.d/mariadb>
-}
-/usr/sbin/clamd {
-  #include </usr/mailcleaner/etc/apparmor.d/clamav>
-}
-/usr/bin/freshclam {
-  #include </usr/mailcleaner/etc/apparmor.d/clamav>
-}
-/usr/bin/apache {
-  #include </usr/mailcleaner/etc/apparmor.d/apache>
-}
+#Include /usr/mailcleaner/etc/apparmor.d

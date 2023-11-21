@@ -1,57 +1,111 @@
-#include <abstractions/base>
-#include <abstractions/nameservice>
-#include <abstractions/openssl>
-#include <abstractions/user-tmp>
+#include <tunables/global>
 
-capability dac_override,
+/usr/bin/freshclam {
+  #include <abstractions/base>
+  #include <abstractions/nameservice>
+  #include <abstractions/openssl>
+  #include <abstractions/user-tmp>
 
-capability setgid,
-capability setuid,
-capability chown,
+  capability dac_override,
 
-@{PROC}/filesystems r,
-@{PROC}/[0-9]*/status r,
+  capability setgid,
+  capability setuid,
+  capability chown,
 
-/usr/mailcleaner/etc/clamav/clamd.conf r,
-/usr/mailcleaner/etc/clamav/clamav.conf r,
-/usr/mailcleaner/etc/clamav/clamspamd.conf r,
-/usr/mailcleaner/etc/clamav/freshclam.conf r,
-/etc/clamav/clamd.conf r,
-/etc/clamav/onerrorexecute.d/* mr,
-/etc/clamav/onupdateexecute.d/* mr,
-/etc/clamav/virusevent.d/* mr,
+  @{PROC}/filesystems r,
+  @{PROC}/[0-9]*/status r,
 
-/usr/sbin/clamd mr,
-/usr/bin/freshclam mr,
+  /usr/mailcleaner/etc/clamav/clamav.conf r,
+  /usr/mailcleaner/etc/clamav/freshclam.conf r,
+  /etc/clamav/onerrorexecute.d/* mr,
+  /etc/clamav/onupdateexecute.d/* mr,
+  /etc/clamav/virusevent.d/* mr,
 
-owner @{HOME}/.clamtk/db/ rw,
-owner @{HOME}/.clamtk/db/** rwk,
+  /usr/bin/freshclam mr,
 
-owner @{HOME}/.klamav/database/ rw,
-owner @{HOME}/.klamav/database/** rwk,
+  owner @{HOME}/.clamtk/db/ rw,
+  owner @{HOME}/.clamtk/db/** rwk,
 
-/tmp/ rw,
-/tmp/** krw,
+  owner @{HOME}/.klamav/database/ rw,
+  owner @{HOME}/.klamav/database/** rwk,
 
-/var/lib/clamav/ r,
-/var/lib/clamav/** krw,
-/var/log/clamav/* krw,
+  /tmp/ rw,
+  /tmp/** krw,
 
-/{,var/}run/clamav/clamd.ctl w,
-/{,var/}run/clamav/clamd.pid w,
-/{,var/}run/clamav/freshclam.pid w,
+  /var/lib/clamav/ r,
+  /var/lib/clamav/** krw,
+  /var/log/clamav/* krw,
+  /var/mailcleaner/log/clamav/** krw,
 
-/var/spool/clamsmtp/* r,
+  /{,var/}run/clamav/clamd.ctl w,
+  /{,var/}run/clamav/clamd.pid w,
+  /{,var/}run/clamav/freshclam.pid w,
 
-/var/spool/qpsmtpd/* r,
+  /var/spool/clamsmtp/* r,
 
-/var/spool/p3scan/children/** r,
+  /var/spool/qpsmtpd/* r,
 
-/var/spool/havp/** r,
+  /var/spool/p3scan/children/** r,
 
-/var/mailcleaner/spool/exim_stage2/** r,
-/var/mailcleaner/spool/mailscanner/** r,
+  /var/spool/havp/** r,
 
-/usr/bin/freshclam flags=(attach_disconnected) {
+  /usr/bin/freshclam flags=(attach_disconnected) {
 
-deny /{,var/}run/samba/{gencache,unexpected}.tdb mrwkl,
+  deny /{,var/}run/samba/{gencache,unexpected}.tdb mrwkl,
+}
+
+/usr/sbin/clamd {
+  #include <abstractions/base>
+  #include <abstractions/nameservice>
+  #include <abstractions/openssl>
+  #include <abstractions/user-tmp>
+
+  capability dac_override,
+
+  capability setgid,
+  capability setuid,
+  capability chown,
+
+  @{PROC}/filesystems r,
+  @{PROC}/[0-9]*/status r,
+
+  /usr/mailcleaner/etc/clamav/clamd.conf r,
+  /usr/mailcleaner/etc/clamav/clamav.conf r,
+  /usr/mailcleaner/etc/clamav/clamspamd.conf r,
+  /etc/clamav/clamd.conf r,
+  /etc/clamav/onerrorexecute.d/* mr,
+  /etc/clamav/onupdateexecute.d/* mr,
+  /etc/clamav/virusevent.d/* mr,
+
+  /usr/sbin/clamd mr,
+
+  owner @{HOME}/.clamtk/db/ rw,
+  owner @{HOME}/.clamtk/db/** rwk,
+
+  owner @{HOME}/.klamav/database/ rw,
+  owner @{HOME}/.klamav/database/** rwk,
+
+  /tmp/ rw,
+  /tmp/** krw,
+
+  /var/lib/clamav/ r,
+  /var/lib/clamav/** krw,
+  /var/log/clamav/* krw,
+  /var/mailcleaner/log/clamav/* krw,
+
+  /{,var/}run/clamav/clamd.ctl w,
+  /{,var/}run/clamav/clamd.pid w,
+
+  /var/spool/clamsmtp/* r,
+
+  /var/spool/qpsmtpd/* r,
+
+  /var/spool/p3scan/children/** r,
+
+  /var/spool/havp/** r,
+
+  /var/mailcleaner/spool/exim_stage2/** r,
+  /var/mailcleaner/spool/mailscanner/** r,
+
+  deny /{,var/}run/samba/{gencache,unexpected}.tdb mrwkl,
+}
