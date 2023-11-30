@@ -52,6 +52,9 @@ our $DEBUG = 1;
 our $uid = getpwnam( 'mysql' );
 our $gid = getgrnam( 'mysql' );
 
+# Add to mailcleaner group if not already a member
+`usermod -a -G mailcleaner mysql` unless (grep(/\bmailcleaner\b/, `groups mysql`));
+
 ## added 10 for migration ease
 my %config;
 $config{'HOSTID'} = ${HOSTID};
