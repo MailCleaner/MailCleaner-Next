@@ -96,6 +96,15 @@ else
 	exit
 fi
 
+echo -n "Checking/adding extra repositories..."
+
+# Verify GPG dependency
+DPKG=$(dpkg -l)
+if !grep -qP "^ii gpg" <<<$DPKG; then
+        apt-get update 2>&1 >/dev/null
+	DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install gpg 2>/dev/null >/dev/null
+ fi
+
 # MailCleaner repository
 if [ ! -e /etc/apt/keyrings/mailcleaner.gpg ]; then
 	cp /usr/mailcleaner/etc/mailcleaner/mailcleaner.asc /etc/apt/trusted.gpg.d/mailcleaner.asc
@@ -119,6 +128,8 @@ if [ ! -e /etc/apt/sources.list.d/obs-voegelas.list ]; then
 	echo 'deb [signed-by=/etc/apt/keyrings/obs-home-voegelas.gpg] https://download.opensuse.org/repositories/home:/voegelas/Debian_12/ ./' | tee /etc/apt/sources.list.d/obs-voegelas.list
 fi
 
+echo -e "\b\b\b * "
+
 # Clear cache
 echo -n "Clearing APT cache..."
 rm /var/lib/apt/lists/* 2>/dev/null
@@ -137,7 +148,6 @@ else
 	echo -e "\b\b\b * "
 fi
 
-DPKG=$(dpkg -l)
 FAILED=""
 echo "Checking/Installing APT repos..."
 for i in $(cat debian-bootstrap/required.apt); do
