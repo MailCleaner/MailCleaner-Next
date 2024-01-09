@@ -100,7 +100,7 @@ echo -n "Checking/adding extra repositories..."
 
 # Verify GPG dependency
 DPKG=$(dpkg -l)
-if !grep -qP "^ii gpg" <<<$DPKG; then
+if ! grep -qP "^ii gpg" <<<$DPKG; then
         apt-get update 2>&1 >/dev/null
 	DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install gpg 2>/dev/null >/dev/null
  fi
