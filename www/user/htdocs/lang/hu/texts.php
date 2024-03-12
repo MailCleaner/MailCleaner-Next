@@ -503,6 +503,7 @@ $txt['NLNOTRELEASEDHEAD'] = "Newsletter was not released";
 $txt['NLNOTRELEASEDBODY'] = "Hiba történt az üzenet közzétételekor.";
 $txt['NEWSLISTBODY'] = "A hírlevél engedélyezési listájának szabálya bekerült. Ettől a feladótól jövő üzenetek nem lesznek megjelölve, ha hírlevélként észlelik őket.";
 $txt['NEWSLISTHEAD'] = "A hírlista szabály hozzáadásra került.";
+$txt['NEWSLETTERUNSUB'] = 'leiratkozás";
 /*
  * Newsletter rule
  */

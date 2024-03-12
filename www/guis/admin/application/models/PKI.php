@@ -17,7 +17,7 @@ class Default_Model_PKI
     private $_type = 'dsa';
 
     private $OPENSSLCOMMAND = '/usr/bin/openssl';
-    private $KEYTYPES = ['dsa' => 'gendsa', 'rsa' => 'genrsa'];
+    private $KEYTYPES = ['dsa' => 'gendsa', 'rsa' => 'genrsa', 'ecdsa' => 'genecdsa');
 
 
     public function getPrivateKey()
@@ -44,19 +44,7 @@ class Default_Model_PKI
             var_dump($matches);
             return false;
         }
-        if (preg_match('/([A-Z]+) PRIVATE KEY/', $pkey, $matches)) {
-            switch ($matches[1]) {
-                case 'RSA':
-                    $this->_type = 'rsa';
-                    break;
-                case 'DSA':
-                    $this->_type = 'dsa';
-                    break;
-                default:
-                    $this->_type = 'rsa';
-                    break;
-            }
-        }
+        $this->_type = $this->getKeyType($pkey);
         $this->_privateKey = $pkey;
         $this->getPublicKeyFromPrivateKey();
     }
@@ -73,8 +61,8 @@ class Default_Model_PKI
             return false;
         }
 
-        $type = 'dsa';
-        $length = '1024';
+        $type = 'ecdsa';
+        $length = '2048';
 
         if (isset($params['type']) and array_key_exists(strtolower($params['type']), $this->KEYTYPES)) {
             $type = strtolower($params['type']);
@@ -85,6 +73,9 @@ class Default_Model_PKI
 
         $tmpfile = "/tmp/" . uniqid() . ".tmp";
         switch ($type) {
+            case 'ecdsa':
+                $cmd = $this->OPENSSLCOMMAND . " " . $this->KEYTYPES[$type] . " ecparam -noout -out " . $tmpfile . " -genkey";
+                break;
             case 'rsa':
                 $cmd = $this->OPENSSLCOMMAND . " " . $this->KEYTYPES[$type] . " -out " . $tmpfile . " " . $length;
                 break;
@@ -190,17 +181,34 @@ class Default_Model_PKI
         return false;
     }
 
+    public function getKeyType($pkey) {
+        if (preg_match('/([A-Z]+) PRIVATE KEY/', $pkey, $matches)) {
+            if ($matches[1] == 'ECDSA') { return 'ecdsa'; }
+            if ($matches[1] == 'RSA') { return 'rsa'; }
+            if ($matches[1] == 'RSA') { return 'dsa'; }
+            return 'rsa';
+        }
+    }
+
     public function checkCertAndKey()
     {
         $tmpfile = "/tmp/" . uniqid() . ".tmp";
         file_put_contents($tmpfile, $this->_certificate);
         $tmpfilekey = "/tmp/" . uniqid() . ".tmp";
         file_put_contents($tmpfilekey, $this->_privateKey);
-        $cmd = $this->OPENSSLCOMMAND . " x509 -noout -modulus -in $tmpfile | " . $this->OPENSSLCOMMAND . " md5";
-        $certhash = `$cmd`;
-        $cmd2 = $this->OPENSSLCOMMAND . " rsa -noout -modulus -in $tmpfilekey | " . $this->OPENSSLCOMMAND . " md5";
-        $keyhash = `$cmd2`;
-        if ($certhash != $keyhash) {
+        $type = $this->getKeyType($this->_privateKey);
+        if ($type == 'rsa') {
+            $cmd = $this->OPENSSLCOMMAND . " x509 -noout -modulus -in $tmpfile | " . $this->OPENSSLCOMMAND . " md5";
+            $certhash = `$cmd`;
+            $cmd2 = $this->OPENSSLCOMMAND . " rsa -noout -modulus -in $tmpfilekey | " . $this->OPENSSLCOMMAND . " md5";
+            $keyhash = `$cmd2`;
+        } elseif ($type == 'ecdsa') {
+            $cmd = $this->OPENSSLCOMMAND." x509 -in $tmpfile -pubout | ".$this->OPENSSLCOMMAND." md5";
+            $certhash = `$cmd`;
+            $cmd2 = $this->OPENSSLCOMMAND." pkey -in $tmpfilekey -pubout | ".$this->OPENSSLCOMMAND." md5";
+            $keyhash = `$cmd2`;
+        }
+        if (!isset($certhash) || !isset($keyhash) || $certhash != $keyhash) {
             $data['error'] = 'Private key does not match certificate';
             $data['valid'] = 0;
             return false;

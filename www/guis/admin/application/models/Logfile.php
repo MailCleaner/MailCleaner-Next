@@ -12,11 +12,11 @@
 class Default_Model_Logfile
 {
     protected $_available_types = [
-        'exim_stage1' => ['basefile' => 'exim_stage1/mainlog', 'cat' => 'Message handling', 'name' => 'Incoming MTA', 'pos' => 1, 'nextId_regex' => 'R=filter_forward.*OK id=([0-9a-zA-Z]{6}-[0-9a-zA-Z]{6}-[0-9a-zA-Z]{2})'],
-        'exim_stage2' => ['basefile' => 'exim_stage2/mainlog', 'cat' => 'Message handling', 'name' => 'Filtering MTA', 'pos' => 2, 'nextId_regex' => '\b([0-9a-zA-Z]{6}-[0-9a-zA-Z]{6}-[0-9a-zA-Z]{2})\b'],
-        'exim_stage4' => ['basefile' => 'exim_stage4/mainlog', 'cat' => 'Message handling', 'name' => 'Outgoing MTA', 'pos' => 3, 'nextId_regex' => '\b([0-9a-zA-Z]{6}-[0-9a-zA-Z]{6}-[0-9a-zA-Z]{2})\b.*T=spam_store'],
+        'exim_stage1' => ['basefile' => 'exim_stage1/mainlog', 'cat' => 'Message handling', 'name' => 'Incoming MTA', 'pos' => 1, 'nextId_regex' => 'R=filter_forward.*OK id=([0-9a-zA-Z]{6}-[0-9a-zA-Z]{6,11}-[0-9a-zA-Z]{2,4})'],
+        'exim_stage2' => ['basefile' => 'exim_stage2/mainlog', 'cat' => 'Message handling', 'name' => 'Filtering MTA', 'pos' => 2, 'nextId_regex' => '\b([0-9a-zA-Z]{6}-[0-9a-zA-Z]{6,11}-[0-9a-zA-Z]{2,4})\b'],
+        'exim_stage4' => ['basefile' => 'exim_stage4/mainlog', 'cat' => 'Message handling', 'name' => 'Outgoing MTA', 'pos' => 3, 'nextId_regex' => '\b([0-9a-zA-Z]{6}-[0-9a-zA-Z]{6,11}-[0-9a-zA-Z]{2,4})\b.*T=spam_store'],
 
-        'mailscanner' => ['basefile' => 'mailscanner/infolog', 'cat' => 'Filter engine', 'name' => 'Filtering engine', 'pos' => 1, 'nextId_regex' => '\b([0-9a-zA-Z]{6}-[0-9a-zA-Z]{6}-[0-9a-zA-Z]{2})\b'],
+        'mailscanner' => ['basefile' => 'mailscanner/infolog', 'cat' => 'Filter engine', 'name' => 'Filtering engine', 'pos' => 1, 'nextId_regex' => '\b([0-9a-zA-Z]{6}-[0-9a-zA-Z]{6,11}-[0-9a-zA-Z]{2,4})\b'],
         'clamd' => ['basefile' => 'clamav/clamd.log', 'cat' => 'Filter engine', 'name' => 'Virus signatures engine', 'pos' => 4],
         'spamd' => ['basefile' => 'mailscanner/spamd.log', 'cat' => 'Filter engine', 'name' => 'SpamAssassin engine', 'pos' => 2],
         'clamspamd' => ['basefile' => 'clamav/clamspamd.log', 'cat' => 'Filter engine', 'name' => 'Spam signatures engine', 'pos' => 3],

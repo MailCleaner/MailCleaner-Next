@@ -33,7 +33,6 @@ SRCDIR=$(grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 if [ "SRCDIR" = "" ]; then
 	SRCDIR=/var/mailcleaner
 fi
-MCVERSION=$(cat /usr/mailcleaner/etc/mailcleaner/version.def | cut -c1-4)
 LOGFILE=/tmp/mc_install_options.log
 
 # Font properties
@@ -57,11 +56,6 @@ function usage() {
 }
 
 function messagesniffer() {
-	if [ "$MCVERSION" -lt "2016" ]; then
-		printf "You can't install MessageSniffer option in smaller version than 2016.xx \n"
-		exit 1
-	fi
-
 	printf "Please provide MessageSniffer licenses informations. \n"
 	read -p "License ID: " license_id
 	read -p "Auth Code: " auth_code
@@ -91,11 +85,6 @@ function messagesniffer() {
 }
 
 function spamhaus() {
-	if [ "$MCVERSION" -lt "2018" ]; then
-		printf "You can't install SpamHaus option in smaller version than 2018.xx \n"
-		exit 1
-	fi
-
 	while [[ "$shpackage" != "1" && "$shpackage" != "2" && "$shpackage" != "3" && "$shpackage" != "0" ]]; do
 		printf "Do you want to install \n   1 - the ZEN package\n   2 - the Content package\n   3 - Both of them\n   0 - Exit\nWARNING : if you already have a package and want to add a new one afterwards, make sure the token are the same and answer 3\n"
 		read -p "Package number: " shpackage
@@ -144,8 +133,8 @@ EOF
 name=SPAMHAUSDBL
 type=URIRBL
 dnsname=${token}.dbl.dq.spamhaus.net
-sublist=127.0.1.\d+,SPAMHAUSDBL,Spamhaus domain blocklist
-callonip=1
+sublist=127.0.0.(1?\d\d?|2[0-4]\d|25[0-4]),SPAMHAUSDBL,Spamhaus domain blocklist
+callonip=0
 ishbl=0
 EOF
 
@@ -265,22 +254,14 @@ EOF
 }
 
 function eset() {
-	REINSTALL=$1
-	if [[ $REINSTALL == '--reinstall' ]]; then
-		printf "Reinstalling ESET ..."
-		REINSTALL=1
-		apt-mark unhold efs
-	elif [[ $REINSTALL != '--' ]]; then
-		printf "Invalid argument $1\n" | tee &>>$LOGFILE
-		exit 1
+	if [[ -n $1 ]]; then
+		REINSTALL=$1
+		if [[ $REINSTALL != '--reinstall' ]]; then
+			printf "Invalid argument $1\n" | tee &>>$LOGFILE
+			exit 1
+		fi
 	fi
 
-	if [ "$MCVERSION" -lt "2016" ]; then
-		printf "You can't install ESET option in smaller version than 2016.xx \n" | tee &>>$LOGFILE
-		exit 1
-	fi
-
-	printf "\n"
 	read -p "Please provide ESET MSP username (email address) : " user
 	if perl -e "my \$user = '$user'; chomp(\$user); exit(1) unless '\$user' =~ m/^([^@]+)@([a-zA-Z\-ßàÁâãóôþüúðæåïçèõöÿýòäœêëìíøùîûñé]+\.)+[a-zA-Z]{2,}$/;"; then
 		printf "Invalid email address '$user'.\n" | tee &>>$LOGFILE
@@ -366,27 +347,10 @@ function eset() {
 
 	echo ${FONT_BOLD}${FONT_GREEN}ESET enabled Successfully${FONT_RESET}
 
-	res="$(/opt/eset/efs/sbin/setgui -gre)"
-	SUCCESS=$(echo $res | grep 'GUI is enabled')
-	if [[ $SUCCESS == '' ]]; then
-		printf "Failed to enable GUI. Try again with:\n\n/opt/eset/efs/sbin/setgui -gre\n\n" | tee &>>$LOGFILE
-		exit 1
-	else
-		URL=$(echo $res | sed -r 's/.*URL: ([^ ]+).*/\1/')
-		USER=$(echo -e $res | sed -r 's/.*Username: ([^ ]+).*/\1/')
-		PASS=$(echo -e $res | sed -r 's/.*Password: ([^ ]+).*/\1/')
-		printf "${FONT_BOLD}${FONT_RED}IMPORTANT: ${FONT_RESET}"
-		printf "In order to further configure ESET, log in with:\n\n\tURL:  $URL\n\tUser: $USER\n\tPass: $PASS\n\nYou can reset this password at any time with:\n\n/opt/eset/efs/sbin/setgui -gre\n\n"
-	fi
-
 	exit 0
 }
-function kaspersky() {
-	if [ "$MCVERSION" -lt "2016" ]; then
-		printf "You can't install Kaspersky option in smaller version than 2016.xx \n"
-		exit 1
-	fi
 
+function kaspersky() {
 	printf "Please provide Kaspersky licenses informations. \n"
 	read -p "The PATH to the Kaspersky license file (ended with .key or .KEY): " key_file
 

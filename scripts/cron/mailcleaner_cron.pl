@@ -68,6 +68,28 @@ if (defined $options{h}) {
     usage();
 }
 
+############################################
+# Restart Fail2Ban if inaccessible/stopped #
+############################################
+unless ( -e $config{'VARDIR'}."/run/fail2ban.disabled" ) {
+    my $timeout = 5;
+    my $failed = 0;
+    my $cmd = "/usr/bin/fail2ban-client status 2>/dev/null";
+    eval {
+        local $SIG{ALRM} = sub { die "timeout\n" };
+        alarm $timeout;
+        system($cmd);
+        $failed = 1 if ($?);
+        alarm 0;
+    };
+    if ($@) {
+        print("fail2ban not responding, restarting...\n");
+    } elsif ($failed) {
+        print("fail2ban not running, restarting...\n");
+        system($config{'SRCDIR'}."/etc/init.d/fail2ban restart");
+    }
+}
+
 ###########################
 # We need the DB to be okay to make sure we are dropping
 # the right informations in configuration files
@@ -269,10 +291,7 @@ unless ($skip) {
         if ( my $pid_updates = fork) {
             push(@wait,$pid_updates);
         } elsif (defined $pid_updates) {
-
-            #print "doing system updates...";
             system($config{'SRCDIR'}."/bin/check_update.pl ".$randomize_option);
-            #print "done.\n";
             exit;
         }
     }
@@ -284,7 +303,6 @@ unless ($skip) {
         if (my $pid_rules = fork) {
             push(@wait,$pid_rules);
         } elsif (defined $pid_rules) {
-            #print "doing rules updates...";
             system($config{'SRCDIR'}."/bin/fetch_clamspam.sh ".$randomize_option);
             system($config{'SRCDIR'}."/bin/fetch_spamc_rules.sh ".$randomize_option);
             system($config{'SRCDIR'}."/bin/fetch_spamc_modules_conf.sh ".$randomize_option);
@@ -316,9 +334,7 @@ unless ($skip) {
             if (my $pid_learn = fork) {
                 push(@wait,$pid_learn);
             } elsif (defined $pid_learn && $mcDataServicesAvailable) {
-                #print "doing auto-learn...";
                 system($config{'SRCDIR'}."/bin/CDN_fetch_bayes.sh");
-                #print "done.\n";
                 exit;
             }
         }

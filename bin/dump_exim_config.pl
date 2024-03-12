@@ -848,13 +848,17 @@ sub get_exim_config($stage)
     $config{'__ERRORS_REPLY_TO__'} = $row{'errors_reply_to'};
 
     if ( -f "${SRCDIR}/etc/mailcleaner/version.def" && -f "${SRCDIR}/etc/edition.def") {
-        my $cmd = "cat ".${SRCDIR}."/etc/mailcleaner/version.def";
-        my $version = `$cmd`;
-        chomp($version);
+        my ($version, $cmd) = ('', '');
+        unless (-f $conf->getOption('VARDIR').'/spool/mailcleaner/hide_smtp_version') {
+            $cmd = "cat ".$conf->getOption('SRCDIR')."/etc/mailcleaner/version.def";
+            $version = `$cmd`;
+            chomp($version);
+            $version = ' '.$version;
+        }
         $cmd = "cat ".${SRCDIR}."/etc/edition.def";
         my $edition = `$cmd`;
         chomp($edition);
-        $config{'__SMTP_BANNER__'} = '$smtp_active_hostname ESMTP MailCleaner ('.$edition.' '.$version.') $tod_full';
+        $config{'__SMTP_BANNER__'} = '$smtp_active_hostname ESMTP MailCleaner ('.$edition.$version.') $tod_full';
     }
 
     $config{'host_reject'} = $row{'host_reject'};

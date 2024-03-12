@@ -52,6 +52,7 @@ sub do($this)
 
     my $current = `hostnamectl hostname`;
     chomp($current);
+    $current //= 'mailcleaner';
     $dlg->build('Enter the new hostname', $current);
     my $name = $dlg->display();
 
@@ -63,6 +64,8 @@ sub do($this)
             $name .= " $1";
         }
         `echo 127.0.0.1 localhost $name >> $this->{hostsfile}`;
+    } else {
+        print("Invalid hostname: $name\n");
     }
 }
 

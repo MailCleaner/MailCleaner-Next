@@ -228,6 +228,7 @@ sub getRefFields($file)
         if ( $_ =~ /\s+(\S+)\s+(\S+)(.*)\,?\s*$/ ) {
             my $deffull = $2.$3;
             my $def = $2;
+            $def =~ s/\ //g;
             my $n = $1;
             $deffull =~ s/\s*\,\s*$//g;
             $fields{$order."_".$n} = { previous => $previous, def => $def, deffull => $deffull };
@@ -423,7 +424,7 @@ sub compareUpdateTable($db_ref,$tablename,$tablefile,$update)
         $f =~ s/^(\d+\_)//;
         $nonofields{$f} = $reffields{$reff};
         if (! defined($actualfields{$f})) {
-            print "     MISSING column $tablename.$f (after ".$reffields{$reff}{previous}.")..";
+            print "     MISSING column $tablename.$f (after ".$reffields{$reff}{previous}.")";
             if ($update) {
                 my $after = "";
                 if (! $reffields{$reff}{previous} eq '') {
@@ -434,13 +435,27 @@ sub compareUpdateTable($db_ref,$tablename,$tablefile,$update)
                     print "ERROR, cannot create column: ".$db->getError()."\nABORTED\n";
                     exit 1;
                 } else {
-                    print " FIXED !";
+                    print " FIXED !\n";
                 }
             }
             print "\n";
+        } else {
+            my $clean = $reff;
+            $clean =~ s/^\d+_//;
+            if (lc($reffields{$reff}{'def'}) ne lc($actualfields{$clean}{'def'})) {
+                print "     INCORRECT column type '".$actualfields{$clean}{'def'}."' != '".$reffields{$reff}{'def'}."' $tablename.$f";
+                if ($update) {
+                    my $sql = "ALTER TABLE $tablename MODIFY $clean $reffields{$reff}{'deffull'};";
+                    if (! $db->execute($sql)) {
+                        print " ERROR, cannot alter column $clean in $tablename: ".$db->getError()."\nABORTED\n";
+                        exit 1;
+                    } else {
+                        print " FIXED !\n";
+                    }
+                }
+            }
         }
     }
-
 
     # check useless columns
     foreach my $f (keys %actualfields) {

@@ -102,7 +102,7 @@ sub new($id,$daemon,$batchid)
         $self->{accounting} = MailScanner::Accounting::new('post');
     }
 
-    if ( $self->{id} =~ m/^([A-Za-z0-9]{6}-[A-Za-z0-9]{6}-[A-Za-z0-9]{2})/ ) {
+    if ( $self->{id} =~ m/^([A-Za-z0-9]{6}-[A-Za-z0-9]{6,11}-[A-Za-z0-9]{2,4})/ ) {
         $self->{exim_id} = $1;
     }
     bless $self, 'SpamHandler::Message';

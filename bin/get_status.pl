@@ -80,9 +80,9 @@ my $mode = "";
 my $cmd;
 
 my @order = (
-    { 'id' => 'exim_stage1', 'service' => 'exim4@1', 'human' => 'Incoming MTA' },
-    { 'id' => 'exim_stage2', 'service' => 'exim4@2', 'human' => 'Filtering MTA' },
-    { 'id' => 'exim_stage4', 'service' => 'exim4@4', 'human' => 'Outgoing MTA' },
+    { 'id' => 'exim_stage1', 'service' => 'exim4@1', 'human' => 'Incoming' },
+    { 'id' => 'exim_stage2', 'service' => 'exim4@2', 'human' => 'Filtering' },
+    { 'id' => 'exim_stage4', 'service' => 'exim4@4', 'human' => 'Outgoing' },
     { 'id' => 'apache', 'service' => 'apache2', 'human' => 'Web Server' },
     { 'id' => 'mailscanner', 'service' => 'mailscanner', 'human' => 'Filtering Engine' },
     { 'id' => 'mysql_master', 'service' => 'mariadb@master', 'human' => 'Master Database' },
@@ -183,7 +183,7 @@ if ($mode_given =~ /s/) {
         }
         $res = `$cmd`;
         chomp($res);
-        $order[$_]->{'queue'} = $res;
+        $order[$_]->{'queue'} = "$res";
     }
     if ($verbose) {
         foreach ( 0 .. 2 ) {

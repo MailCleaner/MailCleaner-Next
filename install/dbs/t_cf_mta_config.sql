@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS mta_config;
 CREATE TABLE mta_config (
   set_id			int(11) NOT NULL DEFAULT 1,
   stage				int(2) NOT NULL DEFAULT 1,
-  header_txt			blob NOT NULL DEFAULT '',
+  header_txt			blob NOT NULL,
   accept_8bitmime		enum('true','false') NOT NULL DEFAULT 'true',
   print_topbitchars		enum('true','false') NOT NULL DEFAULT 'true',
   return_path_remove		enum('true','false') NOT NULL DEFAULT 'true',
@@ -14,7 +14,7 @@ CREATE TABLE mta_config (
 -- retry
   smtp_relay			enum('true','false') NOT NULL DEFAULT 'false',
   relay_from_hosts		blob,
-  allow_relay_for_unknown_domains   bool NOT NULL DEFAULT '0',
+  allow_relay_for_unknown_domains   tinyint(1) NOT NULL DEFAULT '0',
   no_ratelimit_hosts            blob,
   smtp_enforce_sync             enum('true','false') NOT NULL DEFAULT 'true',
   allow_mx_to_ip        enum('true','false') NOT NULL DEFAULT 'false',
@@ -31,27 +31,27 @@ CREATE TABLE mta_config (
   sender_reject			blob,
   recipient_reject		blob,
   user_reject			blob,
-  verify_sender			bool NOT NULL DEFAULT '1',
+  verify_sender			tinyint(1) NOT NULL DEFAULT '1',
   global_msg_max_size  char(50) DEFAULT '50M',
   max_rcpt			int(10) NOT NULL DEFAULT 1000,
   received_headers_max  int(10) NOT NULL DEFAULT 30,
-  use_incoming_tls     bool NOT NULL DEFAULT '0',
+  use_incoming_tls     tinyint(1) NOT NULL DEFAULT '0',
   tls_certificate       char(50) NOT NULL DEFAULT 'default',
-  tls_use_ssmtp_port    bool NOT NULL DEFAULT '0',
+  tls_use_ssmtp_port    tinyint(1) NOT NULL DEFAULT '0',
   tls_certificate_data  blob,
   tls_certificate_key   blob,
   hosts_require_tls     blob,
   domains_require_tls_from     blob,
   domains_require_tls_to     blob,
   hosts_require_incoming_tls  blob,
-  use_syslog           bool NOT NULL DEFAULT '0',
+  use_syslog           tinyint(1) NOT NULL DEFAULT '0',
   smtp_banner          varchar(255) NOT NULL DEFAULT '$smtp_active_hostname ESMTP Exim $version_number $tod_full',
   errors_reply_to      varchar(255) DEFAULT '',
   rbls                 varchar(255),
   rbls_timeout          int(10) DEFAULT 5,
   rbls_ignore_hosts     blob DEFAULT '',
   bs_rbls              varchar(255),
-  rbls_after_rcpt       bool NOT NULL DEFAULT '1',
+  rbls_after_rcpt       tinyint(1) NOT NULL DEFAULT '1',
   callout_timeout       int(10) DEFAULT 10,
   retry_rule            varchar(255) NOT NULL DEFAULT 'F,4d,2m',
   ratelimit_enable      int(1) DEFAULT '0',
@@ -60,25 +60,25 @@ CREATE TABLE mta_config (
   trusted_ratelimit_enable  int(1) DEFAULT '0',
   trusted_ratelimit_rule    varchar(255) DEFAULT '60 / 1m / strict',
   trusted_ratelimit_delay   int(10) DEFAULT 10,
-  outgoing_virus_scan   bool NOT NULL DEFAULT '0',
-  mask_relayed_ip       bool NOT NULL DEFAULT '0',
-  block_25_auth         bool NOT NULL DEFAULT '0',
-  masquerade_outgoing_helo bool NOT NULL DEFAULT '0',
-  forbid_clear_auth     bool NOT NULL DEFAULT '0',
+  outgoing_virus_scan   tinyint(1) NOT NULL DEFAULT '0',
+  mask_relayed_ip       tinyint(1) NOT NULL DEFAULT '0',
+  block_25_auth         tinyint(1) NOT NULL DEFAULT '0',
+  masquerade_outgoing_helo tinyint(1) NOT NULL DEFAULT '0',
+  forbid_clear_auth     tinyint(1) NOT NULL DEFAULT '0',
   relay_refused_to_domains    blob,
   dkim_default_domain   varchar(255),
   dkim_default_selector varchar(255),
   dkim_default_pkey     blob,
-  reject_bad_spf        bool NOT NULL DEFAULT '0',
-  reject_bad_rdns       bool NOT NULL DEFAULT '0',
-  dmarc_follow_reject_policy   bool NOT NULL DEFAULT '0',
-  dmarc_enable_reports  bool NOT NULL DEFAULT '0',
+  reject_bad_spf        tinyint(1) NOT NULL DEFAULT '0',
+  reject_bad_rdns       tinyint(1) NOT NULL DEFAULT '0',
+  dmarc_follow_reject_policy   tinyint(1) NOT NULL DEFAULT '0',
+  dmarc_enable_reports  tinyint(1) NOT NULL DEFAULT '0',
   spf_dmarc_ignore_hosts blob DEFAULT '',
-  log_subject bool NOT NULL DEFAULT '0',
-  log_attachments bool NOT NULL DEFAULT '0',
-  ciphers              varchar(255) NOT NULL DEFAULT 'SECURE256:+SECURE128:-VERS-TLS-ALL:+VERS-TLS1.2:-DHE-DSS:-CAMELLIA-128-CBC',
-  allow_long		bool NOT NULL DEFAULT '1',
-  folding		bool NOT NULL DEFAULT '0',
+  log_subject tinyint(1) NOT NULL DEFAULT '0',
+  log_attachments tinyint(1) NOT NULL DEFAULT '0',
+  ciphers              varchar(255) NOT NULL DEFAULT 'ALL:!aNULL:!ADH:!eNULL:!LOW:!EXP:RC4+RSA:+HIGH:+MEDIUM:!SSLv2',
+  allow_long		tinyint(1) NOT NULL DEFAULT '1',
+  folding		tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (set_id, stage)
 );
 
@@ -89,52 +89,39 @@ INSERT INTO mta_config SET stage=2;
 INSERT INTO mta_config SET stage=4;
 
 UPDATE mta_config SET tls_certificate_data='-----BEGIN CERTIFICATE-----
-MIIDazCCAlOgAwIBAgIUQvGjAyONyjxDMdeoZijH7MKWxd0wDQYJKoZIhvcNAQEL
-BQAwRTELMAkGA1UEBhMCQ0gxCjAIBgNVBAgMASAxFDASBgNVBAoMC01haWxDbGVh
-bmVyMRQwEgYDVQQDDAttYWlsY2xlYW5lcjAeFw0yNDAxMjIxNzU3MTRaFw0zNDAx
-MTkxNzU3MTRaMEUxCzAJBgNVBAYTAkNIMQowCAYDVQQIDAEgMRQwEgYDVQQKDAtN
-YWlsQ2xlYW5lcjEUMBIGA1UEAwwLbWFpbGNsZWFuZXIwggEiMA0GCSqGSIb3DQEB
-AQUAA4IBDwAwggEKAoIBAQCs0PFYVjF7COWgpHbIisisC52sR3wvon0HZf22vF40
-Jx7vpGOnmi50mbzDrkN/MQGK57eeAq50UpqQq/GFH/h9nTaM3IDcEo94XiLZj239
-zObW62IP7C8Iv5DCQwwYzrpS9EP15hcVH2UtCgUvZmkcNM3klP2nRi6bGp+xj+wd
-ZjGr8eWUc47DXk4N8ffL34ulWWjtfYUDA9pB2yaM0pWlfJ729hQ/MsWCcyU5ULTO
-olV5YZ8x8LYCTqxGnls8zqb9R8Q0WUOwS7mIW4C/+Haf21DLQkone547ulveWbhs
-U0PwBXZAaxLWilNbgZTpDSL+GMNXpUFUyqBxaMwMe1t7AgMBAAGjUzBRMB0GA1Ud
-DgQWBBQyQVzojeKp/ex2NXk8mo0sGR3a8zAfBgNVHSMEGDAWgBQyQVzojeKp/ex2
-NXk8mo0sGR3a8zAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQCf
-GXcA3bJKJT63L3SETY5ZaPttNwwSIBwfDTWiCjEiZHfF/lV6aYHdS7GCK8pGB3WZ
-F/qei/upQPgG8QykBQcKxmH759GGvi1GiFzJosvDqE+gmhZRssrjr7GBGSKIHzmV
-zrtyplCFxOvO2r1V4OLfMWlnoiiFf52UVG+Lpmk+gdoQn38ytIw2LNblwKo7GXm+
-Dzpoa5M4hE90P+eSaVSP6wVF06s6TiO9UrlVTS0cbDe2Snn4+9tDltQ0CEmbun6o
-UPvaiGy1H4e3bcxIt4RXPI0JfIbLbX+lk31vQvvhqlE3pKlvabLvWVAg2qEA2ZjT
-UhAhvL73nPKbsMwO+6+W
+MIIDNzCCAqCgAwIBAgIJAIz+d3lfXnn8MA0GCSqGSIb3DQEBBAUAMHExCzAJBgNV
+BAYTAkNIMQ0wCwYDVQQIEwRWYXVkMREwDwYDVQQHEwhMYXVzYW5uZTEUMBIGA1UE
+ChMLTWFpbENsZWFuZXIxFDASBgNVBAsTC01haWxDbGVhbmVyMRQwEgYDVQQDEwtt
+YWlsY2xlYW5lcjAeFw0wNzAxMTIxMDA0NDJaFw0zNDA1MjkxMDA0NDJaMHExCzAJ
+BgNVBAYTAkNIMQ0wCwYDVQQIEwRWYXVkMREwDwYDVQQHEwhMYXVzYW5uZTEUMBIG
+A1UEChMLTWFpbENsZWFuZXIxFDASBgNVBAsTC01haWxDbGVhbmVyMRQwEgYDVQQD
+EwttYWlsY2xlYW5lcjCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEArsapbAh3
+ouV3fj2z5vRxA0igC13fpx0RGJrTUfXW936OyPcEcelLUmoV+jXNybhGA3bvtrc1
+/j3ooWqwDvjvmUIKVGmqY+DZCxIdx3cdy+OqrdstMoYFEcn80rEEAVUEIUv47EZM
+KnP8GovQ105SZs64cM1mQJHwzWPBMWOYclUCAwEAAaOB1jCB0zAdBgNVHQ4EFgQU
+gFF87gp4bNMmGtzOo61M31K/B0cwgaMGA1UdIwSBmzCBmIAUgFF87gp4bNMmGtzO
+o61M31K/B0ehdaRzMHExCzAJBgNVBAYTAkNIMQ0wCwYDVQQIEwRWYXVkMREwDwYD
+VQQHEwhMYXVzYW5uZTEUMBIGA1UEChMLTWFpbENsZWFuZXIxFDASBgNVBAsTC01h
+aWxDbGVhbmVyMRQwEgYDVQQDEwttYWlsY2xlYW5lcoIJAIz+d3lfXnn8MAwGA1Ud
+EwQFMAMBAf8wDQYJKoZIhvcNAQEEBQADgYEAKETzA8aOHt0gRtTvxTTCBSYLGVg/
+7+d2/xQBZ2zRZZe4n3Pagj+cePrPBbx3PYkOt6RvKUWBtG43YyavNks9SdcWpICv
+SJacAyj+ioDV+9t15k6maSqUgfCN+yiq18xb/zyfrjZnLGZUGD8drQp1wTFsBP+d
+EDmfGWmrn6nnX1g=
 -----END CERTIFICATE-----' WHERE stage=1;
 
-UPDATE mta_config SET tls_certificate_key='-----BEGIN PRIVATE KEY-----
-MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCs0PFYVjF7COWg
-pHbIisisC52sR3wvon0HZf22vF40Jx7vpGOnmi50mbzDrkN/MQGK57eeAq50UpqQ
-q/GFH/h9nTaM3IDcEo94XiLZj239zObW62IP7C8Iv5DCQwwYzrpS9EP15hcVH2Ut
-CgUvZmkcNM3klP2nRi6bGp+xj+wdZjGr8eWUc47DXk4N8ffL34ulWWjtfYUDA9pB
-2yaM0pWlfJ729hQ/MsWCcyU5ULTOolV5YZ8x8LYCTqxGnls8zqb9R8Q0WUOwS7mI
-W4C/+Haf21DLQkone547ulveWbhsU0PwBXZAaxLWilNbgZTpDSL+GMNXpUFUyqBx
-aMwMe1t7AgMBAAECggEAIiXvarstb9hkN4gICLyTxptM/rvpaCg9eHbI2ZEDNF7+
-l+/t2TJ4N4YhbLFEmR9/5IjBGbIB8u5XqHqxcNLOcVPdcZwowlPQkcJYNJFI9LvG
-aXV9nRPYf2wLGLfS7hv7aWTnAPIEYaIghfPS7njYEEDG5oIiVSljEDcEkzuTNoOl
-eu2/NQWP93GC/98bQ4hTIWNFXkw36QBtsc4YnBEH6CMXcfZ6fQrIk+g703NBF8EE
-CXgrFv8Rvb6ak8YFBLrqmIbiNVRKZjD9QBA2aggzy+i7GY5eaAj4gQiLkxxr1UJG
-h6vl7RRTfwUL6BYG0RNb/Su+UHWuAkT5Xv2XXZJjUQKBgQDpsU8lqHKuZfG0EQrO
-Qm6sG4wtXORkRFA5R4sk+6hfvXMEcYERSWtW5iGdx9KGQUNEipaJ0MbdmaG7BuTg
-LQNJGlyamxmE8LD3PDJ6k9DgsISlHtfzDAjU57L/T63YaQVzlJEWrd/qSaVbEiyw
-lJeF1a0kwKYdpXa1aJ4dVXzgfwKBgQC9UAK9+Cpe0qkpt0bbrTCxKt2+erP4HdwZ
-wfoVsCEUABh6RzA1dThbOVeVXdJiXWlFTy3+RGCrC1KYPpDwoQOPyu4c+3LAtzwe
-hAlER57U6iYZgC8xspHkIk925UG9bLTj47CEPj8UFVMj6Z1YROsETHGPZ1rlD02t
-rJK7JViHBQKBgDbhpCPE5oHcgSH3qqD76v/STF5O5XhCrtB049GgpE8vr7ZIbbZA
-lsvGqfhi+Cb9Zq3PGkFtXXanYNsKaG/ZQl9FqJ/KcvjMidLWOUieNDzAV7Zrgu2a
-UuylKV1aOgqLx3L4XgaEeQSNnR7BKuuhSeBtaQcrkxd9R16dHhznebdDAoGBAI0U
-u3ZnIuxXgcmc1CmR/9+IWohBWS1m00g+zuiqwXvuNk+qDbtJCB6ztRmTOd4kTvdf
-8p6yxnexkHP07H7m/4iBasIegX4tD5iOPXmtBikV9h668HDQ6vhguWeZokxQXt4W
-KM3ktY159uOkjaXidmJVtatxEsPxi6oKGa9uPXMhAoGALkkvCXKP5hX1uQ2DcKUk
-Ogo0ZaGg60DF3//vEIQJxljmBMg7xDSlG8FR6pEPdrmFjkviVwU62r5dl8uW5n+4
-Jz2ST172x71PjcwYNrKpZW6ZRdutDL01Srrx8u4oVLuT6w3jeUHyjLhYvvu63ZWJ
-3rV5EMcPyP3F0N148qA8lB0=
------END PRIVATE KEY-----' WHERE stage=1;
+UPDATE mta_config SET tls_certificate_key='-----BEGIN RSA PRIVATE KEY-----
+MIICXAIBAAKBgQCuxqlsCHei5Xd+PbPm9HEDSKALXd+nHREYmtNR9db3fo7I9wRx
+6UtSahX6Nc3JuEYDdu+2tzX+PeiharAO+O+ZQgpUaapj4NkLEh3Hdx3L46qt2y0y
+hgURyfzSsQQBVQQhS/jsRkwqc/wai9DXTlJmzrhwzWZAkfDNY8ExY5hyVQIDAQAB
+AoGAZHeson6HjytLMlVz2fqAEHwqC/6tdxn9XuB5Q28HYIPuvlVIx9ZsxvZWpdtR
+7XgxPwKar7THo9ugo1F53VF6IPMZi3VYWMd9FIkfcN07zCKL7arzr95ld4fJmsRp
+A5M+6IJNm8M75nuRkHa2eJ7FUQOmiLVv2UknCi/5npveV0ECQQDX5VDVZ/QBxww7
+kU77Sq9s0as9ypIXQmaYaDuBiy3ZUk3Q4VZTgEYUils+5b/ayprXKcSwg34ZZb+9
++yy1WtLFAkEAzz3xNJG12AgDUlUWwXHqTkCFlqtIj9S5cRTuEf0ToRRFgvlRplZ8
+CMpFB8o9o6s+GfVR57qg3jZm18EfJuDaUQJADiEKzjyUYn1lVoym75kuq9945n1Y
+XD9TOYwwwMScBon1X8MvhB1z+KopWI9uo+H4ijZIkgi4+u6GwucqQOAlxQJBAMwS
+y+2fOnjD0zmE7oaI/VgXMzUd77Mqn31aReDS3Dx3MMf7aMqqSTOCsp0sKqx7mQiI
+ySGuZnDLE1SMKHfpXTECQBTjimTv+BdFGxHjp4/+FP2Xys3gqyJRVB7CFXJ3tfpP
+BuReZ9fpwTa3x07Uh/Ex1K/+IE3Xs3AarIfNnfK6VSk=
+-----END RSA PRIVATE KEY-----' WHERE stage=1;
+

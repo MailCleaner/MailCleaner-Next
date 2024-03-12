@@ -10,7 +10,7 @@
 function is_exim_id($id)
 {
     $tmp = [];
-    if (preg_match('/^[a-z,A-Z,0-9]{6}\-[a-z,A-Z,0-9]{6}\-[a-z,A-Z,0-9]{2}$/', $id, $tmp)) {
+    if (preg_match('/^[a-z,A-Z,0-9]{6}\-[a-z,A-Z,0-9]{6,11}\-[a-z,A-Z,0-9]{2,4}$/', $id, $tmp)) {
         return true;
     }
     return false;

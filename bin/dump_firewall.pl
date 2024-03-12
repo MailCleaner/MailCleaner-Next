@@ -88,7 +88,7 @@ symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc
 my %rules;
 get_default_rules(\%rules);
 get_external_rules(\%rules);
-
+get_api_rules(\%rules);
 do_start_script(\%rules);
 do_stop_script(\%rules);
 
@@ -129,6 +129,25 @@ sub get_default_rules($rules)
     my @subs = getSubnets();
     foreach my $sub (@subs) {
         $rules->{"$sub ssh TCP"} = [ $services{'ssh'}[0], $services{'ssh'}[1], $sub ];
+    }
+}
+
+sub get_api_rules($rules)
+{
+    my $sth = $dbh->prepare("SELECT api_admin_ips, api_fulladmin_ips FROM system_conf");
+    $sth->execute() or fatal_error("CANNOTEXECUTEQUERY", $dbh->errstr);
+    my %ips;
+    while (my $ref = $sth->fetchrow_hashref() ) {
+        my @notempty;
+        push (@notempty, $ref->{'api_admin_ips'}) if (defined($ref->{'api_admin_ips'}) && $ref->{'api_admin_ips'} != '');
+        push (@notempty, $ref->{'api_fulladmin_ips'}) if (defined($ref->{'api_fulladmin_ips'}) && $ref->{'api_fulladmin_ips'} != '');
+        foreach my $ip (expand_host_string(my $string = join("\n", @notempty),('dumper'=>'system_conf/api_admin_ips'))) {
+            $ips{$ip} = 1;
+        }
+    }
+    $ips{$_} = 1 foreach (getSubnets());
+    foreach my $ip (keys %ips) {
+        $rules{$ip." soap TCP"} = [ $services{'soap'}[0], $services{'soap'}[1], $ip ];
     }
 }
 
@@ -292,7 +311,6 @@ sub do_start_script($rules)
     }
 
     my @blacklist_files = ('/usr/mailcleaner/etc/firewall/blacklist.txt', '/usr/mailcleaner/etc/firewall/blacklist_custom.txt');
-    my $blacklist = 0;
     my $blacklist_script = '/usr/mailcleaner/etc/firewall/blacklist';
     unlink $blacklist_script;
     my $BLACKLIST;

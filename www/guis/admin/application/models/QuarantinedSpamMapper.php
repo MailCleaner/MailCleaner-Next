@@ -164,12 +164,20 @@ class Default_Model_QuarantinedSpamMapper
                 $this->getDbTable()->setTableName('spam_' . $init);
             }
         }
+
         $query = $this->getDbTable()->select();
         if (isset($params['hidedup']) && $params['hidedup'] != "") {
             $query->from($this->getDbTable()->getTableName(), 'COUNT(DISTINCT exim_id) as count');
         } else {
             $query->from($this->getDbTable()->getTableName(), 'COUNT(*) as count');
         }
+        ### newsl
+        if (!empty($params['showSpamOnly'])) {
+            $query->where('is_newsletter != ?', 1);
+        } else if (!empty($params['showNewslettersOnly'])) {
+            $query->where('is_newsletter = ?', 1);
+        }
+
         $this->buildBaseFetchAll($query, $params);
 
         $nbspams = 0;

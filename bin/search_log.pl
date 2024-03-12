@@ -233,7 +233,7 @@ if (@messages > 0) {
                 print $FULLOG $msg_o{'nid'}.'|' if ($batchwithlog);
                 print $FULLOG $line;
                 print $FULLOG "\n";
-                if ($line =~ m/ready to be delivered with new id: (\S{16})/) {
+                if ($line =~ m/ready to be delivered with new id: (\S{16,23})/) {
                     $out_id = $1;
                 }
             }
@@ -279,15 +279,15 @@ sub populateIDs($file,$what,$store)
         next if ($line !~ /^(\d\d\d\d)-(\d\d)-(\d\d)/);
         my $date = "$1$2$3";
         next if $date < $start;
-        next if ($line =~ /^(\d\d\d\d)-(\d\d)-(\d\d) \d\d:\d\d:\d\d\ (\S{16} )?DEBUG /);
+        next if ($line =~ /^(\d\d\d\d)-(\d\d)-(\d\d) \d\d:\d\d:\d\d\ (\S{16,23} )?DEBUG /);
         next if ($line =~ /^(\d\d\d\d)-(\d\d)-(\d\d) \d\d:\d\d:\d\d\ Authentication passed/);
         next if ($line =~ /^(\d\d\d\d)-(\d\d)-(\d\d) \d\d:\d\d:\d\d\ Accepting authenticated/);
         next if ($line =~ /^(\d\d\d\d)-(\d\d)-(\d\d) \d\d:\d\d:\d\d\ Accepting authorized relaying/);
         next if ($line =~ /Warning: Doing LDAP verification for/);
-        if ($line =~ /^(\d\d\d\d)-(\d\d)-(\d\d)\ \d\d:\d\d:\d\d\ ([-a-zA-Z0-9]{16})\ /) {
+        if ($line =~ /^(\d\d\d\d)-(\d\d)-(\d\d)\ \d\d:\d\d:\d\d\ ([-a-zA-Z0-9]{16,23})\ /) {
             my $id = $4;
             my $nid = '';
-            if ($line =~ /250 OK id=(\S{16})/ && $line !~ /T=remote_smtp/) {
+            if ($line =~ /250 OK id=(\S{16,23})/ && $line !~ /T=remote_smtp/) {
                 $nid = $1;
                 $internal_messages{$nid} = 1;
             }
@@ -353,7 +353,7 @@ sub searchExim($file,$store)
     }
 
     while (<$fh>) {
-        if (/^(\d\d\d\d)-(\d\d)-(\d\d)\ \d\d:\d\d:\d\d\ (\S{16})\ /) {
+        if (/^(\d\d\d\d)-(\d\d)-(\d\d)\ \d\d:\d\d:\d\d\ (\S{16,23})\ /) {
             if (defined($internal_messages{$4}) ) {
                 $store->{$4} .= $_;
             }
@@ -376,7 +376,7 @@ sub searchMailScanner($file,$store)
     }
 
     while (<$fh>) {
-        if (/\b(\S{6}-\S{6}-\S{2})\b/) {
+        if (/\b(\S{6}-\S{6,11}-\S{2,4})\b/) {
             if (defined($internal_messages{$1}) ) {
                 $store->{$1} .= $_;
             }
@@ -400,10 +400,10 @@ sub searchSpamHandler($file,$store)
     }
 
     while (<$fh>) {
-        if (/^(\d\d\d\d)-(\d\d)-(\d\d)\ \d\d:\d\d:\d\d\ \(\d+\)\ \d+: message (\S{16})/) {
+        if (/^(\d\d\d\d)-(\d\d)-(\d\d)\ \d\d:\d\d:\d\d\ \(\d+\)\ \d+: message (\S{16,23})/) {
             if (defined($internal_messages{$4}) ) {
                 $store->{$4} .= $_;
-                if (/ready to be delivered with new id: (\S{16})/) {
+                if (/ready to be delivered with new id: (\S{16,23})/) {
                        $internal_messages{$1} = 1;
                 }
             }
@@ -419,8 +419,6 @@ sub printBatchResult($msg)
     my $_datein = '';
     my $_dateout = '';
     my $_outhost = '';
-    my $_inid = $msg_o{'id'};
-    my $_outid = $msg_o{'nid'};
     my $_from = '';
     my $_tos = '';
     my $_accepted = 0;
@@ -638,7 +636,7 @@ sub processStage4Logs($id)
                 if ($shline =~ m/^(\d{4}-\d\d-\d\d\ \d\d:\d\d:\d\d)/ ) {
                     $date = $1;
                 }
-                if ($shline =~ /ready to be delivered with new id: (\S{16})/) {
+                if ($shline =~ /ready to be delivered with new id: (\S{16,23})/) {
                     ($dateout, $delivered, $outreport, $outmessage, $outhost) = processStage4Logs($1);
                     $outdateset = 1;
                 }

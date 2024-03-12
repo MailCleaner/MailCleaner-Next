@@ -213,9 +213,8 @@ sub loadRBLs($self,$rblspath,$selectedRbls,$rblsType,$whitelistDomainsFile,$TLDs
 
 sub findUri($self,$line,$prelog)
 {
-    if ( my ( $scheme, $authority ) =
-        $line =~ m|(http?s?)://([^#/" ><=\[\]()]{3,$self->{maxurilength}})| )
-    {
+    if ( $line =~ m|(?:http?s?)://([^#/" ><=\[\]()]{3,$self->{maxurilength}})| ) {
+        $authority = $1;
         $authority =~ s/\n//g;
         $authority = lc($authority);
         my $u = $authority;
@@ -247,7 +246,7 @@ sub findUriShortener($self,$line,$prelog)
         $newloc         = $nl;
         $final_location = $newloc;
     }
-    $final_location =~ s/[%?]//g;
+    $final_location =~ s/([%?].*)//g;
     if ( $final_location =~ m|bit\.ly/a/warning| ) {
         &{ $self->{logfunction} }(
             "$prelog found urlshortener with disabled link: $first_link"

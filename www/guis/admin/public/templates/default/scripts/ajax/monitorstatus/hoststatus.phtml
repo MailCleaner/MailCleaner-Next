@@ -181,11 +181,11 @@ if (!$this->initial_loading) {
             <td class="c_processes">
                 <span class="procrow">
                     <span class='statusdescr'><?php echo $this->t->_('Version'); ?> : </span>
-                    <span class='versionstatus'><?php echo $this->slave->getHostVersion(); ?></span>
+                    <span class='versionstatus'><?php echo $this->slave->getHostPatchLevel(); ?></span>
                 </span>
                 <span class="procrow finalprocrow">
                     <span class='statusdescr'><?php echo $this->t->_('Patch level'); ?> : </span>
-                    <span class='versionstatus'><?php echo $this->slave->getHostPatchLevel(); ?></span>
+                    <span class='versionstatus'><?php echo $this->slave->getHostVersion(); ?></span>
                 </span>
 
                 <?php $processes = [

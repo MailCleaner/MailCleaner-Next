@@ -88,7 +88,7 @@ class Content
         if (!preg_match('/^(\d{4})-(\d{2})-(\d{2})\s.*$/', $this->getPref('timestamp'), $matches)) {
             return 'CANNOTFINDFILEPATH';
         }
-        if (!preg_match('/^[a-zA-Z0-9]{6}-[a-zA-Z0-9]{6}-[a-zA-Z0-9]{2}$/', $this->getPref('id'))) {
+        if (!preg_match('/^[a-zA-Z0-9]{6}-[a-zA-Z0-9]{6,11}-[a-zA-Z0-9]{2,4}$/', $this->getPref('id'))) {
             return 'BADCONTENTID';
         }
         return $matches[1] . $matches[2] . $matches[3] . "/" . $this->getPref('id');
@@ -115,7 +115,7 @@ class Content
         $ret = "OK";
 
         // first some sanity checks
-        if (!preg_match('/^[a-zA-Z0-9]{6}-[a-zA-Z0-9]{6}-[a-zA-Z0-9]{2}$/', $id)) {
+        if (!preg_match('/^[a-zA-Z0-9]{6}-[a-zA-Z0-9]{6,11}-[a-zA-Z0-9]{2,4}$/', $id)) {
             return 'BADSEARCHID';
         }
 
@@ -166,7 +166,7 @@ class Content
         $sysconf_ = SystemConfig::getInstance();
 
         $path = $this->getPathToFile();
-        if (!preg_match('/\d{8}\/([a-z,A-Z,0-9]{6}-[a-z,A-Z,0-9]{6}-[a-z,A-Z,0-9]{2})$/', $path)) {
+        if (!preg_match('/\d{8}\/([a-z,A-Z,0-9]{6}-[a-z,A-Z,0-9]{6,11}-[a-z,A-Z,0-9]{2,4})$/', $path)) {
             return 'CANNOTFINDFILEPATH';
         }
 
