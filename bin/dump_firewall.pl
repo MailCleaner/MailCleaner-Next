@@ -315,10 +315,11 @@ sub do_start_script($rules)
     unlink $blacklist_script;
     my $BLACKLIST;
     confess ("Failed to open $blacklist_script: $!\n") unless ($BLACKLIST = ${open_as($blacklist_script, ">>", 0755)});
+    my $blacklist;
     foreach my $blacklist_file (@blacklist_files) {
         my $BLACK_IP;
         if ( -e $blacklist_file ) {
-            if ( $blacklist == 0 ) {
+            unless (defined($blacklist)) {
                 print $BLACKLIST "#!/bin/sh\n\n";
                 print $BLACKLIST "$ipset create BLACKLISTIP hash:ip\n" unless (defined($existing->{'BLACKLISTIP'}));
                 print $BLACKLIST "$ipset create BLACKLISTNET hash:net\n" unless (defined($existing->{'BLACKLISTNET'}));
@@ -358,7 +359,7 @@ sub do_start_script($rules)
     if ($remove ne '') {
         print $BLACKLIST "\n# Cleaning up removed IPs:\n$remove\n";
     }
-    if ( $blacklist == 1 ) {
+    if (defined($blacklist)) {
         foreach my $period (qw( bl 1d 1w 1m 1y )) {
             foreach my $f2b (keys(%fail2ban_sets)) {
                 my $ports = $services{$fail2ban_sets{$f2b}}[0];

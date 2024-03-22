@@ -35,7 +35,7 @@ sub new
     $self->{'services'} = getServices();
     $self->{'generics'} = getGenerics();
     # Prioritize specific services over generic patterns. Split with 'undef' to indicate when search has has changed
-    $self->{'all'} = [ keys(%{$self->{'services'}), undef, keys(%{$self->{'generics'}) ];
+    $self->{'all'} = [ keys(%{$self->{'services'}}), undef, keys(%{$self->{'generics'}}) ];
     return bless $self;
 }
 
@@ -45,16 +45,15 @@ sub getServices
     # pattern and a 'decoder' function which returns the decoded URL.
     my %services = (
         "LinkedIn" => {
-                "regex" => qr%linkedin.com/slink\?code=([^#]+)%;
-                "decoder" => sub {
-                    return head(shift);
+                "regex" => qr%linkedin.com/slink\?code=([^#]+)%,
+                "decoder" => sub($url) {
+                    return head($url);
                 }
             }
         },
         "Proofpoint-v2" => {
             "regex"   => qr#urldefense\.proofpoint\.com/v2#,
-            "decoder" => sub {
-                my $url = shift;
+            "decoder" => sub($url) {
                 $url =~ s|\-|\%|g;
                 $url =~ s|_|\/|g;
                 $url = uri_unescape($url);
@@ -64,8 +63,7 @@ sub getServices
         },
         "Proofpoint-v3" => {
             "regex"   => qr#urldefense\.com/v3#,
-            "decoder" => sub {
-                my $url = shift;
+            "decoder" => sub($url) {
                 $url =~ s|[^_]*__(.*)/__.*|$1|;
                 $url = uri_unescape($url);
                 $url =~ s/^[^\?]*\?u=([^&]*)&.*$/$1/;
@@ -74,9 +72,8 @@ sub getServices
         },
         "Roaring Penguin" => {
             "regex"   => qr#[^/]*/canit/urlproxy.php\?_q=[a-zA-Z0-9]+#,
-            "decoder" => sub {
+            "decoder" => sub($url) {
                 use MIME::Base64;
-                my $url = shift;
                 $url =~ s|[^/]*/canit/urlproxy\.php\?_q\=([^&]*).*|$1|;
                 $url = uri_unescape($url) ;
                 return decode_base64($url);

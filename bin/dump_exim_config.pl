@@ -849,8 +849,8 @@ sub get_exim_config($stage)
 
     if ( -f "${SRCDIR}/etc/mailcleaner/version.def" && -f "${SRCDIR}/etc/edition.def") {
         my ($version, $cmd) = ('', '');
-        unless (-f $conf->getOption('VARDIR').'/spool/mailcleaner/hide_smtp_version') {
-            $cmd = "cat ".$conf->getOption('SRCDIR')."/etc/mailcleaner/version.def";
+        unless (-f "${VARDIR}/spool/mailcleaner/hide_smtp_version") {
+            $cmd = "cat ${SRCDIR}/etc/mailcleaner/version.def";
             $version = `$cmd`;
             chomp($version);
             $version = ' '.$version;
