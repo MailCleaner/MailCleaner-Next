@@ -80,6 +80,7 @@ $SRCDIR/bin/dump_mysql_config.pl 2>&1
 
 for SOCKDIR in master slave; do
 	echo "Generating $SOCKDIR database"
+	echo "Ignore 'Failed to load slave replication state' error. This will be set up later"
 	/usr/bin/mariadb-install-db --datadir=${VARDIR}/spool/mysql_${SOCKDIR} --defaults-file=$SRCDIR/etc/mysql/my_${SOCKDIR}.cnf 2>&1 >/dev/null
 
 	echo "Starting MariaDB ${SOCKDIR}"
