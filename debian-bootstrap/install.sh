@@ -18,7 +18,7 @@ ERRORS=''
 
 echo "Bootstrapping MailCleaner installation"
 
-DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install console-data 2>/dev/null >/dev/null
+DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install console-data console-setup 2>/dev/null >/dev/null
 if [[ -e "/etc/default/console-setup" ]]; then
 	echo -n "Configuring console..."
 	sed -i 's/FONTFACE=".*/FONTFACE="Terminus"/' /etc/default/console-setup
@@ -101,9 +101,9 @@ echo -n "Checking/adding extra repositories..."
 # Verify GPG dependency
 DPKG=$(dpkg -l)
 if ! grep -qP "^ii gpg" <<<$DPKG; then
-        apt-get update 2>&1 >/dev/null
+	apt-get update 2>&1 >/dev/null
 	DEBIAN_FRONTEND=noninteractive apt-get --assume-yes install gpg 2>/dev/null >/dev/null
- fi
+fi
 
 # MailCleaner repository
 if [ ! -e /etc/apt/keyrings/mailcleaner.gpg ]; then
