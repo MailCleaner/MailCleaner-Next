@@ -94,14 +94,16 @@ chown($uid, $gid,
 
 # Fix symlinks if broken
 my %links = (
-    '/etc/apparmor.d/mailcleaner' => $SRCDIR.'/etc/apparmor',
-    "/etc/apache2" => "$SRCDIR/etc/apache",
-    "$SRCDIR/etc/apache/sites-enabled/configurator.conf" => "$SRCDIR/etc/apache/sites-available/configurator.conf",
+    '/etc/apparmor.d/mailcleaner' => ${SRCDIR}.'etc/apparmor',
+    '/etc/apache2' => ${SRCDIR}.'etc/apache',
+    ${SRCDIR}.'etc/apache/sites-enabled/configurator.conf' => ${SRCDIR}.'etc/apache/sites-available/configurator.conf',
 );
 foreach my $link (keys(%links)) {
     if (-e $link) {
         if (-l $link) {
-            next if ($links{$link} eq readlink($link));
+            print("$link == $links{$link}\n");
+            next if (readlink($link) eq $links{$link});
+            print("FALSE\n");
         }
         rmrf($link);
     }
