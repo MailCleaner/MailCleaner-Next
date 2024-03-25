@@ -234,7 +234,7 @@ fi
 KEYFILE=$SRCDIR/etc/apache/certs/default.key
 if [ ! -e $KEYFILE ]; then
 	echo Generating self-signing key
-	openssl genpkey -algorithm ED25519 -out $KEYFILE
+	openssl genpkey -algorithm ED25519 -out $KEYFILE 2>&1 >$LOGFILE
 fi
 CERTFILE=$SRCDIR/etc/apache/certs/default.crt
 if [ ! -e $CERTFILE ]; then
@@ -243,8 +243,8 @@ if [ ! -e $CERTFILE ]; then
 	sed -i "s/__HOSTNAME__/$MCHOSTNAME/" /tmp/default.conf
 	sed -i "s/__CLIENTTECHMAIL__/$CLIENTTECHMAIL/" /tmp/default.conf
 	sed -i "s/__ORGANIZATION__/$ORGANIZATION/" /tmp/default.conf
-	openssl req -new -out /tmp/default.csr -key $KEYFILE -config /tmp/default.conf
-	openssl x509 -req -days 3650 -in /tmp/default.csr -signkey $KEYFILE -out $CERTFILE
+	openssl req -new -out /tmp/default.csr -key $KEYFILE -config /tmp/default.conf 2>&1 >$LOGFILE
+	openssl x509 -req -days 3650 -in /tmp/default.csr -signkey $KEYFILE -out $CERTFILE 2>&1 >$LOGFILE
 fi
 KEY=$(cat $KEYFILE)
 CERT=$(cat $CERTFILE)
@@ -278,11 +278,11 @@ fi
 cd $VARDIR
 if [[ ! -d .pyenv ]]; then
 	echo "Installing Pyenv..."
-	git clone --depth=1 https://github.com/pyenv/pyenv.git .pyenv 2>&1
+	git clone --depth=1 https://github.com/pyenv/pyenv.git .pyenv 2>&1 >$LOGFILE
 	cd .pyenv
 else
 	cd .pyenv
-	git pull --rebase origin master 2>&1
+	git pull --rebase origin master 2>&1 >$LOGFILE
 fi
 export PYENV_ROOT="$VARDIR/.pyenv"
 if ! grep -q $PYENV_ROOT <<<$(echo $PATH); then
@@ -290,13 +290,11 @@ if ! grep -q $PYENV_ROOT <<<$(echo $PATH); then
 	export PATH="$PYENV_ROOT/bin:$PATH"
 fi
 eval "$(pyenv init --path)"
-pyenv install 3.11.2 -s
-pyenv local 3.11.2
+pyenv install 3.11.2 -s 2>&1 >$LOGFILE
+pyenv local 3.11.2 2>&1 >$LOGFILE
 
-systemctl start mariadb@master
-systemctl start mariadb@slave
 echo "Installing MailCleaner Python Library..."
-pip install mailcleaner-library --trusted-host repository.mailcleaner.net --index https://repository.mailcleaner.net/python/ --extra-index https://pypi.org/simple/ 2>&1
+pip install mailcleaner-library --trusted-host repository.mailcleaner.net --index https://repository.mailcleaner.net/python/ --extra-index https://pypi.org/simple/ 2>&1 >$LOGFILE
 
 IMPORT_MC_LIB=$(python -c "import mailcleaner")
 if [ $? -eq 1 ]; then
@@ -312,4 +310,12 @@ systemctl start mailcleaner.target
 if [ ! -d $VARDIR/run ]; then
 	mkdir -p $VARDIR/run
 fi
+for i in $($SRCDIR/bin/get_status.pl -s | tr '|' ' '); do
+	if [ $i ]; then
+		echo "Not all services started successfully. Please review $LOGFILE"
+		$SRCDIR/bin/get_status.pl -s
+		exit
+	fi
+done
 touch $VARDIR/run/first-time-configuration
+echo "Success!"
