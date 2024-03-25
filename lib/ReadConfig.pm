@@ -57,6 +57,9 @@ sub new
 sub getOption($self,$o)
 {
     if (exists($self->{configs}->{$o})) {
+        if ($o =~ m/^(SRC|VAR)DIR$/) {
+            $self->{configs}->{$o} =~ s/\/$//;
+        }
         return $self->{configs}->{$o};
     }
     return "";
