@@ -47,8 +47,8 @@ sub get
         logfile => '/tmp/mailcleaner_install.log',
         conffile => '/etc/mailcleaner.conf',
         config_variables => {
-	        'SRCDIR' => '/usr/mailcleaner/',
-	        'VARDIR' => '/var/mailcleaner/',
+	        'SRCDIR' => '/usr/mailcleaner',
+	        'VARDIR' => '/var/mailcleaner',
 	        'HOSTID' => undef,
 	        'DEFAULTDOMAIN' => '',
 	        'ISMASTER' => 'Y',
@@ -204,7 +204,6 @@ sub webAdminPWD($this)
         $pdlg->build('Please confirm the admin user password', '');
         $pass2 = $pdlg->display();
     }
-    $pass1 = $this->{'install_variables'}->{'WEBADMINPWD'} if ($pass1 eq 'SAME AS WEB ADMIN PASSWORD');
     $pass1 =~ s/RANDOM: // if ($pass1 =~ m/RANDOM: /);
     return $pass1;
 }
@@ -305,6 +304,7 @@ sub applyConfiguration($this)
     foreach (keys(%{$this->{'install_variables'}})) {
 	    $ENV{$_} = $this->{'install_variables'}->{$_};
     }
+    $this->{'install_variables'}->{'WEBADMINPWD'} = $this->{'config_variables'}->{'MYMAILCLEANERPWD'} if ($this->{'install_variables'} eq 'SAME AS DATABASE PASSWORD');
     print("Running $this->{'config_variables'}->{SRCDIR}/install/install.sh. This will take some time. Installation logs will be saved to /tmp/mailcleaner-installer.log\n");
     `LOGFILE="/tmp/mailcleaner-installer.log" FORCEDBREINSTALL=1 $this->{'config_variables'}->{SRCDIR}/install/install.sh`;
     exit();
