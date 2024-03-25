@@ -1,45 +1,89 @@
 #!/bin/bash
 
-if [ "$LOGFILE" = "" ]; then
+if [ -z "$LOGFILE" ]; then
 	LOGFILE=/tmp/mailcleaner.log
 fi
 
 # Create config file if it does not exist
-if [ "$CONFFILE" = "" ]; then
+if [ -z "$CONFFILE" ]; then
 	CONFFILE=/etc/mailcleaner.conf
 fi
 
 if [ ! -f $CONFFILE ]; then
-	HOSTNAME=$(hostname)
+	MCHOSTNAME=$(hostname)
 	cat >$CONFFILE <<EOF
 SRCDIR = /usr/mailcleaner
 VARDIR = /var/mailcleaner
-MCHOSTNAME = $HOSTNAME
+MCHOSTNAME = $MCHOSTNAME
 HOSTID = 1
 DEFAULTDOMAIN = 
 ISMASTER = Y
 MYMAILCLEANERPWD = MCPassw0rd
-HELONAME = $HOSTNAME
+HELONAME = $MCHOSTNAME
 MASTERIP = 127.0.0.1
 MASTERPWD = MCPassw0rd
 EOF
 fi
 
 # Setup missing vars
-if [ "$SRCDIR" = "" ]; then
+if [ -z $SRCDIR ]; then
 	SRCDIR=$(grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
-	if [ "$SRCDIR" = "" ]; then
+	if [[ "$SRCDIR" -eq "" ]]; then
 		SRCDIR="/usr/mailcleaner"
+		echo "SRCDIR = $SRCDIR" >>$CONFFILE
 	fi
 fi
 export SRCDIR
-if [ "$VARDIR" = "" ]; then
+if [ -z $VARDIR ]; then
 	VARDIR=$(grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
-	if [ "$VARDIR" = "" ]; then
+	if [[ "$VARDIR" -eq "" ]]; then
 		VARDIR="/var/mailcleaner"
+		echo "VARDIR = $VARDIR" >>$CONFFILE
 	fi
 fi
 export VARDIR
+
+if [ -z "$MYMAILCLEANERPWD" ]; then
+	MYMAILCLEANERPWD="$(grep MYMAILCLEANERPWD /etc/mailcleaner.conf | cut -d' ' -f3-)"
+	if [[ "$MYMAILCLEANERPWD" -eq "" ]]; then
+		MYMAILCLEANERPWD=$(pwgen -1)
+		echo "MYMAILCLEANERPWD = $MYMAILCLEANERPWD" >>$CONFFILE
+	fi
+fi
+export MYMAILCLEANERPWD
+export MYROOTPWD=$MYMAILCLEANERPWD
+if [ -z "$WEBADMINPWD" ]; then
+	WEBADMINPWD=$MYMAILCLEANERWPD
+fi
+export WEBADMINPWD
+if [ -z "$HOSTID" ]; then
+	HOSTID=1
+fi
+export HOSTID
+if [ -z "$CLIENTID" ]; then
+	CLIENTID=0
+fi
+export CLIENTID
+if [ -z "$ORGANIZATION" ]; then
+	ORGANIZATION="Anonymous"
+fi
+export ORGANIZATION
+if [ -z "$MCHOSTNAME" ]; then
+	MCHOSTNAME=$(hostname)
+fi
+export MCHOSTNAME
+if [ -z "$DEFAULTDOMAIN" ]; then
+	DEFAULTDOMAIN=''
+fi
+export DEFAULTDOMAIN
+if [ -z "$CLIENTTECHMAIL" ]; then
+	if [[ "$DEFAULTDOMAIN" -ne "" ]]; then
+		CLIENTTECHMAIL="postmaster@$DEFAULTDOMAIN"
+	else
+		CLIENTTECHMAIL='root@localhost'
+	fi
+fi
+export CLIENTTECHMAIL
 
 # Configure .bashrc
 if [[ -e /root/.bashrc ]]; then
@@ -81,8 +125,10 @@ EOF
 	apt-get --assume-yes install docker-ce docker-ce-rootless-extras
 fi
 
-echo "Installing MailScanner..."
-$SRCDIR/install/mailscanner/install.sh -y
+if [ ! -e /opt/MailScanner ]; then
+	echo "Installing MailScanner..."
+	$SRCDIR/install/mailscanner/install.sh -y
+fi
 
 ###############################################
 ### creating users: mailcleaner, mailscanner (all others provided by packages)
@@ -116,28 +162,32 @@ if [ ! -e $VARDIR/.ssh/id_ed25519 ]; then
 	ssh-keygen -q -t ed25519 -f $VARDIR/.ssh/id_ed25519 -N ""
 	chown -R mailcleaner:mailcleaner $VARDIR/.ssh
 fi
-export HOSTKEY=`cat $VARDIR/.ssh/id_ed25519.pub`
+export HOSTKEY=$(cat $VARDIR/.ssh/id_ed25519.pub)
 
-if [[ -z $ISMASTER ]]; then
+if [ -z $ISMASTER ]; then
 	ISMASTER="Y"
 fi
 export ISMASTER
-if [ "$ISMASTER" = "Y" ]; then
+if [[ "$ISMASTER" -eq "Y" ]]; then
 	MASTERHOST=127.0.0.1
 	MASTERKEY=$(cat $VARDIR/.ssh/id_ed25519.pub)
 	MASTERPASSWD=$MYMAILCLEANERPWD
-fi
-if [[ -z $MASTERHOST ]]; then
-	MASTERHOST=127.0.0.1
+else
+	if [ -z $MASTERHOST ]; then
+		echo "Missing MASTERHOST for slave node"
+		exit
+	fi
+	if [ -z $MASTERKEY ]; then
+		echo "Missing MASTERKEY for slave node"
+		exit
+	fi
+	if [ -z $MASTERPASSWD ]; then
+		echo "Missing MASTERPASSWD for slave node"
+		exit
+	fi
 fi
 export MASTERHOST
-if [[ -z $MASTERKEY ]]; then
-	MASTERKEY=$HOSTKEY
-fi
 export MASTERKEY
-if [[ -z $MASTERPASSWD ]]; then
-	MASTERPASSWD=$MYMAILCLEANERPWD
-fi
 export MASTERPASSWD
 
 ###############################################
@@ -145,50 +195,12 @@ export MASTERPASSWD
 
 systemctl start mariadb@master
 sleep 1
-DBEXISTS=`echo 'SELECT * FROM system_conf;' | mc_mysql -m mc_config 2>/dev/null`
-if [[ -n $FORCEDBREINSTALL ]]; then
+DBEXISTS=$(echo 'SELECT * FROM system_conf;' | mc_mysql -m mc_config 2>/dev/null)
+if [ -n $FORCEDBREINSTALL ]; then
 	echo "Forcing reinstallation of databases..."
-	unset INSTALLED
+	unset DBEXISTS
 fi
-if [[ -z "$DBEXISTS" ]]; then
-	if [ -e '/etc/mailcleaner.conf' ]; then
-		MYMAILCLEANERPWD="$(grep MYMAILCLEANERPWD /etc/mailcleaner.conf | cut -d' ' -f3-)"
-	fi
-	if [ -z $MYMAILCLEANERPWD ]; then
-		MYMAILCLEANERPWD=$(pwgen -1)
-		echo "MYMAILCLEANERPWD = $MYMAILCLEANERPWD" >>$CONFFILE
-	fi
-	export MYMAILCLEANERPWD
-	if [[ -z $WEBADMINPWD ]]; then
-		WEBADMINPWD=$MYMAILCLEANERWPD
-	fi
-	export WEBADMINPWD
-	export MYROOTPWD=$MYMAILCLEANERPWD
-	if [[ -z $HOSTID ]]; then
-		HOSTID=1
-	fi
-	export HOSTID
-	if [[ -z $CLIENTID ]]; then
-		CLIENTID=0
-	fi
-	export CLIENTID
-	if [[ -z $ORGANIZATION ]]; then
-		ORGANIZATION="Anonymous"
-	fi
-	export ORGANIZATION
-	if [[ -z $MCHOSTNAME ]]; then
-		MCHOSTNAME=`hostname`
-	fi
-	export MCHOSTNAME
-	if [[ -z $DEFAULTDOMAIN ]]; then
-		DEFAULTDOMAIN=''
-	fi
-	export DEFAULTDOMAIN
-	if [[ -z $CLIENTTECHMAIL ]]; then
-		CLIENTTECHMAIL='root@localhost'
-	fi
-	export CLIENTTECHMAIL
-
+if [ -z "$DBEXISTS" ]; then
 	echo "Creating databases..."
 	$SRCDIR/install/MC_prepare_dbs.sh 2>&1 >>$LOGFILE
 	systemctl restart mariadb@slave 2>&1 >>$LOGFILE
@@ -219,17 +231,29 @@ fi
 #echo "[done]"
 
 ## import default certificate
-CERTFILE=$SRCDIR/etc/apache/certs/default.pem
-KF=$(grep -n 'BEGIN RSA PRIVATE KEY' $CERTFILE | cut -d':' -f1)
-KT=$(grep -n 'END RSA PRIVATE KEY' $CERTFILE | cut -d':' -f1)
-CF=$(grep -n 'BEGIN CERTIFICATE' $CERTFILE | cut -d':' -f1)
-CT=$(grep -n 'END CERTIFICATE' $CERTFILE | cut -d':' -f1)
-KEY=$(sed -n "${KF},${KT}p;${KT}q" $CERTFILE)
-CERT=$(sed -n "${CF},${CT}p;${CT}q" $CERTFILE)
-QUERY="USE mc_config; UPDATE httpd_config SET tls_certificate_data='${CERT}', tls_certificate_key='${KEY}';"
+KEYFILE=$SRCDIR/etc/apache/certs/default.key
+if [ ! -e $KEYFILE ]; then
+	echo Generating self-signing key
+	openssl genpkey -algorithm ED25519 -out $KEYFILE
+fi
+CERTFILE=$SRCDIR/etc/apache/certs/default.crt
+if [ ! -e $CERTFILE ]; then
+	echo Generating self-signed certificate for HTTPS/STARTTLS
+	cp $SRCDIR/etc/apache/default.conf_template /tmp/default.conf
+	sed -i "s/__HOSTNAME__/$MCHOSTNAME/" /tmp/default.conf
+	sed -i "s/__CLIENTTECHMAIL__/$CLIENTTECHMAIL/" /tmp/default.conf
+	sed -i "s/__ORGANIZATION__/$ORGANIZATION/" /tmp/default.conf
+	openssl req -new -out /tmp/default.csr -key $KEYFILE -config /tmp/default.conf
+	openssl x509 -req -days 3650 -in /tmp/default.csr -signkey $KEYFILE -out $CERTFILE
+fi
+KEY=$(cat $KEYFILE)
+CERT=$(cat $CERTFILE)
+QUERY="USE mc_config; UPDATE httpd_config SET tls_certificate_data='${CERT}', tls_certificate_key='${KEY}', tls_certificate_chain='';"
+echo "$QUERY" | $SRCDIR/bin/mc_mysql -m 2>&1 >>$LOGFILE
+QUERY="USE mc_config; UPDATE mta_config SET tls_certificate_data='${CERT}', tls_certificate_key='${KEY}';"
 echo "$QUERY" | $SRCDIR/bin/mc_mysql -m 2>&1 >>$LOGFILE
 
-echo "update mta_config set smtp_banner='\$smtp_active_hostname ESMTP MailCleaner ($MCVERSION) \$tod_full';" | $SRCDIR/bin/mc_mysql -m mc_config 2>&1 >>$LOGFILE
+#echo "update mta_config set smtp_banner='\$smtp_active_hostname ESMTP MailCleaner ($MCVERSION) \$tod_full';" | $SRCDIR/bin/mc_mysql -m mc_config 2>&1 >>$LOGFILE
 
 ###############################################
 ### installing mailcleaner cron job
@@ -254,11 +278,11 @@ fi
 cd $VARDIR
 if [[ ! -d .pyenv ]]; then
 	echo "Installing Pyenv..."
-	git clone --depth=1 https://github.com/pyenv/pyenv.git .pyenv 2>/dev/null >/dev/null
+	git clone --depth=1 https://github.com/pyenv/pyenv.git .pyenv 2>&1
 	cd .pyenv
 else
 	cd .pyenv
-	git pull --rebase origin master 2>/dev/null >/dev/null
+	git pull --rebase origin master 2>&1
 fi
 export PYENV_ROOT="$VARDIR/.pyenv"
 if ! grep -q $PYENV_ROOT <<<$(echo $PATH); then
@@ -272,7 +296,7 @@ pyenv local 3.11.2
 systemctl start mariadb@master
 systemctl start mariadb@slave
 echo "Installing MailCleaner Python Library..."
-pip install mailcleaner-library --trusted-host repository.mailcleaner.net --index https://repository.mailcleaner.net/python/ --extra-index https://pypi.org/simple/ 2>/dev/null >/dev/null
+pip install mailcleaner-library --trusted-host repository.mailcleaner.net --index https://repository.mailcleaner.net/python/ --extra-index https://pypi.org/simple/ 2>&1
 
 IMPORT_MC_LIB=$(python -c "import mailcleaner")
 if [ $? -eq 1 ]; then

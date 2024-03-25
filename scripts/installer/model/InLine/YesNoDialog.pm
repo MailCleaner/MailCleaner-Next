@@ -57,7 +57,7 @@ sub build($this, $text, $default='')
 sub display($this)
 {
     print $this->{text}."\n";
-    print "Enter \"y\" or \"n\" [".$this->{default}."]: ";
+    print "Enter \"yes\" or \"no\" [".$this->{default}."]: ";
     ReadMode 'normal';
     my $result = ReadLine(0);
     chomp $result;
