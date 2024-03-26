@@ -146,7 +146,7 @@ ServerSignature On
 
 AddType application/x-httpd-php .php
 php_flag session.auto_start on
-php_value include_path ".:/var/lib/php/__PHP_VERSION__:__SRCDIR__/www/classes:__SRCDIR__/www/includes:__SRCDIR__/www/framework"
+php_value include_path ".:/usr/share/php:__SRCDIR__/www/classes:__SRCDIR__/www/includes:__SRCDIR__/www/framework"
 php_admin_flag safe_mode off
 php_value arg_separator.input "&;"
 php_value short_open_tag On
