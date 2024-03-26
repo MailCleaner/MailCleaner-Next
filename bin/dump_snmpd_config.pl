@@ -51,6 +51,7 @@ require GetDNS;
 our $DEBUG = 1;
 our $uid = getpwnam('Debian-snmp');
 our $gid = getpwnam('mailcleaner');
+`usermod -a -G mailcleaner Debian-snmp` unless (grep(/\bmailcleaner\b/, `groups Debian-snmp`));
 
 my $system_mibs_file = '/usr/share/snmp/mibs/MAILCLEANER-MIB.txt';
 if ( ! -d '/usr/share/snmp/mibs') {
@@ -74,6 +75,7 @@ if (-f $system_mibs_file) {
     unlink($system_mibs_file);
 }
 symlink($mc_mib_file,$system_mibs_file);
+chown($uid, $gid, $system_mibs_file);
 
 symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
 
@@ -158,7 +160,7 @@ sub dump_snmpd_file()
     close $TEMPLATE;
     close $TARGET;
 
-    chown($uid, $gid, "/etc/snmp/snmpd.conf.d", $TARGET);
+    chown($uid, $gid, "/etc/snmp/snmpd.conf.d", "/log/snmpd.log", $TARGET);
     return 1;
 }
 
