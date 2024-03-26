@@ -27,7 +27,7 @@
 /**
  * Include PEAR HTTP_Client.
  */
-require_once 'HTTP/Client.php';
+require_once 'Pear/HTTP/Client.php';
 /**
  * Include Auth_Container base class
  */
