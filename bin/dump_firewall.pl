@@ -42,7 +42,7 @@ BEGIN {
     $SRCDIR = $conf->getOption('SRCDIR') || '/usr/mailcleaner';
 }
 
-use lib_utils qw(open_as);
+use lib_utils qw(open_as rmrf);
 
 use Net::DNS;
 require GetDNS;
@@ -59,6 +59,27 @@ my %services = (
     'mail' => ['25', 'TCP'],
     'soap' => ['5132', 'TCP']
 );
+my %ufw = (
+    'exim_stage1' => {
+        'port' => 2500,
+        'dnat' => 25,
+    },
+    'exim_stage2' => {
+        'port' => 2424,
+    },
+    'exim_stage4' => {
+        'port' => 2525,
+    }
+);
+foreach my $key (keys(%ufw)) {
+    if (-e '/etc/ufw/applications.d/'.$key) {
+        if (-l '/etc/ufw/applications.d/'.$key) {
+            next if (readlink('/etc/ufw/applications.d/'.$key) eq $SRCDIR.'/etc/ufw/'.$key);
+        }
+        rmrf('/etc/ufw/applications.d/'.$key);
+    }
+    symlink($SRCDIR.'/etc/ufw/'.$key, '/etc/ufw/applications.d/'.$key)
+}
 our %fail2ban_sets = ('mc-exim' => 'mail', 'mc-ssh' => 'ssh', 'mc-webauth' => 'web');
 our $iptables = "/usr/sbin/iptables";
 our $ip6tables = "/usr/sbin/ip6tables";
