@@ -1,0 +1,5 @@
+[Exim_Stage2]
+title=Exim Stage 2
+description=Filtering MTA for MailCleaner
+ports=2424
+

@@ -1,0 +1,5 @@
+[Exim_Stage1]
+title=Exim Stage 1
+description=Incoming MTA for MailCleaner
+ports=2500
+

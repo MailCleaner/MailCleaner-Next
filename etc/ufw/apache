@@ -1,0 +1,4 @@
+[Apache2]
+title=Apache2
+description=Apache HTTP daemon for MailCleaner
+ports=8080,4443

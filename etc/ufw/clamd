@@ -1,0 +1,5 @@
+[ClamD]
+title=ClamAV Daemon
+description=ClamAV Daemon for MailCleaner
+ports=3310
+

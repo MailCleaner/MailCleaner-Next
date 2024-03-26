@@ -1,0 +1,5 @@
+[Exim_Stage4]
+title=Exim Stage 4
+description=Outgoing MTA for MailCleaner
+ports=2525
+
