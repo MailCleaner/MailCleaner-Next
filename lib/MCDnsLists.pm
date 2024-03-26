@@ -214,7 +214,7 @@ sub loadRBLs($self,$rblspath,$selectedRbls,$rblsType,$whitelistDomainsFile,$TLDs
 sub findUri($self,$line,$prelog)
 {
     if ( $line =~ m|(?:http?s?)://([^#/" ><=\[\]()]{3,$self->{maxurilength}})| ) {
-        $authority = $1;
+        my $authority = $1;
         $authority =~ s/\n//g;
         $authority = lc($authority);
         my $u = $authority;

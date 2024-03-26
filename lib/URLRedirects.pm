@@ -45,10 +45,9 @@ sub getServices
     # pattern and a 'decoder' function which returns the decoded URL.
     my %services = (
         "LinkedIn" => {
-                "regex" => qr%linkedin.com/slink\?code=([^#]+)%,
-                "decoder" => sub($url) {
-                    return head($url);
-                }
+            "regex" => qr%linkedin.com/slink\?code=([^#]+)%,
+            "decoder" => sub($url) {
+                return head($url);
             }
         },
         "Proofpoint-v2" => {
