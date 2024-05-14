@@ -1189,6 +1189,7 @@ EXIMUSER    * = (ROOT) NOPASSWD: EXIMBIN
 		"${VARDIR}/spool/exim_stage${stage}/input",
 		glob("${VARDIR}/spool/tmp/exim_stage${stage}/*"),
 		glob("${VARDIR}/spool/exim_stage${stage}/*"),
+        glob("${VARDIR}/spool/exim_stage${stage}/input/*"),
     );
     push(@dirs,
 		"${SRCDIR}/etc/exim/certs",
