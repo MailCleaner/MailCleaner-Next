@@ -57,6 +57,7 @@ class Default_Model_Domain
     protected $_destination_action_options_smarthost = ['loadbalancing' => 'randomize', 'failover' => 'no_randomize'];
 
     protected $_calloutconnector = 'smtp';
+    protected $_forward_by_mx = false;
     protected $_callouttest_finished  = false;
 
     protected $domain_;
@@ -262,8 +263,8 @@ class Default_Model_Domain
 
         // Remove wwlist entries
         $wwelement = new Default_Model_WWElementMapper();
-        $wwelement->getDbTable()->delete("recipient='".$this->getParam('name')."'");
-        $wwelement->getDbTable()->delete("recipient like '%@'".$this->getParam('name')."'");
+        $wwelement->getDbTable()->delete("recipient='" . $this->getParam('name') . "'");
+        $wwelement->getDbTable()->delete("recipient like '%@'" . $this->getParam('name') . "'");
 
         // Check if this domains has stats (counts) and delete them
         $counts_path = "/var/mailcleaner/spool/mailcleaner/counts/";
@@ -461,7 +462,7 @@ class Default_Model_Domain
             $options = $matches[2];
         }
 
-        $ports_smarthost = ['25' => 0];
+        $ports = ['25' => 0];
         $servers = preg_replace('/::+/', '%', $servers);
         #if (preg_match('/\/(mx|MX)/', $servers)) {
         #   $this->setDestinationUseMX(true);
@@ -758,26 +759,12 @@ class Default_Model_Domain
 
     public function getDestinationUseMX()
     {
-        return $this->getParam('forward_by_mx');
-        #if ($this->_destination_usemx) {
-        if (($this->getParam('forward_by_mx') || $this->getParam('forward_by_mx') == 'true') && $this->getParam('forward_by_mx') != 'false') {
-            return 'true';
-        }
-        return 'false';
+        return $this->_forward_by_mx;
     }
+
     public function setDestinationUseMX($value)
     {
-        $this->setParam('forward_by_mx', false);
-        if ($value) {
-            $this->setParam('forward_by_mx', true);
-        }
-        return;
-        #$this->_destination_usemx = false;
-        $this->setParam('forward_by_mx') == 'false';
-        if (($value || $value == 'true') && $value != 'false') {
-            #$this->_destination_usemx = true;
-            $this->setParam('forward_by_mx') == 'true';
-        }
+        $this->_calloutconnector = $value;
     }
 
     public function testDestinationsSMTP()
@@ -1034,7 +1021,7 @@ class Default_Model_Domain
             realpath(APPLICATION_PATH . '/../../../../classes'),
             get_include_path(),
         ]));
-        require_once('Pear/Log.php');
+        require_once('Log.php');
         require_once('domain/Domain.php');
         require_once('helpers/DM_SlaveConfig.php');
         require_once('system/SystemConfig.php');
@@ -1099,7 +1086,7 @@ class Default_Model_Domain
             realpath(APPLICATION_PATH . '/../../../../classes'),
             get_include_path(),
         ]));
-        require_once('Pear/Log.php');
+        require_once('Log.php');
         require_once('connector/AddressFetcher.php');
         require_once('helpers/DM_SlaveConfig.php');
         require_once('system/SystemConfig.php');
@@ -1135,7 +1122,7 @@ class Default_Model_Domain
             realpath(APPLICATION_PATH . '/../../../../classes'),
             get_include_path(),
         ]));
-        require_once('Pear/Log.php');
+        require_once('Log.php');
         require_once('connector/AddressFetcher.php');
         require_once('helpers/DM_SlaveConfig.php');
         require_once('system/SystemConfig.php');
@@ -1195,7 +1182,7 @@ class Default_Model_Domain
             realpath(APPLICATION_PATH . '/../../../../classes'),
             get_include_path(),
         ]));
-        require_once('Pear/Log.php');
+        require_once('Log.php');
         require_once('domain/Domain.php');
         require_once('helpers/DM_SlaveConfig.php');
         require_once('system/SystemConfig.php');
