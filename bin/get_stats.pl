@@ -53,17 +53,17 @@ our $verbose = 0;
 my $batchmode = 0;
 my $fulldays = 0;
 my $debug = 0;
-my $msgs = 0;
-my $spams = 0;
-my $highspams = 0;
-my $viruses = 0;
-my $names = 0;
-my $others = 0;
-my $cleans = 0;
-my $bytes = 0;
-my $users = 0;
-my $domains = 0;
-my %global = ('msgs' => 0, 'spams' => 0, 'highspams' => 0, 'names' => 0, 'others' => 0, 'cleans' => 0, 'bytes' => 0, 'users' => 0, 'domains' => 0);
+our $msgs = 0;
+our $spams = 0;
+our $highspams = 0;
+our $viruses = 0;
+our $names = 0;
+our $others = 0;
+our $cleans = 0;
+our $bytes = 0;
+our $users = 0;
+our $domains = 0;
+my %global = ('msgs' => 0, 'spams' => 0, 'highspams' => 0, 'viruses' => 0, 'names' => 0, 'others' => 0, 'cleans' => 0, 'bytes' => 0, 'users' => 0, 'domains' => 0);
 
 # check parameters
 if (!defined($what) || $what !~ m/^[a-zA-Z0-9@._\-,*]+$/ ) {
@@ -140,7 +140,7 @@ foreach my $what ( @tmpwhats ) {
                 foreach (split(//,$entry)) {
                     if (unpack("H*",$_) =~ /([01][0-9a-f]|7f)/) {
                         $skip = 1;
-                        $last;
+                        last;
                     }
                 }
                 next if $skip;
@@ -236,14 +236,14 @@ sub processFile($file)
 {
     my ($cmsgs, $cspams, $chighspams, $cviruses, $cnames, $cothers, $ccleans, $cbytes, $cusers, $cdomains) = Stats::readFile($file);
 
-    $msgs = $msgs + $cmsgs;
-    $spams = $spams + $cspams;
-    $highspams = $highspams + $chighspams;
-    $viruses = $viruses + $cviruses;
-    $names = $names + $cnames;
-    $others = $others + $cothers;
-    $cleans = $cleans + $ccleans;
-    $bytes = $bytes + $cbytes;
+    $msgs += $cmsgs;
+    $spams += $cspams;
+    $highspams += $chighspams;
+    $viruses += $cviruses;
+    $names +=$cnames;
+    $others += $cothers;
+    $cleans += $ccleans;
+    $bytes += $cbytes;
     if ($cusers > $users) {
         $users = $cusers;
     }
