@@ -27,7 +27,6 @@ use strict;
 use warnings;
 use utf8;
 
-use IO;
 use POSIX qw(:signal_h); # For Solaris 9 SIG bug workaround
 use Net::IP;
 use MCDnsLists;

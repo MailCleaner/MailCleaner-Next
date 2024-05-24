@@ -24,7 +24,6 @@ use strict 'vars';
 use strict 'refs';
 no  strict 'subs'; # Allow bare words for parameter %'s
 
-use IO;
 use POSIX qw(:signal_h); # For Solaris 9 SIG bug workaround
 
 sub initialise
