@@ -139,15 +139,15 @@ my %sys_conf = get_system_config() or fatal_error("NOSYSTEMCONFIGURATIONFOUND", 
 my %apache_conf;
 %apache_conf = get_apache_config() or fatal_error("NOAPACHECONFIGURATIONFOUND", "no apache configuration found");
 
-dump_apache_file("/etc/apache/apache2.conf_template", "/etc/apache/apache2.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
+dump_apache_file("${SRCDIR}/etc/apache/apache2.conf_template", "${SRCDIR}/etc/apache/apache2.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
 
-dump_apache_file("/etc/apache/sites-available/mailcleaner.conf_template", "/etc/apache/sites-available/mailcleaner.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
-dump_apache_file("/etc/apache/sites-available/soap.conf_template", "/etc/apache/sites-available/soap.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
+dump_apache_file("${SRCDIR}/etc/apache/sites-available/mailcleaner.conf_template", "${SRCDIR}/etc/apache/sites-available/mailcleaner.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
+dump_apache_file("${SRCDIR}/etc/apache/sites-available/soap.conf_template", "${SRCDIR}/etc/apache/sites-available/soap.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
 
 if (-e "${SRCDIR}/etc/apache/configurator.conf.disabled") {
     unlink("${SRCDIR}/etc/apache/sites-enabled/configurator.conf");
 } else {
-    dump_apache_file("/etc/apache/sites-available/configurator.conf_template", "/etc/apache/sites-available/configurator.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
+    dump_apache_file("${SRCDIR}/etc/apache/sites-available/configurator.conf_template", "${SRCDIR}/etc/apache/sites-available/configurator.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
 }
 
 dump_soap_wsdl() or fatal_error("CANNOTDUMPWSDLFILE", $lasterror);
@@ -157,11 +157,8 @@ dump_certificate(${SRCDIR},$apache_conf{'tls_certificate_data'}, $apache_conf{'t
 $dbh->disconnect();
 
 #############################
-sub dump_apache_file($filetmpl, $filedst)
+sub dump_apache_file($template_file, $target_file)
 {
-    my $template_file = "${SRCDIR}/${filetmpl}";
-    my $target_file = "${SRCDIR}/${filedst}";
-
     my ($TEMPLATE, $TARGET);
     unless ( $TEMPLATE = ${open_as($template_file, '<')} ) {
         confess("Cannot open template file: $template_file");
