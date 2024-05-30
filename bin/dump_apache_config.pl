@@ -102,8 +102,10 @@ foreach my $link (keys(%links)) {
     if (-e $link) {
         if (-l $link) {
             next if (readlink($link) eq $links{$link});
+	    unlink($link);
+        } else {
+            rmrf($link);
         }
-        rmrf($link);
     }
     symlink($links{$link}, $link);
 }
