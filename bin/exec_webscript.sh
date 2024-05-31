@@ -6,7 +6,7 @@ if [ "VARDIR" = "" ]; then
 fi
 SRCDIR=$(grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 if [ "SRCDIR" = "" ]; then
-	SRCDIR=/opt/mailcleaner
+	SRCDIR=/usr/mailcleaner
 fi
 HTTPPROXY=$(grep 'HTTPPROXY' /etc/mailcleaner.conf | cut -d ' ' -f3)
 export http_proxy=$HTTPPROXY

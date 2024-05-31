@@ -6,7 +6,7 @@ export PATH=$PATH:/sbin:/usr/sbin
 
 SRCDIR=$(grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 if [ "$SRCDIR" = "" ]; then
-	SRCDIR=/opt/mailcleaner
+	SRCDIR=/usr/mailcleaner
 fi
 
 PREVPROC=$(pgrep -f /etc/exim/exim_stage1)

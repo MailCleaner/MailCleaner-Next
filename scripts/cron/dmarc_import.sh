@@ -2,11 +2,11 @@
 
 SRCDIR=$(grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 if [ "$SRCDIR" = "" ]; then
-	SRCDIR=/opt/mailcleaner
+	SRCDIR=/usr/mailcleaner
 fi
 VARDIR=$(grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 if [ "$VARDIR" = "" ]; then
-	VARDIR=/opt/mailcleaner
+	VARDIR=/var/mailcleaner
 fi
 echo "select hostname, password from master;" | $SRCDIR/bin/mc_mysql -s mc_config | grep -v 'password' | tr -t '[:blank:]' ':' >/var/tmp/master.conf
 MHOST=$(cat /var/tmp/master.conf | cut -d':' -f1)

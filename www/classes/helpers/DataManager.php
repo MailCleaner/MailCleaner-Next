@@ -46,7 +46,7 @@ class DataManager
      */
     private $base_config = [
         'VARDIR' => '/var/mailcleaner',
-        'SRCDIR' => '/opt/mailcleaner'
+        'SRCDIR' => '/usr/mailcleaner'
     ];
 
     /**

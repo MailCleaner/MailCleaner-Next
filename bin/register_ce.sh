@@ -34,11 +34,11 @@ if [ "$HOSTID" = "" ]; then
 fi
 SRCDIR=$(grep 'SRCDIR' $CONFFILE | cut -d ' ' -f3)
 if [ "$SRCDIR" = "" ]; then
-	SRCDIR="/opt/mailcleaner"
+	SRCDIR="/usr/mailcleaner"
 fi
 VARDIR=$(grep 'VARDIR' $CONFFILE | cut -d ' ' -f3)
 if [ "$VARDIR" = "" ]; then
-	VARDIR="/opt/mailcleaner"
+	VARDIR="/var/mailcleaner"
 fi
 HTTPPROXY=$(grep -e '^HTTPPROXY' $CONFFILE | cut -d ' ' -f3)
 export http_proxy=$HTTPPROXY
