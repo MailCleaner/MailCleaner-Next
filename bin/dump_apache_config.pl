@@ -56,7 +56,6 @@ our $DEBUG = 1;
 our $uid = getpwnam('www-data');
 our $gid = getgrnam('mailcleaner');
 
-
 my $lasterror = "";
 
 # Delete old session files
@@ -84,6 +83,8 @@ chown($uid, $gid,
     glob('/var/mailcleaner/www/stats/*'),
     '/var/mailcleaner/run/configurator',
     '/var/mailcleaner/run/ssl.cache',
+    '/var/mailcleaner/run/apache2',
+    glob('/var/mailcleaner/run/apache2/*'),
     '/etc/apache2',
     glob('/etc/apache2/*'),
     glob($VARDIR.'/log/apache/*'),
@@ -152,7 +153,7 @@ if (-e "${SRCDIR}/etc/apache/configurator.conf.disabled") {
     dump_apache_file("${SRCDIR}/etc/apache/sites-available/configurator.conf_template", "${SRCDIR}/etc/apache/sites-available/configurator.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
 }
 
-dump_soap_wsdl() or fatal_error("CANNOTDUMPWSDLFILE", $lasterror);
+dump_soap_wsdl($sys_conf{'HOST'}, $apache_conf{'__USESSL__'}) or fatal_error("CANNOTDUMPWSDLFILE", $lasterror);
 
 dump_certificate(${SRCDIR},$apache_conf{'tls_certificate_data'}, $apache_conf{'tls_certificate_key'}, $apache_conf{'tls_certificate_chain'});
 
@@ -214,11 +215,14 @@ sub dump_apache_file($template_file, $target_file)
     return 1;
 }
 
-sub dump_soap_wsdl()
+sub dump_soap_wsdl($host, $use_ssl)
 {
 
     my $template_file = "${SRCDIR}/www/soap/htdocs/mailcleaner.wsdl_template";
     my $target_file = "${SRCDIR}/www/soap/htdocs/mailcleaner.wsdl";
+
+    my $protocol = 'http';
+    $protocol .= 's' if ($use_ssl);
 
     my ($TEMPLATE, $TARGET);
     if ( !open($TEMPLATE, '<', $template_file) ) {
@@ -235,7 +239,8 @@ sub dump_soap_wsdl()
     while(<$TEMPLATE>) {
         my $line = $_;
 
-        $line =~ s/__HOST__/$sys_conf{'HOST'}/g;
+        $line =~ s/__HOST__/$host/g;
+        $line =~ s/__PROTOCOL__/$protocol/g;
         print $TARGET $line;
     }
 
