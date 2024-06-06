@@ -133,7 +133,7 @@ echo -e "\b\b\b * "
 # Clear cache
 echo -n "Clearing APT cache..."
 rm /var/lib/apt/lists/* 2>/dev/null
-if [ $! ]; then
+if [ $? ]; then
 	echo -e "\b\b\b x "
 else
 	echo -e "\b\b\b * "
@@ -142,7 +142,7 @@ fi
 # Update repositories
 echo -n "Updating APT repos..."
 apt-get update 2>&1 >/dev/null
-if [ $! ]; then
+if [ $? ]; then
 	echo -e "\b\b\b x "
 else
 	echo -e "\b\b\b * "
@@ -199,7 +199,7 @@ fi
 # Update repo
 cd /usr/mailcleaner
 git pull --rebase origin master 2>/dev/null >/dev/null
-if [ $! ]; then
+if [ $? ]; then
 	echo -e "\b\b\b x Error pulling latest commits"
 	exit
 else
@@ -211,22 +211,30 @@ else
 fi
 
 echo "Cleaning up..."
+
 echo -n "Removing unnecessary APT packages..."
 apt-get autoremove --assume-yes 2>/dev/null >/dev/null
-if [ $! ]; then
+if [ $? ]; then
 	echo -e "\b\b\b x "
+	ERRORS="${ERRORS}
+x Failed \`apt-get autoremove\`"
 else
 	echo -e "\b\b\b * "
 fi
+
 echo -n "Cleaning APT archive..."
 apt-get clean --assume-yes 2>/dev/null >/dev/null
-if [ $! ]; then
+if [ $? ]; then
 	echo -e "\b\b\b x "
+	ERRORS="${ERRORS}
+x Failed \`apt-get clean\`"
 else
 	echo -e "\b\b\b * "
 fi
 
 clear
+
+/usr/mailcleaner/install/install.sh
 if [ $! ]; then
 	echo -e "\b\b\b x "
 	ERRORS="${ERRORS}
