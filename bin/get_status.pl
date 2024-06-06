@@ -109,7 +109,6 @@ if ($mode_given =~ /s/) {
     my $i = 0;
     foreach my $service (@order) {
         my $key = $service->{'id'};
-        last if ($key eq 'firewall');
         my $st = 0;
         if (defined($service->{'service'})) {
             $st = system("systemctl is-active --quiet $service->{'service'}");
@@ -141,21 +140,6 @@ if ($mode_given =~ /s/) {
         $order[$i++]{'status'} = $st;
     }
 
-    $res = `cat /tmp/fw.lock 2> /dev/null`;
-    my $st = 2;
-    if ($res =~ /^1$/) {
-        $st = 1;
-    }
-    if (-f $restartdir."firewall.restart.rs") {
-        $st = 6
-    } elsif (-f $restartdir."firewall.stop.rs") {
-        $st = 5;
-    } elsif (-f $restartdir."firewall.start.rs") {
-        $st = 4;
-    } elsif (-f $restartdir."firewall.rn") {
-        $st = 3;
-    }
-    $order[$i]->{'status'} = $st;
     if ($verbose) {
         foreach my $service (@order) {
             printf("%-20s %s\n", $service->{'human'}.':', $codes{$service->{'status'}});
