@@ -109,6 +109,10 @@ chown($uid, $gid,
     glob($SRCDIR.'etc/mailscanner/rules'),
     $VARDIR.'/spam',
     $VARDIR.'/spool/spamassassin',
+    $VARDIR.'/spool/mailscanner',
+    glob($VARDIR.'/spool/mailscanner/*'),
+    $VARDIR.'/spool/tmp/mailscanner',
+    glob($VARDIR.'/spool/tmp/mailscanner/*'),
     $VARDIR.'/run/mailscanner',
     glob($VARDIR.'/run/mailscanner/*'),
     $VARDIR.'/log/mailscanner',
@@ -125,6 +129,13 @@ chown($uid, $gid,
     $VARDIR.'/spool/tmp/mailscanner/incoming/Locks',
     glob($VARDIR.'/spool/tmp/mailscanner/incoming/*'),
 );
+
+foreach my $dir (
+    $VARDIR.'/spool/tmp/mailscanner',
+) {
+    chmod(0755, $dir) if ( -d $dir );
+    make_path($dir, {'mode'=>0755,'user'=>$uid,'group'=>$gid}) unless ( -d $dir );
+}
 
 symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
 
