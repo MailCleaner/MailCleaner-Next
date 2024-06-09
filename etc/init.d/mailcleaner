@@ -15,9 +15,9 @@ if [ -z $1 ]; then
 fi
 
 if [ $1 = 'start' ]; then
-	systemctl isolate mailcleaner.target
+	systemctl start mailcleaner.target
 elif [ $1 = 'stop' ]; then
-	systemctl isolate mailcleaner-stopped.target
+	systemctl start mailcleaner-stopped.target
 elif [ $1 = 'restart' ]; then
 	$0 stop
 	$0 start
