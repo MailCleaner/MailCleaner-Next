@@ -107,7 +107,7 @@ class Auth_Container_File extends Auth_Container
      * @param   string  password
      * @return  mixed   boolean|PEAR_Error
      */
-    function fetchData($user, $pass)
+    function fetchData($user, $pass, $isChallengeResponse = false)
     {
         $this->log('Auth_Container_File::fetchData() called.', AUTH_LOG_DEBUG);
         return File_Passwd::staticAuth($this->options['type'], $this->pwfile, $user, $pass);

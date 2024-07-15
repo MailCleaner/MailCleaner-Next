@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * $Header$
  * $Horde: horde/lib/Log.php,v 1.15 2000/06/29 23:39:45 jon Exp $
@@ -17,7 +19,7 @@ define('PEAR_LOG_NOTICE',   5);     /* Normal but significant */
 define('PEAR_LOG_INFO',     6);     /* Informational */
 define('PEAR_LOG_DEBUG',    7);     /* Debug-level messages */
 
-define('PEAR_LOG_ALL',      0xffffffff);    /* All messages */
+define('PEAR_LOG_ALL',      0x7fffffff);    /* All messages */
 define('PEAR_LOG_NONE',     0x00000000);    /* No message */
 
 /* Log types for PHP's native error_log() function. */
@@ -38,71 +40,49 @@ define('PEAR_LOG_TYPE_SAPI',    4); /* Use the SAPI logging handler */
  */
 class Log
 {
+    private const DEFAULT_TIME_FORMAT = 'M d H:i:s';
+
     /**
      * Indicates whether or not the log can been opened / connected.
-     *
-     * @var boolean
-     * @access protected
      */
-    var $_opened = false;
+    protected bool $opened = false;
 
     /**
      * Instance-specific unique identification number.
-     *
-     * @var integer
-     * @access protected
      */
-    var $_id = 0;
+    protected string $id = '0';
 
     /**
      * The label that uniquely identifies this set of log messages.
-     *
-     * @var string
-     * @access protected
      */
-    var $_ident = '';
+    protected string $ident = '';
 
     /**
      * The default priority to use when logging an event.
-     *
-     * @var integer
-     * @access protected
      */
-    var $_priority = PEAR_LOG_INFO;
+    protected int $priority = PEAR_LOG_INFO;
 
     /**
      * The bitmask of allowed log levels.
-     *
-     * @var integer
-     * @access protected
      */
-    var $_mask = PEAR_LOG_ALL;
+    protected int $mask = PEAR_LOG_ALL;
 
     /**
      * Holds all Log_observer objects that wish to be notified of new messages.
-     *
-     * @var array
-     * @access protected
      */
-    var $_listeners = [];
+    protected array $listeners = [];
 
     /**
      * Starting depth to use when walking a backtrace in search of the
      * function that invoked the log system.
-     *
-     * @var integer
-     * @access protected
      */
-    var $_backtrace_depth = 0;
+    protected int $backtrace_depth = 0;
 
     /**
      * Maps canonical format keys to position arguments for use in building
      * "line format" strings.
-     *
-     * @var array
-     * @access protected
      */
-    var $_formatMap = [
+    protected array $formatMap = [
         '%{timestamp}'  => '%1$s',
         '%{ident}'      => '%2$s',
         '%{priority}'   => '%3$s',
@@ -111,7 +91,7 @@ class Log
         '%{line}'       => '%6$s',
         '%{function}'   => '%7$s',
         '%{class}'      => '%8$s',
-        '%\{'           => '%%{'
+        '%\{'           => '%%{',
     ];
 
     public function __construct()
@@ -140,16 +120,15 @@ class Log
      *
      * @return object Log       The newly created concrete Log instance, or
      *                          null on an error.
-     * @access public
      * @since Log 1.0
      */
     public static function factory(
-        $handler,
-        $name = '',
-        $ident = '',
-        $conf = [],
-        $level = PEAR_LOG_DEBUG
-    ) {
+        string $handler,
+        string $name = '',
+        string $ident = '',
+        array $conf = [],
+        int $level = PEAR_LOG_DEBUG
+    ): ?Log {
         $handler = strtolower($handler);
         $class = 'Log_' . $handler;
         $classfile = 'Log/' . $handler . '.php';
@@ -206,28 +185,22 @@ class Log
      *
      * @return object Log       The newly created concrete Log instance, or
      *                          null on an error.
-     * @access public
      * @since Log 1.0
      */
     public static function singleton(
-        $handler,
-        $name = '',
-        $ident = '',
-        $conf = [],
-        $level = PEAR_LOG_DEBUG
-    ) {
+        string $handler,
+        string $name = '',
+        string $ident = '',
+        array $conf = [],
+        int $level = PEAR_LOG_DEBUG
+    ): ?Log {
         static $instances;
         if (!isset($instances)) $instances = [];
 
         $signature = serialize([$handler, $name, $ident, $conf, $level]);
         if (!isset($instances[$signature])) {
-            $instances[$signature] = Log::factory(
-                $handler,
-                $name,
-                $ident,
-                $conf,
-                $level
-            );
+            $instances[$signature] = Log::factory($handler, $name, $ident,
+                                                  $conf, $level);
         }
 
         return $instances[$signature];
@@ -237,7 +210,7 @@ class Log
      * Abstract implementation of the open() method.
      * @since Log 1.0
      */
-    function open()
+    public function open(): bool
     {
         return false;
     }
@@ -246,7 +219,7 @@ class Log
      * Abstract implementation of the close() method.
      * @since Log 1.0
      */
-    function close()
+    public function close(): bool
     {
         return false;
     }
@@ -255,7 +228,7 @@ class Log
      * Abstract implementation of the flush() method.
      * @since Log 1.8.2
      */
-    function flush()
+    public function flush(): bool
     {
         return false;
     }
@@ -264,7 +237,7 @@ class Log
      * Abstract implementation of the log() method.
      * @since Log 1.0
      */
-    function log($message, $priority = null)
+    public function log($message, int $priority = null): bool
     {
         return false;
     }
@@ -278,10 +251,9 @@ class Log
      *
      * @return  boolean True if the message was successfully logged.
      *
-     * @access  public
      * @since   Log 1.7.0
      */
-    function emerg($message)
+    public function emerg($message): bool
     {
         return $this->log($message, PEAR_LOG_EMERG);
     }
@@ -295,10 +267,9 @@ class Log
      *
      * @return  boolean True if the message was successfully logged.
      *
-     * @access  public
      * @since   Log 1.7.0
      */
-    function alert($message)
+    public function alert($message): bool
     {
         return $this->log($message, PEAR_LOG_ALERT);
     }
@@ -312,10 +283,9 @@ class Log
      *
      * @return  boolean True if the message was successfully logged.
      *
-     * @access  public
      * @since   Log 1.7.0
      */
-    function crit($message)
+    public function crit($message): bool
     {
         return $this->log($message, PEAR_LOG_CRIT);
     }
@@ -329,10 +299,9 @@ class Log
      *
      * @return  boolean True if the message was successfully logged.
      *
-     * @access  public
      * @since   Log 1.7.0
      */
-    function err($message)
+    public function err($message): bool
     {
         return $this->log($message, PEAR_LOG_ERR);
     }
@@ -346,10 +315,9 @@ class Log
      *
      * @return  boolean True if the message was successfully logged.
      *
-     * @access  public
      * @since   Log 1.7.0
      */
-    function warning($message)
+    public function warning($message): bool
     {
         return $this->log($message, PEAR_LOG_WARNING);
     }
@@ -363,10 +331,9 @@ class Log
      *
      * @return  boolean True if the message was successfully logged.
      *
-     * @access  public
      * @since   Log 1.7.0
      */
-    function notice($message)
+    public function notice($message): bool
     {
         return $this->log($message, PEAR_LOG_NOTICE);
     }
@@ -380,10 +347,9 @@ class Log
      *
      * @return  boolean True if the message was successfully logged.
      *
-     * @access  public
      * @since   Log 1.7.0
      */
-    function info($message)
+    public function info($message): bool
     {
         return $this->log($message, PEAR_LOG_INFO);
     }
@@ -397,10 +363,9 @@ class Log
      *
      * @return  boolean True if the message was successfully logged.
      *
-     * @access  public
      * @since   Log 1.7.0
      */
-    function debug($message)
+    public function debug($message): bool
     {
         return $this->log($message, PEAR_LOG_DEBUG);
     }
@@ -420,9 +385,8 @@ class Log
      *
      * @return string           The string representation of the message.
      *
-     * @access protected
      */
-    function _extractMessage($message)
+    protected function extractMessage($message): string
     {
         /*
          * If we've been given an object, attempt to extract the message using
@@ -433,7 +397,7 @@ class Log
          */
         if (is_object($message)) {
             if (method_exists($message, 'getmessage')) {
-                $message = $message->getMessage();
+                $message = (string)$message->getMessage();
             } else if (method_exists($message, 'tostring')) {
                 $message = $message->toString();
             } else if (method_exists($message, '__tostring')) {
@@ -444,7 +408,7 @@ class Log
         } else if (is_array($message)) {
             if (isset($message['message'])) {
                 if (is_scalar($message['message'])) {
-                    $message = $message['message'];
+                    $message = (string)$message['message'];
                 } else {
                     $message = var_export($message['message'], true);
                 }
@@ -453,6 +417,8 @@ class Log
             }
         } else if (is_bool($message) || $message === NULL) {
             $message = var_export($message, true);
+        } else {
+            $message = (string)$message;
         }
 
         /* Otherwise, we assume the message is a string. */
@@ -470,28 +436,27 @@ class Log
      *                  the function name, and the class name from which log()
      *                  was called.
      *
-     * @access  private
      * @since   Log 1.9.4
      */
-    function _getBacktraceVars($depth)
+    private function getBacktraceVars(int $depth): array
     {
         /* Start by generating a backtrace from the current call (here). */
         $bt = debug_backtrace();
 
         /* Store some handy shortcuts to our previous frames. */
-        $bt0 = isset($bt[$depth]) ? $bt[$depth] : null;
-        $bt1 = isset($bt[$depth + 1]) ? $bt[$depth + 1] : null;
+        $bt0 = $bt[$depth] ?? null;
+        $bt1 = $bt[$depth + 1] ?? null;
 
         /*
          * If we were ultimately invoked by the composite handler, we need to
          * increase our depth one additional level to compensate.
          */
-        $class = isset($bt1['class']) ? $bt1['class'] : null;
+        $class = $bt1['class'] ?? null;
         if ($class !== null && strcasecmp($class, 'Log_composite') == 0) {
             $depth++;
-            $bt0 = isset($bt[$depth]) ? $bt[$depth] : null;
-            $bt1 = isset($bt[$depth + 1]) ? $bt[$depth + 1] : null;
-            $class = isset($bt1['class']) ? $bt1['class'] : null;
+            $bt0 = $bt[$depth] ?? null;
+            $bt1 = $bt[$depth + 1] ?? null;
+            $class = $bt1['class'] ?? null;
         }
 
         /*
@@ -509,16 +474,13 @@ class Log
          * However, if log() was called from one of our "shortcut" functions,
          * we're going to need to go back an additional step.
          */
-        if (in_array($func, [
-            'emerg', 'alert', 'crit', 'err', 'warning',
-            'notice', 'info', 'debug'
-        ])) {
-            $bt2 = isset($bt[$depth + 2]) ? $bt[$depth + 2] : null;
+        if (in_array($func, ['emerg', 'alert', 'crit', 'err', 'warning', 'notice', 'info', 'debug'])) {
+            $bt2 = $bt[$depth + 2] ?? null;
 
             $file = is_array($bt1) ? $bt1['file'] : null;
             $line = is_array($bt1) ? $bt1['line'] : 0;
             $func = is_array($bt2) ? $bt2['function'] : null;
-            $class = isset($bt2['class']) ? $bt2['class'] : null;
+            $class = $bt2['class'] ?? null;
         }
 
         /*
@@ -540,12 +502,11 @@ class Log
      *
      * @param int $depth    The new backtrace depth.
      *
-     * @access  public
      * @since   Log 1.12.7
      */
-    public function setBacktraceDepth($depth)
+    public function setBacktraceDepth(int $depth): void
     {
-        $this->_backtrace_depth = $depth;
+        $this->backtrace_depth = $depth;
     }
 
     /**
@@ -554,10 +515,9 @@ class Log
      *
      * @return  string  Formatted log string.
      *
-     * @access  protected
      * @since   Log 1.9.4
      */
-    function _format($format, $timestamp, $priority, $message)
+    protected function format(string $format, string $timestamp, int $priority, string $message): string
     {
         /*
          * If the format string references any of the backtrace-driven
@@ -565,8 +525,8 @@ class Log
          */
         if (preg_match('/%[5678]/', $format)) {
             /* Plus 2 to account for our internal function calls. */
-            $d = $this->_backtrace_depth + 2;
-            list($file, $line, $func, $class) = $this->_getBacktraceVars($d);
+            $d = $this->backtrace_depth + 2;
+            [$file, $line, $func, $class] = $this->getBacktraceVars($d);
         }
 
         /*
@@ -574,17 +534,15 @@ class Log
          * "argument swapping" capability to dynamically select and position
          * the variables which will ultimately appear in the log string.
          */
-        return sprintf(
-            $format,
-            $timestamp,
-            $this->_ident,
-            $this->priorityToString($priority),
-            $message,
-            isset($file) ? $file : '',
-            isset($line) ? $line : '',
-            isset($func) ? $func : '',
-            isset($class) ? $class : ''
-        );
+        return sprintf($format,
+                       $timestamp,
+                       $this->ident,
+                       $this->priorityToString($priority),
+                       $message,
+                       $file ?? '',
+                       $line ?? '',
+                       $func ?? '',
+                       $class ?? '');
     }
 
     /**
@@ -594,10 +552,9 @@ class Log
      *
      * @return string           The string representation of $level.
      *
-     * @access  public
      * @since   Log 1.0
      */
-    function priorityToString($priority)
+    public function priorityToString(int $priority): string
     {
         $levels = [
             PEAR_LOG_EMERG   => 'emergency',
@@ -607,7 +564,7 @@ class Log
             PEAR_LOG_WARNING => 'warning',
             PEAR_LOG_NOTICE  => 'notice',
             PEAR_LOG_INFO    => 'info',
-            PEAR_LOG_DEBUG   => 'debug'
+            PEAR_LOG_DEBUG   => 'debug',
         ];
 
         return $levels[$priority];
@@ -620,13 +577,12 @@ class Log
      *
      * @param string $name      String containing a priority name.
      *
-     * @return string           The PEAR_LOG_* integer contstant corresponding
+     * @return int           The PEAR_LOG_* integer contstant corresponding
      *                          the the specified priority name.
      *
-     * @access  public
      * @since   Log 1.9.0
      */
-    function stringToPriority($name)
+    public function stringToPriority(string $name): int
     {
         $levels = [
             'emergency' => PEAR_LOG_EMERG,
@@ -651,31 +607,11 @@ class Log
      *
      * @return integer  The calculated log mask.
      *
-     * @access  public
      * @since   Log 1.7.0
      */
-    public static function MASK($priority)
+    public static function MASK(int $priority): int
     {
         return (1 << $priority);
-    }
-
-    /**
-     * Calculate the log mask for all priorities up to the given priority.
-     *
-     * This method may be called statically.
-     *
-     * @param integer   $priority   The maximum priority covered by this mask.
-     *
-     * @return integer  The resulting log mask.
-     *
-     * @access  public
-     * @since   Log 1.7.0
-     *
-     * @deprecated deprecated since Log 1.9.4; use Log::MAX() instead
-     */
-    public static function UPTO($priority)
-    {
-        return Log::MAX($priority);
     }
 
     /**
@@ -689,10 +625,9 @@ class Log
      *
      * @return integer  The resulting log mask.
      *
-     * @access  public
      * @since   Log 1.9.4
      */
-    public static function MIN($priority)
+    public static function MIN(int $priority): int
     {
         return PEAR_LOG_ALL ^ ((1 << $priority) - 1);
     }
@@ -708,10 +643,9 @@ class Log
      *
      * @return integer  The resulting log mask.
      *
-     * @access  public
      * @since   Log 1.9.4
      */
-    public static function MAX($priority)
+    public static function MAX(int $priority): int
     {
         return ((1 << ($priority + 1)) - 1);
     }
@@ -723,14 +657,13 @@ class Log
      *
      * @return integer          The current level mask.
      *
-     * @access  public
      * @since   Log 1.7.0
      */
-    function setMask($mask)
+    public function setMask(int $mask): int
     {
-        $this->_mask = $mask;
+        $this->mask = $mask;
 
-        return $this->_mask;
+        return $this->mask;
     }
 
     /**
@@ -738,12 +671,11 @@ class Log
      *
      * @return integer         The current level mask.
      *
-     * @access  public
      * @since   Log 1.7.0
      */
-    function getMask()
+    public function getMask(): int
     {
-        return $this->_mask;
+        return $this->mask;
     }
 
     /**
@@ -754,12 +686,11 @@ class Log
      * @return boolean  True if the given priority is included in the current
      *                  log mask.
      *
-     * @access  protected
      * @since   Log 1.7.0
      */
-    function _isMasked($priority)
+    protected function isMasked(int $priority): bool
     {
-        return (Log::MASK($priority) & $this->_mask);
+        return (bool)(Log::MASK($priority) & $this->mask);
     }
 
     /**
@@ -767,12 +698,11 @@ class Log
      *
      * @return integer  The current default priority.
      *
-     * @access  public
      * @since   Log 1.8.4
      */
-    function getPriority()
+    public function getPriority(): int
     {
-        return $this->_priority;
+        return $this->priority;
     }
 
     /**
@@ -780,33 +710,27 @@ class Log
      *
      * @param   integer $priority   The new default priority.
      *
-     * @access  public
      * @since   Log 1.8.4
      */
-    function setPriority($priority)
+    public function setPriority(int $priority): void
     {
-        $this->_priority = $priority;
+        $this->priority = $priority;
     }
 
     /**
      * Adds a Log_observer instance to the list of observers that are listening
      * for messages emitted by this Log instance.
      *
-     * @param object    $observer   The Log_observer instance to attach as a
+     * @param Log_observer    $observer   The Log_observer instance to attach as a
      *                              listener.
      *
      * @return boolean  True if the observer is successfully attached.
      *
-     * @access  public
      * @since   Log 1.0
      */
-    function attach(&$observer)
+    public function attach(Log_observer $observer): bool
     {
-        if (!is_a($observer, 'Log_observer')) {
-            return false;
-        }
-
-        $this->_listeners[$observer->_id] = &$observer;
+        $this->listeners[$observer->getId()] = $observer;
 
         return true;
     }
@@ -814,24 +738,20 @@ class Log
     /**
      * Removes a Log_observer instance from the list of observers.
      *
-     * @param object    $observer   The Log_observer instance to detach from
+     * @param Log_observer    $observer   The Log_observer instance to detach from
      *                              the list of listeners.
      *
      * @return boolean  True if the observer is successfully detached.
      *
-     * @access  public
      * @since   Log 1.0
      */
-    function detach($observer)
+    public function detach(Log_observer $observer): bool
     {
-        if (
-            !is_a($observer, 'Log_observer') ||
-            !isset($this->_listeners[$observer->_id])
-        ) {
+        if (!isset($this->listeners[$observer->getId()])) {
             return false;
         }
 
-        unset($this->_listeners[$observer->_id]);
+        unset($this->listeners[$observer->getId()]);
 
         return true;
     }
@@ -842,13 +762,15 @@ class Log
      *
      * @param array     $event      A hash describing the log event.
      *
-     * @access protected
      */
-    function _announce($event)
+    protected function announce(array $event): void
     {
-        foreach ($this->_listeners as $id => $listener) {
-            if ($event['priority'] <= $this->_listeners[$id]->_priority) {
-                $this->_listeners[$id]->notify($event);
+        /**
+         * @var Log_observer $listener
+         */
+        foreach ($this->listeners as $listener) {
+            if ($event['priority'] <= $listener->getPriority()) {
+                $listener->notify($event);
             }
         }
     }
@@ -858,10 +780,9 @@ class Log
      *
      * @return boolean          True if this is a composite class.
      *
-     * @access  public
      * @since   Log 1.0
      */
-    function isComposite()
+    public function isComposite(): bool
     {
         return false;
     }
@@ -871,12 +792,11 @@ class Log
      *
      * @param string    $ident      The new identification string.
      *
-     * @access  public
      * @since   Log 1.6.3
      */
-    function setIdent($ident)
+    public function setIdent(string $ident): void
     {
-        $this->_ident = $ident;
+        $this->ident = $ident;
     }
 
     /**
@@ -884,11 +804,73 @@ class Log
      *
      * @return string   The current Log instance's identification string.
      *
-     * @access  public
      * @since   Log 1.6.3
      */
-    function getIdent()
+    public function getIdent(): string
     {
-        return $this->_ident;
+        return $this->ident;
+    }
+
+    /**
+     * Function to format unix timestamp in specified format, which will be used in log record
+     * By default will be used format self::DEFAULT_TIME_FORMAT
+     * timeFormatter function will be used if it is set
+     *
+     * @param int $time unix timestamp
+     * @param string $timeFormat specified format, which will be used in log record
+     * @param callable|null $timeFormatter function which will be used to format time
+     * @return string
+     */
+    protected function formatTime(int $time, string $timeFormat = self::DEFAULT_TIME_FORMAT, ?callable $timeFormatter = null)
+    {
+        if (!is_null($timeFormatter) && is_callable($timeFormatter)) {
+            return call_user_func($timeFormatter, $timeFormat, $time);
+        }
+
+        if (strpos($timeFormat, '%') !== false) {
+            trigger_error('Using strftime-style formatting is deprecated', E_USER_WARNING);
+            $timeFormat = $this->convertStrftimeFormatConverter($timeFormat);
+        }
+
+        return date($timeFormat, $time);
+    }
+
+    /**-
+     * Function to convert strftime format to format acceptable by date function
+     *
+     * @param string $timeFormat
+     * @return string
+     */
+    private function convertStrftimeFormatConverter(string $timeFormat): string
+    {
+        $strf_syntax = [
+            '%O', '%d', '%a', '%e', '%A', '%u', '%w', '%j',
+            '%V',
+            '%B', '%m', '%b', '%-m',
+            '%G', '%Y', '%y',
+            '%P', '%p', '%l', '%I', '%H', '%M', '%S',
+            '%z', '%Z',
+            '%s',
+            '%x', '%X',
+        ];
+
+        // http://php.net/manual/en/function.date.php
+        $date_syntax = [
+            'S', 'd', 'D', 'j', 'l', 'N', 'w', 'z',
+            'W',
+            'F', 'm', 'M', 'n',
+            'o', 'Y', 'y',
+            'a', 'A', 'g', 'h', 'H', 'i', 's',
+            'O', 'T',
+            'U',
+            'm/d/Y', 'H:i:s',
+        ];
+
+        $pattern = array_map(
+            fn($s) => '/(?<!\\\\|\%)' . $s . '/',
+            $strf_syntax
+        );
+
+        return preg_replace($pattern, $date_syntax, $timeFormat);
     }
 }
