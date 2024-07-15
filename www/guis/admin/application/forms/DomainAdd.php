@@ -69,7 +69,9 @@ class Default_Form_DomainAdd extends Zend_Form
         foreach ($domains as $d) {
             $topdomains->addMultiOption($d->getParam('name'), '.' . $d->getParam('name'));
         }
-        $topdomains->setValue($this->_params['domain']);
+        if (isset($this->_params['domain'])) {
+            $topdomains->setValue($this->_params['domain']);
+        }
         $this->addElement($topdomains);
 
         $submit = new Zend_Form_Element_Submit('submit', [
