@@ -10,9 +10,9 @@
 /**
  * requires PEAR's Auth class
  */
-require_once("Pear/Auth.php");
-require_once("Pear/Log.php");
-require_once("Pear/Log/observer.php");
+require_once("Auth.php");
+require_once("Log.php");
+require_once("Log/observer.php");
 
 /**
  * This class is the main authenticator factory
@@ -207,7 +207,7 @@ class Auth_Log_Observer extends Log_observer
 
     var $messages = [];
 
-    function notify($event)
+    function notify($event): void
     {
         $this->messages[] = $event;
     }

@@ -11,7 +11,7 @@
  * LoginDialog needs the authentication connectors
  */
 require_once("system/SystemConfig.php");
-require_once("Pear/Auth.php");
+require_once("Auth.php");
 require_once("view/Language.php");
 require_once("user/User.php");
 require_once("domain/Domain.php");
