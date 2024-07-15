@@ -10,7 +10,7 @@
 /**
  * include log, system config and session objects
  */
-require_once('Pear/Log.php');
+require_once('Log.php');
 require_once('variables.php');
 require_once('system/SystemConfig.php');
 require_once('view/Language.php');
