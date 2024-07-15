@@ -24,6 +24,8 @@ class ConnectorSettings
         'port'   => 0
     ];
 
+    private $spec_settings_ = [];
+
     private $settings_type_ = [
         'server' => ['text', 20],
         'port' => ['text', 5]
@@ -158,7 +160,7 @@ class ConnectorSettings
         }
 
         if (preg_match('/:/', $settings)) {
-            list($server, $port)  = preg_split("/:/", $settings);
+            [$server, $port]  = preg_split("/:/", $settings);
         } else {
             $server = $settings;
         }
@@ -180,6 +182,9 @@ class ConnectorSettings
      */
     public function setParamSettings($settings)
     {
+        if (!isset($settings)) {
+            return false;
+        }
         $fields = preg_split('/\:/', $settings);
         if (count($fields) != count($this->spec_settings_)) {
             return false;
