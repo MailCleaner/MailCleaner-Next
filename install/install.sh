@@ -303,18 +303,24 @@ if [ $? -eq 1 ]; then
 fi
 
 ###############################################
+echo -n "Setting MailCleaner as default SystemD target..."
+rm /etc/systemd/system/default.target
+rm /lib/systemd/system/default.target
+ln -s /usr/mailcleaner/scripts/systemd/mailcleaner.target /lib/systemd/system/default.target
+if [ $! ]; then
+	echo -e "\b\b\b x "
+	ERRORS="${ERRORS}
+x Failed to symlink mailcleaner.target to /lib/systemd/system/default.target"
+fi
+
 echo "Starting..."
-systemctl set-default mailcleaner.target
 systemctl start mailcleaner.target
 
-if [ ! -d $VARDIR/run ]; then
-	mkdir -p $VARDIR/run
-fi
 for i in $($SRCDIR/bin/get_status.pl -s | tr '|' ' '); do
 	if [ $i ]; then
-		echo "Not all services started successfully. Please review $LOGFILE"
-		$SRCDIR/bin/get_status.pl -s
-		exit
+		echo "Not all services started successfully. Please review $LOGFILE and run installation again when problems are resolved."
+		$SRCDIR/bin/get_status.pl -s -v
+		exit 255
 	fi
 done
 touch $VARDIR/run/first-time-configuration

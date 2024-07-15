@@ -1,13 +1,14 @@
 [Unit]
 Description=MailScanner Anti-Virus daemon for MailCleaner
 Requires=mariadb@slave.service preftdaemon.service
-BindsTo=clamav-daemon.socket clamspamd.service spamd@newsld.service spamd@spamd.service
+BindsTo=clamav-daemon.socket clamspamd.service spamd@newsld.service spamd@spamd.service spamd@newsld.service
+After=mariadb@slave.service
 Before=exim4@2.service
 PartOf=mailcleaner.target
 
 [Service]
 User=mailscanner
-Group=mailcleaner
+Group=mailscanner
 PrivateTmp=false
 Type=forking
 ExecStartPre=+/usr/mailcleaner/bin/dump_mailscanner_config.pl %I

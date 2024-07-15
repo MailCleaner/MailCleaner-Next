@@ -1,6 +1,6 @@
 [Unit]
-Requires=mariadb@slave.service
-After=network.target mariadb@slave.service
+Requires=mariadb@slave.socket
+After=network.target mariadb@slave.socket
 Conflicts=sendmail.service postfix.service
 PartOf=mailcleaner.target
 
