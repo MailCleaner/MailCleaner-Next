@@ -170,7 +170,9 @@ function getStats($what, $start, $stop)
     exec($cmd, $res_a);
 
     $res = [];
-    if (!preg_match('/^([\d\.]+)([\|\d\.]+){10}$/', $res_a[0], $res)) {
+    if (!isset($res_a[0])) {
+        return "ERRORFETCHINGCOUNTS NODATA";
+    } elseif (!preg_match('/^([\d\.]+)([\|\d\.]+){10}$/', $res_a[0], $res)) {
         return "ERRORFETCHINGCOUNTS (" . $res[0] . ")";
     }
     list($msg, $spam, $highspam, $virus, $names, $others, $cleans, $bytes, $users, $domains) = preg_split('/\|/', $res_a[0]);
