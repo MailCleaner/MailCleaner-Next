@@ -57,6 +57,11 @@ class Default_Model_Domain
     protected $_destination_action_options_smarthost = ['loadbalancing' => 'randomize', 'failover' => 'no_randomize'];
 
     protected $_calloutconnector = 'smtp';
+    protected $_adcheck = false;
+    protected $_addlistcallout = false;
+    protected $_active = true;
+    protected $_callout = true;
+    protected $_greylist = false;
     protected $_forward_by_mx = false;
     protected $_callouttest_finished  = false;
 
@@ -236,7 +241,6 @@ class Default_Model_Domain
         if ($this->getParam('name') == '') {
             return;
         }
-        $givenparams = $this->getParamArray();
         $ret = $this->getMapper()->save($this);
 
         $slave = new Default_Model_Slave();
@@ -245,11 +249,11 @@ class Default_Model_Domain
             'what' => 'domains',
             'domain' => $this->getParam('name')
         ];
-        $res = $slave->sendSoapToAll('Service_silentDump', $params);
+        $slave->sendSoapToAll('Service_silentDump', $params);
 
         ## then save main domains list in case we're adding
         $params = ['what' => 'domains'];
-        $res = $slave->sendSoapToAll('Service_silentDump', $params);
+        $slave->sendSoapToAll('Service_silentDump', $params);
 
         return $ret;
     }
@@ -756,7 +760,6 @@ class Default_Model_Domain
         return $str;
     }
 
-
     public function getDestinationUseMX()
     {
         return $this->_forward_by_mx;
@@ -764,7 +767,7 @@ class Default_Model_Domain
 
     public function setDestinationUseMX($value)
     {
-        $this->_calloutconnector = $value;
+        $this->_forward_by_mx = $value;
     }
 
     public function testDestinationsSMTP()
@@ -846,13 +849,13 @@ class Default_Model_Domain
     public function loadCalloutConnector()
     {
         $this->_calloutconnector = 'none';
-        if (preg_match('/true/', $this->getParam('adcheck'))) {
+        if (preg_match('/^true$/', $this->getParam('adcheck'))) {
             $this->_calloutconnector = 'ldap';
         }
-        if (preg_match('/true/', $this->getParam('addlistcallout'))) {
+        if (preg_match('/^true$/', $this->getParam('addlistcallout'))) {
             $this->_calloutconnector = 'local';
         }
-        if (preg_match('/true/', $this->getParam('callout'))) {
+        if (preg_match('/^true$/', $this->getParam('callout'))) {
             $this->_calloutconnector = 'smtp';
         }
     }
