@@ -55,7 +55,7 @@ class Default_Model_DomainPrefMapper
     {
         $data = $conf->getParamArray();
         $res = '';
-        foreach (['enable_whitelists', 'enable_warnlists', 'notice_wwlists_hit'] as $key) {
+        foreach (['enable_blacklists', 'enable_whitelists', 'enable_warnlists', 'notice_wwlists_hit'] as $key) {
             if (is_null($data[$key])) {
                 unset($data[$key]);
             }
