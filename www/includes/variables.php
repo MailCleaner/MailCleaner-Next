@@ -16,12 +16,13 @@ ini_set('error_reporting', E_ALL & ~E_STRICT & ~E_DEPRECATED);
 ini_set('display_errors', 1);
 
 // do the logging stuff as soon as possible
-require_once('Pear/Log.php');
+require_once('Log.php');
+
 $MCLOGLEVEL = PEAR_LOG_WARNING;  // normal is: PEAR_LOG_WARNING or PEAR_LOG_INFO
 require_once('helpers/DataManager.php');
 require_once('system/SystemConfig.php');
 $conf_ = DataManager::getFileConfig(SystemConfig::$CONFIGFILE_);
-$log_ = Log::singleton('file', $conf_['VARDIR'] . "/log/mailcleaner/webgui.log", 'none', null, $MCLOGLEVEL);
+$log_ = Log::singleton('file', $conf_['VARDIR'] . "/log/apache/webgui.log", 'none', [], $MCLOGLEVEL);
 global $log_;
 
 ## set the timezone
