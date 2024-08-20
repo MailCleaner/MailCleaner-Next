@@ -295,7 +295,7 @@ function eset() {
 		env PATH=$PATH:/usr/sbin:/sbin apt-get autoclean --yes --force-yes &>>$LOGFILE
 		env PATH=$PATH:/usr/sbin:/sbin apt-get install -f --yes &>>$LOGFILE
 
-		printf "Downloading ESET ... \n"
+		printf "Downloading ESET. This will take a couple of minutes... \n"
 		cd /tmp
 		wget https://download.eset.com/com/eset/apps/business/efs/linux/latest/efs.x86_64.bin
 		if [[ ! -e efs.x86_64.bin ]]; then
@@ -306,12 +306,9 @@ function eset() {
 		printf "Installing ESET ... \n"
 		chmod +x efs.x86_64.bin
 		env PATH=$PATH:/usr/sbin:/sbin ./efs.x86_64.bin -y -f -g &>>$LOGFILE
-		# First attempt will fail due to missing btrfs dependency
 		DEB=$(ls ./efs*.deb)
 		if [[ $DEB ]]; then
-			echo "Force installation without Btrfs"
-			dpkg -i --force-all $DEB
-			apt-mark hold efs
+			dpkg -i $DEB
 			apt-get install --fix-missing -y
 		else
 			echo "Failed to locate downloaded .deb"
@@ -336,13 +333,8 @@ function eset() {
 		exit 1
 	fi
 
-	list=$(echo "SELECT allowed_ip FROM external_access WHERE service = 'web';" | mc_mysql -s mc_config | sed 's/\s*allowed_ip\s*//')
-	for ip in $list; do
-		echo "INSERT external_access(service,port,protocol,allowed_ip) SELECT * FROM (SELECT 'esetweb', '9443', 'TCP', '$ip') AS new WHERE NOT EXISTS (SELECT id FROM external_access WHERE service = 'esetweb' AND allowed_ip = '$ip') LIMIT 1;" | /usr/mailcleaner/bin/mc_mysql -s mc_config
-	done
 	echo "UPDATE scanner set active = 1 WHERE name = 'esetsefs';" | /usr/mailcleaner/bin/mc_mysql -m mc_config
 	printf "Restarting services ... \n"
-	/usr/mailcleaner/etc/init.d/firewall restart 2>/dev/null
 	/usr/mailcleaner/etc/init.d/mailscanner restart 2>/dev/null
 
 	echo ${FONT_BOLD}${FONT_GREEN}ESET enabled Successfully${FONT_RESET}
