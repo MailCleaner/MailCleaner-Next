@@ -1,11 +1,11 @@
 <?php
-
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
- * @author Olivier Diserens, John Mertz
- * @copyright 2006, Olivier Diserens; 2023, John Mertz
+ * @author Olivier Diserens
+ * @copyright 2006, Olivier Diserens
  */
+### newsl
 $txt['NEWSLETTERMODULE'] = "Boletín";
 $txt['NEWSLETTERSTOPIC'] = "Boletines";
 $txt['NEWSLETTERSTOPICTITLE'] = "Boletines";
@@ -462,7 +462,7 @@ $txt['REMTHEENTRY'] = "Eliminar selección";
 $txt['DISABLETHEENTRY'] = "Desactivar/activar selección";
 $txt['WHITELISTSHORTHELP'] = "La lista blanca contiene las direcciones de los remitentes de confianza, las cuales no serán puestas en cuarentena.<br />
 Advertencia: esta función debe ser utilizada como solución temporal, porque impide una protección total.
-Leer el manual (disponible en la parte <a href=\"help.php\">\"Ayuda\"</a>) para obtener más información sobre el uso de la lista blanca.
+Leer el manual (disponible en la parte <a href=\"help.php\">\"Ayuda\"</a>) para obtener más información sobre el uso de la lista blanca. 
 ";
 $txt['BLACKLISTSHORTHELP'] = "La lista negra contiene la dirección del remitente incluida en la lista negra.
  Revise el manual (disponible en la sección <a href=\"help.php\">\"Ayuda\"</a>) para obtener más información sobre el uso de la lista negra.
@@ -563,3 +563,7 @@ $txt['NOTNEWSWHITEBODY'] = "Hubo un problema al agregar estas reglas.";
 $txt['NOTNEWSWHITEHEAD'] = "No se han agregado ni la lista de noticias ni la regla de lista blanca.";
 $txt['WHITENOTNEWSBODY'] = "Se agregó una regla de lista blanca, sin embargo, hubo un problema al agregar la regla de lista blanca de boletines.";
 $txt['NEWSLETTERUNSUB'] = "Cancelar la suscripción";
+/*
+ * generic texts
+ */
+$txt['AND'] = "y";

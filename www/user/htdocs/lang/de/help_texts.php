@@ -1,10 +1,9 @@
-<?php
-
+<?
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
- * @author Olivier Diserens, John Mertz
- * @copyright 2006, Olivier Diserens; 2023, John Mertz
+ * @author Olivier Diserens
+ * @copyright 2006, Olivier Diserens
  */
 
 $htxt['INTRODUCTION'] = '
@@ -280,3 +279,4 @@ oder im Abschnitt __LINKHELP_faq__H&auml;ufig gestellte Fragen__LINK__ behandelt
 <h2>F&uuml;r alle kommerziellen Fragen</h2>
 <p>__SALES_EMAIL__</p>
 ';
+?>

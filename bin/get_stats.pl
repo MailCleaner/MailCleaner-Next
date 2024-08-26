@@ -67,13 +67,13 @@ my %global = ('msgs' => 0, 'spams' => 0, 'highspams' => 0, 'viruses' => 0, 'name
 
 # check parameters
 if (!defined($what) || $what !~ m/^[a-zA-Z0-9@._\-,*]+$/ ) {
-    badUsage('what');
+    badUsage('what', $what);
 }
 if (!defined($begin) || $begin !~ m/^\-?\d{1,8}$/ ) {
-    badUsage('begin');
+    badUsage('begin', $begin);
 }
 if (!defined($end) || $end !~ /^\+?\d{1,8}$/ ) {
-    badUsage('end');
+    badUsage('end', $end);
 }
 
 if (defined($verbose_o) && $verbose_o eq '-v') {
@@ -168,7 +168,7 @@ my $start = `date +%Y%m%d`;
 my $stop = `date +%Y%m%d`;
 if ($begin =~ /^\d{8}/ && $end =~ /^\d{8}/) {
     if (int($end) lt int($begin)) {
-        badUsage("end date should come after begin date ($begin, $end)");
+        badUsage("end date should come after begin date (begin, end)", $begin, $end);
     }
     $start = $begin;
     $stop = $end;
@@ -192,22 +192,33 @@ if ($debug) {
 }
 
 my $day = $start;
-foreach my $dir (@dirs) {
+if (scalar(@dirs)) {
+    foreach my $dir (@dirs) {
+        clearStats();
+
+        my $tday = $day;
+        while ($tday <= $stop) {
+            my $file = $dir."/".$tday."_counts";
+            processFile($file);
+            print $whats{$dir}.":" if $batchmode && $fulldays;
+            print $tday.":" if $fulldays;
+            returnStats() if $fulldays;
+            $tday = addDate($tday, '+1');
+            clearStats() if $fulldays;
+        }
+        print $whats{$dir}.":" if $batchmode && !$fulldays;
+        addGlobalStats();
+        returnStats() if !$fulldays;
+    }
+} else {
     clearStats();
 
     my $tday = $day;
     while ($tday <= $stop) {
-        my $file = $dir."/".$tday."_counts";
-        processFile($file);
-        print $whats{$dir}.":" if $batchmode && $fulldays;
-        print $tday.":" if $fulldays;
-        returnStats($dir) if $fulldays;
+	returnStats() if $fulldays;
         $tday = addDate($tday, '+1');
-        clearStats() if $fulldays;
     }
-    print $whats{$dir}.":" if $batchmode && !$fulldays;
-    addGlobalStats();
-    returnStats($dir) if !$fulldays;
+    returnStats() if !$fulldays;
 }
 
 if ($what eq '*') {
@@ -341,9 +352,9 @@ sub addGlobalStats
 }
 
 #######################
-sub badUsage($bad)
+sub badUsage($bad, @args)
 {
-    print "Bad Usage: wrong paremeter: $bad\n";
+    print "Bad Usage: wrong paremeter: $bad (".join(', ', @args).")\n";
     print "    Usage: get_stats.pl what begindate enddate\n";
     print "           'what' :  either user, domain name or '_global'\n";
     print "           'begindate' and 'enddate' : dates\n";

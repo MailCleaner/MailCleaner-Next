@@ -1,10 +1,9 @@
 <?php
-
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
- * @author Olivier Diserens, John Mertz
- * @copyright 2006, Olivier Diserens; 2023, John Mertz
+ * @author Olivier Diserens
+ * @copyright 2006, Olivier Diserens
  */
 ### newsl
 $txt['NEWSLETTERMODULE'] = "Informačný bulletin";
@@ -14,7 +13,7 @@ $txt['NEWSLETTERSSHORTHELP'] = "Tu môžete spravovať svoje informačné bullet
 $txt['NEWSLETTERSALLOW'] = "doručiť";
 $txt['NEWSLETTERACCEPT'] = "Akceptovať tento informačný bulletin";
 $txt['SPAM_WHITELIST_DISABLED'] = "Zoznam nieje aktivovaný pre túto doménu (Kontaktujte Vášho administrátora).";
-/*
+/* 
  * generic buttons
  */
 $txt['SUBMIT'] = "Potvrdiť";
@@ -436,7 +435,7 @@ $txt['KEEPBOUNCESINQUARANTINE'] = "Retain error messages";
 $txt['PARAMETERSSAVED'] = "Vaše nastavenia boli uložené.";
 $txt['NOTSAVED'] = "Vaše nastavenia nemohli byť uložené.";
 $txt['INVALIDSUMMARYTO'] = "The email address provided for the reports is invalid";
-/*
+/* 
  * quarantine  (new)
  */
 $txt['CONFIGQUARSHORTHELP'] = "The quarantine display can be customized (number of days and lines) to fit your needs and habits.";

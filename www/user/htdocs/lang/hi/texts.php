@@ -1,5 +1,4 @@
 <?php
-
 /*
  * quarantaine
  */
@@ -87,8 +86,8 @@ $txt['NEWSLETTERSTOPIC'] = "समाचार पत्र";
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
- * @author Olivier Diserens, John Mertz
- * @copyright 2006, Olivier Diserens; 2023, John Mertz
+ * @author Olivier Diserens
+ * @copyright 2006, Olivier Diserens
  */
 ### newsl
 $txt['NEWSLETTERMODULE'] = "समाचार पत्र";

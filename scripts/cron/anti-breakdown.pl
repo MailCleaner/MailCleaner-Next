@@ -143,7 +143,7 @@ sub is_dns_service_available
 {
     my ($host) = @_;
 
-    my $res = new Net::DNS::Resolver(
+    my $res = Net::DNS::Resolver->new(
         tcp_timeout => 5,
         retry       => 3,
         retrans     => 1,
@@ -176,7 +176,7 @@ sub is_port_ok
         }
     }
     if  ( $nb_failed_host >= $max_host_failed) {
-        system("/usr/sbin/rndc flush");
+        system("/usr/sbin/rndc", "flush");
         $step++;
         if ($step == $nb_tests) {
             return 0;
@@ -195,8 +195,8 @@ sub remove_and_save_MC_RBLs
 
     my %master_conf = get_master_config();
     my $master_dbh = DBI->connect(
-        "DBI:MariaDB:database=mc_config;host=$master_conf{'__MYMASTERHOST__'}:$master_conf{'__MYMASTERPORT__'}",
-        "mailcleaner", "$master_conf{'__MYMASTERPWD__'}", {RaiseError => 0, PrintError => 0}
+        "DBI:MariaDB:database=mc_config;host=".$master_conf{'__MYMASTERHOST__'}.":".$master_conf{'__MYMASTERPORT__'},
+        "mailcleaner", $master_conf{'__MYMASTERPWD__'}, {RaiseError => 0, PrintError => 0}
     );
     if ( ! defined($master_dbh) ) {
         warn "CANNOTCONNECTMASTERDB\n", $master_dbh->errstr;
@@ -238,7 +238,7 @@ sub remove_and_save_MC_RBLs
     $master_dbh->disconnect();
 
     if ($reboot_service) {
-        system('/usr/mailcleaner/etc/init.d/mailscanner restart');
+        system('/usr/mailcleaner/etc/init.d/mailscanner', 'restart');
     }
 }
 
@@ -272,7 +272,7 @@ sub handle_dns_ok
         $master_dbh->disconnect();
 
         # Restarting associated services
-        system('/usr/mailcleaner/etc/init.d/mailscanner restart');
+        system('/usr/mailcleaner/etc/init.d/mailscanner', 'restart');
 
         # Removing temp files
         unlink $rbl_sql_file or warn "could not remove $rbl_sql_file\n";

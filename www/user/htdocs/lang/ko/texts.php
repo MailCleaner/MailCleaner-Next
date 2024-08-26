@@ -1,10 +1,9 @@
 <?php
-
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
- * @author Olivier Diserens, John Mertz
- * @copyright 2006, Olivier Diserens; 2023, John Mertz
+ * @author Olivier Diserens
+ * @copyright 2006, Olivier Diserens
  */
 ### newsl
 $txt['NEWSLETTERMODULE'] = "뉴스레터";
@@ -14,7 +13,7 @@ $txt['NEWSLETTERSSHORTHELP'] = "이곳에서 당신의 뉴스레터를 관리 �
 $txt['NEWSLETTERSALLOW'] = "배달";
 $txt['NEWSLETTERACCEPT'] = "이 뉴스레터 허용";
 $txt['SPAM_WHITELIST_DISABLED'] = "해당 리스트는 이 도메인에서 활성화 되지 않았습니다 (관리자에게 문의하세요).";
-/*
+/* 
  * generic buttons
  */
 $txt['SUBMIT'] = "승인";
@@ -436,7 +435,7 @@ $txt['KEEPBOUNCESINQUARANTINE'] = "오류 메시지 유지";
 $txt['PARAMETERSSAVED'] = "설정이 저장되었습니다.";
 $txt['NOTSAVED'] = "설정이 저장되지 않았습니다.";
 $txt['INVALIDSUMMARYTO'] = "보고를 위해 제공된 이메일 주소가 유효하지 않습니다";
-/*
+/* 
  * quarantine  (new)
  */
 $txt['CONFIGQUARSHORTHELP'] = "검역 디스플레이는 사용자의 요구와 습관에 맞게 일수 및 라인수를 맞춤 설정할 수 있습니다.";
@@ -462,7 +461,7 @@ $txt['REMTHEENTRY'] = "선택 항목 제거";
 $txt['DISABLETHEENTRY'] = "선택 항목 비활성화/활성화";
 $txt['WHITELISTSHORTHELP'] = "화이트리스트에는  검역서에 보관하지 않을 메일주소가 포함되어야 합니다. <br />
 경고: 이 기능은 전체적인 보호를 감소시키기 때문에 임시 해결책으로 사용되어야 합니다.
-화이트리스트 사용에 대한 자세한 내용은 매뉴얼( <a href=\"help.php\">\"Help\"</a> 섹션에서 사용 가능)을 참조하십시오.
+화이트리스트 사용에 대한 자세한 내용은 매뉴얼( <a href=\"help.php\">\"Help\"</a> 섹션에서 사용 가능)을 참조하십시오. 
 ";
 $txt['BLACKLISTSHORTHELP'] = "블랙리스트는 수신을 거부할 발신자의 메일주소입니다.
 블랙 리스트 사용에 대한 자세한 내용은 설명서( <a href=\"help.php\">\"도움말\"</a>에서 사용가능)를 참조하십시오.
@@ -538,3 +537,17 @@ $txt['CANNOTCONNECTDB'] = "DB연결에 실패하였습니다.";
 $txt['CANNOTLOADMESSAGE'] = "메시지를 읽는데 실패하였습니다. (존재하지 않을 수 있음).";
 $txt['NEWSLONLY'] = "뉴스만 표시";
 $txt['SPAMONLY'] = "스팸 메일만 표시";
+$txt['NEWSLETTERUNSUB'] = "구독해제";
+/*
+ * Newslist and Whitelist rule
+ */
+$txt['ADDNEWSWHITELIST'] = "같은 발신메일에서 도착하는 모든 뉴스레터를 수신하고, 화이트리스트로 등록하시겠습니까?";
+$txt['NEWSWHITELISTHEAD'] = "뉴스리스트와 화이트리스트 규칙을 추가하였습니다.";
+$txt['WHITENOTNEWSBODY'] = "화이트리스트 룰이 추가되었으나, 뉴스레터 추가에 문제가 발생하였습니다.";
+$txt['NEWSNOTWHITEBODY'] = "뉴스레터 규칙이 추가되었으나, 화이트리스트 규칙 추가에 문제가 발생하였습니다,.";
+$txt['ADDWHITENEWSLIST'] = "이후에 수신되는 같은 발송인의 스팸메일을 화이트리스트에 추가하시겠습니까? 또한 같은 발송인의 뉴스레터도 허용하겠습니까?";
+$txt['NEWSWHITELISTBODY'] = "뉴스리스트와 화이트리스트 규칙을 추가였습니다. 이후에 수신되는 메일은 뉴스레터나 스팸으로 확인되어도 표시하지 않습니다.";
+$txt['NEWSNOTWHITEHEAD'] = "뉴스리스트가 추가되었습니다. 화이트리스트는 추가되지 않습니다.";
+$txt['WHITENOTNEWSHEAD'] = "화이트리스트가 추가되었습니다. 뉴스레터는 추가되지 않았습니다.";
+$txt['NOTNEWSWHITEHEAD'] = "뉴스레터와 화이트리스트 규칙이 모두 추가되지 않았습니다.";
+$txt['NOTNEWSWHITEBODY'] = "규칙 추가 중 문제가 발생하였습니다.";

@@ -12,33 +12,33 @@ OUT_FILE="/var/mailcleaner/spool/watchdog/${script_name_no_ext}_$timestamp.out"
 # A appeler également en cas de succès
 # Efface le fichier PID et renseigne le temps d'éxécution et le return code dans le fichier de sortie
 my_own_exit() {
-	if [ -f $PID_FILE ]; then
-		rm $PID_FILE
-	fi
+    if [ -f $PID_FILE ]; then
+        rm $PID_FILE
+    fi
 
-	END=$(date +%s)
-	ELAPSED=$(($END - $timestamp))
+    END=$(date +%s)
+    ELAPSED=$(($END - $timestamp))
 
-	echo "EXEC : $ELAPSED" >>$OUT_FILE
-	echo "RC : $1" >>$OUT_FILE
-	exit $1
+    echo "EXEC : $ELAPSED" >>$OUT_FILE
+    echo "RC : $1" >>$OUT_FILE
+    exit $1
 }
 
 #### MAIN
 #### Lorsque le module a trouvé une erreur, il est censé sortir avec my_own_exit "#ERREUR" (avec #ERREUR : chiffre : retour de la commande)
 EXIT=0
 if [[ $(grep authresults /usr/mailcleaner/etc/exim/exim_stage1.conf_template | wc -l) = 0 ]]; then
-	echo "/usr/mailcleaner/etc/exim/exim_stage1.conf_template is not up to date" >>$OUT_FILE
-	EXIT=1
+    echo "/usr/mailcleaner/etc/exim/exim_stage1.conf_template is not up to date" >>$OUT_FILE
+    EXIT=1
 fi
 
-if [[ $(dpkg -l | grep mc-exim | sed -e 's/.*4\.97\.1*/4.97.1/') != '4.97.1' ]]; then
-	echo "mc_exim is not in version 4.97" >>$OUT_FILE
-	EXIT=1
+if [[ $(dpkg -l | grep mc-exim | sed -e 's/.*4\.98*/4.98/') != '4.98' ]]; then
+    echo "mc_exim is not in version 4.98" >>$OUT_FILE
+    EXIT=1
 fi
 
 if [[ ${EXIT} = 1 ]]; then
-	my_own_exit "1"
+    my_own_exit "1"
 fi
 
 # CONSERVER !

@@ -136,9 +136,14 @@ class IndexController extends Zend_Controller_Action
             $usecache = $request->getParam('c');
         }
 
+        $type = $request->getParam('t');
+        if (isset($type) && !preg_match('/^(accepted|refused|global|delayed|relayed|sessions)$/', $type)) {
+            echo "invalid selection: ".htmlspecialchars($type);
+            exit();
+        }
+
         $reporting = new Default_Model_ReportingStats();
-        $what = [];
-        $what['stats'] = $reporting->getTodayStatElements($request->getParam('t'));
+        $what = ['stats' => $reporting->getTodayStatElements()];
         return $reporting->getTodayPie($what, 0, $usecache, $request->getParam('t'));
     }
 }

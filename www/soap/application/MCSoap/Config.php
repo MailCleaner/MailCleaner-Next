@@ -250,7 +250,7 @@ class MCSoap_Config
      */
     static public function Config_saveDateTime($string)
     {
-        $cmd = '/bin/date ' . $string;
+        $cmd = '/bin/date ' . escapeshellcmd($string);
         $res = `$cmd`;
         $res = preg_replace('/\n/', '', $res);
         return 'OK saved';
@@ -411,7 +411,7 @@ class MCSoap_Config
         require_once('MailCleaner/Config.php');
         $sysconf = MailCleaner_Config::getInstance();
 
-        if (!isset($data['host_id'])) {
+        if (!isset($data['host_id']) || !preg_match('/^\d+$/', $data['host_id'])) {
             return "NOK You have to specify an integer for host_id";
         }
 

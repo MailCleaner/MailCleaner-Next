@@ -1,10 +1,9 @@
 <?php
-
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html MailCleaner Public License
  * @package mailcleaner
- * @author Olivier Diserens, John Mertz
- * @copyright 2006, Olivier Diserens; 2023, John Mertz
+ * @author Olivier Diserens
+ * @copyright 2006, Olivier Diserens
  */
 ### newsl
 $txt['NEWSLETTERMODULE'] = "Newsletter";
@@ -17,7 +16,7 @@ $txt['SPAM_WHITELIST_DISABLED'] = "Die Liste ist für diese Domain nicht aktivie
 ### missing translations
 $txt['FORGOTPASSWORD'] = "Passwort vergessen?";
 $txt['PASSWORDRESET'] = "Das Passwort wurde zurückgesetzt. Es wurde an Ihre E-Mail-Adresse gesendet.";
-/*
+/* 
  * generic buttons
  */
 $txt['SUBMIT'] = "Übermitteln";
@@ -442,7 +441,7 @@ $txt['KEEPBOUNCESINQUARANTINE'] = "Systematisches Zur&uuml;ckhalten der Fehlerme
 $txt['PARAMETERSSAVED'] = "Parameter wurden gespeichert und sofort angewandt.";
 $txt['NOTSAVED'] = "Ihre Einstellungen konnten nicht gespeichert werden.";
 $txt['INVALIDSUMMARYTO'] = "Die für die Berichte angegebene E-Mail-Adresse ist ungültig.";
-/*
+/* 
  * quarantine  (new)
  */
 $txt['CONFIGQUARSHORTHELP'] = "Anzeige der Quarant&auml;neparameter (Anzahl Tage und Zeilen) kann Ihren Bed&uuml;rfnisse und Gewohnheiten entsprechend angepasst werden.";
@@ -468,7 +467,7 @@ $txt['REMTHEENTRY'] = "Auswahl l&ouml;schen";
 $txt['DISABLETHEENTRY'] = "Auswahl desaktivieren oder wieder-aktivieren";
 $txt['WHITELISTSHORTHELP'] = "Die Positivliste enthält vertrauenswürdige Absenderadressen, für die keine Quarantäneeinstellungen gelten sollen.<br />
                                    Achtung: Diese Funktionalität sollte als vorübergehende Lösung verwendet werden, da sie den Gesamtschutz verringert.
-                                  Weitere Informationen zur Verwendung der Positivliste finden Sie im Handbuch (siehe Abschnitt <a href=\"help.php\">\"Help\"</a>).
+                                  Weitere Informationen zur Verwendung der Positivliste finden Sie im Handbuch (siehe Abschnitt <a href=\"help.php\">\"Help\"</a>). 
 ";
 $txt['BLACKLISTSHORTHELP'] = "Die schwarze Liste enthält die gesperrte Absenderadressen …
                                   Lesen Sie das Handbuch (verfügbar im Abschnitt <a href=\"help.php\">\"Hilfe\"</a>) für weitere Informationen zur Verwendung der schwarzen Liste.
@@ -553,3 +552,15 @@ $txt['NOTNEWSWHITEBODY'] = "Beim Hinzufügen dieser Regeln ist ein Problem aufge
 $txt['NOTNEWSWHITEHEAD'] = "Weder Newslist- noch Whitelist-Regeln wurden nicht hinzugefügt.";
 $txt['WHITENOTNEWSBODY'] = "Eine Whitelist-Regel wurde hinzugefügt, beim Hinzufügen der Newsletter-Whitelist-Regel ist jedoch ein Problem aufgetreten.";
 $txt['WHITENOTNEWSHEAD'] = "Whitelist wurde hinzugefügt, Newslist jedoch nicht.";
+/*
+ * Type of WWList
+ */
+$txt['ORIGINALSENDER'] = "Nur ursprüngliche Absenderadresse";
+$txt['SENDERVARIATIONS'] = "Alle Variationen der Absenderadresse";
+$txt['ENTIREDOMAIN'] = "Gesamte Domain";
+$txt['NEWSLISTHEAD'] = "Nachrichtenlisten-Regel wurde hinzugefügt.";
+/*
+ * generic texts
+ */
+$txt['AND'] = "und";
+$txt['NOTNEWSLISTHEAD'] = "Nachrichtenlisten-Regel wurde nicht hinzugefügt.";

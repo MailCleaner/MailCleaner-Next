@@ -131,8 +131,27 @@ class Spam
         $data = $this->getData($field);
         $data = iconv_mime_decode($data, ICONV_MIME_DECODE_CONTINUE_ON_ERROR, 'UTF-8');
         $ret = htmlentities($data, ENT_COMPAT, "UTF-8");
-        if (isset($split_fields[$field])) {
-            $ret = substr($ret, 0, $split_fields[$field]);
+	if ($field == 'M_subject') {
+            return substr($ret, 0, $split_fields[$field]);
+        } elseif ($field == 'to' || $field == 'sender') {
+            if (preg_match('/(\S+)\@(\S+)/', $ret, $matches)) {
+                if (strlen($matches[1]) + strlen($matches[2]) < $split_fields[$field]) {
+                    return $matches[1]."@".$matches[2];
+                } else {
+                    if (strlen($matches[1]) > $split_fields[$field]/2 && strlen($matches[2]) > $split_fields[$field]/2) {
+                        return substr($matches[1], 0, $split_fields[$field]/2)."...@".substr($matches[2], 0, $split_fields[$field]/2);
+                    } elseif (strlen($matches[1]) > $split_fields[$field]/2) {
+                        if (strlen($matches[1]) > $split_fields[$field]-strlen($matches[2])) {
+                            return substr($matches[1], 0, $split_fields[$field]-strlen($matches[2]))."...@$matches[2]";
+                        }
+                        return $matches[1]."@".$matches[2];
+                    }
+                    if (strlen($matches[2]) > $split_fields[$field]-strlen($matches[1])) {
+                        return "$matches[1]@".substr($matches[2], 0, $split_fields[$field]-strlen($matches[1]))."...";
+                    }
+                    return $matches[1]."@".$matches[2];
+                }
+            }
         }
         return $ret;
     }
@@ -222,7 +241,7 @@ class Spam
 
         $soap_res = $soaper->queryParam('getHeaders', [$this->getData('exim_id'), $dest, 30]);
         if (!is_object($soap_res) || !is_array($soap_res->text)) {
-            echo "CANNOTLOADMESSAGEHEADERS";
+            echo "CANNOTLOADMESSAGEHEADERS<br/>".$soap_res;
             return false;
         } else {
             $headers = $soap_res->text;
@@ -509,7 +528,7 @@ class Spam
         $full_generalinfos = "";
         foreach ($generalinfos as $key => $value) {
             $str = str_replace('__INFO_NAME__', $lang_->print_txt($key), $general_str);
-            $str = str_replace('__INFO_VALUE__', $value, $str);
+            $str = str_replace('__INFO_VALUE__', htmlspecialchars($value), $str);
             $full_generalinfos .= $str;
         }
         $replace['__GENERALINFO_LIST__'] = $full_generalinfos;

@@ -1,10 +1,9 @@
 <?php
-
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
- * @author Olivier Diserens, John Mertz
- * @copyright 2006, Olivier Diserens; 2023, John Mertz
+ * @author Olivier Diserens
+ * @copyright 2006, Olivier Diserens
  */
 ### newsl
 $txt['NEWSLETTERMODULE'] = "Newsletter";
@@ -14,7 +13,7 @@ $txt['NEWSLETTERSSHORTHELP'] = "Qui puoi gestire le tue newsletter.";
 $txt['NEWSLETTERSALLOW'] = "consegna";
 $txt['NEWSLETTERACCEPT'] = "Accetta questa newsletter";
 $txt['SPAM_WHITELIST_DISABLED'] = "This list is not activated for this domain (Contact your administrator).";
-/*
+/* 
  * bottoni generici
  */
 $txt['SUBMIT'] = "Ok";
@@ -328,7 +327,7 @@ $txt['FROMDATETODATE'] = "da __PARAM1__.__PARAM2__.__PARAM3__ a __PARAM4__.__PAR
 $txt['BADARGS'] = "Errore interno di MailCleaner (_PARAM_MESSAGE_ERREUR__). Si prega di contattare il proprio amministratore di sistema fornendogli i dettagli del problema.";
 $txt['INCORRECTMSGID'] = "L'azione richiesta non pu&ograve essere completata in quanto l'identificatore del messaggio non &egrave corretto.";
 $txt['NOSUCHADDR'] = "L'indirizzo indicato non &egrave protetto da MailCleaner.";
-$txt['ERRORSENDING'] = "Si &egrave verificato un errore durante l'invio del messaggio. Si prega di riprovare. Se il problema persiste, contattare l'amministratore di sistema.";
+$txt['ERRORSENDING'] = "Si è verificato un errore durante l'invio del messaggio. Si prega di riprovare. Se il problema persiste, contattare l'amministratore di sistema.";
 $txt['MSGFORCED'] = "Il messaggio &egrave stato rilasciato e consegnato alla casella postale. Dovrebbe essere disponibile entro i prossimi minuti.";
 $txt['MSGFILENOTFOUND'] = "L'azione richiesta non pu&ograve essere completata perch&eacute il messaggio non &egrave pi&ugrave in quarantena.";
 /*
@@ -436,7 +435,7 @@ $txt['KEEPBOUNCESINQUARANTINE'] = "Conserva messaggi di errore";
 $txt['PARAMETERSSAVED'] = "Il tuo indirizzo &egrave stato salvato.";
 $txt['NOTSAVED'] = "Le tue impostazioni non possono essere salvate.";
 $txt['INVALIDSUMMARYTO'] = "L'indirizzo e-mail indicato per il rapporto non &egrave valido";
-/*
+/* 
  * quarantine  (new)
  */
 $txt['CONFIGQUARSHORTHELP'] = "La visualizzazione della quarantena pu&ograve essere personalizzata (numero di giorni e righe) per soddisfare le vostre esigenze e abitudini.";
@@ -450,7 +449,7 @@ $txt['TODAY'] = "Oggi";
  * wwlists (new)
  */
 $txt['WARNLISTSHORTHELP'] = "La lista contiene gli indirizzi dei mittenti warn di fiducia per i quali si desidera ricevere una notifica via e-mail ogni volta che un messaggio sembra essere rilevato come spam. Egrave possibile rilasciare immediatamente il messaggio in caso di un errore di filtraggio.<br />
-\t\t\t\t\t\t\t\t   Attenzione: questa funzionalit&agrave dovrebbe essere usata come soluzione temporanea in quanto diminuisce la protezione globale.
+\t\t\t\t\t\t\t\t   Attenzione: questa funzionalit&agrave dovrebbe essere usata come soluzione temporanea in quanto diminuisce la protezione globale. 
 \t\t\t\t\t\t\t\t   Consulta il manuale (disponibile nella sezione <a href=\"help.php\">\"Aiuto\"</a>) per avere maggiori informazioni sull'utilizzo della warn list. ";
 $txt['WARNLISTFORADDRESS'] = "Warn list per l'indirizzo";
 $txt['ADDAWARNENTRY'] = "Aggiungi un indirizzo alla lista";
@@ -460,9 +459,9 @@ $txt['REMOVEANENTRY'] = "Disabilita, abilita o rimuovi un indirizzo dalla lista"
 $txt['REMOVEAWARNENTRYSHORTHELP'] = "Selezionare l'indirizzo o gli indirizzi che si desidera modificare dall'elenco e cliccare sul pulsante di azione desiderata.";
 $txt['REMTHEENTRY'] = "Rimuovi selezione";
 $txt['DISABLETHEENTRY'] = "Disabilita/abilita selezione";
-$txt['WHITELISTSHORTHELP'] = "La white list contiene gli indirizzi dei mittenti attendibili per i quali non potr&agrave mai verificarsi la conservazione in quarantena.<br />
+$txt['WHITELISTSHORTHELP'] = "La white list contiene gli indirizzi dei mittenti attendibili per i quali non potr&agrave mai verificarsi la conservazione in quarantena.<br /> 
                                    Attenzione: questa funzionalit&agrave dovrebbe essere usata come soluzione temporanea in quanto diminuisce la protezione globale.
-                                  Consulta il manuale (disponibile nella sezione <a href=\"help.php\">\"Aiuto\"</a>) per avere maggiori informazioni sull'utilizzo della white list.
+                                  Consulta il manuale (disponibile nella sezione <a href=\"help.php\">\"Aiuto\"</a>) per avere maggiori informazioni sull'utilizzo della white list. 
 ";
 $txt['WHITELISTFORADDRESS'] = "White list per l'indirizzo";
 $txt['ADDAWHITEENTRY'] = "Aggiungi un indirizzo alla lista";
@@ -562,3 +561,5 @@ $txt['NEWSLISTSHORTHELP'] = "L'elenco delle newsletter contiene gli indirizzi de
 ";
 $txt['ADDTOGROUP'] = "Aggiungi per tutti gli indirizzi nel gruppo";
 $txt['NEWSLISTTOPICTITLE'] = "lista di notizie";
+$txt['NEWSLETTERUNSUB'] = "Cancella l'iscrizione";
+$txt['AND'] = "e";

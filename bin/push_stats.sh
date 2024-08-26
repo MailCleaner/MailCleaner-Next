@@ -26,7 +26,8 @@ usage: $0 options
 This script will push statistics
 
 OPTIONS:
-  -r   randomize start of the script, for automated process
+  -r      randomize start of the script, for automated process
+  [0-9]+  number of days worth of statistics to collect
 EOF
 }
 
@@ -44,6 +45,24 @@ do
        ;;
   esac
 done
+
+days=0
+shopt -s extglob
+for OPTION in "$@"; do
+    case $OPTION in
+        +([0-9]))
+             if [ ! $days ]; then
+                 echo Excess argument $OPTION days already $days
+                 usage
+             fi
+             days=$OPTION
+             ;;
+    esac
+done
+
+if [ ! $days ]; then
+    days=1
+fi
 
 SRCDIR=`grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3`
 if [ "SRCDIR" = "" ]; then
@@ -72,10 +91,10 @@ if $randomize ; then
   sleep $sleep_time
 fi
 
-echo "_global:"`$SRCDIR/bin/get_stats.pl '*' -1 +0 | grep '_global' | cut -d':' -f2` > $STATFILE
+echo "_global:"`$SRCDIR/bin/get_stats.pl '*' -$days +0 | grep '_global' | cut -d':' -f2` > $STATFILE
 for dom in `grep -v '*' $DOMAINFILE | cut -d':' -f1`; do
   echo -n $dom":" >> $STATFILE
-  echo `$SRCDIR/bin/get_stats.pl $dom -1 +0 ` >> $STATFILE
+  echo `$SRCDIR/bin/get_stats.pl $dom -$days +0 ` >> $STATFILE
 done
 
 CLIENTID=`grep 'CLIENTID' /etc/mailcleaner.conf | cut -d ' ' -f3`
@@ -83,6 +102,6 @@ HOSTID=`grep 'HOSTID' /etc/mailcleaner.conf | cut -d ' ' -f3`
 
 DATE=`date --date "now -1 day" +%Y%m%d`
 chmod g+w $STATFILE
-scp -q -o PasswordAuthentication=no -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $STATFILE mcscp@cvs.mailcleaner.net:/upload/stats/$CLIENTID-$HOSTID-$DATE.txt >/dev/null 2>&1
+scp -q -o PasswordAuthentication=no -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $STATFILE mcscp@team01.mailcleaner.net:/upload/stats/$CLIENTID-$HOSTID-$DATE.txt >/dev/null 2>&1
 
 removeLockFile "$FILE_NAME"

@@ -1,10 +1,9 @@
 <?php
-
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
- * @author Olivier Diserens, John Mertz
- * @copyright 2006, Olivier Diserens; 2023, John Mertz
+ * @author Olivier Diserens
+ * @copyright 2006, Olivier Diserens
  */
 ### newsl
 $txt['NEWSLETTERMODULE'] = "Newsletter";
@@ -462,7 +461,7 @@ $txt['REMTHEENTRY'] = "Remover selecionados";
 $txt['DISABLETHEENTRY'] = "Desativar/ativar selecionados";
 $txt['WHITELISTSHORTHELP'] = "A lista branca contém endereços de remetente confiáveis para os quais nenhuma retenção de quarentena jamais ocorrerá.<br />
                                    Aviso: esta funcionalidade deve ser utilizada como uma solução temporária, uma vez que diminui a proteção global.
-                                  Verifique o manual (disponível na secção <a href=\"help.php\">\"Ajuda\"</a>) para obter mais informações sobre o uso da lista branca.
+                                  Verifique o manual (disponível na secção <a href=\"help.php\">\"Ajuda\"</a>) para obter mais informações sobre o uso da lista branca. 
 ";
 $txt['BLACKLISTSHORTHELP'] = "A lista negra contém endereços de remetentes não permitidos.
                                   Consulte o manual (disponível na secção <a href=\"help.php\">\"Ajuda\"</a>) para mais informações sobre o uso de listas negras.

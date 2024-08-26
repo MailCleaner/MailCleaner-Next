@@ -1,4 +1,4 @@
-<?php
+<?
 $template = $sysconf_->gui_prefs_['default_template'];
 
 $txt['SFALSENEGTITLE'] = "FALSE NEGATIVES";

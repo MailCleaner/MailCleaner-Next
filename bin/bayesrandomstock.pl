@@ -127,8 +127,7 @@ foreach my $WHAT (@whats) {
         while(my $entry = readdir(QDIR)) {
             next if $entry !~ /^\d+/;
             $entry = $CENTERPATH."/stock$WHAT/$entry";
-            system("rm -rf $entry") if -d $entry &&
-                                    -M $entry > $sysconf->getPref('stockme_nbdays');
+            system("rm", "-rf", $entry) if -d $entry && -M $entry > $sysconf->getPref('stockme_nbdays');
         }
         closedir(QDIR);
     }
@@ -138,12 +137,20 @@ foreach my $WHAT (@whats) {
         my $date=`date +%Y%m%d`;
         chomp($date);
         my $tarfile = "$STOCKDIR/$WHAT-".$CLIENTID."-".$HOSTID."_$date.tar.gz";
-        my $command = "tar -C $STOCKDIR/$WHAT/ -cvzf $tarfile cur";
-        system("$command");
+        system("tar", "-C", "$STOCKDIR/$WHAT/", "-cvzf", "$tarfile", "cur");
 
-        my $CVSHOST='cvs.mailcleaner.net';
-        $command = "scp -q -o PasswordAuthentication=no -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $tarfile mcscp\@$CVSHOST:/upload/stocks/ >/dev/null 2>&1";
-        system($command);
+        my $CVSHOST='team01.mailcleaner.net';
+        my $rc = eval
+        {
+            require IPC::Run;
+            1;
+        };
+        if ($rc) {
+            IPC::Run::run(["scp", "-q", "-o", "PasswordAuthentication=no", "-o", "UserKnownHostsFile=/dev/null", "-o", "StrictHostKeyChecking=no", "$tarfile", "mcscp\@$CVSHOST:/upload/stocks/"], "2>&1", ">/dev/null");
+        } else {
+            system("scp -q -o PasswordAuthentication=no -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ".shell_quote($tarfile)." mcscp\@$CVSHOST:/upload/stocks/ 2>&1 >/dev/null");
+        }
+
     }
 
     print "finished with $WHAT: $whatcount messages taken\n";

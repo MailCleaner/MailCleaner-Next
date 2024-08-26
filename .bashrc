@@ -15,6 +15,7 @@ umask 022
 
 export PYENV_ROOT="${VARDIR}/.pyenv"
 export PATH=${PYENV_ROOT}/shims:${PYENV_ROOT}/bin:${SRCDIR}/bin:${PATH}/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export PYENV_VERSION="3.7.7"
 if command -v pyenv 1>/dev/null 2>&1; then
 	eval "$(pyenv init -)"
 fi

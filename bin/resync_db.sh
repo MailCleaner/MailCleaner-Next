@@ -20,74 +20,85 @@
 #   This script will resync the configuration database
 
 function usage() {
-	echo "usage: $0 [-F] [MHOST MPASS]
+    echo "usage: $0 [-F] [MHOST MPASS]
     -F     Force resync. Ignore sync test
     -C     Run as cron. Sends STDOUT to $LOGDIR
     MHOST  master hostname
     MPASS  master password"
-	exit
+    exit
 }
 
 function check_status() {
-	echo "Checking slave status..."
+    echo "Checking slave status..."
 
-	STATUS=$(echo 'show slave status\G' | /usr/mailcleaner/bin/mc_mysql -s)
-	if grep -vq "Slave_SQL_Running: Yes" <<<$(echo $STATUS); then
-		echo "Slave_SQL_Running failed"
-		RUN=1
-	elif grep -vq "Slave_IO_Running: Yes" <<<$(echo $STATUS); then
-		echo "Slave_IO_Running failed"
-		RUN=1
-	fi
+    STATUS=$(echo 'show slave status\G' | /usr/mailcleaner/bin/mc_mysql -s)
+    if grep -vq "Slave_SQL_Running: Yes" <<<$(echo $STATUS); then
+        echo "Slave_SQL_Running failed"
+        RUN=1
+    elif grep -vq "Slave_IO_Running: Yes" <<<$(echo $STATUS); then
+        echo "Slave_IO_Running failed"
+        RUN=1
+    fi
 }
 
 LOGDIR="/var/mailcleaner/log/mailcleaner/resync"
-LOCKFILE='/var/mailcleaner/spool/tmp/resync_db'
+FAILFILE='/var/mailcleaner/spool/tmp/resync_db'
+LOCKFILE='/var/mailcleaner/spool/tmp/resync_db.lock'
+
 MHOST=''
 MPASS=''
 
 if [ ! -d $LOGDIR ]; then
-	mkdir -p $LOGDIR
+    mkdir -p $LOGDIR
 fi
 
 for var in "$@"; do
-	if [[ $var == '-F' ]]; then
-		RUN=1
-	elif [[ $var == '-C' ]]; then
-		exec 1>>"$LOGDIR/resync.log"
-		exec 2>"/dev/null"
-		# If failed on previous cron run, this file will exist with a count of failures
-		if [ -e $LOCKFILE ]; then
-			# If it has failed 6 times stop trying
-			if test $(find "/var/mailcleaner/spool/tmp/resync_db" -mmin +230); then
-				echo "Last try is more than 4 hours ago. Trying to fix"
-				rm "/var/mailcleaner/spool/tmp/resync_db"
-				RUN=1
-			else
-				echo "Last try is too recent. Exiting"
-				exit
-			fi
-		fi
-	# First default is master host
-	elif [[ $MHOST == '' ]]; then
-		MHOST=$var
-	# Second default is master pass
-	elif [[ $MPASS == '' ]]; then
-		MPASS=$var
-	# If both of the above are set, this var is excess
-	else
-		echo "Invalid or excess option '$var'."
-		usage
-	fi
+    if [[ $var == '-F' ]]; then
+        RUN=1
+    elif [[ $var == '-C' ]]; then
+        exec 1>>"$LOGDIR/resync.log"
+        exec 2>"/dev/null"
+        # If failed on previous cron run, this file will exist with a count of failures
+        if [ -e $FAILFILE ]; then
+            if test `find $FAILFILE -mmin +59`; then
+                echo "Last try is more than 1 hours ago. Trying to fix"
+                rm $FAILFILE
+                RUN=1
+            else
+                echo "Last try is too recent. Exiting"
+                exit
+            fi
+        fi
+    # First default is master host
+    elif [[ $MHOST == '' ]]; then
+        MHOST=$var
+    # Second default is master pass
+    elif [[ $MPASS == '' ]]; then
+        MPASS=$var
+    # If both of the above are set, this var is excess
+    else
+        echo "Invalid or excess option '$var'."
+        usage
+    fi
 done
+
+if [ -e $LOCKFILE ]; then
+    if test `find $LOCKFILE -mmin +15`; then
+        echo "Last try is more than 15 hours ago. Removing $LOCKFILE."
+        rm $LOCKFILE
+    else
+        echo "Lockfile ($LOCKFILE) less than 15 minutes old. Exitting..."
+        exit
+    fi
+fi
 
 VARDIR=$(grep 'VARDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 if [ "$VARDIR" = "" ]; then
-	VARDIR=/var/mailcleaner
+    VARDIR=/var/mailcleaner
 fi
 SRCDIR=$(grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 if [ "$SRCDIR" = "" ]; then
-	SRCDIR=/var/mailcleaner
+    SRCDIR=/var/mailcleaner
 fi
 
 echo "starting slave db..."
@@ -96,12 +107,12 @@ sleep 1
 
 check_status
 if [[ $RUN != 1 ]]; then
-	echo "DBs are already in sync. Run with -F to force resync anyways."
-	exit
+    echo "DBs are already in sync. Run with -F to force resync anyways."
+    exit
 else
-	# Clear RUN as it will be used for the post-sync test result as well
-	RUN=0
-	echo "Running resync..."
+    # Clear RUN as it will be used for the post-sync test result as well
+    RUN=0
+    echo "Running resync..."
 fi
 
 # Resync
@@ -110,14 +121,14 @@ MYMAILCLEANERPWD=$(grep 'MYMAILCLEANERPWD' /etc/mailcleaner.conf | cut -d ' ' -f
 echo "select hostname, password from master;" | $SRCDIR/bin/mc_mysql -s mc_config | grep -v 'password' | tr -t '[:blank:]' ':' >/var/tmp/master.conf
 
 if [ "$MHOST" != "" ]; then
-	export MHOST
+    export MHOST
 else
-	export MHOST=$(cat /var/tmp/master.conf | cut -d':' -f1)
+    export MHOST=$(cat /var/tmp/master.conf | cut -d':' -f1)
 fi
 if [ "$MPASS" != "" ]; then
-	export MPASS
+    export MPASS
 else
-	export MPASS=$(cat /var/tmp/master.conf | cut -d':' -f2-)
+    export MPASS=$(cat /var/tmp/master.conf | cut -d':' -f2-)
 fi
 
 /usr/bin/mariadb-dump -S$VARDIR/run/mysql_slave/mysqld.sock -umailcleaner -p$MYMAILCLEANERPWD mc_config update_patch >/var/tmp/updates.sql
@@ -138,7 +149,9 @@ $SRCDIR/bin/mc_mysql -s mc_config </var/tmp/master.sql
 
 sleep 1
 echo "CHANGE MASTER TO master_host='$MHOST', master_user='mailcleaner', master_password='$MPASS'; " | $SRCDIR/bin/mc_mysql -s
+# Return code should be 0 if there are no errors. Log code to RUN to catch errors that might not be presented with 'check_status'
 $SRCDIR/bin/mc_mysql -s mc_config </var/tmp/master.sql
+RUN=$?
 echo "START SLAVE;" | $SRCDIR/bin/mc_mysql -s
 sleep 1
 
@@ -150,10 +163,22 @@ $SRCDIR/bin/mc_mysql -s mc_config </var/tmp/updates.sql
 # Run the check again and record results
 check_status
 if [[ $RUN != 1 ]]; then
-	echo "Resync successful."
-	# If there were previous failures, remove that flag file
-	if [[ -e $LOCKFILE ]]; then
-		echo "Removing lockfile"
-		rm $LOCKFILE
-	fi
+    echo "Resync successful."
+    # If there were previous failures, remove that flag file
+    if [[ -e $FAILFILE ]]; then
+        echo "Removing failfile"
+        rm $FAILFILE
+    fi
+else
+    if [[ -e $FAILFILE ]]; then
+        FAILS=$(cat $FAILFILE)
+        FAILS=$((FAILS+1))
+        echo $FAILS > $FAILFILE
+    else
+        echo 1 > $FAILFILE
+    fi
+fi
+
+if  [ -e $LOCKFILE ]; then
+    rm $LOCKFILE
 fi

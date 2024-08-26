@@ -176,7 +176,9 @@ function dumpConfiguration($config, $params)
 {
     $sysconf_ = SystemConfig::getInstance();
 
-    `echo "conf: $config" > /tmp/out.log`;
+    if (!preg_match('/^(domains|wwlist|exim)$/', $config)) {
+        $config = "";
+    }
     switch ($config) {
         case 'domains':
             $cmd = $sysconf_->SRCDIR_ . "/bin/dump_domains.pl";
@@ -197,8 +199,6 @@ function dumpConfiguration($config, $params)
                 $cmd .= " " . escapeshellcmd($params);
             }
             break;
-        default:
-            $cmd = "";
     }
 
     # execute

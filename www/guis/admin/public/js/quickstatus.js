@@ -10,38 +10,41 @@ var hostreloadtime = 5000;
 var graphStatus = new Array();
 
 $(document).ready(function(){
-	
-	$("#statusreloadimg").click(function(event){
+    $("#statusreloadimg").click(function(event){
         loading();
         event.preventDefault();
-      });
-	
-	$("a.menubutton").click(function(event){
-		abortStatus();
-		//event.preventDefault();
-	});
-	loading();
+    });
+
+    $("a.menubutton").click(function(event){
+        abortStatus();
+        //event.preventDefault();
+    });
+    loading();
 });
 
 function loading() {
-	$("#statuspanel").html(loadinghtml);
-	statusrequest = $.ajax({
-		  type: "GET",
-		  url: quickstatusurl,
-		  dataType: "html",
-		  timeout: 5000,
-		  success: function(msg){
+    if (slave) {
+        $("#statuspanel").html("not running on slave");
+        return;
+    }
+    $("#statuspanel").html(loadinghtml);
+    statusrequest = $.ajax({
+        type: "GET",
+        url: quickstatusurl,
+        dataType: "html",
+        timeout: 5000,
+        success: function(msg){
             $("#statuspanel").html(msg);
-    	    setTimeout("loading()", statusreload);
-          },
-          error: function() {
-        	$("#statuspanel").html();
+            setTimeout("loading()", statusreload);
+        },
+        error: function() {
+            $("#statuspanel").html();
             setTimeout("loading()", statusreload)
-          }
-		});
+        }
+    });
 }
 
 function abortStatus() {
-	statusrequest.abort();
-	delete statusrequest;
+    statusrequest.abort();
+    delete statusrequest;
 }

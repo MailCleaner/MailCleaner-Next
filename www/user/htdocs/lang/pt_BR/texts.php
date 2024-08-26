@@ -1,10 +1,9 @@
 <?php
-
 /**
  * @license http://www.mailcleaner.net/open/licence_en.html Mailcleaner Public License
  * @package mailcleaner
- * @author Olivier Diserens, John Mertz
- * @copyright 2006, Olivier Diserens; 2023, John Mertz
+ * @author Olivier Diserens
+ * @copyright 2006, Olivier Diserens
  */
 ### newsl
 $txt['NEWSLETTERMODULE'] = "Boletim informativo";
@@ -328,7 +327,7 @@ $txt['FROMDATETODATE'] = "de __PARAM1__.__PARAM2__.__PARAM3__ para __PARAM4__.__
 $txt['BADARGS'] = "Erro interno do MailCleaner (__PARAM__). Por favor contate o administrador do sistema com detalhes do problema.";
 $txt['INCORRECTMSGID'] = "A requisição solicitada não pode ser concluída porque o identificador de mensagem está incorreto.";
 $txt['NOSUCHADDR'] = "O endereço fornecido não é protegido pelo MailCleaner.";
-$txt['ERRORSENDING'] = "Ocorreu um erro ao enviar a mensagem. Por favor, tente novamente. Se o problema persistir, entre em contato com o administrador do sistema.";
+$txt['ERRORSENDING'] = "Ocorreu um erro ao enviar a mensagem. Por favor, tente novamente. Se o problema persistir, por favor entre em contato com o administrador do sistema.";
 $txt['MSGFORCED'] = "A mensagem foi liberada e entregue à sua caixa de correio. Deve estar disponível em alguns minutos.";
 $txt['MSGFILENOTFOUND'] = "A ação solicitada não pode ser concluída porque a mensagem não está mais na quarentena.";
 /*
@@ -462,7 +461,7 @@ $txt['REMTHEENTRY'] = "Remover a seleção";
 $txt['DISABLETHEENTRY'] = "Desabilitar/habilitar a seleção";
 $txt['WHITELISTSHORTHELP'] = "A lista branca contém endereços de remetente confiáveis para os quais nenhuma retenção de quarentena jamais ocorrerá.<br />
                                    Aviso: esta funcionalidade deve ser utilizada como uma solução temporária, uma vez que diminui a proteção global.
-                                  Verifique o manual (disponível na seção <a href=\"help.php\"> \"Ajuda\"</a>) para obter mais informações sobre o uso da lista branca.
+                                  Verifique o manual (disponível na seção <a href=\"help.php\"> \"Ajuda\"</a>) para obter mais informações sobre o uso da lista branca. 
 ";
 $txt['BLACKLISTSHORTHELP'] = "A lista negra contém endereço do remetente.
 Verifique o manual (disponível na seção <a href=\"help.php\"> \"Ajuda\"</a>) para obter mais informações sobre o uso da lista negra.
@@ -561,4 +560,5 @@ $txt['ADDRULE'] = "Adicionar uma regra WWList";
 $txt['NEWSNOTWHITEBODY'] = "Uma regra de boletim informativo foi adicionada, mas houve um problema ao adicionar a regra da lista de permissões.";
 $txt['NEWSWHITELISTBODY'] = "Boletim informativo e listas de permissão de spam foram adicionados. As futuras mensagens deste remetente não serão mais mantidas como boletins informativos ou spam.";
 $txt['NEWSNOTWHITEHEAD'] = "A lista de notícias foi adicionada, mas a lista de permitidos não.";
-$txt['WHITENOTNEWSHEAD'] = "Lista de permitidos foi adicionada, mas a lista de notícias não.";
+$txt['WHITENOTNEWSHEAD'] = "A lista de permitidos foi adicionada, mas a lista de notícias não.";
+$txt['NEWSLETTERUNSUB'] = "Descadastrar";

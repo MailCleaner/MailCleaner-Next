@@ -290,6 +290,22 @@ sub get_ms_config()
     }
     $config{'__PREFILTERS__'} = $pfoption;
 
+    my $exim_command = 0;
+    if (open(my $fh, '<', '/opt/MailScanner/lib/MailScanner/ConfigDefs.pl')) {
+        while (my $line = <$fh>) {
+            if ($line =~ m/^eximcommand\s*=/) {
+                $exim_command = 1;
+                last;
+            }
+        }
+        close($fh);
+    }
+    if ($exim_command) {
+        $config{'__EXIM_COMMAND__'} = 'Exim Command = /opt/exim4/bin/exim';
+    } else {
+        $config{'__EXIM_COMMAND__'} = '';
+    }
+
     return %config;
 }
 
