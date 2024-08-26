@@ -27,6 +27,7 @@ use Date::Calc qw( Today Delta_Days Localtime Time_to_Date );
 use String::ShellQuote qw( shell_quote );
 use File::stat;
 use DBI();
+use IPC::Run;
 
 my $days_to_keep = shift;
 
@@ -35,10 +36,6 @@ my $quarantine_owner_name = 'mailcleaner';
 my $quarantine_owner      = getpwnam($quarantine_owner_name);
 my $quarantine_group      = getgrnam($quarantine_owner_name);
 
-our $has_ipc_run = eval {
-    require IPC::Run;
-    1;
-};
 
 my $DEBUG = 0;
 if ( !$days_to_keep ) {
@@ -123,11 +120,7 @@ while ( my $entry = readdir(QDIR) ) {
                     my @stats = @{$statsa[0]};
                     my @date  = Time_to_Date( $stats[9] );
                     my $Ddays = Delta_Days( ( $date[0], $date[1], $date[2] ), Today() ) if $Ddays > $days_to_keep;
-                    if ($has_ipc_run) {
-                        IPC::Run::run(["rm", "$user_entry"], "2>&1", ">/dev/null");
-                    } else {
-                        system("rm ".shell_quote($user_entry)." 2>&1 >/dev/null")
-                    }
+                    IPC::Run::run(["rm", "$user_entry"], "2>&1", ">/dev/null");
                 }
             }
             close(UDIR);
@@ -139,11 +132,7 @@ while ( my $entry = readdir(QDIR) ) {
             if ( $gid != $quarantine_group ) {
                 chown $quarantine_owner, $quarantine_group, $domain_entry;
             }
-            if ($has_ipc_run) {
-                IPC::Run::run(["rmdir", "$user_entry"], "2>&1", ">/dev/null");
-            } else {
-                system("rmdir ".shell_quote($domain_entry)." 2>&1 >/dev/null");
-            }
+            IPC::Run::run(["rmdir", "$user_entry"], "2>&1", ">/dev/null");
         }
         close(DDIR);
         my $uid = stat($entry)->uid;
@@ -155,11 +144,7 @@ while ( my $entry = readdir(QDIR) ) {
             chown $quarantine_owner, $quarantine_group, $entry;
         }
         $entry =~ s/\|/\\\|/;
-        if ($has_ipc_run) {
-            IPC::Run::run(["rmdir", "$entry"], "2>&1", ">/dev/null");
-        } else {
-            system("rmdir ".shell_quote($entry)." 2>&1 >/dev/null");
-        }
+        IPC::Run::run(["rmdir", "$entry"], "2>&1", ">/dev/null");
     }
 }
 closedir(QDIR);

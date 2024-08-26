@@ -140,17 +140,7 @@ foreach my $WHAT (@whats) {
         system("tar", "-C", "$STOCKDIR/$WHAT/", "-cvzf", "$tarfile", "cur");
 
         my $CVSHOST='team01.mailcleaner.net';
-        my $rc = eval
-        {
-            require IPC::Run;
-            1;
-        };
-        if ($rc) {
-            IPC::Run::run(["scp", "-q", "-o", "PasswordAuthentication=no", "-o", "UserKnownHostsFile=/dev/null", "-o", "StrictHostKeyChecking=no", "$tarfile", "mcscp\@$CVSHOST:/upload/stocks/"], "2>&1", ">/dev/null");
-        } else {
-            system("scp -q -o PasswordAuthentication=no -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no ".shell_quote($tarfile)." mcscp\@$CVSHOST:/upload/stocks/ 2>&1 >/dev/null");
-        }
-
+        IPC::Run::run(["scp", "-q", "-o", "PasswordAuthentication=no", "-o", "UserKnownHostsFile=/dev/null", "-o", "StrictHostKeyChecking=no", "$tarfile", "mcscp\@$CVSHOST:/upload/stocks/"], "2>&1", ">/dev/null");
     }
 
     print "finished with $WHAT: $whatcount messages taken\n";
