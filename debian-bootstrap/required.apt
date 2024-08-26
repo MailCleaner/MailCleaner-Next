@@ -59,7 +59,6 @@ libio-socket-inet6-perl
 libio-socket-ssl-perl
 libio-string-perl
 libio-stringy-perl
-libipc-run3-perl
 libjson-xs-perl
 libldap-common
 liblzma-dev
