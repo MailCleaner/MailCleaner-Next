@@ -115,11 +115,14 @@ lzma
 mariadb-client
 mariadb-server
 mc-exim
+nano
 net-tools
 netpbm
 ntp
 ntpdate
 openssl
+openssh-client
+openssh-server
 perl-doc
 perl-modules-5.36
 php
@@ -159,4 +162,5 @@ spamd
 telnet
 tesseract-ocr
 ufw
+vim
 wget
