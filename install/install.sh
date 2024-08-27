@@ -110,8 +110,8 @@ source \${SRCDIR}/.bashrc
 EOF
 
     cat >/root/.profile <<EOF
-# Import environment from MailCleaner
-source ${SRCDIR}/.bashrc
+# Import from .bashrc
+source /root/.bashrc
 EOF
 
 fi
