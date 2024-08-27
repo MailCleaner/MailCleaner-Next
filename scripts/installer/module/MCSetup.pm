@@ -233,7 +233,7 @@ sub databasePWD($this)
 	    next;
         }
 	last if (defined($suggest) && $pass1 eq $suggest && $pass1 ne '');
-        $pdlg->build('Please confirm the admin user password', '');
+        $pdlg->build('Please confirm the local database password', '');
         $pass2 = $pdlg->display();
     }
     $pass1 = $this->{'install_variables'}->{'WEBADMINPWD'} if ($pass1 eq 'SAME AS WEB ADMIN PASSWORD');
