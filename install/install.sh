@@ -131,7 +131,7 @@ EOF
     apt-get --assume-yes install docker-ce docker-ce-rootless-extras
 fi
 
-if [ ! -e /opt/MailScanner ]; then
+if [ ! -e /usr/bin/check_mailscanner ]; then
     echo "Installing MailScanner..."
     $SRCDIR/install/mailscanner/install.sh -y
 fi
