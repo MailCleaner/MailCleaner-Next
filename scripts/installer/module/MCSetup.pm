@@ -43,50 +43,50 @@ my $conf = ReadConfig::getInstance() if (-e '/etc/mailcleaner.conf');
 sub get
 {
     my $this = {
-	    dfact => DialogFactory::get('InLine'),
+        dfact => DialogFactory::get('InLine'),
         logfile => '/tmp/mailcleaner_install.log',
         conffile => '/etc/mailcleaner.conf',
         config_variables => {
-	        'SRCDIR' => '/usr/mailcleaner',
-	        'VARDIR' => '/var/mailcleaner',
-	        'HOSTID' => undef,
-	        'DEFAULTDOMAIN' => '',
-	        'ISMASTER' => 'Y',
-	        'MYMAILCLEANERPWD' => undef,
-	        'HELONAME' => undef,
-	        'MASTERIP' => undef,
-	        'MASTERPWD' => undef,
-	    },
-	    install_variables => {
-	        'WEBADMINPWD' => undef,
-	        'ORGANIZATION' => 'Anonymous',
-	        'MCHOSTNAME' => 'mailcleaner',
-	        'CLIENTTECHMAIL' => 'root@localhost',
+            'SRCDIR' => '/usr/mailcleaner',
+            'VARDIR' => '/var/mailcleaner',
+            'HOSTID' => undef,
+            'DEFAULTDOMAIN' => '',
+            'ISMASTER' => 'Y',
+            'MYMAILCLEANERPWD' => undef,
+            'HELONAME' => undef,
+            'MASTERIP' => undef,
+            'MASTERPWD' => undef,
         },
-	    default_configs => {
-	        'HOSTID' => 1,
-	        'MYMAILCLEANERPWD' => 'MCPassw0rd',
-	        'HELONAME' => '',
-	        'MASTERIP' => '127.0.0.1',
-	        'MASTERPWD' => 'MCPassw0rd',
-	    }
+        install_variables => {
+            'WEBADMINPWD' => undef,
+            'ORGANIZATION' => 'Anonymous',
+            'MCHOSTNAME' => 'mailcleaner',
+            'CLIENTTECHMAIL' => 'root@localhost',
+        },
+        default_configs => {
+            'HOSTID' => 1,
+            'MYMAILCLEANERPWD' => 'MCPassw0rd',
+            'HELONAME' => '',
+            'MASTERIP' => '127.0.0.1',
+            'MASTERPWD' => 'MCPassw0rd',
+        }
     };
     # Load variables from existing config file, if set
     if (defined($conf)) {
         foreach (keys(%{$this->{config_variables}})) {
-	        $this->{config_variables}->{$_} = $conf->getOption($_) if ($conf->getOption($_));
+            $this->{config_variables}->{$_} = $conf->getOption($_) if ($conf->getOption($_));
         }
         foreach (keys(%{$this->{install_variables}})) {
-	        $this->{install_variables}->{$_} = $conf->getOption($_) if ($conf->getOption($_));
+            $this->{install_variables}->{$_} = $conf->getOption($_) if ($conf->getOption($_));
         }
     }
     # Override with ENV variables, if set
     foreach (keys(%{$this->{config_variables}})) {
-	    $this->{config_variables}->{$_} = $ENV{$_} if (defined($ENV{$_}));
+        $this->{config_variables}->{$_} = $ENV{$_} if (defined($ENV{$_}));
     }
-	$this->{install_variables}->{'CLIENTTECHMAIL'} = 'support@'.$this->{config_variables}->{'DEFAULTDOMAIN'} if ($this->{config_variables}->{'DEFAULTDOMAIN'} ne '');
+    $this->{install_variables}->{'CLIENTTECHMAIL'} = 'support@'.$this->{config_variables}->{'DEFAULTDOMAIN'} if ($this->{config_variables}->{'DEFAULTDOMAIN'} ne '');
     foreach (keys(%{$this->{install_variables}})) {
-	    $this->{install_variables}->{$_} = $ENV{$_} if (defined($ENV{$_}));
+        $this->{install_variables}->{$_} = $ENV{$_} if (defined($ENV{$_}));
     }
     # Default hostname unless defined above
     my $hostname = `hostname`;
@@ -104,7 +104,7 @@ sub do($this)
         'Host ID', 
         'Web admin password', 
         'Database password', 
-	    'Admin details',
+        'Admin details',
         'Apply configuration', 
         'Exit'
     );
@@ -144,23 +144,23 @@ sub doMenu($this, $basemenu, $currentstep, $error)
     }
 
     if ($res eq 'Admin details') {
-	$this->{'install_variables'}->{'ORGANIZATION'} = $this->organization();
-	$this->{'install_variables'}->{'CLIENTTECHMAIL'} = $this->supportEmail();
+    $this->{'install_variables'}->{'ORGANIZATION'} = $this->organization();
+    $this->{'install_variables'}->{'CLIENTTECHMAIL'} = $this->supportEmail();
         $$currentstep = 5;
         return 1;
     }
 
     if ($res eq 'Apply configuration') {
-	    my $ret = $this->applyConfiguration;
-	    if ($ret) {
-	        if ($ret == 255) {
-	            $$error = "Fatal error: Failed to open $this->{'conffile'} for writing. Quitting.\n";
-	        } elsif ($ret == 254) {
-	            $$error = "Setup abandoned\n";
-	        } else {
-		        $$error = "Missing necessary variable. Please follow all earlier steps before applying.\n";
-		        $$currentstep = $ret;
-	        } 
+        my $ret = $this->applyConfiguration;
+        if ($ret) {
+            if ($ret == 255) {
+                $$error = "Fatal error: Failed to open $this->{'conffile'} for writing. Quitting.\n";
+            } elsif ($ret == 254) {
+                $$error = "Setup abandoned\n";
+            } else {
+                $$error = "Missing necessary variable. Please follow all earlier steps before applying.\n";
+                $$currentstep = $ret;
+            } 
         }
         return 0;
     }
@@ -172,8 +172,9 @@ sub hostID($this)
 {
     my $dlg = $this->{'dfact'}->getSimpleDialog();
     my $suggest = $this->{'config_variables'}->{'HOSTID'} //= $this->{'default_configs'}->{'HOSTID'};
+    $suggest = 1 if ($suggest eq '');
     $dlg->build('Enter the unique ID of this MailCleaner in your infrastucture', $suggest);
-    $this->{'config_variables'}->{'HOSTID'} = $dlg->display();
+    return $dlg->display();
 }
 
 sub webAdminPWD($this)
@@ -192,15 +193,15 @@ sub webAdminPWD($this)
         print "Password is require, please try again.\n" if ($pass1 eq '');
         if (defined($suggest)) {
             $pdlg->build('Enter the admin user password for the web interface', $suggest);
-	    } else {
+        } else {
             $pdlg->build('Enter the admin user password for the web interface', '');
         }
         $pass1 = $pdlg->display();
         if ($pass1 eq 'MCPassw0rd') {
             print "Cannot use default password. Please try something else.\n";
-	    next;
+        next;
         }
-	last if (defined($suggest) && $pass1 eq $suggest && $pass1 ne '');
+    last if (defined($suggest) && $pass1 eq $suggest && $pass1 ne '');
         $pdlg->build('Please confirm the admin user password', '');
         $pass2 = $pdlg->display();
     }
@@ -224,15 +225,15 @@ sub databasePWD($this)
         print "Password is require, please try again.\n" if ($pass1 eq '');
         if (defined($suggest)) {
             $pdlg->build('Enter the password for the local database', $suggest);
-	} else {
+    } else {
             $pdlg->build('Enter the password for the local database', '');
         }
         $pass1 = $pdlg->display();
         if ($pass1 eq 'MCPassw0rd') {
             print "Cannot use default password. Please try something else.\n";
-	    next;
+        next;
         }
-	last if (defined($suggest) && $pass1 eq $suggest && $pass1 ne '');
+    last if (defined($suggest) && $pass1 eq $suggest && $pass1 ne '');
         $pdlg->build('Please confirm the local database password', '');
         $pass2 = $pdlg->display();
     }
@@ -272,13 +273,13 @@ sub writeConfig($this)
 {
     if (open(my $fh, '>', $this->{'conffile'})) {
         foreach (keys(%{$this->{'config_variables'}})) {
-	        if (defined($this->{'config_variables'}->{$_})) {
+            if (defined($this->{'config_variables'}->{$_})) {
                 print $fh "$_ = $this->{'config_variables'}->{$_}\n";
             }
         }
-	    close($fh);
+        close($fh);
     } else {
-	    return 0;
+        return 0;
     }
     return 1;
 }
@@ -299,18 +300,25 @@ sub applyConfiguration($this)
         `cd $this->{SRCDIR}; debian-bootstrap/install.sh`;
     }
     foreach (keys(%{$this->{'config_variables'}})) {
-	    $ENV{$_} = $this->{'config_variables'}->{$_};
+        $ENV{$_} = $this->{'config_variables'}->{$_};
     }
     foreach (keys(%{$this->{'install_variables'}})) {
-	    $ENV{$_} = $this->{'install_variables'}->{$_};
+        $ENV{$_} = $this->{'install_variables'}->{$_};
     }
     $this->{'install_variables'}->{'WEBADMINPWD'} = $this->{'config_variables'}->{'MYMAILCLEANERPWD'} if ($this->{'install_variables'} eq 'SAME AS DATABASE PASSWORD');
     print("Running $this->{'config_variables'}->{SRCDIR}/install/install.sh. This will take some time. Installation logs will be saved to /tmp/mailcleaner-installer.log\n");
     `LOGFILE="/tmp/mailcleaner-installer.log" FORCEDBREINSTALL=1 $this->{'config_variables'}->{SRCDIR}/install/install.sh`;
-    exit();
 
     my $dlg = $this->{'dfact'}->getSimpleDialog();
     $dlg->clear();
+
+    if (! -e '/var/mailcleaner/run/first-time-configuration') {
+        if (open(my $fh, '>>', '/var/mailcleaner/run/first-time-configuration')) {
+            print $fh '';
+            close $fh;
+        }
+        return 0;
+    }
 }
 
 sub isBootstrapped($this)

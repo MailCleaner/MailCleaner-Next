@@ -57,12 +57,6 @@ while (doMenu()) {
 
 $dlg->clear();
 
-my $mcinstall = module::MCSetup::get();
-if (! $mcinstall->isInstalled() ) {
-    $mcinstall->do();
-}
-
-$dlg->clear();
 exit 0;
 
 sub doMenu

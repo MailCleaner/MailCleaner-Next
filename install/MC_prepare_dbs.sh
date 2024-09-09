@@ -2,7 +2,7 @@
 
 if [ -z "$SRCDIR" ]; then
 	SRCDIR=$(grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
-	if [[ "$SRCDIR" -eq "" ]]; then
+	if [[ "$SRCDIR" = "" ]]; then
 		SRCDIR=/usr/mailcleaner
 	fi
 fi

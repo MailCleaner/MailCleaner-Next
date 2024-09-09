@@ -130,7 +130,6 @@ EOF
     apt-get update 2>&1 >/dev/null
     apt-get --assume-yes install docker-ce docker-ce-rootless-extras
 fi
-exit
 
 if [ ! -e /opt/MailScanner ]; then
     echo "Installing MailScanner..."
