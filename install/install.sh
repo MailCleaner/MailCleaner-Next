@@ -103,7 +103,7 @@ SRCDIR=\$(grep 'SRCDIR' /etc/mailcleaner.conf | cut -d ' ' -f3)
 if [[ -z \$SRCDIR ]]; then
     SRCDIR="/usr/mailcleaner"
 fi
-export \$SRCDIR
+export SRCDIR
 
 # Import environment from MailCleaner
 source \${SRCDIR}/.bashrc
