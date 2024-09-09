@@ -80,6 +80,7 @@ foreach (
     $VARDIR.'/spool/exim_stage4',
     $VARDIR.'/spool/exim_stage4/spamstore',
     $VARDIR.'/spool/mailscanner',
+    $VARDIR.'/spool/mailscanner/quarantine',
     $VARDIR.'/spool/mailscanner/incoming',
     $VARDIR.'/spool/mailscanner/incoming/Locks',
     $VARDIR.'/spool/tmp',
