@@ -308,6 +308,12 @@ if [ $? -eq 1 ]; then
     #exit
 fi
 
+# ClamAV sigs
+if [[ ! -e $SRCDIR/etc/clamav/freshclam.conf ]]; then
+    $SRCDIR/bin/dump_clamav_config.pl
+fi
+$SRCDIR/scripts/cron/update_antivirus.sh
+
 ###############################################
 echo -n "Setting MailCleaner as default SystemD target..."
 rm /etc/systemd/system/default.target

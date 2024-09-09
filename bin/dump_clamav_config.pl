@@ -106,6 +106,7 @@ symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc
 # Dump configuration
 dump_file("clamav.conf");
 dump_file("clamd.conf");
+dump_file("freshclam.conf");
 
 #############################
 sub dump_file($file)

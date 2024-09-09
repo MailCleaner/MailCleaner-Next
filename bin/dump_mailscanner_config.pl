@@ -87,6 +87,7 @@ foreach (
     $VARDIR.'/spool/tmp/mailscanner/spamassassin',
     $VARDIR.'/spool/tmp/mailscanner/incoming',
     $VARDIR.'/spool/tmp/mailscanner/incoming/Locks',
+    $VARDIR.'/log/mailscanner',
     $VARDIR.'/run/mailscanner',
 ) {
     mkdir $_ unless (-d $_);

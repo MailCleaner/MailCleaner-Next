@@ -141,7 +141,7 @@ ${SRCDIR}/etc/init.d/mailcleaner stop
 echo Dump of ClamAV config and update of ClamAV antivirus files
 ${SRCDIR}/bin/dump_clamav_config.pl
 cdel -f /var/mailcleaner/spool/clamav/{{main,daily,bytecode}.c{v,l}d,mirrors.dat}
-/opt/clamav/bin/freshclam --user=clamav --config-file=${SRCDIR}/etc/clamav/freshclam.conf
+/usr/bin/freshclam --user=clamav --config-file=${SRCDIR}/etc/clamav/freshclam.conf
 
 STARTERSPATH="/root/starters"
 
