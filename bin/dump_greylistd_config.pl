@@ -82,11 +82,12 @@ dump_domain_to_avoid($greylist_conf{'__AVOID_DOMAINS__'});
 
 dump_trusted_ips($trusted_ips);
 
-`usermod -a -G mailcleaner greylist` unless (grep(/\bgreylist\b/, `groups clamav`));
+`usermod -a -G mailcleaner greylist` unless (grep(/\bmailcleaner\b/, `groups greylist`));
 
 foreach my $dir (
     "${VARDIR}/spool/greylistd",
     "${VARDIR}/run/greylistd",
+    glob("${VARDIR}/run/greylistd*"),
 ) {
     mkdir($dir) unless (-d $dir);
     chown($uid, $gid, $dir);
