@@ -70,7 +70,6 @@ mkdir('/var/mailcleaner/log/apache') unless (-d '/var/mailcleaner/log/apache');
 mkdir('/var/mailcleaner/www') unless (-d '/var/mailcleaner/www');
 mkdir('/var/mailcleaner/www/mrtg') unless (-d '/var/mailcleaner/www/mrtg');
 mkdir('/var/mailcleaner/www/stats') unless (-d '/var/mailcleaner/www/stats');
-mkdir('/var/mailcleaner/run/configurator') unless (-d '/var/mailcleaner/run/configurator');
 
 # Set proper permissions
 chown($uid, $gid,
@@ -81,14 +80,12 @@ chown($uid, $gid,
     glob('/var/mailcleaner/www/*'),
     glob('/var/mailcleaner/www/mrtg/*'),
     glob('/var/mailcleaner/www/stats/*'),
-    '/var/mailcleaner/run/configurator',
     '/var/mailcleaner/run/ssl.cache',
     '/var/mailcleaner/run/apache2',
     glob('/var/mailcleaner/run/apache2/*'),
     '/etc/apache2',
     glob('/etc/apache2/*'),
     glob($VARDIR.'/log/apache/*'),
-    glob($VARDIR.'/run/configurator/*'),
     glob($SRCDIR.'/etc/apache/sites-available/*'),
     glob($SRCDIR.'/www/guis/admin/public/tmp/*'),
 );
@@ -97,7 +94,6 @@ chown($uid, $gid,
 my %links = (
     '/etc/apparmor.d/mailcleaner' => ${SRCDIR}.'/etc/apparmor',
     '/etc/apache2' => ${SRCDIR}.'/etc/apache',
-    ${SRCDIR}.'/etc/apache/sites-enabled/configurator.conf' => ${SRCDIR}.'/etc/apache/sites-available/configurator.conf',
 );
 foreach my $link (keys(%links)) {
     if (-e $link) {
@@ -117,7 +113,6 @@ if (open(my $fh, '>', '/etc/sudoers.d/apache')) {
     print $fh "
 User_Alias  APACHE = www-data
 Runas_Alias EXIM = Debian-exim
-Cmnd_Alias  SETPINDB = $SRCDIR/scripts/configuration/set_password_in_db.sh
 Cmnd_Alias  CHECKSPOOLS = $SRCDIR/bin/check_spools.sh
 Cmnd_Alias  GETSTATUS = $SRCDIR/bin/get_status.pl -s
 
@@ -146,12 +141,6 @@ dump_apache_file("${SRCDIR}/etc/apache/apache2.conf_template", "${SRCDIR}/etc/ap
 
 dump_apache_file("${SRCDIR}/etc/apache/sites-available/mailcleaner.conf_template", "${SRCDIR}/etc/apache/sites-available/mailcleaner.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
 dump_apache_file("${SRCDIR}/etc/apache/sites-available/soap.conf_template", "${SRCDIR}/etc/apache/sites-available/soap.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
-
-if (-e "${SRCDIR}/etc/apache/configurator.conf.disabled") {
-    unlink("${SRCDIR}/etc/apache/sites-enabled/configurator.conf");
-} else {
-    dump_apache_file("${SRCDIR}/etc/apache/sites-available/configurator.conf_template", "${SRCDIR}/etc/apache/sites-available/configurator.conf") or fatal_error("CANNOTDUMPAPACHEFILE", $lasterror);
-}
 
 dump_soap_wsdl($sys_conf{'HOST'}, $apache_conf{'__USESSL__'}) or fatal_error("CANNOTDUMPWSDLFILE", $lasterror);
 
@@ -302,8 +291,8 @@ sub get_apache_config()
     $config{'__MAXSERVERS__'} = $ref->{'max_servers'};
     $config{'__STARTSERVERS__'} = $ref->{'start_servers'};
     $config{'__KEEPALIVETIMEOUT__'} = $ref->{'keepalivetimeout'};
-    $config{'__HTTPPORT__'} = $ref->{'http_port'};
-    $config{'__HTTPSPORT__'} = $ref->{'https_port'};
+    $config{'__HTTPPORT__'} = 8080;
+    $config{'__HTTPSPORT__'} = 4443;
     $config{'__USESSL__'} = $ref->{'use_ssl'};
     $config{'__SERVERNAME__'} = $ref->{'servername'};
     $config{'__SERVERADMIN__'} = $ref->{'serveradmin'};

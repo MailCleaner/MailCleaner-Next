@@ -13,9 +13,6 @@ Listen __HTTPSPORT__
 <VirtualHost *:__HTTPPORT__>
     AssignUserId www-data mailcleaner
 
-#    <If "! -f '__SRCDIR__/etc/apache/configurator.conf.disabled'">
-#    	Redirect / http://__SERVERNAME__:4242/
-#    </If>
     Redirect / https://__SERVERNAME__/
 
     RewriteEngine On
@@ -28,21 +25,21 @@ SSLSessionCacheTimeout 300
 SSLCompression off
 <VirtualHost *:__HTTPSPORT__>
     AssignUserId www-data mailcleaner
-
-#    <If "! -f '__SRCDIR__/etc/apache/configurator.conf.disabled'">
-#    	Redirect / http://__SERVERNAME__:4242/
-#    </If>
+    Protocols h2 http/1.1
+    #Header always set Strict-Transport-Security "max-age=63072000"
 
     SSLEngine on
     SSLProtocol All -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
-    SSLCipherSuite ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA56-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256
-    SSLHonorCipherOrder on
+    SSLCipherSuite ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:DHE-RSA-CHACHA20-POLY1305
+    SSLHonorCipherOrder off
     SSLCompression off
+    SSLSessionTickets off
 
     SSLCACertificatePath __SRCDIR__/etc/apache/certs
     SSLCertificateFile __SRCDIR__/etc/apache/certs/certificate.pem
 __IFSSLCHAIN__  SSLCertificateChainFile  __SRCDIR__/etc/apache/certs/certificate-chain.pem
     SetEnvIf User-Agent ".*MSIE.*" nokeepalive ssl-unclean-shutdown downgrade-1.0 force-response-1.0
+
 
     RewriteEngine On
     RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
