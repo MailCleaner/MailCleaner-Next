@@ -1184,51 +1184,51 @@ EXIMUSER    * = (ROOT) NOPASSWD: EXIMBIN
 
     my @dirs = (
         "${VARDIR}/log/exim_stage${stage}",
-		"${VARDIR}/spool/tmp/exim_stage${stage}",
-		"${VARDIR}/spool/exim_stage${stage}",
-		"${VARDIR}/spool/exim_stage${stage}/input",
-		glob("${VARDIR}/spool/tmp/exim_stage${stage}/*"),
-		glob("${VARDIR}/spool/exim_stage${stage}/*"),
+        "${VARDIR}/spool/tmp/exim_stage${stage}",
+        "${VARDIR}/spool/exim_stage${stage}",
+        "${VARDIR}/spool/exim_stage${stage}/input",
+        glob("${VARDIR}/spool/tmp/exim_stage${stage}/*"),
+        glob("${VARDIR}/spool/exim_stage${stage}/*"),
         glob("${VARDIR}/spool/exim_stage${stage}/input/*"),
     );
     push(@dirs,
-		"${SRCDIR}/etc/exim/certs",
-		"${VARDIR}/spool/tmp/exim",
-		"${VARDIR}/spool/tmp/exim/blacklists",
-		"${VARDIR}/spool/tmp/exim/certs",
+        "${SRCDIR}/etc/exim/certs",
+        "${VARDIR}/spool/tmp/exim",
+        "${VARDIR}/spool/tmp/exim/blacklists",
+        "${VARDIR}/spool/tmp/exim/certs",
     ) if ($stage == 1);
     push(@dirs,
-		"${VARDIR}/spool/exim_stage${stage}/paniclog",
-		"${VARDIR}/spool/exim_stage${stage}/spamstore",
+        "${VARDIR}/spool/exim_stage${stage}/paniclog",
+        "${VARDIR}/spool/exim_stage${stage}/spamstore",
     ) if ($stage == 4);
     foreach my $dir (@dirs) {
-	    mkdir ($dir) unless (-d $dir);
-		chown($uid, $gid, $dir);
+        mkdir ($dir) unless (-d $dir);
+        chown($uid, $gid, $dir);
     }
 
     my @files = (
-		glob("${VARDIR}/log/exim_stage${stage}/*"),
-		glob("${VARDIR}/spool/exim_stage${stage}/db/*"),
-	    glob("${VARDIR}/spool/tmp/mailcleaner/*.list"),
+        glob("${VARDIR}/log/exim_stage${stage}/*"),
+        glob("${VARDIR}/spool/exim_stage${stage}/db/*"),
+        glob("${VARDIR}/spool/tmp/mailcleaner/*.list"),
     );
     push (@files,
-		"${SRCDIR}/etc/exim/stage1_scripts.pl",
-		"${SRCDIR}/etc/exim/out_scripts.pl",
-	    "${VARDIR}/spool/tmp/exim/frozen_senders",
-		"${VARDIR}/spool/tmp/exim/dmarc.history",
-		"${VARDIR}/spool/tmp/exim/blacklists/hosts",
-		"${VARDIR}/spool/tmp/exim/blacklists/senders",
-		"${VARDIR}/spool/mailcleaner/full_whitelisted_hosts.list",
-		"${VARDIR}/spool/mailcleaner/full_whitelisted_senders.list",
-	    glob("${SRCDIR}/etc/exim/certs/*"),
-	    glob("${VARDIR}/spool/tmp/mailcleaner/dkim/*"),
+        "${SRCDIR}/etc/exim/stage1_scripts.pl",
+        "${SRCDIR}/etc/exim/out_scripts.pl",
+        "${VARDIR}/spool/tmp/exim/frozen_senders",
+        "${VARDIR}/spool/tmp/exim/dmarc.history",
+        "${VARDIR}/spool/tmp/exim/blacklists/hosts",
+        "${VARDIR}/spool/tmp/exim/blacklists/senders",
+        "${VARDIR}/spool/mailcleaner/full_whitelisted_hosts.list",
+        "${VARDIR}/spool/mailcleaner/full_whitelisted_senders.list",
+        glob("${SRCDIR}/etc/exim/certs/*"),
+        glob("${VARDIR}/spool/tmp/mailcleaner/dkim/*"),
     ) if ($stage == 1);
     push (@files,
-	    glob("${SRCDIR}/etc/exim/certs/*"),
-	    glob("${VARDIR}/spool/tmp/mailcleaner/dkim/*"),
+        glob("${SRCDIR}/etc/exim/certs/*"),
+        glob("${VARDIR}/spool/tmp/mailcleaner/dkim/*"),
     ) if ($stage == 4);
     foreach my $file (@files) {
-	    touch($file) unless (-e $file);
+        touch($file) unless (-e $file);
         chown($uid, $gid, $file);
         if ($file =~ m/\.pl$/) {
             chmod 0774, $file;
@@ -1239,10 +1239,10 @@ EXIMUSER    * = (ROOT) NOPASSWD: EXIMBIN
 
     if ($stage == 1) {
         unlink("${VARDIR}/spool/exim_stage1/db/callout") if (-e "${VARDIR}/spool/exim_stage1/db/callout");
-	    foreach (glob("${VARDIR}/spool/tmp/exim/certs/*")) {
+        foreach (glob("${VARDIR}/spool/tmp/exim/certs/*")) {
             unlink($_) unless (-l $_);
         }
-	    foreach (glob("${SRCDIR}/etc/exim/certs/*")) {
+        foreach (glob("${SRCDIR}/etc/exim/certs/*")) {
             my ($file) = $_ =~ m#.*/([^/]+)$#;
             $file = "${VARDIR}/spool/tmp/exim/certs/${file}";
             symlink($_, $file) unless (-e $file && readlink($file) eq $_);
