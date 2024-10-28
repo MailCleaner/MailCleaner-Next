@@ -77,6 +77,8 @@ foreach (
     $VARDIR.'/spam',
     $VARDIR.'/spool/mailscanner',
     $VARDIR.'/spool/spamassassin',
+    $VARDIR.'/spool/exim_stage2',
+    $VARDIR.'/spool/exim_stage2/input',
     $VARDIR.'/spool/exim_stage4',
     $VARDIR.'/spool/exim_stage4/spamstore',
     $VARDIR.'/spool/mailscanner',
@@ -93,6 +95,13 @@ foreach (
 ) {
     mkdir $_ unless (-d $_);
 }
+my $eid = getpwnam('Debian-exim');
+chown($eid, $gid,
+    $VARDIR.'/spool/exim_stage2',
+    $VARDIR.'/spool/exim_stage2/input',
+    $VARDIR.'/spool/exim_stage4',
+    $VARDIR.'/spool/exim_stage4/spamstore',
+);
 
 # Set proper permissions
 chown($uid, $gid,
