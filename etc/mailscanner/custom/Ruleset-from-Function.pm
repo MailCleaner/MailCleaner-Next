@@ -1,18 +1,24 @@
 #
-#   MailScanner - SMTP E-Mail Virus Scanner
+#   MailScanner - SMTP Email Processor
 #   Copyright (C) 2002  Julian Field
 #
 #   $Id: MyExample.pm,v 1.1.2.1 2004/03/23 09:23:43 jkf Exp $
 #
-#   The author, Julian Field, can be contacted by email at
-#      mailscanner@ecs.soton.ac.uk
-#   or by paper mail at
-#      Julian Field
-#      Electronics & Computer Science
-#      University of Southampton
-#      Southampton
-#      SO17 1BJ
-#      United Kingdom
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+#      https://www.mailscanner.info
 #
 
 package MailScanner::CustomConfig;
@@ -31,7 +37,6 @@ $VERSION = substr q$Revision: 1.1.2.1 $, 10;
 
 my $Debug = 0; # Set to 1 to enable debug output to STDERR
 #my $tmpfilename = "/tmp/MailScanner.$$.conf"; # Temp MS.conf file
-my($tmpfh, $tmpfilename) = tempfile("MailScanner.XXXXXX", TMPDIR => 1, UNLINK => 0);
 
 
 
@@ -60,8 +65,7 @@ sub InitVirusScanning {
   my $option = 'virusscanning'; # External (MailScanner.conf-version)
 
   # Make the temporary 1-line MailScanner.conf file, use it and delete it
-  my $fh = new FileHandle;
-  $fh->open("> $tmpfilename") or die "$!";
+  my($fh, $tmpfilename) = tempfile("MailScanner.XXXXXX", TMPDIR => 1, UNLINK => 0);
   print $fh $option . " = $ruleset\n";
   $fh->close;
 

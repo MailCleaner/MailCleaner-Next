@@ -1,5 +1,5 @@
 #
-#   MailScanner - SMTP E-Mail Virus Scanner
+#   MailScanner - SMTP Email Processor
 #   Copyright (C) 2006  Julian Field
 #
 #   $Id: SpamWhitelist.pm,v 1.1.2.1 2004/03/23 09:23:43 jkf Exp $
@@ -24,13 +24,7 @@
 # domain.com # Has the same effect as the line above
 # 10.2.3.4 # Complete exact IP address
 # 
-# You need to copy the
-# cp SpamWhiteList.pm /usr/lib/MailScanner/MailScanner/CustomFunctions/
-# 
-# and then restart MailScanner completely.
-# 
-# Any queries, drop me a line at jules@jules.fm.
-# 
+
 
 
 use FileHandle;

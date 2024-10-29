@@ -1,5 +1,5 @@
 #
-#   MailScanner - SMTP E-Mail Virus Scanner
+#   MailScanner - SMTP Email Processor
 #   Copyright (C) 2002  Julian Field
 #
 #   $Id: ZMRouterDirHash.pm 2967 2005-03-23 12:03:01Z jkf $
@@ -18,15 +18,7 @@
 #   along with this program; if not, write to the Free Software
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #
-#   The author, Julian Field, can be contacted by email at
-#      Jules@JulianField.net
-#   or by paper mail at
-#      Julian Field
-#      Dept of Electronics & Computer Science
-#      University of Southampton
-#      Southampton
-#      SO17 1BJ
-#      United Kingdom
+#      https://www.mailscanner.info
 #
 #   TheCustomConfig functions contained in this file are
 #   Copyright (C) 2004 Pert Consultores
