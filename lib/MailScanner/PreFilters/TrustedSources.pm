@@ -66,7 +66,7 @@ sub initialise
         position => 0
     );
     @TrustedSources::domainsToSPF_ = ();
-    %TrustedSources::localDomains_;
+    %TrustedSources::localDomains_ = ();
 
     if (open(my $CONFIG, '<', $configfile)) {
         while (<$CONFIG>) {

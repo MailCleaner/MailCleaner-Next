@@ -112,7 +112,7 @@ sub Checks($self,$message)
     }
 
     my $msgtext = "";
-    my (@WholeMessage, $maxsize);
+    my @WholeMessage;
     my $toadd = 0;
     my @avoidheaders = split /,/, $NiceBayes::conf{'avoidHeaders'};
     foreach my $headerline (@{$message->{headers}}) {

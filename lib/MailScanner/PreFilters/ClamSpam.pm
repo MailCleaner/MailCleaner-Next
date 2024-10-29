@@ -86,7 +86,7 @@ sub Checks($self,$message)
         return 0;
     }
 
-    my (@WholeMessage, $maxsize);
+    my @WholeMessage;
     push(@WholeMessage, $global::MS->{mta}->OriginalMsgHeaders($message, "\n"));
     push(@WholeMessage, "\n");
     $message->{store}->ReadBody(\@WholeMessage, 0);

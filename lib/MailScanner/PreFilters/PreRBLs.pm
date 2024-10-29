@@ -166,9 +166,9 @@ sub Checks($self,$message)
                 }
             }
             if ($avoidhost =~ m/^[a-zA-Z\.\-\_\d\*]+$/) {
-                $avoidhost =~ s/([^\\])\./\1\\\./g;
+                $avoidhost =~ s/([^\\])\./$1\\\./g;
                 $avoidhost =~ s/^\./\\\./g;
-                $avoidhost =~ s/([^\\])\*/\1\.\*/g;
+                $avoidhost =~ s/([^\\])\*/$1\.\*/g;
                 $avoidhost =~ s/^\*/.\*/g;
                 if ($PreRBLs::conf{debug}) {
                     MailScanner::Log::InfoLog("$MODULE should avoid control on hostname ".$avoidhost." for message ".$message->{id});

@@ -84,11 +84,11 @@ sub initialise
 
 sub Checks($self,$message)
 {
-    my $maxsize = $Spamc::conf{'maxSize'};
+    my $maxsize = $Spamc::conf{'maxSize'} || 0;
     if ($maxsize > 0 && $message->{size} > $maxsize) {
         MailScanner::Log::InfoLog(
             "Message %s is too big for Spamc checks (%d > %d bytes)",
-            $message->{id}, $message->{size}, $maxSize
+            $message->{id}, $message->{size}, $maxsize
         );
         $message->{prefilterreport} .= ", Spamc (too big)";
         $global::MS->{mta}->AddHeaderToOriginal($message, $Spamc::conf{'header'}, "too big (".$message->{size}." > $maxsize)");
