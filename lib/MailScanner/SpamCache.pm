@@ -2,6 +2,7 @@
 
 package MailScanner::SpamCache;
 
+use v5.36;
 use strict 'vars';
 use strict 'refs';
 no  strict 'subs'; # Allow bare words for parameter %'s
@@ -74,6 +75,7 @@ sub isUseable
 sub CheckCache($md5)
 {
     return if (!$SpamCache::conf{cache_useable});
+    return unless (defined($md5));
 
     my($sql, $sth);
     $sql = "SELECT md5, count, last, first, spamreport FROM cache WHERE md5=?";
@@ -134,7 +136,7 @@ sub AddVirusStats($message)
 # Set all the cache expiry timings from the cachetiming conf option
 sub SetCacheTimes
 {
-    my $line = MailScanner::Config::Value('spamcachetiming');
+    my $line = MailScanner::Config::Value('spamcachetiming') || return;
     $line =~ s/^\D+//;
     return unless $line;
     my @numbers = split /\D+/, $line;

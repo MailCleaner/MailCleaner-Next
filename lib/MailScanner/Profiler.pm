@@ -16,6 +16,7 @@
 
 package MailScanner::Profiler;
 
+use v5.36;
 use strict 'vars';
 use strict 'refs';
 no strict 'subs'; # Allow bare words for parameter %'s
