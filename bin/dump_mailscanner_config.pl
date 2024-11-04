@@ -80,6 +80,7 @@ foreach (
     $VARDIR.'/spool/exim_stage2',
     $VARDIR.'/spool/exim_stage2/input',
     $VARDIR.'/spool/exim_stage4',
+    $VARDIR.'/spool/exim_stage4/input',
     $VARDIR.'/spool/exim_stage4/spamstore',
     $VARDIR.'/spool/mailscanner',
     $VARDIR.'/spool/mailscanner/quarantine',
@@ -98,7 +99,6 @@ foreach (
 my $eid = getpwnam('Debian-exim');
 chown($eid, $gid,
     $VARDIR.'/spool/exim_stage2',
-    $VARDIR.'/spool/exim_stage2/input',
     $VARDIR.'/spool/exim_stage4',
     $VARDIR.'/spool/exim_stage4/spamstore',
 );
@@ -139,6 +139,8 @@ chown($uid, $gid,
     $VARDIR.'/spool/tmp/mailscanner/incoming',
     $VARDIR.'/spool/tmp/mailscanner/incoming/Locks',
     glob($VARDIR.'/spool/tmp/mailscanner/incoming/*'),
+    $VARDIR.'/spool/exim_stage2/input',
+    $VARDIR.'/spool/exim_stage4/input',
 );
 
 foreach my $dir (
@@ -147,6 +149,8 @@ foreach my $dir (
     chmod(0755, $dir) if ( -d $dir );
     make_path($dir, {'mode'=>0755,'user'=>$uid,'group'=>$gid}) unless ( -d $dir );
 }
+chmod(0775, $VARDIR.'/spool/exim_stage2/input');
+chmod(0775, $VARDIR.'/spool/exim_stage4/input');
 
 symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
 

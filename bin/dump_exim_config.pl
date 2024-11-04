@@ -1172,6 +1172,7 @@ sub ownership($stage)
 {
     use File::Touch qw( touch );
 
+    `usermod -a -G mailscanner Debian-exim` unless (grep(/\bmailscanner\b/, `groups Debian-exim`));
     mkdir('/etc/sudoers.d') unless (-d '/etc/sudoers.d/');
     if (open(my $fh, '>', '/etc/sudoers.d/exim')) {
         print $fh "
@@ -1186,16 +1187,16 @@ EXIMUSER    * = (ROOT) NOPASSWD: EXIMBIN
         "${VARDIR}/log/exim_stage${stage}",
         "${VARDIR}/spool/tmp/exim_stage${stage}",
         "${VARDIR}/spool/exim_stage${stage}",
-        "${VARDIR}/spool/exim_stage${stage}/input",
         glob("${VARDIR}/spool/tmp/exim_stage${stage}/*"),
         glob("${VARDIR}/spool/exim_stage${stage}/*"),
-        glob("${VARDIR}/spool/exim_stage${stage}/input/*"),
     );
     push(@dirs,
         "${SRCDIR}/etc/exim/certs",
         "${VARDIR}/spool/tmp/exim",
         "${VARDIR}/spool/tmp/exim/blacklists",
         "${VARDIR}/spool/tmp/exim/certs",
+        "${VARDIR}/spool/exim_stage${stage}/input",
+        glob("${VARDIR}/spool/exim_stage${stage}/input/*"),
     ) if ($stage == 1);
     push(@dirs,
         "${VARDIR}/spool/exim_stage${stage}/paniclog",
