@@ -39,9 +39,6 @@ Sendmail = /opt/exim4/bin/exim -C __VARDIR__/spool/tmp/exim/exim_stage4.conf
 Sendmail2 = /opt/exim4/bin/exim -C __VARDIR__/spool/tmp/exim/exim_stage4.conf
 __EXIM_COMMAND__
 
-
-Additional Library Paths = __SRCDIR__/lib
-
 #########################
 ## system optimisation ##
 #########################
@@ -136,12 +133,6 @@ Sophos IDE Dir = /opt/sophos-av/lib/sav
 Sophos Lib Dir = /opt/sophos-av/lib
 Monitors For Sophos Updates = /opt/sophos-av/lib/sav/*.ide
 SAVID Socket = /var/lib/savdid/savdid.sock
-
-Monitors for ClamAV Updates = __VARDIR__/spool/clamav/daily.inc/ __VARDIR__/spool/clamav/*.cvd
-ClamAVmodule Maximum Recursion Level = 8
-ClamAVmodule Maximum Files = 1000
-ClamAVmodule Maximum File Size = 10000000 # (10 Mbytes)
-ClamAVmodule Maximum Compression Ratio = 250
 
 Clamd Port = 3310
 Clamd Socket = __VARDIR__/run/clamav/clamd.sock
@@ -331,14 +322,6 @@ Local Postmaster = &LocalPostmaster
 Spam List Definitions = %etc-dir%/dnsblacklists.conf
 Virus Scanner Definitions = %etc-dir%/virus.scanners.conf
 
-Pre Filters = __PREFILTERS__
-Pre Filter Timeout = 100
-Pre Filter Configurations = %etc-dir%/prefilters/
-
-Use Spam Cache = yes
-Spam Cache Database File = __VARDIR__/spool/tmp/mailscanner/spam.cache.db
-Spam Cache Timings = 300,600
-
 Spam Checks = &SpamWall
 Spam List = __SPAMLISTS__
 Spam Domain List = 
@@ -350,7 +333,6 @@ Max Spam List Timeouts = 7
 Spam List Timeouts History = 10
 
 Auto Whitelist Auth Users = no
-Trusted IPs = __TRUSTEDIPS__
 Is Definitely Not Spam = %rules-dir%/spam.whitelist.rules
 Ignore Spam Whitelist If Recipients Exceed = 20
 
@@ -472,7 +454,6 @@ Spam Score Number Format = %d
 
 Debug = no
 Debug SpamAssassin = no
-Profile = yes
 Run In Foreground = no
 
 Always Looked Up Last = &MailWatchLogging
