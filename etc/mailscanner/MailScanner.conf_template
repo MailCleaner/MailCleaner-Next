@@ -448,7 +448,7 @@ Sender MCP Report = %report-dir%/sender.mcp.report.txt
 
 Use Default Rules With Multiple Recipients = no
 Read IP Address From Received Header = no
-MailScanner Version Number = 5.5.2
+MailScanner Version Number = 5.5.3
 SpamAssassin Cache Timings = 1800,300,10800,172800,600
 Spam Score Number Format = %d
 
