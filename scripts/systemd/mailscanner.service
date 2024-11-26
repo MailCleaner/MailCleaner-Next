@@ -7,12 +7,19 @@ Before=exim4@2.service
 PartOf=mailcleaner.target
 
 [Service]
+Type=forking
 User=mailscanner
 Group=mailscanner
-PrivateTmp=false
-Type=forking
+Restart=unless-stopped
+TimeoutSec=1min
+IgnoreSIGPIPE=no
+KillMode=process
+GuessMainPID=no
+RemainAfterExim=yes
 ExecStartPre=+/usr/mailcleaner/bin/dump_mailscanner_config.pl %I
-ExecStart=/usr/bin/check_mailscanner
+ExecStart=/usr/lib/MailScanner/init/ms-init start
+ExecStop=/usr/lib/MailScanner/init/ms-init stop
+PIDFile=/var/mailcleaner/run/mailcleaner.pid
 
 [Install]
 WantedBy=mailcleaner.target
