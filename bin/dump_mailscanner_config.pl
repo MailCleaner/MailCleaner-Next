@@ -155,11 +155,12 @@ chmod(0775, $VARDIR.'/spool/exim_stage4/input');
 symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
 
 # Configure sudoer permissions if they are not already
-# Add to mailcleaner, Debian-exim, Debian-spamd, and clamav groups if not already a member
+# Add to mailcleaner, Debian-exim, Debian-spamd, mysql and clamav groups if not already a member
 `usermod -a -G mailcleaner mailscanner` unless (grep(/\bmailcleaner\b/, `groups mailscanner`));
 `usermod -a -G Debian-exim mailscanner` unless (grep(/\bDebian-exim\b/, `groups mailscanner`));
 `usermod -a -G debian-spamd mailscanner` unless (grep(/\bdebian-spamd\b/, `groups mailscanner`));
 `usermod -a -G clamav mailscanner` unless (grep(/\bclamav\b/, `groups mailscanner`));
+`usermod -a -G mysql mailscanner` unless (grep(/\bmysql\b/, `groups mailscanner`));
 
 # SystemD auth causes timeouts
 `sed -iP '/^session.*pam_systemd.so/d' /etc/pam.d/common-session`;
