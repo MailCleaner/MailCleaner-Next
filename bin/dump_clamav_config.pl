@@ -45,7 +45,7 @@ BEGIN {
     unshift(@INC, $SRCDIR."/lib");
 }
 
-use lib_utils qw( open_as );
+use lib_utils qw( open_as rmrf );
 
 my $lasterror;
 
@@ -57,6 +57,11 @@ if (-e $conf && ! -s $conf) {
 	unlink(glob("$conf/*"), $conf);
 }
 symlink($SRCDIR."/".$conf, $conf) unless (-l $conf);
+unless (-l "/var/lib/clamav/") {
+	rmrf("/var/lib/clamav/") if (-e "/var/lib/clamav");
+	printf("Creating symlink $VARDIR/spool/clamav\n");
+	symlink($VARDIR."/spool/clamav", "/var/lib/clamav");
+}
 
 # Create necessary dirs/files if they don't exist
 foreach my $dir (
