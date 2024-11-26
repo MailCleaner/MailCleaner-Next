@@ -30,6 +30,7 @@ use strict;
 use warnings;
 use utf8;
 use Carp qw( confess );
+use File::Path qw(make_path);
 
 my ($conf, $SRCDIR, $VARDIR);
 BEGIN {
@@ -145,6 +146,8 @@ chown($uid, $gid,
 
 foreach my $dir (
     $VARDIR.'/spool/tmp/mailscanner',
+    $VARDIR.'/spool/tmp/mailscanner/Locks',
+    $VARDIR.'/spool/tmp/mailscanner/incoming/Locks',
 ) {
     chmod(0755, $dir) if ( -d $dir );
     make_path($dir, {'mode'=>0755,'user'=>$uid,'group'=>$gid}) unless ( -d $dir );
