@@ -5,7 +5,7 @@ Conflicts=sendmail.service postfix.service
 PartOf=mailcleaner.target
 
 [Service]
-User=Debian-exim
+User=mailcleaner
 Group=mailcleaner
 PrivateTmp=false
 EnvironmentFile=-/etc/sysconfig/exim

@@ -49,11 +49,8 @@ use File::Path qw(make_path);
 require DB;
 
 our $DEBUG = 1;
-our $uid = getpwnam( 'mysql' );
-our $gid = getgrnam( 'mysql' );
-
-# Add to mailcleaner group if not already a member
-`usermod -a -G mailcleaner mysql` unless (grep(/\bmailcleaner\b/, `groups mysql`));
+our $uid = getpwnam( 'mailcleaner' );
+our $gid = getgrnam( 'mailcleaner' );
 
 ## added 10 for migration ease
 my %config;
@@ -91,8 +88,8 @@ sub dump_mysql_file($stage,%config)
     my $target_file = "${SRCDIR}/etc/mysql/my_${stage}.cnf";
 
     my ($TEMPLATE, $TARGET);
-    confess "Cannot open $template_file: $!" unless ($TEMPLATE = ${open_as($template_file, '<', 0664, 'mysql:mailcleaner')});
-    confess "Cannot open ${target_file}: $!" unless ($TARGET = ${open_as("${target_file}", '>', 0664, 'mysql:mailcleaner')});
+    confess "Cannot open $template_file: $!" unless ($TEMPLATE = ${open_as($template_file, '<', 0664, 'mailcleaner:mailcleaner')});
+    confess "Cannot open ${target_file}: $!" unless ($TARGET = ${open_as("${target_file}", '>', 0664, 'mailcleaner')});
 
     while(<$TEMPLATE>) {
         my $line = $_;
@@ -134,7 +131,7 @@ sub ownership($stage)
     mkdir('/etc/sudoers.d') unless (-d '/etc/sudoers.d/');
     if (open(my $fh, '>', '/etc/sudoers.d/mysql')) {
         print $fh "
-User_Alias  MYSQL = mysql
+User_Alias  MYSQL = mailcleaner
 Cmnd_Alias  START = /usr/bin/mariadbd-safe
 Cmnd_Alias  INSTALL = /usr/bin/mysql-install_db
 Cmnd_Alias  UPGRADE = /usr/bin/mysql-upgrade
@@ -153,19 +150,19 @@ M%SQL       * = (ROOT) NOPASSWD: UPGRADE
         "${VARDIR}/spool/mariadb_${stage}",
     );
     foreach my $dir (@dirs) {
-	    mkdir ($dir) unless (-d $dir);
-		chown($uid, $gid, $dir);
+	mkdir ($dir) unless (-d $dir);
+	chown($uid, $gid, $dir);
     }
 
     my @files = (
-		glob("${VARDIR}/log/mysql_${stage}/*"),
-		glob("${VARDIR}/spool/mysql_${stage}/*"),
+	glob("${VARDIR}/log/mysql_${stage}/*"),
+	glob("${VARDIR}/spool/mysql_${stage}/*"),
     );
     foreach (glob("${VARDIR}/spool/mysql_${stage}/*")) {
         push(@files, glob("$_/*"));
     }
     foreach my $file (@files) {
-	    touch($file) unless (-e $file);
+	touch($file) unless (-e $file);
         chown($uid, $gid, $file);
         chmod 0744, $file;
     }

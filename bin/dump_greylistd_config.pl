@@ -55,7 +55,7 @@ my $DEBUG = 0;
 my %greylist_conf = get_greylist_config();
 my $trusted_ips = get_trusted_ips();
 
-our $uid = getpwnam( 'greylist' );
+our $uid = getpwnam( 'mailcleaner' );
 our $gid = getgrnam( 'mailcleaner' );
 our $confdir = "/etc/greylistd";
 
@@ -82,8 +82,6 @@ dump_domain_to_avoid($greylist_conf{'__AVOID_DOMAINS__'});
 
 dump_trusted_ips($trusted_ips);
 
-`usermod -a -G mailcleaner greylist` unless (grep(/\bmailcleaner\b/, `groups greylist`));
-
 foreach my $dir (
     "${VARDIR}/spool/greylistd",
     "${VARDIR}/run/greylistd",
@@ -94,6 +92,7 @@ foreach my $dir (
 }
 
 foreach my $file (
+    glob("${VARDIR}/spool/greylistd/*"),
     "${VARDIR}/spool/tmp/mailcleaner/domains_to_greylist.list",
     "${SRCDIR}/${confdir}/config",
     "${SRCDIR}/${confdir}/whitelist-hosts",

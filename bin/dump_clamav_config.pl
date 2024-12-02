@@ -49,7 +49,7 @@ use lib_utils qw( open_as rmrf );
 
 my $lasterror;
 
-my $uid = getpwnam( 'clamav' );
+my $uid = getpwnam( 'mailcleaner' );
 my $gid = getgrnam( 'mailcleaner' );
 my $conf = '/etc/clamav';
 
@@ -89,7 +89,7 @@ foreach my $file (
 mkdir '/etc/sudoers.d' unless (-d '/etc/sudoers.d');
 if (open(my $fh, '>', '/etc/sudoers.d/clamav')) {
     print $fh "
-User_Alias  CLAMAV = clamav
+User_Alias  CLAMAV = mailcleaner
 Cmnd_Alias  CLAMBIN = /usr/sbin/clamd
 
 CLAMAV      * = (ROOT) NOPASSWD: CLAMBIN
@@ -100,10 +100,6 @@ symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc
 
 # Reload AppArmor rules
 `apparmor_parser -r ${SRCDIR}/etc/apparmor.d/clamav`;
-
-# Add to mailcleaner and mailscanner groups if not already a member
-`usermod -a -G mailcleaner clamav` unless (grep(/\bmailcleaner\b/, `groups clamav`));
-`usermod -a -G mailscanner clamav` unless (grep(/\bmailscanner\b/, `groups clamav`));
 
 # SystemD auth causes timeouts
 `sed -iP '/^session.*pam_systemd.so/d' /etc/pam.d/common-session`;

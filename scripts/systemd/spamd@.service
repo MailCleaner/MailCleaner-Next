@@ -3,8 +3,8 @@ Description=Perl-based spam filter using text analysis
 After=syslog.target network-online.target
 
 [Service]
-User=debian-spamd
-Group=mailscanner
+User=mailcleaner
+Group=mailcleaner
 Type=simple
 PIDFile=/run/spamd.pid
 EnvironmentFile=-/etc/default/spamd

@@ -53,7 +53,7 @@ use lib_utils qw( open_as rmrf );
 use File::Touch qw( touch );
 
 our $DEBUG = 1;
-our $uid = getpwnam('www-data');
+our $uid = getpwnam('mailcleaner');
 our $gid = getgrnam('mailcleaner');
 
 my $lasterror = "";
@@ -111,8 +111,8 @@ foreach my $link (keys(%links)) {
 mkdir '/etc/sudoers.d' unless (-d '/etc/sudoers.d');
 if (open(my $fh, '>', '/etc/sudoers.d/apache')) {
     print $fh "
-User_Alias  APACHE = www-data
-Runas_Alias EXIM = Debian-exim
+User_Alias  APACHE = mailcleaner
+Runas_Alias EXIM = mailcleaner
 Cmnd_Alias  CHECKSPOOLS = $SRCDIR/bin/check_spools.sh
 Cmnd_Alias  GETSTATUS = $SRCDIR/bin/get_status.pl -s
 
@@ -121,9 +121,6 @@ APACHE      * = (EXIM) NOPASSWD: CHECKSPOOLS
 APACHE      * = (ROOT) NOPASSWD: GETSTATUS
 ";
 }
-
-# Add to mailcleaner group if not already a member
-`usermod -a -G mailcleaner www-data` unless (grep(/\bmailcleaner\b/, `groups www-data`));
 
 # SystemD auth causes timeouts
 `sed -iP '/^session.*pam_systemd.so/d' /etc/pam.d/common-session`;

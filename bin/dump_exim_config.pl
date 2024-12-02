@@ -70,7 +70,7 @@ our $SPMC = "$VARDIR/spool/mailcleaner";
 our $db = DB::connect('slave', 'mc_config');
 our $include_debug = 0;
 
-our $uid = getpwnam( 'Debian-exim' );
+our $uid = getpwnam( 'mailcleaner' );
 our $gid = getgrnam( 'mailcleaner' );
 
 my $lasterror = "";
@@ -434,7 +434,7 @@ sub dump_proxy_file($file, $smtp_proxy)
     $str =~ s/\s*\:\s*$//;
 
     my $TARGET;
-    confess "Cannot open $file: $!" unless ($TARGET = ${open_as($file, '>', 0664, 'Debian-exim:mailcleaner')});
+    confess "Cannot open $file: $!" unless ($TARGET = ${open_as($file, '>', 0664, 'mailcleaner:mailcleaner')});
     print $TARGET $str;
     close $TARGET;
 }
@@ -551,7 +551,7 @@ sub dump_master_file($file, $m_h)
     my %master = %$m_h;
 
     my $MASTERFILE;
-    confess "Cannot open $file: $!" unless ($MASTERFILE = ${open_as($file, '>', 0664, 'Debian-exim:mailcleaner')});
+    confess "Cannot open $file: $!" unless ($MASTERFILE = ${open_as($file, '>', 0664, 'mailcleaner:mailcleaner')});
 
     print $MASTERFILE "HOST ".$master{'host'}."\n";
     print $MASTERFILE "PORT ".$master{'port'}."\n";
@@ -920,7 +920,7 @@ sub dump_ignore_list($ignorehosts,$filename)
 
     my @list = expand_host_string($ignorehosts,('dumper'=>'exim/dump_ignore_list/'.$filename));
     my $RBLFILE;
-    confess "Cannot open $file: $!" unless ($RBLFILE = ${open_as($file, '>', 0664, 'Debian-exim:mailcleaner')});
+    confess "Cannot open $file: $!" unless ($RBLFILE = ${open_as($file, '>', 0664, 'mailcleaner:mailcleaner')});
     foreach my $host (@list) {
         print $RBLFILE $host."\n";
     }
@@ -945,7 +945,7 @@ sub dump_blacklists()
         my $filepath = $tmpdir."/".$files{$file};
 
         my $FILE;
-        confess "Cannot open $file: $!" unless ($FILE = ${open_as($filepath, '>', 0664, 'Debian-exim:mailcleaner')});
+        confess "Cannot open $file: $!" unless ($FILE = ${open_as($filepath, '>', 0664, 'mailcleaner:mailcleaner')});
         if ($incoming_config{$file}) {
             if ($file =~ /host_reject/) {
                 foreach my $host (expand_host_string($incoming_config{$file},('dumper'=>'exim/dump_blacklists/'.$file))) {
@@ -1016,11 +1016,11 @@ sub print_ip_domain_rule($sender_list, $domain, $type)
     my $path = "${VARDIR}/spool/tmp/exim_stage1";
     my $FH_IP_DOM;
     if ( ($type eq 'black-ip-dom') || ($type eq 'spam-ip-dom') )  {
-        confess "Cannot open $path/blacklists/ip-domain: $!" unless ($FH_IP_DOM = ${open_as("$path/blacklists/ip-domain",'>>',0664,'Debian-exim:mailcleaner')});
+        confess "Cannot open $path/blacklists/ip-domain: $!" unless ($FH_IP_DOM = ${open_as("$path/blacklists/ip-domain",'>>',0664,'mailcleaner:mailcleaner')});
     } elsif ($type eq 'white-ip-dom') {
-        confess "Cannot open $path/rblwhitelists/$domain: $!" unless ($FH_IP_DOM = ${open_as("$path/rblwhitelists/$domain",'>>',0664,'Debian-exim:mailcleaner')});
+        confess "Cannot open $path/rblwhitelists/$domain: $!" unless ($FH_IP_DOM = ${open_as("$path/rblwhitelists/$domain",'>>',0664,'mailcleaner:mailcleaner')});
     } elsif ($type eq 'wh-spamc-ip-dom') {
-        confess "Cannot open $path/spamcwhitelists/$domain: $!" unless ($FH_IP_DOM = ${open_as("$path/spamcwhitelists/$domain",'>>',0664,'Debian-exim:mailcleaner')});
+        confess "Cannot open $path/spamcwhitelists/$domain: $!" unless ($FH_IP_DOM = ${open_as("$path/spamcwhitelists/$domain",'>>',0664,'mailcleaner:mailcleaner')});
     }
 
     $sender_list = join(' ; ', expand_host_string($sender_list,('dumper'=>'exim/sender_list')));
@@ -1065,7 +1065,7 @@ sub dump_certificate($cert,$key)
     } else {
         $cert =~ s/\r\n/\n/g;
         my $FILE;
-        confess "Cannot open $certfile: $!" unless ($FILE = ${open_as($certfile,'>',0664,'Debian-exim:mailcleaner')});
+        confess "Cannot open $certfile: $!" unless ($FILE = ${open_as($certfile,'>',0664,'mailcleaner:mailcleaner')});
         print $FILE $cert."\n";
         close $FILE;
     }
@@ -1077,7 +1077,7 @@ sub dump_certificate($cert,$key)
     } else {
         $key =~ s/\r\n/\n/g;
         my $FILE;
-        confess "Cannot open $keyfile: $!" unless ($FILE = ${open_as($keyfile,'>',0664,'Debian-exim:mailcleaner')});
+        confess "Cannot open $keyfile: $!" unless ($FILE = ${open_as($keyfile,'>',0664,'mailcleaner:mailcleaner')});
         print $FILE $key."\n";
         close $FILE;
     }
@@ -1091,7 +1091,7 @@ sub dump_default_dkim($stage1_conf)
     }
     my $keyfile = $keypath."/default.pkey";
     my ($FILE, $DEFAULT);
-    confess "Cannot open $keyfile: $!" unless ($FILE = ${open_as($keyfile, '>', 0664, 'Debian-exim:mailcleaner')});
+    confess "Cannot open $keyfile: $!" unless ($FILE = ${open_as($keyfile, '>', 0664, 'mailcleaner:mailcleaner')});
     if (defined($stage1_conf{'dkim_default_pkey'})) {
         if ( -e $keypath."/".$stage1_conf{'dkim_default_domain'}.".pkey" ) {
             open($DEFAULT, '<', $keypath."/".$stage1_conf{'dkim_default_domain'}.".pkey");
@@ -1113,7 +1113,7 @@ sub dump_tls_force_files()
         my $o = '__'.uc($f).'__';
         my $file = ${VARDIR}."/spool/tmp/mailcleaner/".$f.".list";
         my $FILE;
-        confess "Cannot open $file: $!" unless ($FILE = ${open_as($file,'>',0664,'Debian-exim:mailcleaner')});
+        confess "Cannot open $file: $!" unless ($FILE = ${open_as($file,'>',0664,'mailcleaner:mailcleaner')});
         print $FILE $exim_conf{$o};
         close $FILE;
     }
@@ -1172,11 +1172,10 @@ sub ownership($stage)
 {
     use File::Touch qw( touch );
 
-    `usermod -a -G mailscanner Debian-exim` unless (grep(/\bmailscanner\b/, `groups Debian-exim`));
     mkdir('/etc/sudoers.d') unless (-d '/etc/sudoers.d/');
     if (open(my $fh, '>', '/etc/sudoers.d/exim')) {
         print $fh "
-User_Alias  EXIMUSER = Debian-exim
+User_Alias  EXIMUSER = mailcleaner
 Cmnd_Alias  EXIMBIN = /opt/exim4/bin/exim
 
 EXIMUSER    * = (ROOT) NOPASSWD: EXIMBIN
@@ -1201,6 +1200,8 @@ EXIMUSER    * = (ROOT) NOPASSWD: EXIMBIN
     push(@dirs,
         "${VARDIR}/spool/exim_stage${stage}/paniclog",
         "${VARDIR}/spool/exim_stage${stage}/spamstore",
+        "${VARDIR}/spool/tmp/mailcleaner/dkim",
+        glob("${VARDIR}/spool/tmp/mailcleaner/dkim"),
     ) if ($stage == 4);
     foreach my $dir (@dirs) {
         mkdir ($dir) unless (-d $dir);

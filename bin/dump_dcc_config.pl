@@ -53,9 +53,8 @@ use lib_utils qw( open_as rmrf );
 use File::Touch qw( touch );
 
 our $DEBUG = 1;
-our $uid = getpwnam('dcc');
-our $gid = getgrnam('dcc');
-
+our $uid = getpwnam('mailcleaner');
+our $gid = getgrnam('mailcleaner');
 
 my $lasterror = "";
 
@@ -74,7 +73,6 @@ my %links = (
 foreach my $link (keys(%links)) {
     if (-e $link) {
         if (-l $link) {
-            chown($uid, $gid, $link, $links{$link});
             next if (readlink($link) eq $links{$link});
 	    unlink($link);
         } else {
@@ -89,5 +87,8 @@ foreach my $link (keys(%links)) {
 chown($uid, $gid,
     '/var/lib/dcc/',
     '/var/lib/dcc/log',
+    ${VARDIR}.'/spool/dcc',
+    ${VARDIR}.'/run/dcc',
+    glob(${VARDIR}.'/run/dcc/*'),
     glob('/var/lib/dcc/log/*'),
 );

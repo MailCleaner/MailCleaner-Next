@@ -53,7 +53,7 @@ require GetDNS;
 my $db = DB::connect('slave', 'mc_config');
 
 our $DEBUG = 1;
-our $uid = getpwnam('debian-spamd');
+our $uid = getpwnam('mailcleaner');
 our $gid = getgrnam('mailcleaner');
 
 our %sa_conf = get_sa_config() or fatal_error("NOSPAMASSASSINCONFIGURATION", "no default configuration found for spamassassin");
@@ -79,16 +79,12 @@ chown($uid, $gid,
 mkdir '/etc/sudoers.d' unless (-d '/etc/sudoers.d');
 if (open(my $fh, '>', '/etc/sudoers.d/spamd')) {
     print $fh "
-User_Alias  SPAMD = debian-spamd
+User_Alias  SPAMD = mailcleaner
 Cmnd_Alias  BIN = /usr/local/bin/spamd
 
 SPAMD       * = (ROOT) NOPASSWD: BIN
 ";
 }
-
-# Add to mailcleaner and mailscanner groups if not already a member
-`usermod -a -G mailcleaner debian-spamd` unless (grep(/\bmailcleaner\b/, `groups debian-spamd`));
-`usermod -a -G mailscanner debian-spamd` unless (grep(/\bmailscanner\b/, `groups debian-spamd`));
 
 # SystemD auth causes timeouts
 `sed -iP '/^session.*pam_systemd.so/d' /etc/pam.d/common-session`;

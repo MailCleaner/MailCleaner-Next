@@ -9,7 +9,7 @@ User=mailcleaner
 Group=mailcleaner
 PrivateTmp=false
 Type=forking
-#ExecStartPre=+/usr/mailcleaner/bin/dump_stats_daemon.pl %I
+ExecStartPre=+/usr/mailcleaner/bin/dump_stats_daemon.pl %I
 ExecStart=/usr/mailcleaner/bin/daemon_starter.pl StatsDaemon -d start
 
 [Install]

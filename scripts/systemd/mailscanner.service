@@ -8,8 +8,8 @@ PartOf=mailcleaner.target
 
 [Service]
 Type=forking
-User=mailscanner
-Group=mailscanner
+User=mailcleaner
+Group=mailcleaner
 Restart=unless-stopped
 TimeoutSec=1min
 IgnoreSIGPIPE=no

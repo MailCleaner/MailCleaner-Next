@@ -49,9 +49,8 @@ require DB;
 require GetDNS;
 
 our $DEBUG = 1;
-our $uid = getpwnam('Debian-snmp');
+our $uid = getpwnam('mailcleaner');
 our $gid = getpwnam('mailcleaner');
-`usermod -a -G mailcleaner Debian-snmp` unless (grep(/\bmailcleaner\b/, `groups Debian-snmp`));
 
 my $system_mibs_file = '/usr/share/snmp/mibs/MAILCLEANER-MIB.txt';
 if ( ! -d '/usr/share/snmp/mibs') {

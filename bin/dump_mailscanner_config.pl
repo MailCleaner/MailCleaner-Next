@@ -54,7 +54,7 @@ require GetDNS;
 my $db = DB::connect('slave', 'mc_config');
 
 our $DEBUG = 1;
-our $uid = getpwnam('mailscanner');
+our $uid = getpwnam('mailcleaner');
 our $gid = getgrnam('mailcleaner');
 
 my $lasterror = "";
@@ -94,18 +94,18 @@ foreach (
     $VARDIR.'/spool/tmp/mailscanner/incoming/Locks',
     $VARDIR.'/log/mailscanner',
     $VARDIR.'/run/mailscanner',
+    $VARDIR.'/run/mailscanner',
+    $VARDIR.'/log/mailscanner',
+    '/var/lock/subsys/MailScanner',
 ) {
     mkdir $_ unless (-d $_);
+    chown($uid, $gid, $_);
+    chown($uid, $gid, glob($_.'/*'));
+    chmod(0750, $_);
 }
-my $eid = getpwnam('Debian-exim');
-chown($eid, $gid,
-    $VARDIR.'/spool/exim_stage2',
-    $VARDIR.'/spool/exim_stage4',
-    $VARDIR.'/spool/exim_stage4/spamstore',
-);
 
-# Set proper permissions
-chown($uid, $gid,
+# Set file permissions
+foreach (
     $SRCDIR.'/etc/mailscanner',
     glob($SRCDIR.'/etc/mailscanner/*'),
     $SRCDIR.'etc/mailscanner/mcp',
@@ -119,51 +119,14 @@ chown($uid, $gid,
     glob($SRCDIR.'etc/mailscanner/reports_templates/*/*'),
     $SRCDIR.'etc/mailscanner/rules',
     glob($SRCDIR.'etc/mailscanner/rules'),
-    $VARDIR.'/spam',
-    $VARDIR.'/spool/spamassassin',
-    $VARDIR.'/spool/mailscanner',
-    glob($VARDIR.'/spool/mailscanner/*'),
-    $VARDIR.'/spool/tmp/mailscanner',
-    glob($VARDIR.'/spool/tmp/mailscanner/*'),
-    $VARDIR.'/run/mailscanner',
-    glob($VARDIR.'/run/mailscanner/*'),
-    $VARDIR.'/log/mailscanner',
-    glob($VARDIR.'/log/mailscanner/*'),
     $VARDIR.'/log/mailcleaner/SpamLogger.log',
-    $VARDIR.'/spool/mailscanner',
-    $VARDIR.'/spool/tmp/mailscanner/spamassassin',
-    glob($VARDIR.'/spool/tmp/mailscanner/spamassassin/*'),
-    $VARDIR.'/spool/mailscanner/incoming',
-    $VARDIR.'/spool/mailscanner/incoming/Locks',
-    glob($VARDIR.'/spool/mailscanner/incoming/*'),
-    $VARDIR.'/spool/tmp/mailscanner',
-    $VARDIR.'/spool/tmp/mailscanner/incoming',
-    $VARDIR.'/spool/tmp/mailscanner/incoming/Locks',
-    glob($VARDIR.'/spool/tmp/mailscanner/incoming/*'),
-    $VARDIR.'/spool/exim_stage2/input',
-    $VARDIR.'/spool/exim_stage4/input',
-);
-
-foreach my $dir (
-    $VARDIR.'/spool/tmp/mailscanner',
-    $VARDIR.'/spool/tmp/mailscanner/Locks',
     $VARDIR.'/spool/tmp/mailscanner/incoming/Locks',
 ) {
-    chmod(0755, $dir) if ( -d $dir );
-    make_path($dir, {'mode'=>0755,'user'=>$uid,'group'=>$gid}) unless ( -d $dir );
+    chown($uid, $gid, $_);
+    make_path($_, {'mode'=>0755,'user'=>$uid,'group'=>$gid}) unless ( -e $_ );
 }
-chmod(0775, $VARDIR.'/spool/exim_stage2/input');
-chmod(0775, $VARDIR.'/spool/exim_stage4/input');
 
 symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
-
-# Configure sudoer permissions if they are not already
-# Add to mailcleaner, Debian-exim, Debian-spamd, mysql and clamav groups if not already a member
-`usermod -a -G mailcleaner mailscanner` unless (grep(/\bmailcleaner\b/, `groups mailscanner`));
-`usermod -a -G Debian-exim mailscanner` unless (grep(/\bDebian-exim\b/, `groups mailscanner`));
-`usermod -a -G debian-spamd mailscanner` unless (grep(/\bdebian-spamd\b/, `groups mailscanner`));
-`usermod -a -G clamav mailscanner` unless (grep(/\bclamav\b/, `groups mailscanner`));
-`usermod -a -G mysql mailscanner` unless (grep(/\bmysql\b/, `groups mailscanner`));
 
 # SystemD auth causes timeouts
 `sed -iP '/^session.*pam_systemd.so/d' /etc/pam.d/common-session`;

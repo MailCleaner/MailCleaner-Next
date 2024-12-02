@@ -22,7 +22,7 @@ MaxDirectoryRecursion 10
 
 SelfCheck 1800
 
-User clamav
+User mailcleaner
 
 ScanPE yes
 #DetectBrokenExecutables

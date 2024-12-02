@@ -63,7 +63,7 @@ __FI__
 __INCLUDE__ stage1/log_selector
 
 message_logs = true
-exim_user = Debian-exim
+exim_user = mailcleaner
 exim_group = mailcleaner
 log_file_path = __IF_USE_SYSLOGENABLED__ VARDIR/log/exim_stage1/%slog
 pid_file_path = VARDIR/run/exim_stage1.pid

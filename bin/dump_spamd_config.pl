@@ -53,7 +53,7 @@ require GetDNS;
 my $db = DB::connect('slave', 'mc_config');
 
 our $DEBUG = 1;
-our $uid = getpwnam('debian-spamd');
+our $uid = getpwnam('mailcleaner');
 our $gid = getgrnam('mailcleaner');
 
 our %sa_conf = get_sa_config() or fatal_error("NOSPAMASSASSINCONFIGURATION", "no default configuration found for spamassassin");
@@ -106,16 +106,12 @@ chown($dccuid, $dccgid,
 mkdir '/etc/sudoers.d' unless (-d '/etc/sudoers.d');
 if (open(my $fh, '>', '/etc/sudoers.d/spamd')) {
     print $fh "
-User_Alias  SPAMD = debian-spamd
+User_Alias  SPAMD = mailcleaner
 Cmnd_Alias  SPAMDBIN = /usr/sbin/spamd
 
 SPAMD       * = (ROOT) NOPASSWD: SPAMDBIN
 ";
 }
-
-# Fix group memberships
-`usermod -a -G mailcleaner debian-spamd` unless (grep(/\bmailcleaner\b/, `groups debian-spamd`));
-`usermod -a -G mailscanner debian-spamd` unless (grep(/\bmailscanner\b/, `groups debian-spamd`));
 
 symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
 

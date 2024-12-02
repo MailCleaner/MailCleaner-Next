@@ -8,7 +8,7 @@ PartOf=mailscanner.service mailcleaner.target
 
 [Service]
 Type=forking
-User=clamav
+User=mailcleaner
 Group=mailcleaner
 ExecStartPre=+/usr/mailcleaner/bin/dump_clamspamd_config.pl
 ExecStart=/usr/sbin/clamd --config-file=/usr/mailcleaner/etc/clamav/clamspamd.conf

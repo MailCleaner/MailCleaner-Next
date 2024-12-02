@@ -46,7 +46,7 @@ HostnameLookups On
     MaxConnectionsPerChild 20
 </IfModule>
 
-User www-data
+User mailcleaner
 Group mailcleaner
 
 LoadModule php_module			/usr/lib/apache2/modules/libphp__PHP_VERSION__.so

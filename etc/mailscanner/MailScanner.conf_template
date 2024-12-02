@@ -12,8 +12,8 @@
 ###############################
 
 Max Children = __NBPROCESSES__
-Run As User = mailscanner
-Run As Group = mailscanner
+Run As User = mailcleaner
+Run As Group = mailcleaner
 
 Queue Scan Interval = 5
 

@@ -19,7 +19,7 @@ __IFSSL__
 __IFSSLCHAIN__  SSLCertificateChainFile  __SRCDIR__/etc/apache/certs/certificate-chain.pem
 __ENDIFSSL__
 
-    AssignUserId www-data mailcleaner
+    AssignUserId mailcleaner mailcleaner
 
     DocumentRoot "__SRCDIR__/www/soap/htdocs"
     ErrorLog __VARDIR__/log/apache/error_soap.log
