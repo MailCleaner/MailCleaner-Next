@@ -30,6 +30,7 @@ use strict;
 use warnings;
 use utf8;
 use Carp qw( confess );
+use File::Path qw (make_path);
 
 our ($SRCDIR, $VARDIR);
 BEGIN {
@@ -70,6 +71,13 @@ my %master_hosts;
 
 confess "Error dumping snmp config: $!" unless dump_snmpd_file();
 
+if ( !-d "/var/mailcleaner/log/snmpd/") {
+    mkdir("/var/mailcleaner/log/snmpd/") || confess("Failed to create '/var/mailcleaner/log/snmpd/'\n");
+    chown($uid, $gid, "/var/mailcleaner/log/snmpd/");
+}
+if ( !-e "/var/mailcleaner/log/snmpd/mailcleaner.log"
+    make_path("/var/mailcleaner/log/snmpd/mailcleaner.log", {'mode'=>0755,'user'=>'mailcleaner','group'=>'mailcleaner'}) or fatal_error("COULDNOTCREATETMPDIR", "could not create temporary directory");
+}
 if (-f $system_mibs_file) {
     unlink($system_mibs_file);
 }
