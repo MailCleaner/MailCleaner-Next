@@ -107,6 +107,9 @@ foreach my $link (keys(%links)) {
     symlink($links{$link}, $link);
 }
 
+# Reload AppArmor rules
+`apparmor_parser -r ${SRCDIR}/etc/apparmor.d/apache` if ( -d '/sys/kernel/security/apparmor' );
+
 # Configure sudoer permissions if they are not already
 mkdir '/etc/sudoers.d' unless (-d '/etc/sudoers.d');
 if (open(my $fh, '>', '/etc/sudoers.d/apache')) {

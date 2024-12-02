@@ -89,7 +89,7 @@ sub dump_mysql_file($stage,%config)
 
     my ($TEMPLATE, $TARGET);
     confess "Cannot open $template_file: $!" unless ($TEMPLATE = ${open_as($template_file, '<', 0664, 'mailcleaner:mailcleaner')});
-    confess "Cannot open ${target_file}: $!" unless ($TARGET = ${open_as("${target_file}", '>', 0664, 'mailcleaner')});
+    confess "Cannot open ${target_file}: $!" unless ($TARGET = ${open_as("${target_file}", '>', 0664, 'mailcleaner:mailcleaner')});
 
     while(<$TEMPLATE>) {
         my $line = $_;
@@ -127,6 +127,9 @@ sub ownership($stage)
 	`systemctl daemon-reload`;
     }
     symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
+
+    # Reload AppArmor rules
+    `apparmor_parser -r ${SRCDIR}/etc/apparmor.d/mariadb` if ( -d '/sys/kernel/security/apparmor' );
 
     mkdir('/etc/sudoers.d') unless (-d '/etc/sudoers.d/');
     if (open(my $fh, '>', '/etc/sudoers.d/mysql')) {

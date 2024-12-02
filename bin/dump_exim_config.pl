@@ -1253,6 +1253,9 @@ EXIMUSER    * = (ROOT) NOPASSWD: EXIMBIN
 
     symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
 
+    # Reload AppArmor rules
+    `apparmor_parser -r ${SRCDIR}/etc/apparmor.d/exim` if ( -d '/sys/kernel/security/apparmor' );
+
     my $dir = "${SRCDIR}/etc/exim/stage${stage}";
     if (-d $dir) {
         chown($uid, $gid, $dir);

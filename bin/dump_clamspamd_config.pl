@@ -97,7 +97,7 @@ CLAMAV      * = (ROOT) NOPASSWD: CLAMBIN
 symlink($SRCDIR.'/etc/apparmor', '/etc/apparmor.d/mailcleaner') unless (-e '/etc/apparmor.d/mailcleaner');
 
 # Reload AppArmor rules
-`apparmor_parser -r ${SRCDIR}/etc/apparmor.d/clamav`;
+`apparmor_parser -r ${SRCDIR}/etc/apparmor.d/clamav` if ( -d '/sys/kernel/security/apparmor' );
 
 # SystemD auth causes timeouts
 `sed -iP '/^session.*pam_systemd.so/d' /etc/pam.d/common-session`;
