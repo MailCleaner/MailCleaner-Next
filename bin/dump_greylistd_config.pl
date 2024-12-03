@@ -83,6 +83,8 @@ dump_domain_to_avoid($greylist_conf{'__AVOID_DOMAINS__'});
 dump_trusted_ips($trusted_ips);
 
 foreach my $dir (
+    "/etc/greylistd",
+    glob("/etc/greylistd/*"),
     "${VARDIR}/spool/greylistd",
     "${VARDIR}/run/greylistd",
     glob("${VARDIR}/run/greylistd*"),
