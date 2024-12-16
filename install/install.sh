@@ -132,7 +132,18 @@ EOF
 fi
 
 ###############################################
-### check or create spool dirs
+### create MailCleaner user/group
+if [ ! $(id -u mailcleaner) ]; then
+    echo "Creating mailcleaner user and group..."
+    useradd -d $VARDIR -s /bin/bash -c "MailCleaner" -g mailcleaner mailcleaner 2>&1 >>$LOGFILE
+elif [ ! $(id -g mailcleaner) ]; then
+    echo "Creating mailcleaner group..."
+    groupadd -U mailcleaner mailcleaner 2>&1 >>$LOGFILE
+fi
+
+
+###############################################
+### configure SystemD serivices
 echo "Installing SystemD unit files..."
 $SRCDIR/install/systemd.sh -f 2>&1 >>$LOGFILE
 systemctl daemon-reload
