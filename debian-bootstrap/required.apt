@@ -115,6 +115,7 @@ lzma
 mariadb-client
 mariadb-server
 mc-exim
+mc-mailscanner
 nano
 net-tools
 netpbm

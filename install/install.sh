@@ -131,22 +131,6 @@ EOF
     apt-get --assume-yes install docker-ce docker-ce-rootless-extras
 fi
 
-if [ ! -e /usr/bin/check_mailscanner ]; then
-    echo "Installing MailScanner..."
-    $SRCDIR/install/mailscanner/install.sh -y
-fi
-
-###############################################
-### creating users: mailcleaner, mailscanner (all others provided by packages)
-if [ "$(grep 'mailcleaner' /etc/passwd)" = "" ]; then
-    groupadd mailcleaner 2>&1 >>$LOGFILE
-    useradd -d $VARDIR -s /bin/bash -c "MailCleaner User" -g mailcleaner mailcleaner 2>&1 >>$LOGFILE
-fi
-if [ "$(grep 'mailscanner' /etc/passwd)" = "" ]; then
-    groupadd mailscanner 2>&1 >>$LOGFILE
-    useradd -d $VARDIR -s /bin/bash -c "MailScanner" -g mailscanner mailscanner 2>&1 >>$LOGFILE
-fi
-
 ###############################################
 ### check or create spool dirs
 echo "Installing SystemD unit files..."
