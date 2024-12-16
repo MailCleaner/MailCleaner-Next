@@ -133,14 +133,16 @@ fi
 
 ###############################################
 ### create MailCleaner user/group
-if [ ! $(id -u mailcleaner) ]; then
+EXISTINGUSER=$(id -u mailcleaner 2>/dev/null)
+EXISTINGGROUP=$(id -g mailcleaner 2>/dev/null)
+if ! [[ $EXISTINGUSER =~ ^[0-9]+$ ]]; then
     echo "Creating mailcleaner user and group..."
-    useradd -d $VARDIR -s /bin/bash -c "MailCleaner" -g mailcleaner mailcleaner 2>&1 >>$LOGFILE
-elif [ ! $(id -g mailcleaner) ]; then
+    useradd -d $VARDIR -s /bin/bash -c "MailCleaner" -U mailcleaner 2>&1 >>$LOGFILE
+elif ! [[ $EXISTINGGROUP =~ ^[0-9]+$ ]]; then
     echo "Creating mailcleaner group..."
     groupadd -U mailcleaner mailcleaner 2>&1 >>$LOGFILE
 fi
-
+exit
 
 ###############################################
 ### configure SystemD serivices
