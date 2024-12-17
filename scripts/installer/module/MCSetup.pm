@@ -215,6 +215,7 @@ sub databasePWD($this)
     my $pass2 = '';
     my $pdlg = $this->{'dfact'}->getPasswordDialog();
     my $suggest = $this->{'config_variables'}->{'MYMAILCLEANERPWD'};
+    $suggest = undef if ($suggest eq $this->{'default_configs'}->{'MYMAILCLEANERPWD'});
     $suggest //= 'SAME AS WEB ADMIN PASSWORD' if (defined($this->{'install_variables'}->{'WEBADMINPWD'}) && $this->{'install_variables'}->{'WEBADMINPWD'} ne 'MCPassw0rd');
     unless (defined($suggest)) {
         $suggest = 'RANDOM: '.`pwgen -N 1 16`;
