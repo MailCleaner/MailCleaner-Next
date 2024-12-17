@@ -251,5 +251,5 @@ if [[ $ERRORS != "" ]]; then
 fi
 echo "Creating bare mailcleaner configuration file..."
 touch /etc/mailcleaner.conf
-echo "Bootstrapping complete, starting main MailCleaner Installation Wizard. Please follow all steps..."
-/usr/mailcleaner/scripts/installer/installer.pl
+echo "Bootstrapping complete. Please run the following command for the MailCleaner Installation Wizard:"
+echo "/usr/mailcleaner/scripts/installer/installer.pl"
