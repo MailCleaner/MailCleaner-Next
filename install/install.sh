@@ -142,7 +142,6 @@ elif ! [[ $EXISTINGGROUP =~ ^[0-9]+$ ]]; then
     echo "Creating mailcleaner group..."
     groupadd -U mailcleaner mailcleaner 2>&1 >>$LOGFILE
 fi
-exit
 
 ###############################################
 ### configure SystemD serivices
@@ -196,6 +195,9 @@ export MASTERPASSWD
 ###############################################
 ### creating databases
 
+echo "Configuring databases..."
+systemctl stop mariadb
+systemctl disable mariadb
 systemctl start mariadb@master
 sleep 1
 DBEXISTS=$(echo 'SELECT * FROM system_conf;' | mc_mysql -m mc_config 2>/dev/null)
