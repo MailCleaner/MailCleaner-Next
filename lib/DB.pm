@@ -21,13 +21,13 @@
 #
 #   This module will just read the configuration file
 
+package DB;
+
 use v5.36;
 use strict;
 use warnings;
 use utf8;
 use Carp qw( confess );
-
-package DB;
 
 BEGIN {
     my ($SRCDIR);
