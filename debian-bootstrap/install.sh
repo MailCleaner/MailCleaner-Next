@@ -109,7 +109,7 @@ fi
 if [ ! -e /etc/apt/keyrings/mailcleaner.gpg ]; then
 	#cp /usr/mailcleaner/etc/mailcleaner/mailcleaner.asc /etc/apt/trusted.gpg.d/mailcleaner.asc
 	#cat /etc/apt/trusted.gpg.d/mailcleaner.asc | gpg --yes --dearmor -o /etc/apt/keyrings/mailcleaner.gpg
-	wget -q -O /etc/apt/keyrings/mailcleaner.gpg https://cdnpush.mailcleaner.net/mailcleaner.gpg 
+	wget -q -O /etc/apt/keyrings/mailcleaner.gpg https://mailcleanerdl.alinto.net/downloads/mailcleaner.gpg 
 	echo 'deb [signed-by=/etc/apt/keyrings/mailcleaner.gpg] http://cdnmcpool.mailcleaner.net bookworm main' >/etc/apt/sources.list.d/mailcleaner.list
 fi
 
