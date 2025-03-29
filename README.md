@@ -1,5 +1,7 @@
 # MailCleaner Next
 
+Work had moved to a less ambitious migration which has now seen the most progress in the 'bookworm' branch of the [main MailCleaner repository](https://github.com/MailCleaner/MailCleaner). This repository is being archived since it contains some additional work on additional projects and features which may be useful for later reference.
+
 ## Warning:
 
 This repository is for a future release of MailCleaner. Mail delivery and proper Spam filtering are not guaranteed. If you would like to help [contribute](https://github.com/MailCleaner/MailCleaner-Next/wiki/Contributing-Guide) to this future release, we are welcoming testers of the [Alpha release](https://github.com/MailCleaner/MailCleaner-Next/wiki/Alpha-Testing).
